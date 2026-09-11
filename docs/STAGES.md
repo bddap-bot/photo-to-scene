@@ -1,0 +1,42 @@
+# Pipeline stages and contracts
+
+The pipeline treats reconstruction as a sequence of durable, reviewable contracts. Each builder starts with the reference image and the smallest relevant on-disk state. A fresh critic scores its result. Builders never communicate hidden scene state to later stages.
+
+## Coordinate and file contracts
+
+All measurements use metres. The room coordinate origin is a floor corner, with `x` along the far wall, `y` toward the camera, and `z` upward.
+
+`floorplan.json` describes the room polygon, wall heights, openings, fixed architectural features, camera pose and optics, a scale anchor, and the derivation of inferred dimensions.
+
+`objects.json` is an exhaustive array of visible objects. Each entry carries a stable identifier, label, source-image crop rectangle, room-space bounding box, yaw, contact relationship, material observation, and confidence.
+
+`assets/<id>.py` exposes `build(entry, collection=None)`. It creates the object's recognisable geometry and material at the local origin, fits the contracted dimensions, and returns the Blender objects it creates.
+
+Critics write JSON matching `verdict.schema.json`: a numeric score, summary, concrete corrections, the stage responsible for the first correction, and identification-specific wrong-label and missing-object arrays.
+
+## Stages
+
+1. **Floorplan** estimates room geometry, fixed features, scale, and camera, then renders a top-down diagram.
+2. **Blockout** inventories every visible object and renders neutral primitives plus a 50% reference overlay. This stage evaluates projection and placement without material distractions.
+3. **Identify** produces an enlarged labelled crop for every object and a contact sheet, then corrects labels and omissions.
+4. **Detail** gives one crop and one object entry to a fresh builder. Each asset is rendered alone and reviewed for silhouette, proportions, components, and surface read.
+5. **Integrate** assembles the shell and all asset builders, resolves contact relationships, and evaluates placement, intersections, floating geometry, gaps, and camera fit.
+6. **Materials** preserves asset materials while adding shell materials, lighting, colour management, and a final photographic render.
+
+Stages 1, 2, 5, and each final evaluation permit up to three attempts; identification and each object permit up to two. A score of 8/10 passes. When attempts are exhausted, the highest-scoring result remains authoritative.
+
+## GOTO and correction rules
+
+Builders and critics may assign a defect to `floorplan`, `blockout`, `identify`, `detail`, `object:<id>`, `integrate`, or `materials`. An object target is valid only when its identifier exists in `objects.json`. An invalid target is rejected without consuming the global allowance; the originating stage receives one correction opportunity, and a second invalid request is ignored.
+
+After integration or materials, a score below 8 may return to the stage named by the highest-priority correction. Forward execution then resumes from the repaired contract. At most five valid GOTOs are taken. The integration/materials portion also has a 3.5-hour cap, after which the best saved materials scene is finalized.
+
+A detail builder may propose `state/bbox_fix_<id>.json`. The driver applies it locally only when every dimension changes by at most 25%. A larger dimensional correction returns to blockout because placement evidence must be reconsidered globally.
+
+## Asset checks
+
+Before an isolated detail render reaches its critic, the driver checks that the asset exists, differs from the placeholder and every other asset, defines the required build function, references texture files only inside the run's `textures/` directory, and produced a render newer than the current attempt marker. A failure becomes a scored attempt with the validation message as feedback.
+
+## Resume behavior
+
+Contracts, verdicts, attempt copies, counters, records, and best results live on disk. `PHOTO_TO_SCENE_STAGE` selects the first stage for a resumed run. The detail loop reads prior scores and attempts, skips objects already scoring at least 8 or already at their attempt cap, and appends progress after every object. The best materials scene is retained whenever its score improves, so finalization does not depend on the last attempt being the best.

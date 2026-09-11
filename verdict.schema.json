@@ -1,0 +1,13 @@
+{
+  "type": "object",
+  "properties": {
+    "score": {"type": "integer", "minimum": 0, "maximum": 10},
+    "summary": {"type": "string"},
+    "corrections": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "top_stage": {"type": "string"},
+    "wrong_labels": {"type": "array", "items": {"type": "string"}},
+    "missing_objects": {"type": "array", "items": {"type": "string"}}
+  },
+  "required": ["score", "summary", "corrections", "top_stage", "wrong_labels", "missing_objects"],
+  "additionalProperties": false
+}

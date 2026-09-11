@@ -1,0 +1,36 @@
+{
+  "landing": [
+    "nix-shell -p shellcheck --run 'shellcheck pipeline.sh'",
+    "nix-shell -p python3 --run 'python3 -m py_compile builders/generic.py tools/fetch-polyhaven.py'",
+    "find . -type f -name '*.json' -not -path './.git/*' -exec jq empty {} +",
+    "botq test-map --check"
+  ],
+  "about": "Touched paths map to lightweight syntax checks. First matching rule wins and every tracked path must resolve.",
+  "rules": [
+    {
+      "paths": ["test-map.json"],
+      "tests": ["jq empty test-map.json", "botq test-map --check"],
+      "why": "The manifest is JSON and must continue to cover every tracked path."
+    },
+    {
+      "paths": ["*.sh", "**/*.sh"],
+      "tests": ["nix-shell -p shellcheck --run 'shellcheck pipeline.sh'"],
+      "why": "Shell entry points are checked statically."
+    },
+    {
+      "paths": ["*.py", "**/*.py"],
+      "tests": ["nix-shell -p python3 --run 'python3 -m py_compile builders/generic.py tools/fetch-polyhaven.py'"],
+      "why": "Python sources are compiled for syntax errors."
+    },
+    {
+      "paths": ["*.json", "**/*.json"],
+      "tests": ["find . -type f -name '*.json' -not -path './.git/*' -exec jq empty {} +"],
+      "why": "JSON contracts and schemas must parse."
+    },
+    {
+      "paths": ["*.md", "**/*.md", ".gitignore"],
+      "tests": [],
+      "why": "Documentation and local cache exclusions have no executable check."
+    }
+  ]
+}
