@@ -27,6 +27,7 @@ next_attempt() { ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); printf '%s' "$ATTEMPT_SEQ" > "$
 score_of() { jq -r '.score // 0' "$1"; }
 record() { printf '%s\t%s\t%s\t%s\t%s\t%s\n' "$1" "$2" "$3" "$4" "$5" "$6" >> "$STATE/records.tsv"; }
 valid_stage() { local candidate=$1 known id; for known in "${STAGES[@]}"; do [ "$candidate" = "$known" ] && return 0; done; case "$candidate" in object:*) id=${candidate#object:}; [ -f "$STATE/objects.json" ] && jq -e --arg id "$id" 'any(.id == $id)' "$STATE/objects.json" >/dev/null ;; *) return 1 ;; esac; }
+spatial_validate() { nix-shell -p python3 --run "python3 '$PIPELINE_DIR/tools/spatial-contract.py' '$STATE/objects.json' --ids '$1' ${2:-}"; }
 builder() {
   local prompt=$1 feedback=${2:-}
   shift 2
@@ -37,21 +38,6 @@ builder() {
   if [ -f "$STATE/goto.json" ]; then REQUEST_STAGE=$(jq -r '.stage // ""' "$STATE/goto.json"); REQUEST_REASON=$(jq -r '.reason // ""' "$STATE/goto.json"); rm -f "$STATE/goto.json"; return 42; fi
 }
 critic() { local prompt=$1 output=$2; shift 2; codex exec --ephemeral --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -C "$ROOT" --output-schema "$SCHEMA" -o "$output" "$@" - < "$PROMPTS/$prompt"; }
-apply_bbox_fix() {
-  local id=$1 fix="$STATE/bbox_fix_$1.json" entry old_dims new_dims accepted old_bbox new_bbox tmp="$STATE/objects.json.tmp"
-  [ -f "$fix" ] || return 0
-  entry=$(jq --arg id "$id" '.[] | select(.id==$id)' "$STATE/objects.json")
-  old_dims=$(jq -c '[.bbox.max[0]- .bbox.min[0], .bbox.max[1]- .bbox.min[1], .bbox.max[2]- .bbox.min[2]]' <<<"$entry")
-  new_dims=$(jq -c '[.bbox_max[0]- .bbox_min[0], .bbox_max[1]- .bbox_min[1], .bbox_max[2]- .bbox_min[2]]' "$fix")
-  accepted=$(jq -n --argjson old "$old_dims" --argjson new "$new_dims" '[range(0;3) | if $old[.] == 0 then ($new[.] == 0) else ((($new[.] - $old[.]) | fabs) / $old[.] <= 0.250001) end] | all')
-  if [ "$accepted" != true ]; then REQUEST_STAGE=blockout; REQUEST_REASON="bbox correction for $id changes at least one dimension by more than 25 percent"; return 42; fi
-  old_bbox=$(jq -c '.bbox' <<<"$entry")
-  jq --arg id "$id" --slurpfile fix "$fix" 'map(if .id==$id then .bbox.min=$fix[0].bbox_min | .bbox.max=$fix[0].bbox_max | .orientation_yaw_degrees=$fix[0].yaw else . end)' "$STATE/objects.json" > "$tmp"
-  mv "$tmp" "$STATE/objects.json"
-  new_bbox=$(jq -c --arg id "$id" '.[] | select(.id==$id) | .bbox' "$STATE/objects.json")
-  log "BBOX_FIX $id $old_bbox -> $new_bbox"
-  mv "$fix" "$STATE/applied_bbox_fix_$id.json"
-}
 detail_attempts() { awk -F '\t' -v stage="object:$1" '$1==stage {n++} END {print n+0}' "$STATE/records.tsv"; }
 detail_best() { awk -F '\t' -v stage="object:$1" '$1==stage && $3+0>best {best=$3+0} END {print best+0}' "$STATE/records.tsv"; }
 verify_detail() {
@@ -73,7 +59,7 @@ run_floorplan() {
 }
 run_blockout() {
   local feedback=${1:-} best=-1 bestdir='' start score a verdict
-  for a in 1 2 3; do next_attempt; start=$(date +%s); log "ENTER blockout attempt=$a sequence=$ATTEMPT_SEQ"; builder blockout_builder.md "$feedback" -i "$INPUT" || return $?; verdict="$STATE/verdicts/blockout_${ATTEMPT_SEQ}.json"; critic blockout_critic.md "$verdict" -i "$INPUT" "$STATE/blockout.png" "$STATE/blockout_overlay.png" || return $?; score=$(score_of "$verdict"); record blockout "$a" "$score" "$(( $(date +%s)-start ))" "$feedback" "$verdict"; log "SCORE blockout attempt=$a score=$score"; mkdir -p "$STATE/attempts/blockout_${ATTEMPT_SEQ}"; cp "$STATE/objects.json" "$STATE/blockout.py" "$STATE/blockout.png" "$STATE/blockout_overlay.png" "$STATE/attempts/blockout_${ATTEMPT_SEQ}/"; if [ "$score" -gt "$best" ]; then best=$score; bestdir=$ATTEMPT_SEQ; fi; [ "$score" -ge 8 ] && break; feedback=$(jq -r '.corrections | join("; ")' "$verdict"); done
+  for a in 1 2 3; do next_attempt; start=$(date +%s); log "ENTER blockout attempt=$a sequence=$ATTEMPT_SEQ"; builder blockout_builder.md "$feedback" -i "$INPUT" || return $?; spatial_validate "$(jq -r 'map(.id)|join(",")' "$STATE/objects.json")" || { log "FAIL blockout spatial contract declaration invalid"; return 44; }; verdict="$STATE/verdicts/blockout_${ATTEMPT_SEQ}.json"; critic blockout_critic.md "$verdict" -i "$INPUT" "$STATE/blockout.png" "$STATE/blockout_overlay.png" || return $?; score=$(score_of "$verdict"); record blockout "$a" "$score" "$(( $(date +%s)-start ))" "$feedback" "$verdict"; log "SCORE blockout attempt=$a score=$score"; mkdir -p "$STATE/attempts/blockout_${ATTEMPT_SEQ}"; cp "$STATE/objects.json" "$STATE/blockout.py" "$STATE/blockout.png" "$STATE/blockout_overlay.png" "$STATE/attempts/blockout_${ATTEMPT_SEQ}/"; if [ "$score" -gt "$best" ]; then best=$score; bestdir=$ATTEMPT_SEQ; fi; [ "$score" -ge 8 ] && break; feedback=$(jq -r '.corrections | join("; ")' "$verdict"); done
   cp "$STATE/attempts/blockout_${bestdir}/"* "$STATE/"; inbox
 }
 run_identify() {
@@ -82,10 +68,9 @@ run_identify() {
   cp "$STATE/attempts/identify_${bestdir}/objects.json" "$STATE/objects.json"; cp "$STATE/attempts/identify_${bestdir}/objects_sheet.png" "$STATE/objects_sheet.png"; command -v botq >/dev/null 2>&1 && botq notify-hub "photo-to-scene: objects sheet ready $STATE/objects_sheet.png" || true; inbox
 }
 run_one_detail() {
-  local id=$1 feedback=${2:-} entry="$STATE/entry_$1.json" best bestseq start score a verdict attempts marker
-  apply_bbox_fix "$id" || return $?
+  local id=$1 feedback=${2:-} force=${3:-0} entry="$STATE/entry_$1.json" best bestseq start score a verdict attempts marker limit
   attempts=$(detail_attempts "$id"); best=$(detail_best "$id")
-  if [ "$best" -ge 8 ] || [ "$attempts" -ge 2 ]; then printf '%s best=%s attempts=%s\n' "$id" "$best" "$attempts" >> "$STATE/progress.md"; inbox; return 0; fi
+  if [ "$force" -eq 0 ] && { [ "$best" -ge 8 ] || [ "$attempts" -ge 2 ]; }; then printf '%s best=%s attempts=%s\n' "$id" "$best" "$attempts" >> "$STATE/progress.md"; inbox; return 0; fi
   if [ "$attempts" -gt 0 ] && [ -z "$feedback" ]; then
     local latest_verdict
     latest_verdict=$(awk -F '\t' -v stage="object:$id" '$1==stage {path=$6} END {print path}' "$STATE/records.tsv")
@@ -93,18 +78,10 @@ run_one_detail() {
   fi
   bestseq=$(awk -F '\t' -v stage="object:$id" '$1==stage && $3+0>=best {best=$3+0; path=$6} END {if(path!="") {sub(/^.*_/,"",path); sub(/\.json$/,"",path); print path}}' "$STATE/records.tsv")
   jq --arg id "$id" '.[] | select(.id==$id)' "$STATE/objects.json" > "$entry"
-  for ((a=attempts+1; a<=2; a++)); do
+  limit=2; [ "$force" -eq 1 ] && limit=$((attempts+2))
+  for ((a=attempts+1; a<=limit; a++)); do
     next_attempt; start=$(date +%s); marker="$STATE/detail_${id}_${ATTEMPT_SEQ}.started"; touch "$marker"; log "ENTER object:$id attempt=$a sequence=$ATTEMPT_SEQ"; [ -L "$ASSETS/$id.py" ] && unlink "$ASSETS/$id.py"
     builder detail_builder.md "Object entry:\n$(cat "$entry")\n$feedback" -i "$STATE/crops/$id.png" || return $?
-    if [ -f "$STATE/bbox_fix_$id.json" ]; then
-      local bbox_reason
-      bbox_reason=$(jq -r '.reason // "small bbox correction"' "$STATE/bbox_fix_$id.json")
-      apply_bbox_fix "$id" || return $?
-      jq --arg id "$id" '.[] | select(.id==$id)' "$STATE/objects.json" > "$entry"
-      marker="$STATE/detail_${id}_${ATTEMPT_SEQ}.bbox_rerun_started"; touch "$marker"; log "ENTER object:$id attempt=$a bbox-rerun sequence=$ATTEMPT_SEQ"
-      builder detail_builder.md "Object entry:\n$(cat "$entry")\nApplied bbox correction: $bbox_reason\n$feedback" -i "$STATE/crops/$id.png" || return $?
-      if [ -f "$STATE/bbox_fix_$id.json" ]; then log "BBOX_FIX $id second correction ignored"; mv "$STATE/bbox_fix_$id.json" "$STATE/ignored_bbox_fix_$id.json"; fi
-    fi
     verdict="$STATE/verdicts/object_${id}_${ATTEMPT_SEQ}.json"
     if verify_detail "$id" "$marker"; then { cat "$PROMPTS/detail_critic.md"; printf '\nThe supplied object stage tag is object:%s.\n' "$id"; } | codex exec --ephemeral --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -C "$ROOT" --output-schema "$SCHEMA" -o "$verdict" -i "$STATE/crops/$id.png" "$STATE/detail_$id.png" - || return $?; else write_check_verdict "$verdict" "$id" "$DETAIL_FAILURE"; fi
     score=$(score_of "$verdict"); record "object:$id" "$a" "$score" "$(( $(date +%s)-start ))" "$feedback" "$verdict"; log "SCORE object:$id attempt=$a score=$score"
@@ -116,16 +93,16 @@ run_one_detail() {
   [ -n "$bestseq" ] && [ -f "$STATE/attempts/object_${id}_${bestseq}.png" ] && cp "$STATE/attempts/object_${id}_${bestseq}.png" "$STATE/detail_$id.png"
   attempts=$(detail_attempts "$id"); best=$(detail_best "$id"); printf '%s best=%s attempts=%s\n' "$id" "$best" "$attempts" >> "$STATE/progress.md"; inbox
 }
-run_detail() { local only=${1:-} id; if [[ "$only" == object:* ]]; then run_one_detail "${only#object:}" "${2:-}"; return $?; fi; while IFS= read -r id; do run_one_detail "$id" || return $?; done < <(jq -r 'sort_by(-(.crop_bbox[2] * .crop_bbox[3])) | .[].id' "$STATE/objects.json"); }
+run_detail() { local only=${1:-} id; if [[ "$only" == object:* ]]; then run_one_detail "${only#object:}" "${2:-}" 1; return $?; fi; while IFS= read -r id; do run_one_detail "$id" || return $?; done < <(jq -r 'sort_by(-(.crop_bbox[2] * .crop_bbox[3])) | .[].id' "$STATE/objects.json"); }
 run_integrate() {
   local feedback=${1:-} best=-1 bestseq='' start score a verdict
   [ -f "$STATE/integrate_start_epoch" ] || date +%s > "$STATE/integrate_start_epoch"
-  for a in 1 2 3; do next_attempt; start=$(date +%s); log "ENTER integrate attempt=$a sequence=$ATTEMPT_SEQ"; builder integrate_builder.md "$feedback" -i "$INPUT" || return $?; verdict="$STATE/verdicts/integrate_${ATTEMPT_SEQ}.json"; critic integrate_critic.md "$verdict" -i "$INPUT" "$STATE/integrate.png" "$STATE/integrate_overlay.png" || return $?; score=$(score_of "$verdict"); record integrate "$a" "$score" "$(( $(date +%s)-start ))" "$feedback" "$verdict"; log "SCORE integrate attempt=$a score=$score"; mkdir -p "$STATE/attempts/integrate_${ATTEMPT_SEQ}"; cp "$STATE/assemble.py" "$STATE/integrate.png" "$STATE/integrate_overlay.png" "$STATE/attempts/integrate_${ATTEMPT_SEQ}/"; if [ "$score" -gt "$best" ]; then best=$score; bestseq=$ATTEMPT_SEQ; fi; [ "$score" -ge 8 ] && break; REQUEST_STAGE=$(jq -r '.top_stage // "integrate"' "$verdict"); REQUEST_REASON=$(jq -r '.corrections[0] // ""' "$verdict"); [ "$REQUEST_STAGE" != integrate ] && return 43; feedback=$(jq -r '.corrections | join("; ")' "$verdict"); done
+  for a in 1 2 3; do next_attempt; start=$(date +%s); log "ENTER integrate attempt=$a sequence=$ATTEMPT_SEQ"; builder integrate_builder.md "$feedback" -i "$INPUT" || return $?; spatial_validate "$(jq -r 'map(.id)|join(",")' "$STATE/objects.json")" "--observed '$STATE/spatial_observed.json'" || { log "FAIL integrate spatial contract did not round-trip"; return 44; }; verdict="$STATE/verdicts/integrate_${ATTEMPT_SEQ}.json"; critic integrate_critic.md "$verdict" -i "$INPUT" "$STATE/integrate.png" "$STATE/integrate_overlay.png" || return $?; score=$(score_of "$verdict"); record integrate "$a" "$score" "$(( $(date +%s)-start ))" "$feedback" "$verdict"; log "SCORE integrate attempt=$a score=$score"; mkdir -p "$STATE/attempts/integrate_${ATTEMPT_SEQ}"; cp "$STATE/assemble.py" "$STATE/integrate.png" "$STATE/integrate_overlay.png" "$STATE/spatial_observed.json" "$STATE/attempts/integrate_${ATTEMPT_SEQ}/"; if [ "$score" -gt "$best" ]; then best=$score; bestseq=$ATTEMPT_SEQ; fi; [ "$score" -ge 8 ] && break; REQUEST_STAGE=$(jq -r '.top_stage // "integrate"' "$verdict"); REQUEST_REASON=$(jq -r '.corrections[0] // ""' "$verdict"); [ "$REQUEST_STAGE" != integrate ] && return 43; feedback=$(jq -r '.corrections | join("; ")' "$verdict"); done
   cp "$STATE/attempts/integrate_${bestseq}/"* "$STATE/"; inbox
 }
 run_materials() {
   local feedback=${1:-} start score verdict
-  next_attempt; start=$(date +%s); log "ENTER materials attempt=1 sequence=$ATTEMPT_SEQ"; builder materials_builder.md "$feedback" -i "$INPUT" || return $?; verdict="$STATE/verdicts/materials_${ATTEMPT_SEQ}.json"; critic materials_critic.md "$verdict" -i "$INPUT" "$STATE/materials.png" || return $?; score=$(score_of "$verdict"); record materials 1 "$score" "$(( $(date +%s)-start ))" "$feedback" "$verdict"; log "SCORE materials score=$score"
+  next_attempt; start=$(date +%s); log "ENTER materials attempt=1 sequence=$ATTEMPT_SEQ"; builder materials_builder.md "$feedback" -i "$INPUT" || return $?; spatial_validate "$(jq -r 'map(.id)|join(",")' "$STATE/objects.json")" "--observed '$STATE/spatial_observed.json'" || { log "FAIL materials invalidated spatial contract"; return 44; }; verdict="$STATE/verdicts/materials_${ATTEMPT_SEQ}.json"; critic materials_critic.md "$verdict" -i "$INPUT" "$STATE/materials.png" || return $?; score=$(score_of "$verdict"); record materials 1 "$score" "$(( $(date +%s)-start ))" "$feedback" "$verdict"; log "SCORE materials score=$score"
   if [ "$score" -gt "$BEST_S6" ]; then BEST_S6=$score; printf '%s' "$score" > "$STATE/best_s6_score"; cp "$STATE/materials.png" "$STATE/best_materials.png"; cp "$STATE/materials.blend" "$STATE/best_materials.blend"; cp "$verdict" "$STATE/best_materials_verdict.json"; fi
   if [ "$score" -lt 8 ]; then REQUEST_STAGE=$(jq -r '.top_stage // "materials"' "$verdict"); REQUEST_REASON=$(jq -r '.corrections[0] // ""' "$verdict"); [ "$REQUEST_STAGE" != materials ] && return 43; fi; inbox
 }

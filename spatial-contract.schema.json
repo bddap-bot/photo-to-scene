@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Source-grounded spatial contract",
+  "type": "object",
+  "required": ["source_evidence", "frame", "footprint_xy", "front_xy", "regions", "relationships", "ownership"],
+  "properties": {
+    "source_evidence": {"type": "object", "minProperties": 1},
+    "frame": {
+      "type": "object",
+      "required": ["origin_xyz", "x_axis_xy", "y_axis_xy", "size_xyz"],
+      "properties": {
+        "origin_xyz": {"$ref": "#/$defs/vector3"},
+        "x_axis_xy": {"$ref": "#/$defs/vector2"},
+        "y_axis_xy": {"$ref": "#/$defs/vector2"},
+        "size_xyz": {"$ref": "#/$defs/positiveVector3"}
+      },
+      "additionalProperties": false
+    },
+    "footprint_xy": {"type": "array", "minItems": 3, "items": {"$ref": "#/$defs/vector2"}},
+    "front_xy": {"$ref": "#/$defs/vector2"},
+    "regions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "bbox"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "bbox": {"$ref": "#/$defs/bbox"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "relationships": {"type": "array", "items": {"type": "object"}},
+    "ownership": {
+      "type": "object",
+      "required": ["children"],
+      "properties": {"children": {"enum": ["external", "included"]}},
+      "additionalProperties": false
+    },
+    "appearance": {"type": "object"}
+  },
+  "$defs": {
+    "vector2": {"type": "array", "prefixItems": [{"type": "number"}, {"type": "number"}], "items": false},
+    "vector3": {"type": "array", "prefixItems": [{"type": "number"}, {"type": "number"}, {"type": "number"}], "items": false},
+    "positiveVector3": {"type": "array", "prefixItems": [{"type": "number", "exclusiveMinimum": 0}, {"type": "number", "exclusiveMinimum": 0}, {"type": "number", "exclusiveMinimum": 0}], "items": false},
+    "bbox": {
+      "type": "object",
+      "required": ["min", "max"],
+      "properties": {"min": {"$ref": "#/$defs/vector3"}, "max": {"$ref": "#/$defs/vector3"}},
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

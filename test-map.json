@@ -1,7 +1,8 @@
 {
   "landing": [
     "nix-shell -p shellcheck --run 'shellcheck pipeline.sh'",
-    "nix-shell -p python3 --run 'python3 -m py_compile builders/generic.py tools/fetch-polyhaven.py'",
+    "nix-shell -p python3 --run 'python3 -m py_compile builders/generic.py tools/fetch-polyhaven.py tools/spatial-contract.py tools/test-spatial-contract.py'",
+    "nix-shell -p python3 --run 'python3 -m unittest -v tools/test-spatial-contract.py'",
     "find . -type f -name '*.json' -not -path './.git/*' -exec jq empty {} +",
     "botq test-map --check"
   ],
@@ -19,7 +20,7 @@
     },
     {
       "paths": ["*.py", "**/*.py"],
-      "tests": ["nix-shell -p python3 --run 'python3 -m py_compile builders/generic.py tools/fetch-polyhaven.py'"],
+      "tests": ["nix-shell -p python3 --run 'python3 -m py_compile builders/generic.py tools/fetch-polyhaven.py tools/spatial-contract.py tools/test-spatial-contract.py'", "nix-shell -p python3 --run 'python3 -m unittest -v tools/test-spatial-contract.py'"],
       "why": "Python sources are compiled for syntax errors."
     },
     {

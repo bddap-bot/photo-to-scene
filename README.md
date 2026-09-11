@@ -15,7 +15,7 @@ PHOTO_TO_SCENE_ROOT="$PWD/work" ./pipeline.sh /absolute/path/to/photo.jpg
 The working directory receives durable contracts and intermediate state. The principal outputs are:
 
 - `floorplan.json`: room geometry, camera, fixed features, and scale evidence
-- `objects.json`: visible-object inventory, image crops, placement, orientation, and contact data
+- `objects.json`: visible-object inventory, image crops, explicit spatial frames, footprints, relationships, ownership, and contact data
 - `assets/<id>.py`: isolated procedural Blender builders
 - `state/*.png`: stage and final renders
 - `state/scores.md`: critic scores, changes, and GOTO history
@@ -36,6 +36,6 @@ S1 floorplan → S2 blockout → S3 identify → S4 detail per object
 
 See [docs/STAGES.md](docs/STAGES.md) for contracts, retries, validation, and resume behavior.
 
-## Known weaknesses
+## Spatial invariants
 
-Large-furniture layout and orientation are the binding source of error: a detailed downstream model cannot compensate for a wrong footprint, yaw, or camera relationship. Material treatment also remains comparatively flat, especially where procedural surfaces stand in for measured PBR maps.
+Blockout is the single authority for spatial evidence. Every object carries a machine-checked local-to-room frame, front direction, footprint, semantic regions, relationships, and ownership. Detail assets use a normalized local frame. Integration must round-trip the invariants, and final materials must retain source-visible apertures.

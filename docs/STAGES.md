@@ -8,9 +8,9 @@ All measurements use metres. The room coordinate origin is a floor corner, with 
 
 `floorplan.json` describes the room polygon, wall heights, openings, fixed architectural features, camera pose and optics, a scale anchor, and the derivation of inferred dimensions.
 
-`objects.json` is an exhaustive array of visible objects. Each entry carries a stable identifier, label, source-image crop rectangle, room-space bounding box, yaw, contact relationship, material observation, and confidence.
+`objects.json` is an exhaustive array of visible objects. Each entry carries a stable identifier, label, source-image crop rectangle, room-space bounding box, contact relationship, material observation, confidence, and a source-grounded spatial contract. The contract fixes one local-to-room frame, facing, footprint, semantic regions, relationships, ownership, and applicable aperture visibility.
 
-`assets/<id>.py` exposes `build(entry, collection=None)`. It creates the object's recognisable geometry and material at the local origin, fits the contracted dimensions, and returns the Blender objects it creates.
+`assets/<id>.py` exposes `build(entry, collection=None)`. It creates recognisable geometry and material in one normalized local frame and returns the Blender objects it creates. Integration applies the contracted frame once and rejects any measured invariant that does not round-trip.
 
 Critics write JSON matching `verdict.schema.json`: a numeric score, summary, concrete corrections, the stage responsible for the first correction, and identification-specific wrong-label and missing-object arrays.
 
@@ -31,11 +31,11 @@ Builders and critics may assign a defect to `floorplan`, `blockout`, `identify`,
 
 After integration or materials, a score below 8 may return to the stage named by the highest-priority correction. Forward execution then resumes from the repaired contract. At most five valid GOTOs are taken. The integration/materials portion also has a 3.5-hour cap, after which the best saved materials scene is finalized.
 
-A detail builder may propose `state/bbox_fix_<id>.json`. The driver applies it locally only when every dimension changes by at most 25%. A larger dimensional correction returns to blockout because placement evidence must be reconsidered globally.
+All spatial corrections return to blockout, the sole spatial authority. Detail may refine geometry and materials but cannot mutate pose, dimensions, facing, footprint, semantic regions, relationships, or ownership.
 
 ## Asset checks
 
-Before an isolated detail render reaches its critic, the driver checks that the asset exists, differs from the placeholder and every other asset, defines the required build function, references texture files only inside the run's `textures/` directory, and produced a render newer than the current attempt marker. A failure becomes a scored attempt with the validation message as feedback.
+Before an isolated detail render reaches its critic, the driver checks that the asset exists, differs from the placeholder and every other asset, defines the required build function, references texture files only inside the run's `textures/` directory, and produced a render newer than the current attempt marker. A failure becomes a scored attempt with the validation message as feedback. Blockout declarations and measured integration invariants pass the same machine gate; aperture visibility is sampled and checked again after final materials.
 
 ## Resume behavior
 
