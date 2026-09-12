@@ -35,9 +35,9 @@
       "why": "JSON contracts and schemas must parse."
     },
     {
-      "paths": ["*.md", "**/*.md", ".gitignore"],
+      "paths": ["*.md", "**/*.md", ".gitignore", "LICENSE-*"],
       "tests": [],
-      "why": "Documentation and local cache exclusions have no executable check."
+      "why": "Documentation, licenses, and local cache exclusions have no executable check."
     }
   ]
 }

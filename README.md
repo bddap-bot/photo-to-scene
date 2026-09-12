@@ -1,41 +1,75 @@
 # Photo to Scene
 
-Photo to Scene reconstructs a room from one photograph as a Blender scene. It uses a staged builder/critic pipeline so layout, object identification, detailed geometry, integration, and materials can be evaluated independently. Critic feedback can send execution back to the stage that owns a defect.
+Photo to Scene turns one reference photograph into a staged Blender scene. The workflow moves through a floorplan, neutral blockout, object identification, per-object detail, integration, and materials. A fresh builder and critic handle each stage, while GOTO sends a defect back to the stage that owns it.
 
-Status: the pipeline reaches 5/10 on its first real scene.
+The handoffs are files rather than hidden context. Machine-checked spatial contracts carry source evidence, local-to-room frames, footprints, fronts, semantic regions, relationships, ownership, and visible apertures from blockout through the final material render. [The stage reference](docs/STAGES.md) defines the contracts, retry limits, validation gates, and resume behavior.
 
-## Run a new reconstruction
+## Run a reconstruction
 
-The pipeline requires Bash, `jq`, Codex CLI, Blender, ImageMagick, and `nix-shell`. From an empty working directory, provide one reference photograph:
+Requirements:
+
+- Bash 4 or newer, GNU coreutils, and `jq`
+- Nix with `nix-shell` enabled; the workflow uses it to provide Python, Blender, and ImageMagick
+- an installed and authenticated Codex CLI
+- enough CPU time and disk space for repeated Cycles renders
+
+From the repository root, give the run its own work directory and pass an absolute path to one photograph:
 
 ```sh
 PHOTO_TO_SCENE_ROOT="$PWD/work" ./pipeline.sh /absolute/path/to/photo.jpg
 ```
 
-The working directory receives durable contracts and intermediate state. The principal outputs are:
+The driver creates the work directory, seeds its generic asset builder, and writes durable state after each attempt. To resume from a particular stage, reuse the same directory and set `PHOTO_TO_SCENE_STAGE`:
 
-- `floorplan.json`: room geometry, camera, fixed features, and scale evidence
-- `objects.json`: visible-object inventory, image crops, explicit spatial frames, footprints, relationships, ownership, and contact data
-- `assets/<id>.py`: isolated procedural Blender builders
-- `state/*.png`: stage and final renders
-- `state/scores.md`: critic scores, changes, and GOTO history
+```sh
+PHOTO_TO_SCENE_ROOT="$PWD/work" \
+PHOTO_TO_SCENE_STAGE=integrate \
+./pipeline.sh /absolute/path/to/photo.jpg
+```
 
-Set `PHOTO_TO_SCENE_STAGE` to a stage name to resume from files already on disk. Copy `builders/generic.py` to the work directory as `assets/generic.py` before starting or resuming the detail stage. Optional material maps belong in the work directory's `textures/` directory; `tools/fetch-polyhaven.py` records the remote manifest while downloading selected files.
+Valid resume targets are `floorplan`, `blockout`, `identify`, `detail`, `object:<id>`, `integrate`, and `materials`. Set `BOTQ_ARTIFACTS_DIR` to override the final artifact directory.
+
+The main outputs are:
+
+- `work/floorplan.json`: room geometry, camera, fixed features, and scale evidence
+- `work/objects.json`: the visible-object inventory and spatial contracts
+- `work/assets/<id>.py`: procedural Blender builders for individual objects
+- `work/state/*.png`: stage, overlay, object, and final renders
+- `work/state/scores.md`: attempt scores, changes, GOTO history, and critic verdicts
 
 ## Stages
 
 ```text
 photo
   ↓
-S1 floorplan → S2 blockout → S3 identify → S4 detail per object
-     ↑              ↑                            ↓
-     └──────────── GOTO ← S6 materials ← S5 integrate
-                                      ↓
-                              final render + scores
+floorplan → blockout → identify → detail per object → integrate → materials
+    ↑          ↑                       ↑               ↓          ↓
+    └────────────────────── GOTO ─────────────────────┴──────────┘
 ```
 
-See [docs/STAGES.md](docs/STAGES.md) for contracts, retries, validation, and resume behavior.
+Floorplan establishes the room and camera. Blockout becomes the spatial authority. Identify checks the object inventory and crops. Detail builds and reviews every object independently. Integrate assembles the scene and measures the result against the spatial contracts. Materials adds the shell surfaces, lighting, colour management, and final render without relaxing those contracts.
 
-## Spatial invariants
+## Results so far
 
-Blockout is the single authority for spatial evidence. Every object carries a machine-checked local-to-room frame, front direction, footprint, semantic regions, relationships, and ownership. Detail assets use a normalized local frame. Integration must round-trip the invariants, and final materials must retain source-visible apertures.
+The scores below come from two runs of the same private evaluation scene. They publish measurements only; no source photograph, crop, or scene image is included here. “Gate score” is the final machine-gate result, while “critic score” is the last available visual evaluation before a hard gate prevents further criticism.
+
+| Run | Workflow SHA | Gate score | Critic score | Binding stage | What changed |
+|---|---|---:|---:|---|---|
+| Run 3 | Unversioned run artifact | Pass (legacy envelope gate) | 5/10 | Blockout | Establishes the staged baseline. The legacy gate checks outer axis-aligned bounds but does not preserve directional or internal spatial structure. |
+| v4 run 1 | `81defd9544e6f700500cbc37cb3e496960e69e7c` | 0/10 | 5/10 | Materials | Fixes sectional placement and facing, the black far window, and duplicated basket geometry. The stricter materials gate then reports 25 footprint or region contract failures across 20 objects. |
+
+The lower v4 gate score reflects stricter measurement rather than a claim of lower visual quality: failures that the earlier envelope proxy accepts now stop the pipeline with concrete object-level errors.
+
+## Known limits
+
+Spatial understanding of large asymmetric furniture remains the open problem. A single photograph can leave handedness, hidden extent, and contact relationships ambiguous; the contracts expose those decisions and catch downstream drift, but they do not guarantee the upstream interpretation is correct.
+
+CPU rendering and per-object review also make a complete run expensive. Visual critic scores remain subjective, and a passing spatial contract does not guarantee photorealistic geometry or materials.
+
+## Example
+
+A complete example from a public-domain photograph follows in a later commit. This repository does not include a placeholder image or any private-scene screenshot.
+
+## License
+
+Licensed under either the Apache License, Version 2.0, or the MIT License, at your option.

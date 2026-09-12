@@ -1,1 +1,8 @@
 __pycache__/
+work/
+.work/
+tmp/
+.tmp/
+audit-sources/
+audit-*.txt
+audit-*.tsv
