@@ -1,8 +1,9 @@
 {
   "landing": [
     "nix-shell -p shellcheck --run 'shellcheck pipeline.sh'",
-    "nix-shell -p python3 --run 'python3 -m py_compile builders/generic.py tools/fetch-polyhaven.py tools/spatial-contract.py tools/test-spatial-contract.py'",
-    "nix-shell -p python3 --run 'python3 -m unittest -v tools/test-spatial-contract.py'",
+    "nix-shell -p python3 --run 'python3 -m py_compile builders/generic.py tools/fetch-polyhaven.py tools/prompt-policy.py tools/spatial-contract.py tools/test-prompt-policy.py tools/test-spatial-contract.py'",
+    "nix-shell -p python3 --run 'python3 -m unittest -v tools/test-prompt-policy.py tools/test-spatial-contract.py'",
+    "nix-shell -p python3 --run 'python3 tools/prompt-policy.py prompts'",
     "find . -type f -name '*.json' -not -path './.git/*' -exec jq empty {} +",
     "botq test-map --check"
   ],
@@ -14,13 +15,18 @@
       "why": "The manifest is JSON and must continue to cover every tracked path."
     },
     {
+      "paths": ["prompts/*.md"],
+      "tests": ["nix-shell -p python3 --run 'python3 tools/prompt-policy.py prompts'"],
+      "why": "Hard prompt requirements name their enforcing gate and available recourse."
+    },
+    {
       "paths": ["*.sh", "**/*.sh"],
       "tests": ["nix-shell -p shellcheck --run 'shellcheck pipeline.sh'"],
       "why": "Shell entry points are checked statically."
     },
     {
       "paths": ["*.py", "**/*.py"],
-      "tests": ["nix-shell -p python3 --run 'python3 -m py_compile builders/generic.py tools/fetch-polyhaven.py tools/spatial-contract.py tools/test-spatial-contract.py'", "nix-shell -p python3 --run 'python3 -m unittest -v tools/test-spatial-contract.py'"],
+      "tests": ["nix-shell -p python3 --run 'python3 -m py_compile builders/generic.py tools/fetch-polyhaven.py tools/prompt-policy.py tools/spatial-contract.py tools/test-prompt-policy.py tools/test-spatial-contract.py'", "nix-shell -p python3 --run 'python3 -m unittest -v tools/test-prompt-policy.py tools/test-spatial-contract.py'"],
       "why": "Python sources are compiled for syntax errors."
     },
     {

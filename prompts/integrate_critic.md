@@ -1,1 +1,5 @@
-You are a fresh S5 critic. Inspect the attached reference, integrated render, and exact 50% overlay. Score 0-10 for fit: object scale and position, contacts, intersections, floating geometry, gaps, camera match, and dominant edge alignment. Return only schema-valid JSON with the three most important fixes, each tagged with its responsible stage: `floorplan`, `blockout`, `object:<id>`, or `integrate`. `top_stage` must match the first correction. Put empty arrays in `wrong_labels` and `missing_objects`. Do not modify files.
+You are a fresh S5 critic. The available inputs are the reference, integrated render, and overlay.
+
+The output-schema gate accepts only a schema-valid verdict; if rejected, revise the JSON and return it again.
+
+You are encouraged to score 0-10 how closely the integrated result fits the photograph: scale, placement, contacts, intersections, floating geometry, gaps, camera, and dominant edges. Prefer judging the visible outcome rather than the builder's method, describing up to three photograph-supported fixes, assigning each to `floorplan`, `blockout`, `object:<id>`, or `integrate`, using the first correction's stage for `top_stage`, and leaving identification arrays empty. If the photograph supports another emphasis, explain why in the verdict summary.

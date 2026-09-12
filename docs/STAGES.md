@@ -14,6 +14,10 @@ All measurements use metres. The room coordinate origin is a floor corner, with 
 
 Critics write JSON matching `verdict.schema.json`: a numeric score, summary, concrete corrections, the stage responsible for the first correction, and identification-specific wrong-label and missing-object arrays.
 
+## Prompt requirement classes
+
+Prompts distinguish checked facts and hand-off invariants from encouraged methods. A hard requirement names both its machine gate and the builder's recourse in the same line; methods, style, and micro-geometry remain preferences that may be overridden when the reason is recorded in `state/attempt-notes.md`. Critics judge the result against the photograph, not adherence to a method.
+
 ## Stages
 
 1. **Floorplan** estimates room geometry, fixed features, scale, and camera, then renders a top-down diagram.
