@@ -39,7 +39,7 @@ All spatial corrections return to blockout, the sole spatial authority. Detail m
 
 ## Asset checks
 
-Before an isolated detail render reaches its critic, the driver checks that the asset exists, differs from the placeholder and every other asset, defines the required build function, references texture files only inside the run's `textures/` directory, and produced a render newer than the current attempt marker. A failure becomes a scored attempt with the validation message as feedback. Blockout declarations and measured integration invariants pass the same machine gate; aperture visibility is sampled and checked again after final materials.
+Before an isolated detail render reaches its critic, the driver checks that the asset exists, differs from the placeholder and every other asset, defines the required build function, references texture files only inside the run's `textures/` directory, and produced a render newer than the current attempt marker. A failure becomes a scored attempt with the validation message as feedback. Blockout declarations and measured integration invariants pass the same machine gate; an integration or materials failure produces a 0/10 verdict whose corrections contain the concrete validator errors. Aperture visibility is sampled and checked again after final materials.
 
 ## Resume behavior
 

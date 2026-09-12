@@ -9,7 +9,7 @@ class PipelineControlTest(unittest.TestCase):
         pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
         run_materials = pipeline.split("run_materials() {", 1)[1].split("\n}\nwithin_s56_budget()", 1)[0]
         run_materials = "run_materials() {" + run_materials + "\n}"
-        stage_verdict = next(line for line in pipeline.splitlines() if line.startswith("write_stage_check_verdict()"))
+        stage_verdict = "\n".join(line for line in pipeline.splitlines() if line.startswith("write_stage_check_verdict()") or line.startswith("write_spatial_check_verdict()"))
         with tempfile.TemporaryDirectory() as directory:
             state = Path(directory, "state")
             (state / "verdicts").mkdir(parents=True)
@@ -23,7 +23,7 @@ STATE={state!s}; INPUT=input.jpg; ATTEMPT_SEQ=0; BEST_S6=-1; REQUEST_STAGE=; REQ
 next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
 log() {{ printf '%s\n' "$*"; }}
 builder() {{ return 0; }}
-spatial_validate() {{ return 1; }}
+spatial_validate() {{ printf '%s\n' '{{"valid":false,"errors":["one: material footprint mismatch"]}}' > "$3"; return 1; }}
 critic() {{ return 99; }}
 score_of() {{ jq -r '.score // 0' "$1"; }}
 record() {{ printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$1" "$2" "$3" "$4" "$5" "$6" "${{7:-}}" >> "$STATE/records.tsv"; }}
@@ -31,18 +31,19 @@ inbox() {{ :; }}
 {stage_verdict}
 {run_materials}
 run_materials
-printf 'score=%s best=%s png=%s blend=%s\n' "$(cut -f3 "$STATE/records.tsv")" "$(cat "$STATE/best_s6_score")" "$(cat "$STATE/best_materials.png")" "$(cat "$STATE/best_materials.blend")"
+printf 'score=%s best=%s png=%s blend=%s error=%s\n' "$(cut -f3 "$STATE/records.tsv")" "$(cat "$STATE/best_s6_score")" "$(cat "$STATE/best_materials.png")" "$(cat "$STATE/best_materials.blend")" "$(jq -r '.corrections[0]' "$STATE/verdicts/materials_1.json")"
 '''
             result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=10)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("score=0 best=0 png=render blend=scene", result.stdout)
         self.assertIn("FAIL materials invalidated spatial contract", result.stdout)
+        self.assertIn("error=one: material footprint mismatch", result.stdout)
 
     def test_integration_gate_failure_is_scored_and_retried(self):
         pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
         run_integrate = pipeline.split("run_integrate() {", 1)[1].split("\n}\nrun_materials()", 1)[0]
         run_integrate = "run_integrate() {" + run_integrate + "\n}"
-        stage_verdict = next(line for line in pipeline.splitlines() if line.startswith("write_stage_check_verdict()"))
+        stage_verdict = "\n".join(line for line in pipeline.splitlines() if line.startswith("write_stage_check_verdict()") or line.startswith("write_spatial_check_verdict()"))
         integrate_helpers = "\n".join(line for line in pipeline.splitlines() if line.startswith("integrate_attempts()") or line.startswith("integrate_best()"))
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -64,7 +65,7 @@ REQUEST_REASON=
 next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
 log() {{ printf '%s\n' "$*"; }}
 builder() {{ return 0; }}
-spatial_validate() {{ return 1; }}
+spatial_validate() {{ printf '%s\n' '{{"valid":false,"errors":["one: footprint did not round-trip"]}}' > "$3"; return 1; }}
 critic() {{ return 99; }}
 score_of() {{ jq -r '.score // 0' "$1"; }}
 record() {{ printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$1" "$2" "$3" "$4" "$5" "$6" "${{7:-}}" >> "$STATE/records.tsv"; }}
@@ -73,18 +74,19 @@ inbox() {{ :; }}
 {integrate_helpers}
 {run_integrate}
 run_integrate
-printf 'attempts=%s scores=%s\n' "$ATTEMPT_SEQ" "$(cut -f3 "$STATE/records.tsv" | paste -sd, -)"
+printf 'attempts=%s scores=%s error=%s\n' "$ATTEMPT_SEQ" "$(cut -f3 "$STATE/records.tsv" | paste -sd, -)" "$(jq -r '.corrections[0]' "$STATE/verdicts/integrate_1.json")"
 '''
             result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=10)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("attempts=3 scores=0,0,0", result.stdout)
         self.assertIn("FAIL integrate spatial contract did not round-trip attempt=3", result.stdout)
+        self.assertIn("error=one: footprint did not round-trip", result.stdout)
 
     def test_integration_attempt_budget_resumes_from_records(self):
         pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
         run_integrate = pipeline.split("run_integrate() {", 1)[1].split("\n}\nrun_materials()", 1)[0]
         run_integrate = "run_integrate() {" + run_integrate + "\n}"
-        functions = "\n".join(line for line in pipeline.splitlines() if line.startswith("write_stage_check_verdict()") or line.startswith("integrate_attempts()") or line.startswith("integrate_best()"))
+        functions = "\n".join(line for line in pipeline.splitlines() if line.startswith("write_stage_check_verdict()") or line.startswith("write_spatial_check_verdict()") or line.startswith("integrate_attempts()") or line.startswith("integrate_best()"))
         with tempfile.TemporaryDirectory() as directory:
             state = Path(directory, "state")
             (state / "verdicts").mkdir(parents=True)
@@ -100,7 +102,7 @@ STATE={state!s}; INPUT=input.jpg; ATTEMPT_SEQ=9; REQUEST_STAGE=; REQUEST_REASON=
 next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
 log() {{ :; }}
 builder() {{ return 0; }}
-spatial_validate() {{ return 1; }}
+spatial_validate() {{ printf '%s\n' '{{"valid":false,"errors":["one: resumed mismatch"]}}' > "$3"; return 1; }}
 critic() {{ return 99; }}
 score_of() {{ jq -r '.score // 0' "$1"; }}
 record() {{ printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$1" "$2" "$3" "$4" "$5" "$6" "${{7:-}}" >> "$STATE/records.tsv"; }}
@@ -118,7 +120,7 @@ printf 'new_attempts=%s records=%s\n' "$((ATTEMPT_SEQ-9))" "$(awk -F '\t' '$1==\
         pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
         run_integrate = pipeline.split("run_integrate() {", 1)[1].split("\n}\nrun_materials()", 1)[0]
         run_integrate = "run_integrate() {" + run_integrate + "\n}"
-        functions = "\n".join(line for line in pipeline.splitlines() if line.startswith("write_stage_check_verdict()") or line.startswith("integrate_attempts()") or line.startswith("integrate_best()"))
+        functions = "\n".join(line for line in pipeline.splitlines() if line.startswith("write_stage_check_verdict()") or line.startswith("write_spatial_check_verdict()") or line.startswith("integrate_attempts()") or line.startswith("integrate_best()"))
         with tempfile.TemporaryDirectory() as directory:
             state = Path(directory, "state")
             (state / "verdicts").mkdir(parents=True)
