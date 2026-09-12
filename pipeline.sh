@@ -23,7 +23,6 @@ BEST_S6=$(cat "$STATE/best_s6_score" 2>/dev/null || printf '%s' -1)
 [ -n "$BEST_S6" ] || BEST_S6=-1
 ATTEMPT_SEQ=$(cat "$STATE/attempt_seq" 2>/dev/null || printf 0)
 declare -A INVALID_RETRIES=()
-declare -A CAP_RETRIES=()
 SUPPRESS_BUILDER_GOTO=0
 log() { printf '%s %s\n' "$(date -Is)" "$*" | tee -a "$ROOT/log.md"; }
 inbox() { command -v botq >/dev/null 2>&1 && botq inbox | tee -a "$ROOT/log.md" || true; }
@@ -92,6 +91,7 @@ run_one_detail() {
   bestseq=$(awk -F '\t' -v stage="object:$id" -v contract="$contract_hash" '$1==stage && $7==contract && $3+0>=best {best=$3+0; path=$6} END {if(path!="") {sub(/^.*_/,"",path); sub(/\.json$/,"",path); print path}}' "$STATE/records.tsv")
   limit=2; [ "$force" -eq 1 ] && limit=$((attempts+2))
   for ((a=attempts+1; a<=limit; a++)); do
+    ACTIVE_STAGE="object:$id"
     next_attempt; start=$(date +%s); marker="$STATE/detail_${id}_${ATTEMPT_SEQ}.started"; touch "$marker"; log "ENTER object:$id attempt=$a sequence=$ATTEMPT_SEQ"; [ -L "$ASSETS/$id.py" ] && unlink "$ASSETS/$id.py"
     builder detail_builder.md "Object entry:\n$(cat "$entry")\n$feedback" -i "$STATE/crops/$id.png" || return $?
     verdict="$STATE/verdicts/object_${id}_${ATTEMPT_SEQ}.json"
@@ -126,18 +126,20 @@ write_report() {
 }
 feedback=
 current=${PHOTO_TO_SCENE_STAGE:-floorplan}
+ACTIVE_STAGE=$current
 while :; do
   rc=0
   next=
   REQUEST_STAGE=
   REQUEST_REASON=
+  ACTIVE_STAGE=$current
   if { [ "$current" = integrate ] || [ "$current" = materials ]; } && ! within_s56_budget && [ -f "$STATE/best_materials.blend" ]; then log 'WALLCLOCK cap reached; finalizing best S6'; break; fi
   case "$current" in floorplan) run_floorplan "$feedback"; rc=$?; next=blockout ;; blockout) run_blockout "$feedback"; rc=$?; next=identify ;; identify) run_identify "$feedback"; rc=$?; next=detail ;; detail) run_detail "" "$feedback"; rc=$?; next=integrate ;; object:*) run_detail "$current" "$feedback"; rc=$?; next=integrate ;; integrate) run_integrate "$feedback"; rc=$?; next=materials ;; materials) run_materials "$feedback"; rc=$?; next='done' ;; *) log "FAIL invalid current stage=$current"; exit 2 ;; esac
   if [ "$rc" -eq 42 ] || [ "$rc" -eq 43 ]; then
     origin=$([ "$rc" -eq 42 ] && printf builder || printf critic)
-    if ! valid_stage "$REQUEST_STAGE"; then key="$origin:$current"; log "GOTO rejected origin=$origin requested=$REQUEST_STAGE reason=target is not in canonical stage set"; if [ "${INVALID_RETRIES[$key]:-0}" -eq 0 ]; then INVALID_RETRIES[$key]=1; [ "$origin" = builder ] && SUPPRESS_BUILDER_GOTO=1; feedback="Your GOTO target $REQUEST_STAGE is not a stage. Valid stages: $VALID_STAGE_TEXT. Re-raise with a valid one or continue."; continue; fi; log "GOTO rejected origin=$origin requested=$REQUEST_STAGE reason=second invalid target from same stage ignored"; current=$next; feedback=; continue; fi
-    key="$origin:$current:$REQUEST_STAGE"
-    if { [ "$origin" = builder ] && [ "$BUILDER_GOTOS" -ge 5 ]; } || { [ "$origin" = critic ] && [ "$CRITIC_GOTOS" -ge 5 ]; }; then log "GOTO cap reached origin=$origin requested=$REQUEST_STAGE reason=$REQUEST_REASON"; if [ "$origin" = builder ] && [ "${CAP_RETRIES[$key]:-0}" -eq 0 ]; then CAP_RETRIES[$key]=1; SUPPRESS_BUILDER_GOTO=1; feedback="The builder GOTO cap is reached. Continue and complete the current stage without another GOTO."; continue; fi; log "GOTO cap request ignored origin=$origin requested=$REQUEST_STAGE reason=$REQUEST_REASON"; current=$next; feedback=; [ "$current" = 'done' ] && break; continue; fi
+    if ! valid_stage "$REQUEST_STAGE"; then key="$origin:$ACTIVE_STAGE"; log "GOTO rejected origin=$origin requested=$REQUEST_STAGE reason=target is not in canonical stage set"; if [ "$origin" = builder ]; then SUPPRESS_BUILDER_GOTO=1; feedback="Your GOTO target $REQUEST_STAGE is not a stage. Valid stages: $VALID_STAGE_TEXT. Re-raise with a valid one or continue."; continue; fi; if [ "${INVALID_RETRIES[$key]:-0}" -eq 0 ]; then INVALID_RETRIES[$key]=1; feedback="Your GOTO target $REQUEST_STAGE is not a stage. Valid stages: $VALID_STAGE_TEXT. Re-raise with a valid one or continue."; continue; fi; log "GOTO rejected origin=$origin requested=$REQUEST_STAGE reason=second invalid target from same stage ignored"; current=$next; feedback=; continue; fi
+    key="$origin:$ACTIVE_STAGE:$REQUEST_STAGE"
+    if { [ "$origin" = builder ] && [ "$BUILDER_GOTOS" -ge 5 ]; } || { [ "$origin" = critic ] && [ "$CRITIC_GOTOS" -ge 5 ]; }; then log "GOTO cap reached origin=$origin requested=$REQUEST_STAGE reason=$REQUEST_REASON"; if [ "$origin" = builder ]; then SUPPRESS_BUILDER_GOTO=1; feedback="The builder GOTO cap is reached. Continue and complete the current stage without another GOTO."; continue; fi; log "GOTO cap request ignored origin=$origin requested=$REQUEST_STAGE reason=$REQUEST_REASON"; current=$next; feedback=; [ "$current" = 'done' ] && break; continue; fi
     if [ "$origin" = builder ]; then BUILDER_GOTOS=$((BUILDER_GOTOS+1)); printf '%s' "$BUILDER_GOTOS" > "$STATE/builder_goto_count"; count=$BUILDER_GOTOS; else CRITIC_GOTOS=$((CRITIC_GOTOS+1)); printf '%s' "$CRITIC_GOTOS" > "$STATE/critic_goto_count"; count=$CRITIC_GOTOS; fi
     printf '%s' "$((BUILDER_GOTOS+CRITIC_GOTOS))" > "$STATE/goto_count"
     log "GOTO count=$count origin=$origin stage=$REQUEST_STAGE reason=$REQUEST_REASON"; current=$REQUEST_STAGE; feedback=$REQUEST_REASON; continue
