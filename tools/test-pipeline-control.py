@@ -65,7 +65,7 @@ within_s56_budget() {{ return 0; }}
 run_floorplan() {{ return 0; }}
 run_blockout() {{ return 0; }}
 run_identify() {{ return 0; }}
-run_detail() {{ calls=$((calls+1)); if [ "$SUPPRESS_BUILDER_GOTO" -eq 1 ]; then SUPPRESS_BUILDER_GOTO=0; log "GOTO cap request ignored origin=builder requested=detail reason=builder $calls"; return 0; fi; if [ "$calls" -le 7 ]; then REQUEST_STAGE=detail; REQUEST_REASON="builder $calls"; return 42; fi; return 0; }}
+run_detail() {{ calls=$((calls+1)); if [ "$SUPPRESS_BUILDER_GOTO" -eq 1 ]; then SUPPRESS_BUILDER_GOTO=0; log "GOTO request suppressed origin=builder requested=$REQUEST_STAGE reason=builder $calls"; return 0; fi; if [ "$calls" -le 5 ] || [ "$calls" -eq 8 ]; then REQUEST_STAGE=detail; REQUEST_REASON="builder $calls"; return 42; fi; if [ "$calls" -eq 6 ]; then REQUEST_STAGE=; REQUEST_REASON="invalid builder"; return 42; fi; return 0; }}
 run_integrate() {{ if [ "$critic_sent" -eq 0 ]; then critic_sent=1; REQUEST_STAGE=detail; REQUEST_REASON="late critic"; return 43; fi; return 0; }}
 run_materials() {{ return 0; }}
 PHOTO_TO_SCENE_STAGE=detail
@@ -77,8 +77,10 @@ cat "$STATE/log"
 '''
             result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=10)
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("builder=5 critic=1 calls=8", result.stdout)
-        self.assertIn("GOTO cap request ignored origin=builder", result.stdout)
+        self.assertIn("builder=5 critic=1 calls=9", result.stdout)
+        self.assertIn("GOTO rejected origin=builder requested= reason=target is not in canonical stage set", result.stdout)
+        self.assertIn("GOTO request suppressed origin=builder", result.stdout)
+        self.assertIn("GOTO cap reached origin=builder requested=detail reason=builder 8", result.stdout)
         self.assertIn("GOTO count=1 origin=critic stage=detail reason=late critic", result.stdout)
 
 
