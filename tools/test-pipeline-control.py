@@ -5,6 +5,46 @@ from pathlib import Path
 
 
 class PipelineControlTest(unittest.TestCase):
+    def test_integration_gate_failure_is_scored_and_retried(self):
+        pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
+        run_integrate = pipeline.split("run_integrate() {", 1)[1].split("\n}\nrun_materials()", 1)[0]
+        run_integrate = "run_integrate() {" + run_integrate + "\n}"
+        stage_verdict = next(line for line in pipeline.splitlines() if line.startswith("write_stage_check_verdict()"))
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            state = root / "state"
+            state.mkdir()
+            (state / "verdicts").mkdir()
+            (state / "objects.json").write_text('[{"id":"one"}]')
+            (state / "assemble.py").write_text("")
+            (state / "integrate.png").write_text("")
+            (state / "integrate_overlay.png").write_text("")
+            (state / "spatial_observed.json").write_text("{}")
+            (state / "records.tsv").write_text("")
+            script = f'''set -uo pipefail
+STATE={state!s}
+INPUT=input.jpg
+ATTEMPT_SEQ=0
+REQUEST_STAGE=
+REQUEST_REASON=
+next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
+log() {{ printf '%s\n' "$*"; }}
+builder() {{ return 0; }}
+spatial_validate() {{ return 1; }}
+critic() {{ return 99; }}
+score_of() {{ jq -r '.score // 0' "$1"; }}
+record() {{ printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$1" "$2" "$3" "$4" "$5" "$6" "${{7:-}}" >> "$STATE/records.tsv"; }}
+inbox() {{ :; }}
+{stage_verdict}
+{run_integrate}
+run_integrate
+printf 'attempts=%s scores=%s\n' "$ATTEMPT_SEQ" "$(cut -f3 "$STATE/records.tsv" | paste -sd, -)"
+'''
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=10)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("attempts=3 scores=0,0,0", result.stdout)
+        self.assertIn("FAIL integrate spatial contract did not round-trip attempt=3", result.stdout)
+
     def test_detail_budget_is_keyed_to_contract(self):
         pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
         functions = "\n".join(
