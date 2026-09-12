@@ -5,6 +5,42 @@ from pathlib import Path
 
 
 class PipelineControlTest(unittest.TestCase):
+    def test_detail_budget_is_keyed_to_contract(self):
+        pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
+        functions = "\n".join(
+            line for line in pipeline.splitlines() if line.startswith("detail_attempts()") or line.startswith("detail_best()")
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            records = Path(directory, "records.tsv")
+            records.write_text(
+                "object:changed\t1\t4\t1\t\told.json\told-hash\n"
+                "object:changed\t2\t6\t1\t\told2.json\told-hash\n"
+                "object:stable\t1\t7\t1\t\tstable.json\tstable-hash\n"
+                "object:stable\t2\t8\t1\t\tstable2.json\tstable-hash\n"
+            )
+            script = f'''STATE={directory!s}
+{functions}
+printf 'changed=%s stable=%s best=%s\n' "$(detail_attempts changed new-hash)" "$(detail_attempts stable stable-hash)" "$(detail_best stable stable-hash)"
+'''
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=10)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout, "changed=0 stable=2 best=8\n")
+
+    def test_detail_iteration_isolated_from_inbox_stdin(self):
+        pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
+        run_detail = next(line for line in pipeline.splitlines() if line.startswith("run_detail()"))
+        with tempfile.TemporaryDirectory() as directory:
+            objects = Path(directory, "objects.json")
+            objects.write_text('[{"id":"one","crop_bbox":[0,0,3,3]},{"id":"two","crop_bbox":[0,0,2,2]},{"id":"three","crop_bbox":[0,0,1,1]}]')
+            script = f'''STATE={directory!s}
+run_one_detail() {{ printf '%s\n' "$1"; read -r ignored || true; }}
+{run_detail}
+run_detail
+'''
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=10)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout, "one\ntwo\nthree\n")
+
     def test_critic_budget_is_independent_and_capped_builder_exits(self):
         pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
         loop = pipeline.split("feedback=\n", 1)[1].split("done\nif [ ! -f", 1)[0]

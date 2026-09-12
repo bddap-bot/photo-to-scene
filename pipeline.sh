@@ -29,7 +29,7 @@ log() { printf '%s %s\n' "$(date -Is)" "$*" | tee -a "$ROOT/log.md"; }
 inbox() { command -v botq >/dev/null 2>&1 && botq inbox | tee -a "$ROOT/log.md" || true; }
 next_attempt() { ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); printf '%s' "$ATTEMPT_SEQ" > "$STATE/attempt_seq"; }
 score_of() { jq -r '.score // 0' "$1"; }
-record() { printf '%s\t%s\t%s\t%s\t%s\t%s\n' "$1" "$2" "$3" "$4" "$5" "$6" >> "$STATE/records.tsv"; }
+record() { printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$1" "$2" "$3" "$4" "$5" "$6" "${7:-}" >> "$STATE/records.tsv"; }
 valid_stage() { local candidate=$1 known id; for known in "${STAGES[@]}"; do [ "$candidate" = "$known" ] && return 0; done; case "$candidate" in object:*) id=${candidate#object:}; [ -f "$STATE/objects.json" ] && jq -e --arg id "$id" 'any(.id == $id)' "$STATE/objects.json" >/dev/null ;; *) return 1 ;; esac; }
 spatial_validate() { nix-shell -p python3 --run "python3 '$PIPELINE_DIR/tools/spatial-contract.py' '$STATE/objects.json' --ids '$1' ${2:-}"; }
 builder() {
@@ -48,8 +48,8 @@ builder() {
   fi
 }
 critic() { local prompt=$1 output=$2; shift 2; codex exec --ephemeral --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -C "$ROOT" --output-schema "$SCHEMA" -o "$output" "$@" - < "$PROMPTS/$prompt"; }
-detail_attempts() { awk -F '\t' -v stage="object:$1" '$1==stage {n++} END {print n+0}' "$STATE/records.tsv"; }
-detail_best() { awk -F '\t' -v stage="object:$1" '$1==stage && $3+0>best {best=$3+0} END {print best+0}' "$STATE/records.tsv"; }
+detail_attempts() { awk -F '\t' -v stage="object:$1" -v contract="$2" '$1==stage && $7==contract {n++} END {print n+0}' "$STATE/records.tsv"; }
+detail_best() { awk -F '\t' -v stage="object:$1" -v contract="$2" '$1==stage && $7==contract && $3+0>best {best=$3+0} END {print best+0}' "$STATE/records.tsv"; }
 verify_detail() {
   local id=$1 marker=$2 asset="$ASSETS/$1.py" other ref
   DETAIL_FAILURE=
@@ -78,32 +78,33 @@ run_identify() {
   cp "$STATE/attempts/identify_${bestdir}/objects.json" "$STATE/objects.json"; cp "$STATE/attempts/identify_${bestdir}/objects_sheet.png" "$STATE/objects_sheet.png"; command -v botq >/dev/null 2>&1 && botq notify-hub "photo-to-scene: objects sheet ready $STATE/objects_sheet.png" || true; inbox
 }
 run_one_detail() {
-  local id=$1 feedback=${2:-} force=${3:-0} entry="$STATE/entry_$1.json" best bestseq start score a verdict attempts marker limit
-  attempts=$(detail_attempts "$id"); best=$(detail_best "$id")
+  local id=$1 feedback=${2:-} force=${3:-0} entry="$STATE/entry_$1.json" best bestseq start score a verdict attempts marker limit contract_hash
+  jq --arg id "$id" '.[] | select(.id==$id)' "$STATE/objects.json" > "$entry"
+  contract_hash=$(jq -cS '.spatial_contract' "$entry" | sha256sum | cut -d ' ' -f1)
+  attempts=$(detail_attempts "$id" "$contract_hash"); best=$(detail_best "$id" "$contract_hash")
   if [ "$force" -eq 0 ] && { [ "$best" -ge 8 ] || [ "$attempts" -ge 2 ]; }; then printf '%s best=%s attempts=%s\n' "$id" "$best" "$attempts" >> "$STATE/progress.md"; inbox; return 0; fi
   if [ "$attempts" -gt 0 ] && [ -z "$feedback" ]; then
     local latest_verdict
-    latest_verdict=$(awk -F '\t' -v stage="object:$id" '$1==stage {path=$6} END {print path}' "$STATE/records.tsv")
+    latest_verdict=$(awk -F '\t' -v stage="object:$id" -v contract="$contract_hash" '$1==stage && $7==contract {path=$6} END {print path}' "$STATE/records.tsv")
     [ -f "$latest_verdict" ] && feedback=$(jq -r '.corrections | join("; ")' "$latest_verdict")
   fi
-  bestseq=$(awk -F '\t' -v stage="object:$id" '$1==stage && $3+0>=best {best=$3+0; path=$6} END {if(path!="") {sub(/^.*_/,"",path); sub(/\.json$/,"",path); print path}}' "$STATE/records.tsv")
-  jq --arg id "$id" '.[] | select(.id==$id)' "$STATE/objects.json" > "$entry"
+  bestseq=$(awk -F '\t' -v stage="object:$id" -v contract="$contract_hash" '$1==stage && $7==contract && $3+0>=best {best=$3+0; path=$6} END {if(path!="") {sub(/^.*_/,"",path); sub(/\.json$/,"",path); print path}}' "$STATE/records.tsv")
   limit=2; [ "$force" -eq 1 ] && limit=$((attempts+2))
   for ((a=attempts+1; a<=limit; a++)); do
     next_attempt; start=$(date +%s); marker="$STATE/detail_${id}_${ATTEMPT_SEQ}.started"; touch "$marker"; log "ENTER object:$id attempt=$a sequence=$ATTEMPT_SEQ"; [ -L "$ASSETS/$id.py" ] && unlink "$ASSETS/$id.py"
     builder detail_builder.md "Object entry:\n$(cat "$entry")\n$feedback" -i "$STATE/crops/$id.png" || return $?
     verdict="$STATE/verdicts/object_${id}_${ATTEMPT_SEQ}.json"
     if verify_detail "$id" "$marker"; then { cat "$PROMPTS/detail_critic.md"; printf '\nThe supplied object stage tag is object:%s.\n' "$id"; } | codex exec --ephemeral --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -C "$ROOT" --output-schema "$SCHEMA" -o "$verdict" -i "$STATE/crops/$id.png" "$STATE/detail_$id.png" - || return $?; else write_check_verdict "$verdict" "$id" "$DETAIL_FAILURE"; fi
-    score=$(score_of "$verdict"); record "object:$id" "$a" "$score" "$(( $(date +%s)-start ))" "$feedback" "$verdict"; log "SCORE object:$id attempt=$a score=$score"
+    score=$(score_of "$verdict"); record "object:$id" "$a" "$score" "$(( $(date +%s)-start ))" "$feedback" "$verdict" "$contract_hash"; log "SCORE object:$id attempt=$a score=$score contract=$contract_hash"
     [ -f "$ASSETS/$id.py" ] && cp "$ASSETS/$id.py" "$STATE/attempts/object_${id}_${ATTEMPT_SEQ}.py"; [ -f "$STATE/detail_$id.png" ] && cp "$STATE/detail_$id.png" "$STATE/attempts/object_${id}_${ATTEMPT_SEQ}.png"
     if [ "$score" -gt "$best" ] || [ -z "$bestseq" ]; then best=$score; bestseq=$ATTEMPT_SEQ; fi
     [ "$score" -ge 8 ] && break; feedback=$(jq -r '.corrections | join("; ")' "$verdict")
   done
   [ -n "$bestseq" ] && [ -f "$STATE/attempts/object_${id}_${bestseq}.py" ] && cp "$STATE/attempts/object_${id}_${bestseq}.py" "$ASSETS/$id.py"
   [ -n "$bestseq" ] && [ -f "$STATE/attempts/object_${id}_${bestseq}.png" ] && cp "$STATE/attempts/object_${id}_${bestseq}.png" "$STATE/detail_$id.png"
-  attempts=$(detail_attempts "$id"); best=$(detail_best "$id"); printf '%s best=%s attempts=%s\n' "$id" "$best" "$attempts" >> "$STATE/progress.md"; inbox
+  attempts=$(detail_attempts "$id" "$contract_hash"); best=$(detail_best "$id" "$contract_hash"); printf '%s best=%s attempts=%s contract=%s\n' "$id" "$best" "$attempts" "$contract_hash" >> "$STATE/progress.md"; inbox
 }
-run_detail() { local only=${1:-} id; if [[ "$only" == object:* ]]; then run_one_detail "${only#object:}" "${2:-}" 1; return $?; fi; while IFS= read -r id; do run_one_detail "$id" || return $?; done < <(jq -r 'sort_by(-(.crop_bbox[2] * .crop_bbox[3])) | .[].id' "$STATE/objects.json"); }
+run_detail() { local only=${1:-} id; local -a detail_ids=(); if [[ "$only" == object:* ]]; then run_one_detail "${only#object:}" "${2:-}" 1; return $?; fi; mapfile -t detail_ids < <(jq -r 'sort_by(-(.crop_bbox[2] * .crop_bbox[3])) | .[].id' "$STATE/objects.json"); for id in "${detail_ids[@]}"; do run_one_detail "$id" || return $?; done; }
 run_integrate() {
   local feedback=${1:-} best=-1 bestseq='' start score a verdict
   [ -f "$STATE/integrate_start_epoch" ] || date +%s > "$STATE/integrate_start_epoch"
@@ -120,7 +121,7 @@ within_s56_budget() { [ ! -f "$STATE/integrate_start_epoch" ] && return 0; [ "$(
 write_report() {
   local report="$STATE/scores.md" stage attempt score seconds changed verdict binding
   binding=$(jq -r '.top_stage // "unknown"' "$STATE/best_materials_verdict.json")
-  { printf '# Staged reconstruction report\n\n| Stage | Attempt | Score | Seconds | What changed |\n|---|---:|---:|---:|---|\n'; while IFS=$'\t' read -r stage attempt score seconds changed verdict; do changed=${changed//$'\n'/ }; changed=${changed//|/\\|}; [ -n "$changed" ] || changed='Initial stage entry or forward rebuild from accepted contracts.'; printf '| %s | %s | %s/10 | %s | %s |\n' "$stage" "$attempt" "$score" "$seconds" "$changed"; done < "$STATE/records.tsv"; printf '\n## GOTO history\n\n'; grep ' GOTO ' "$ROOT/log.md" 2>/dev/null || printf 'No GOTO was taken.\n'; printf '\n## Scale contract\n\n- Anchor: %s\n- Assumed television width: %s m\n' "$(jq -r '.scale_anchor.description // .scale_anchor // "recorded visual anchor"' "$STATE/floorplan.json")" "$(jq -r '.assumed_tv_width_m // .scale_anchor.width_m // "not used"' "$STATE/floorplan.json")"; printf '\n## Critic verdicts, verbatim\n\n'; while IFS=$'\t' read -r stage attempt score seconds changed verdict; do printf '### %s attempt %s\n\n```json\n' "$stage" "$attempt"; cat "$verdict" 2>/dev/null || printf '{"score":%s,"summary":"verdict file unavailable"}' "$score"; printf '\n```\n\n'; done < "$STATE/records.tsv"; printf '## Honest assessment\n\nThe final score was %s/10. The binding stage was %s, identified by the best final critic as the source of its highest-priority remaining defect.\n' "$(cat "$STATE/best_s6_score")" "$binding"; } > "$report"
+  { printf '# Staged reconstruction report\n\n| Stage | Attempt | Score | Seconds | What changed |\n|---|---:|---:|---:|---|\n'; while IFS=$'\t' read -r stage attempt score seconds changed verdict contract_hash; do changed=${changed//$'\n'/ }; changed=${changed//|/\\|}; [ -n "$changed" ] || changed='Initial stage entry or forward rebuild from accepted contracts.'; printf '| %s | %s | %s/10 | %s | %s |\n' "$stage" "$attempt" "$score" "$seconds" "$changed"; done < "$STATE/records.tsv"; printf '\n## GOTO history\n\n'; grep ' GOTO ' "$ROOT/log.md" 2>/dev/null || printf 'No GOTO was taken.\n'; printf '\n## Scale contract\n\n- Anchor: %s\n- Assumed television width: %s m\n' "$(jq -r '.scale_anchor.description // .scale_anchor // "recorded visual anchor"' "$STATE/floorplan.json")" "$(jq -r '.assumed_tv_width_m // .scale_anchor.width_m // "not used"' "$STATE/floorplan.json")"; printf '\n## Critic verdicts, verbatim\n\n'; while IFS=$'\t' read -r stage attempt score seconds changed verdict contract_hash; do printf '### %s attempt %s\n\n```json\n' "$stage" "$attempt"; cat "$verdict" 2>/dev/null || printf '{"score":%s,"summary":"verdict file unavailable"}' "$score"; printf '\n```\n\n'; done < "$STATE/records.tsv"; printf '## Honest assessment\n\nThe final score was %s/10. The binding stage was %s, identified by the best final critic as the source of its highest-priority remaining defect.\n' "$(cat "$STATE/best_s6_score")" "$binding"; } > "$report"
 }
 feedback=
 current=${PHOTO_TO_SCENE_STAGE:-floorplan}
