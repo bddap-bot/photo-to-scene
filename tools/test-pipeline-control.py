@@ -114,6 +114,80 @@ printf 'new_attempts=%s records=%s\n' "$((ATTEMPT_SEQ-9))" "$(awk -F '\t' '$1==\
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("new_attempts=2 records=3", result.stdout)
 
+    def test_integration_attempt_number_survives_capped_builder_redirect(self):
+        pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
+        run_integrate = pipeline.split("run_integrate() {", 1)[1].split("\n}\nrun_materials()", 1)[0]
+        run_integrate = "run_integrate() {" + run_integrate + "\n}"
+        functions = "\n".join(line for line in pipeline.splitlines() if line.startswith("write_stage_check_verdict()") or line.startswith("integrate_attempts()") or line.startswith("integrate_best()"))
+        with tempfile.TemporaryDirectory() as directory:
+            state = Path(directory, "state")
+            (state / "verdicts").mkdir(parents=True)
+            (state / "attempts").mkdir()
+            for name in ("assemble.py", "integrate.png", "integrate_overlay.png", "spatial_observed.json"):
+                (state / name).write_text("{}" if name.endswith(".json") else "")
+            (state / "objects.json").write_text('[{"id":"one"}]')
+            (state / "records.tsv").write_text("")
+            script = f'''set -uo pipefail
+STATE={state!s}; INPUT=input.jpg; ATTEMPT_SEQ=0; REQUEST_STAGE=; REQUEST_REASON=; SUPPRESS_BUILDER_GOTO=0; builder_calls=0; critic_calls=0
+next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
+log() {{ :; }}
+builder() {{ builder_calls=$((builder_calls+1)); if [ "$SUPPRESS_BUILDER_GOTO" -eq 0 ]; then REQUEST_STAGE=integrate; REQUEST_REASON=capped; return 42; fi; SUPPRESS_BUILDER_GOTO=0; printf 'builder-%s' "$builder_calls" > "$STATE/assemble.py"; return 0; }}
+spatial_validate() {{ return 0; }}
+critic() {{ critic_calls=$((critic_calls+1)); if [ "$critic_calls" -eq 1 ]; then score=7; else score=$critic_calls; fi; if [ "$critic_calls" -lt 3 ]; then target=detail; else target=integrate; fi; jq -n --argjson score "$score" --arg target "$target" '{{score:$score,corrections:["redirect"],top_stage:$target}}' > "$2"; }}
+score_of() {{ jq -r '.score // 0' "$1"; }}
+record() {{ printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$1" "$2" "$3" "$4" "$5" "$6" "${{7:-}}" >> "$STATE/records.tsv"; }}
+inbox() {{ :; }}
+{functions}
+{run_integrate}
+for expected in 1 2 3; do
+  rc=0
+  run_integrate || rc=$?
+  [ "$rc" -eq 42 ] || exit 90
+  SUPPRESS_BUILDER_GOTO=1
+  rc=0
+  run_integrate || rc=$?
+  if [ "$expected" -lt 3 ]; then [ "$rc" -eq 43 ] || exit 91; else [ "$rc" -eq 0 ] || exit 92; fi
+done
+printf 'attempts=%s numbering=%s calls=%s restored=%s\n' "$(integrate_attempts)" "$(cut -f2 "$STATE/records.tsv" | paste -sd, -)" "$builder_calls" "$(cat "$STATE/assemble.py")"
+'''
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=10)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("attempts=3 numbering=1,2,3 calls=6 restored=builder-2", result.stdout)
+
+    def test_report_preserves_empty_fields_and_reports_missing_verdict(self):
+        pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
+        parse_record = next(line for line in pipeline.splitlines() if line.startswith("parse_record()"))
+        write_report = pipeline.split("write_report() {", 1)[1].split("\n}\nfeedback=", 1)[0]
+        write_report = "write_report() {" + write_report + "\n}"
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            state = root / "state"
+            state.mkdir()
+            verdict = state / "exact.json"
+            missing = state / "missing.json"
+            verdict.write_text('{"score":7,"summary":"exact verdict"}')
+            (state / "records.tsv").write_text(
+                f"integrate\t1\t7\t4\t\t{verdict}\t\n"
+                f"materials\t1\t0\t2\t\t{missing}\t\n"
+            )
+            (state / "best_materials_verdict.json").write_text('{"top_stage":"integrate"}')
+            (state / "best_s6_score").write_text("7")
+            (state / "floorplan.json").write_text('{}')
+            (root / "log.md").write_text("")
+            script = f'''set -uo pipefail
+ROOT={root!s}; STATE={state!s}
+{parse_record}
+{write_report}
+write_report
+cat "$STATE/scores.md"
+'''
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=10)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('{"score":7,"summary":"exact verdict"}', result.stdout)
+        self.assertIn("| integrate | 1 | 7/10 | 4 | Initial stage entry or forward rebuild from accepted contracts. |", result.stdout)
+        self.assertEqual(result.stdout.count(f"Verdict absent: `{missing}`"), 1)
+        self.assertNotIn("verdict file unavailable", result.stdout)
+
     def test_detail_budget_is_keyed_to_contract(self):
         pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
         functions = "\n".join(
