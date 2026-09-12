@@ -10,6 +10,7 @@ class PipelineControlTest(unittest.TestCase):
         run_integrate = pipeline.split("run_integrate() {", 1)[1].split("\n}\nrun_materials()", 1)[0]
         run_integrate = "run_integrate() {" + run_integrate + "\n}"
         stage_verdict = next(line for line in pipeline.splitlines() if line.startswith("write_stage_check_verdict()"))
+        integrate_helpers = "\n".join(line for line in pipeline.splitlines() if line.startswith("integrate_attempts()") or line.startswith("integrate_best()"))
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             state = root / "state"
@@ -36,6 +37,7 @@ score_of() {{ jq -r '.score // 0' "$1"; }}
 record() {{ printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$1" "$2" "$3" "$4" "$5" "$6" "${{7:-}}" >> "$STATE/records.tsv"; }}
 inbox() {{ :; }}
 {stage_verdict}
+{integrate_helpers}
 {run_integrate}
 run_integrate
 printf 'attempts=%s scores=%s\n' "$ATTEMPT_SEQ" "$(cut -f3 "$STATE/records.tsv" | paste -sd, -)"
@@ -44,6 +46,40 @@ printf 'attempts=%s scores=%s\n' "$ATTEMPT_SEQ" "$(cut -f3 "$STATE/records.tsv" 
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("attempts=3 scores=0,0,0", result.stdout)
         self.assertIn("FAIL integrate spatial contract did not round-trip attempt=3", result.stdout)
+
+    def test_integration_attempt_budget_resumes_from_records(self):
+        pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
+        run_integrate = pipeline.split("run_integrate() {", 1)[1].split("\n}\nrun_materials()", 1)[0]
+        run_integrate = "run_integrate() {" + run_integrate + "\n}"
+        functions = "\n".join(line for line in pipeline.splitlines() if line.startswith("write_stage_check_verdict()") or line.startswith("integrate_attempts()") or line.startswith("integrate_best()"))
+        with tempfile.TemporaryDirectory() as directory:
+            state = Path(directory, "state")
+            (state / "verdicts").mkdir(parents=True)
+            (state / "attempts" / "integrate_9").mkdir(parents=True)
+            for name in ("assemble.py", "integrate.png", "integrate_overlay.png", "spatial_observed.json"):
+                (state / name).write_text("{}" if name.endswith(".json") else "")
+                (state / "attempts" / "integrate_9" / name).write_text("{}" if name.endswith(".json") else "")
+            (state / "objects.json").write_text('[{"id":"one"}]')
+            (state / "verdicts" / "integrate_9.json").write_text('{"score":0}')
+            (state / "records.tsv").write_text(f"integrate\t1\t0\t1\t\t{state}/verdicts/integrate_9.json\t\n")
+            script = f'''set -uo pipefail
+STATE={state!s}; INPUT=input.jpg; ATTEMPT_SEQ=9; REQUEST_STAGE=; REQUEST_REASON=
+next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
+log() {{ :; }}
+builder() {{ return 0; }}
+spatial_validate() {{ return 1; }}
+critic() {{ return 99; }}
+score_of() {{ jq -r '.score // 0' "$1"; }}
+record() {{ printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$1" "$2" "$3" "$4" "$5" "$6" "${{7:-}}" >> "$STATE/records.tsv"; }}
+inbox() {{ :; }}
+{functions}
+{run_integrate}
+run_integrate
+printf 'new_attempts=%s records=%s\n' "$((ATTEMPT_SEQ-9))" "$(awk -F '\t' '$1==\"integrate\" {{n++}} END {{print n+0}}' "$STATE/records.tsv")"
+'''
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=10)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("new_attempts=2 records=3", result.stdout)
 
     def test_detail_budget_is_keyed_to_contract(self):
         pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
