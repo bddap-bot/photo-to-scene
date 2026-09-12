@@ -16,11 +16,15 @@ STAGES=(floorplan blockout identify detail)
 [ ! -f "$STATE/objects.json" ] || while IFS= read -r stage_id; do STAGES+=("object:$stage_id"); done < <(jq -r '.[].id' "$STATE/objects.json")
 STAGES+=(integrate materials)
 VALID_STAGE_TEXT="floorplan blockout identify detail object:<id> integrate materials"
-GOTOS=$(cat "$STATE/goto_count" 2>/dev/null || printf 0)
+LEGACY_GOTOS=$(cat "$STATE/goto_count" 2>/dev/null || printf 0)
+BUILDER_GOTOS=$(cat "$STATE/builder_goto_count" 2>/dev/null || printf '%s' "$LEGACY_GOTOS")
+CRITIC_GOTOS=$(cat "$STATE/critic_goto_count" 2>/dev/null || printf 0)
 BEST_S6=$(cat "$STATE/best_s6_score" 2>/dev/null || printf '%s' -1)
 [ -n "$BEST_S6" ] || BEST_S6=-1
 ATTEMPT_SEQ=$(cat "$STATE/attempt_seq" 2>/dev/null || printf 0)
 declare -A INVALID_RETRIES=()
+declare -A CAP_RETRIES=()
+SUPPRESS_BUILDER_GOTO=0
 log() { printf '%s %s\n' "$(date -Is)" "$*" | tee -a "$ROOT/log.md"; }
 inbox() { command -v botq >/dev/null 2>&1 && botq inbox | tee -a "$ROOT/log.md" || true; }
 next_attempt() { ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); printf '%s' "$ATTEMPT_SEQ" > "$STATE/attempt_seq"; }
@@ -35,7 +39,13 @@ builder() {
   { cat "$PROMPTS/$prompt"; if [ -n "$feedback" ]; then printf '\nOne-reentry correction context follows:\n%s\n' "$feedback"; fi; } | codex exec --ephemeral --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -C "$ROOT" "$@" -
   local command_rc=$?
   [ "$command_rc" -eq 0 ] || return "$command_rc"
-  if [ -f "$STATE/goto.json" ]; then REQUEST_STAGE=$(jq -r '.stage // ""' "$STATE/goto.json"); REQUEST_REASON=$(jq -r '.reason // ""' "$STATE/goto.json"); rm -f "$STATE/goto.json"; return 42; fi
+  if [ -f "$STATE/goto.json" ]; then
+    REQUEST_STAGE=$(jq -r '.stage // ""' "$STATE/goto.json")
+    REQUEST_REASON=$(jq -r '.reason // ""' "$STATE/goto.json")
+    rm -f "$STATE/goto.json"
+    if [ "$SUPPRESS_BUILDER_GOTO" -eq 1 ]; then SUPPRESS_BUILDER_GOTO=0; log "GOTO cap request ignored origin=builder requested=$REQUEST_STAGE reason=$REQUEST_REASON"; return 0; fi
+    return 42
+  fi
 }
 critic() { local prompt=$1 output=$2; shift 2; codex exec --ephemeral --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -C "$ROOT" --output-schema "$SCHEMA" -o "$output" "$@" - < "$PROMPTS/$prompt"; }
 detail_attempts() { awk -F '\t' -v stage="object:$1" '$1==stage {n++} END {print n+0}' "$STATE/records.tsv"; }
@@ -124,8 +134,11 @@ while :; do
   if [ "$rc" -eq 42 ] || [ "$rc" -eq 43 ]; then
     origin=$([ "$rc" -eq 42 ] && printf builder || printf critic)
     if ! valid_stage "$REQUEST_STAGE"; then key="$origin:$current"; log "GOTO rejected origin=$origin requested=$REQUEST_STAGE reason=target is not in canonical stage set"; if [ "${INVALID_RETRIES[$key]:-0}" -eq 0 ]; then INVALID_RETRIES[$key]=1; feedback="Your GOTO target $REQUEST_STAGE is not a stage. Valid stages: $VALID_STAGE_TEXT. Re-raise with a valid one or continue."; continue; fi; log "GOTO rejected origin=$origin requested=$REQUEST_STAGE reason=second invalid target from same stage ignored"; current=$next; feedback=; continue; fi
-    if [ "$GOTOS" -ge 5 ]; then log "GOTO cap reached origin=$origin requested=$REQUEST_STAGE reason=$REQUEST_REASON"; if [ "$origin" = builder ]; then feedback="The GOTO cap is reached. Continue and complete the current stage without another GOTO."; continue; fi; current=$next; feedback=; [ "$current" = 'done' ] && break; continue; fi
-    GOTOS=$((GOTOS+1)); printf '%s' "$GOTOS" > "$STATE/goto_count"; log "GOTO count=$GOTOS origin=$origin stage=$REQUEST_STAGE reason=$REQUEST_REASON"; current=$REQUEST_STAGE; feedback=$REQUEST_REASON; continue
+    key="$origin:$current:$REQUEST_STAGE"
+    if { [ "$origin" = builder ] && [ "$BUILDER_GOTOS" -ge 5 ]; } || { [ "$origin" = critic ] && [ "$CRITIC_GOTOS" -ge 5 ]; }; then log "GOTO cap reached origin=$origin requested=$REQUEST_STAGE reason=$REQUEST_REASON"; if [ "$origin" = builder ] && [ "${CAP_RETRIES[$key]:-0}" -eq 0 ]; then CAP_RETRIES[$key]=1; SUPPRESS_BUILDER_GOTO=1; feedback="The builder GOTO cap is reached. Continue and complete the current stage without another GOTO."; continue; fi; log "GOTO cap request ignored origin=$origin requested=$REQUEST_STAGE reason=$REQUEST_REASON"; current=$next; feedback=; [ "$current" = 'done' ] && break; continue; fi
+    if [ "$origin" = builder ]; then BUILDER_GOTOS=$((BUILDER_GOTOS+1)); printf '%s' "$BUILDER_GOTOS" > "$STATE/builder_goto_count"; count=$BUILDER_GOTOS; else CRITIC_GOTOS=$((CRITIC_GOTOS+1)); printf '%s' "$CRITIC_GOTOS" > "$STATE/critic_goto_count"; count=$CRITIC_GOTOS; fi
+    printf '%s' "$((BUILDER_GOTOS+CRITIC_GOTOS))" > "$STATE/goto_count"
+    log "GOTO count=$count origin=$origin stage=$REQUEST_STAGE reason=$REQUEST_REASON"; current=$REQUEST_STAGE; feedback=$REQUEST_REASON; continue
   fi
   if [ "$rc" -ne 0 ]; then log "FAIL stage=$current rc=$rc"; exit "$rc"; fi
   [ "$next" = 'done' ] && break
