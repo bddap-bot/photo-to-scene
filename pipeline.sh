@@ -117,8 +117,8 @@ run_integrate() {
   cp "$STATE/attempts/integrate_${bestseq}/"* "$STATE/"; inbox
 }
 run_materials() {
-  local feedback=${1:-} start score verdict
-  next_attempt; start=$(date +%s); log "ENTER materials attempt=1 sequence=$ATTEMPT_SEQ"; builder materials_builder.md "$feedback" -i "$INPUT" || return $?; spatial_validate "$(jq -r 'map(.id)|join(",")' "$STATE/objects.json")" "--observed '$STATE/spatial_observed.json'" || { log "FAIL materials invalidated spatial contract"; return 44; }; verdict="$STATE/verdicts/materials_${ATTEMPT_SEQ}.json"; critic materials_critic.md "$verdict" -i "$INPUT" "$STATE/materials.png" || return $?; score=$(score_of "$verdict"); record materials 1 "$score" "$(( $(date +%s)-start ))" "$feedback" "$verdict"; log "SCORE materials score=$score"
+  local feedback=${1:-} start score verdict failure
+  next_attempt; start=$(date +%s); log "ENTER materials attempt=1 sequence=$ATTEMPT_SEQ"; builder materials_builder.md "$feedback" -i "$INPUT" || return $?; verdict="$STATE/verdicts/materials_${ATTEMPT_SEQ}.json"; if spatial_validate "$(jq -r 'map(.id)|join(",")' "$STATE/objects.json")" "--observed '$STATE/spatial_observed.json'"; then critic materials_critic.md "$verdict" -i "$INPUT" "$STATE/materials.png" || return $?; else failure="materials spatial contract gate failed; preserve the rendered attempt and validation evidence"; log "FAIL materials invalidated spatial contract"; write_stage_check_verdict "$verdict" materials "$failure"; fi; score=$(score_of "$verdict"); record materials 1 "$score" "$(( $(date +%s)-start ))" "$feedback" "$verdict"; log "SCORE materials score=$score"
   if [ "$score" -gt "$BEST_S6" ]; then BEST_S6=$score; printf '%s' "$score" > "$STATE/best_s6_score"; cp "$STATE/materials.png" "$STATE/best_materials.png"; cp "$STATE/materials.blend" "$STATE/best_materials.blend"; cp "$verdict" "$STATE/best_materials_verdict.json"; fi
   if [ "$score" -lt 8 ]; then REQUEST_STAGE=$(jq -r '.top_stage // "materials"' "$verdict"); REQUEST_REASON=$(jq -r '.corrections[0] // ""' "$verdict"); [ "$REQUEST_STAGE" != materials ] && return 43; fi; inbox
 }
