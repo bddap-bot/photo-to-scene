@@ -51,7 +51,7 @@ Floorplan establishes the room and camera. Blockout becomes the spatial authorit
 
 ## Results so far
 
-The scores below come from two runs of the same private evaluation scene. They publish measurements only; no source photograph, crop, or scene image is included here. “Gate score” is the final machine-gate result, while “critic score” is the last available visual evaluation before a hard gate prevents further criticism.
+The scores below come from two runs of the same private evaluation scene. “Gate score” is the final machine-gate result, while “critic score” is the last available visual evaluation before a hard gate prevents further criticism.
 
 | Run | Workflow SHA | Gate score | Critic score | Binding stage | What changed |
 |---|---|---:|---:|---|---|
@@ -68,7 +68,7 @@ CPU rendering and per-object review also make a complete run expensive. Visual c
 
 ## Example
 
-A complete example from a public-domain photograph follows in a later commit. This repository does not include a placeholder image or any private-scene screenshot.
+A complete example from a public-domain photograph follows in a later commit.
 
 ## License
 
