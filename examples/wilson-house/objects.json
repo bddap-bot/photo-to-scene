@@ -25764,10 +25764,10 @@
     "id": "hearth",
     "label": "Stone hearth (visible right edge)",
     "crop_bbox": [
-      1889,
+      1989,
       3783,
-      427,
-      130
+      230,
+      72
     ],
     "bbox": {
       "min": [
@@ -25795,16 +25795,16 @@
         "visible_extent": "crop_bbox in original source pixels",
         "landmarks": {
           "extent_top_left": [
-            1889,
+            1989,
             3783
           ],
           "extent_bottom_right": [
-            2316,
-            3913
+            2219,
+            3855
           ]
         },
         "interpretation": "Stone hearth (visible right edge); label reviewed at S3; existing room-space geometry retained.",
-        "identify_note": "Only the rightmost stone edge is exposed; sofa and fireplace fender obscure the rest."
+        "identify_note": "Small exposed dark stone surface directly under the fireplace opening and behind the fender; most of the hearth is hidden by sofa and guard."
       },
       "frame": {
         "origin_xyz": [
@@ -169986,119 +169986,6 @@
     }
   },
   {
-    "id": "tieback_2",
-    "label": "Outer-right curtain gathered band (partly cropped)",
-    "crop_bbox": [
-      5987,
-      1885,
-      110,
-      107
-    ],
-    "bbox": {
-      "min": [
-        3.904658555984497,
-        6.485019683837891,
-        2.195577621459961
-      ],
-      "max": [
-        4.064519882202148,
-        6.5460004806518555,
-        2.2409348487854004
-      ]
-    },
-    "contact": "drape_2",
-    "material_note": "metal; Right curtain tieback (unconfirmed)",
-    "confidence": 0.2,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            5987,
-            1885
-          ],
-          "extent_bottom_right": [
-            6097,
-            1992
-          ]
-        },
-        "interpretation": "Right curtain tieback (unconfirmed); label reviewed at S3; existing room-space geometry retained.",
-        "identify_note": "Tieback not resolved in source; retained inferred contract with context crop.",
-        "blockout_revision": "Window/sofa/portrait correction; geometry and declarations updated together from preserved baseline.",
-        "facing_note": "Retained floorplan room front; named source silhouette landmarks determine left/right handedness."
-      },
-      "frame": {
-        "origin_xyz": [
-          3.984589099884033,
-          6.515510082244873,
-          2.195577621459961
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.15986132621765137,
-          0.060980796813964844,
-          0.04535722732543945
-        ]
-      },
-      "footprint_xy": [
-        [
-          4.064519882202148,
-          6.5460004806518555
-        ],
-        [
-          3.904658555984497,
-          6.5460004806518555
-        ],
-        [
-          3.904658555984497,
-          6.485019683837891
-        ],
-        [
-          4.064519882202148,
-          6.485019683837891
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              3.904658555984497,
-              6.485019683837891,
-              2.195577621459961
-            ],
-            "max": [
-              4.064519882202148,
-              6.5460004806518555,
-              2.2409348487854004
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
     "id": "rail_crest",
     "label": "Leaf crest above curtain rail",
     "crop_bbox": [
@@ -292016,6 +291903,339 @@
           "comparison_height_pixels": 807
         }
       ],
+      "ownership": {
+        "children": "external"
+      }
+    }
+  },
+  {
+    "id": "fireplace_fender",
+    "label": "Low metal fireplace fender / guard rail",
+    "crop_bbox": [
+      1947,
+      3570,
+      334,
+      343
+    ],
+    "bbox": {
+      "min": [
+        0.875,
+        2.5,
+        0.06
+      ],
+      "max": [
+        1.225,
+        4.4,
+        0.34
+      ]
+    },
+    "contact": "hearth",
+    "material_note": "Dark metal rail and turned posts",
+    "confidence": 0.75,
+    "shape": "box",
+    "spatial_contract": {
+      "source_evidence": {
+        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image_size_px": [
+          6114,
+          4842
+        ],
+        "visible_extent": "Visible portion in crop_bbox; remaining extent occluded",
+        "landmarks": {
+          "extent_top_left": [
+            1947,
+            3570
+          ],
+          "extent_bottom_right": [
+            2281,
+            3913
+          ]
+        },
+        "interpretation": "Low metal fireplace fender / guard rail",
+        "identify_note": "Right end and front rail visible; sofa hides most of the guard. Distinct from mesh fire_screen and brass andirons. Room-space envelope is provisional S3 inference."
+      },
+      "frame": {
+        "origin_xyz": [
+          1.05,
+          3.45,
+          0.06
+        ],
+        "x_axis_xy": [
+          -1,
+          0
+        ],
+        "y_axis_xy": [
+          0,
+          -1
+        ],
+        "size_xyz": [
+          0.35,
+          1.9,
+          0.28
+        ]
+      },
+      "footprint_xy": [
+        [
+          1.225,
+          4.4
+        ],
+        [
+          0.875,
+          4.4
+        ],
+        [
+          0.875,
+          2.5
+        ],
+        [
+          1.225,
+          2.5
+        ]
+      ],
+      "front_xy": [
+        0,
+        -1
+      ],
+      "regions": [
+        {
+          "id": "body",
+          "bbox": {
+            "min": [
+              0.875,
+              2.5,
+              0.06
+            ],
+            "max": [
+              1.225,
+              4.4,
+              0.34
+            ]
+          }
+        }
+      ],
+      "relationships": [],
+      "ownership": {
+        "children": "external"
+      }
+    }
+  },
+  {
+    "id": "window_frame_right",
+    "label": "Exposed far-right wooden window jamb",
+    "crop_bbox": [
+      5945,
+      1805,
+      83,
+      1122
+    ],
+    "bbox": {
+      "min": [
+        4.335,
+        6.67,
+        0.9733491539955139
+      ],
+      "max": [
+        4.405,
+        6.77,
+        2.2899999618530273
+      ]
+    },
+    "contact": "window wall",
+    "material_note": "Brown stained wood",
+    "confidence": 0.75,
+    "shape": "box",
+    "spatial_contract": {
+      "source_evidence": {
+        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image_size_px": [
+          6114,
+          4842
+        ],
+        "visible_extent": "Visible portion in crop_bbox; remaining extent occluded",
+        "landmarks": {
+          "extent_top_left": [
+            5945,
+            1805
+          ],
+          "extent_bottom_right": [
+            6028,
+            2927
+          ]
+        },
+        "interpretation": "Exposed far-right wooden window jamb",
+        "identify_note": "Narrow exposed wood strip between lace and outer drape; curtain hides its edges. Room-space envelope is provisional S3 inference."
+      },
+      "frame": {
+        "origin_xyz": [
+          4.37,
+          6.72,
+          0.9733491539955139
+        ],
+        "x_axis_xy": [
+          -1,
+          0
+        ],
+        "y_axis_xy": [
+          0,
+          -1
+        ],
+        "size_xyz": [
+          0.07,
+          0.1,
+          1.3166508078575134
+        ]
+      },
+      "footprint_xy": [
+        [
+          4.405,
+          6.77
+        ],
+        [
+          4.335,
+          6.77
+        ],
+        [
+          4.335,
+          6.67
+        ],
+        [
+          4.405,
+          6.67
+        ]
+      ],
+      "front_xy": [
+        0,
+        -1
+      ],
+      "regions": [
+        {
+          "id": "body",
+          "bbox": {
+            "min": [
+              4.335,
+              6.67,
+              0.9733491539955139
+            ],
+            "max": [
+              4.405,
+              6.77,
+              2.2899999618530273
+            ]
+          }
+        }
+      ],
+      "relationships": [],
+      "ownership": {
+        "children": "external"
+      }
+    }
+  },
+  {
+    "id": "book_rest_gallery",
+    "label": "Carved wooden book-rest / gallery behind open book",
+    "crop_bbox": [
+      3540,
+      2796,
+      200,
+      89
+    ],
+    "bbox": {
+      "min": [
+        1.1161999999999999,
+        5.880000000000001,
+        0.75
+      ],
+      "max": [
+        1.4361999999999997,
+        5.92,
+        0.87
+      ]
+    },
+    "contact": "lamp_table",
+    "material_note": "Dark carved wood",
+    "confidence": 0.6,
+    "shape": "box",
+    "spatial_contract": {
+      "source_evidence": {
+        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image_size_px": [
+          6114,
+          4842
+        ],
+        "visible_extent": "Visible portion in crop_bbox; remaining extent occluded",
+        "landmarks": {
+          "extent_top_left": [
+            3540,
+            2796
+          ],
+          "extent_bottom_right": [
+            3740,
+            2885
+          ]
+        },
+        "interpretation": "Carved wooden book-rest / gallery behind open book",
+        "identify_note": "Visible lobed wooden rail behind the book; may be part of the writing-table gallery rather than a separate bookend. Left foreground carving belongs to gold_chair. Room-space envelope is provisional S3 inference."
+      },
+      "frame": {
+        "origin_xyz": [
+          1.2761999999999998,
+          5.9,
+          0.75
+        ],
+        "x_axis_xy": [
+          -1,
+          0
+        ],
+        "y_axis_xy": [
+          0,
+          -1
+        ],
+        "size_xyz": [
+          0.32,
+          0.04,
+          0.12
+        ]
+      },
+      "footprint_xy": [
+        [
+          1.4361999999999997,
+          5.92
+        ],
+        [
+          1.1161999999999999,
+          5.92
+        ],
+        [
+          1.1161999999999999,
+          5.880000000000001
+        ],
+        [
+          1.4361999999999997,
+          5.880000000000001
+        ]
+      ],
+      "front_xy": [
+        0,
+        -1
+      ],
+      "regions": [
+        {
+          "id": "body",
+          "bbox": {
+            "min": [
+              1.1161999999999999,
+              5.880000000000001,
+              0.75
+            ],
+            "max": [
+              1.4361999999999997,
+              5.92,
+              0.87
+            ]
+          }
+        }
+      ],
+      "relationships": [],
       "ownership": {
         "children": "external"
       }
