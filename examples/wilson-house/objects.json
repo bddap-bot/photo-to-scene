@@ -342,7 +342,7 @@
   },
   {
     "id": "north_left",
-    "label": "Window wall north_left",
+    "label": "Plaster left of windows",
     "crop_bbox": [
       3509,
       1066,
@@ -362,7 +362,7 @@
       ]
     },
     "contact": "floor",
-    "material_note": "wall; neutral blockout; Window wall north_left",
+    "material_note": "wall; Plaster left of windows",
     "confidence": 0.5,
     "shape": "box",
     "spatial_contract": {
@@ -379,11 +379,11 @@
             1066
           ],
           "extent_bottom_right": [
-            4043,
+            4042,
             3026
           ]
         },
-        "interpretation": "Window wall north_left visible in annotated source crop; depth inferred from floorplan.",
+        "interpretation": "Plaster left of windows; label reviewed at S3; existing room-space geometry retained.",
         "blockout_revision": "Re-entry correction: ceiling and connected shell lowered 0.227 m, approximately 3 percent image height at rear corner, superseding provisional S1 height."
       },
       "frame": {
@@ -462,7 +462,7 @@
   },
   {
     "id": "north_right",
-    "label": "Window wall north_right",
+    "label": "Plaster at right window edge",
     "crop_bbox": [
       5987,
       997,
@@ -482,7 +482,7 @@
       ]
     },
     "contact": "floor",
-    "material_note": "wall; neutral blockout; Window wall north_right",
+    "material_note": "wall; Plaster at right window edge",
     "confidence": 0.5,
     "shape": "box",
     "spatial_contract": {
@@ -503,7 +503,7 @@
             2957
           ]
         },
-        "interpretation": "Window wall north_right visible in annotated source crop; depth inferred from floorplan.",
+        "interpretation": "Plaster at right window edge; label reviewed at S3; existing room-space geometry retained.",
         "blockout_revision": "Re-entry correction: ceiling and connected shell lowered 0.227 m, approximately 3 percent image height at rear corner, superseding provisional S1 height."
       },
       "frame": {
@@ -582,7 +582,7 @@
   },
   {
     "id": "north_below",
-    "label": "Window wall north_below",
+    "label": "Wall below windows",
     "crop_bbox": [
       3957,
       2957,
@@ -602,7 +602,7 @@
       ]
     },
     "contact": "floor",
-    "material_note": "wall; neutral blockout; Window wall north_below",
+    "material_note": "wall; Wall below windows",
     "confidence": 0.5,
     "shape": "box",
     "spatial_contract": {
@@ -620,10 +620,10 @@
           ],
           "extent_bottom_right": [
             6114,
-            3422
+            3421
           ]
         },
-        "interpretation": "Window wall north_below visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Wall below windows; label reviewed at S3; existing room-space geometry retained."
       },
       "frame": {
         "origin_xyz": [
@@ -701,7 +701,7 @@
   },
   {
     "id": "north_above",
-    "label": "Window wall north_above",
+    "label": "Plaster above windows",
     "crop_bbox": [
       3527,
       275,
@@ -721,7 +721,7 @@
       ]
     },
     "contact": "floor",
-    "material_note": "wall; neutral blockout; Window wall north_above",
+    "material_note": "wall; Plaster above windows",
     "confidence": 0.5,
     "shape": "box",
     "spatial_contract": {
@@ -742,7 +742,7 @@
             1358
           ]
         },
-        "interpretation": "Window wall north_above visible in annotated source crop; depth inferred from floorplan.",
+        "interpretation": "Plaster above windows; label reviewed at S3; existing room-space geometry retained.",
         "blockout_revision": "Re-entry correction: ceiling and connected shell lowered 0.227 m, approximately 3 percent image height at rear corner, superseding provisional S1 height."
       },
       "frame": {
@@ -941,7 +941,7 @@
   },
   {
     "id": "cornice_w",
-    "label": "cornice w",
+    "label": "Fireplace wall crown moulding",
     "crop_bbox": [
       34,
       0,
@@ -961,7 +961,7 @@
       ]
     },
     "contact": "floor",
-    "material_note": "trim; neutral blockout; cornice w",
+    "material_note": "trim; Fireplace wall crown moulding",
     "confidence": 0.5,
     "shape": "box",
     "spatial_contract": {
@@ -978,11 +978,11 @@
             0
           ],
           "extent_bottom_right": [
-            3527,
+            3526,
             1100
           ]
         },
-        "interpretation": "cornice w visible in annotated source crop; depth inferred from floorplan.",
+        "interpretation": "Fireplace wall crown moulding; label reviewed at S3; existing room-space geometry retained.",
         "blockout_revision": "Re-entry correction: ceiling and connected shell lowered 0.227 m, approximately 3 percent image height at rear corner, superseding provisional S1 height."
       },
       "frame": {
@@ -1061,7 +1061,7 @@
   },
   {
     "id": "cornice_n",
-    "label": "cornice n",
+    "label": "Window wall crown moulding",
     "crop_bbox": [
       3441,
       275,
@@ -1081,7 +1081,7 @@
       ]
     },
     "contact": "floor",
-    "material_note": "trim; neutral blockout; cornice n",
+    "material_note": "trim; Window wall crown moulding",
     "confidence": 0.5,
     "shape": "box",
     "spatial_contract": {
@@ -1102,7 +1102,7 @@
             1169
           ]
         },
-        "interpretation": "cornice n visible in annotated source crop; depth inferred from floorplan.",
+        "interpretation": "Window wall crown moulding; label reviewed at S3; existing room-space geometry retained.",
         "blockout_revision": "Re-entry correction: ceiling and connected shell lowered 0.227 m, approximately 3 percent image height at rear corner, superseding provisional S1 height."
       },
       "frame": {
@@ -1181,7 +1181,7 @@
   },
   {
     "id": "baseboard_w",
-    "label": "baseboard w",
+    "label": "Fireplace wall baseboard",
     "crop_bbox": [
       0,
       3061,
@@ -1201,7 +1201,7 @@
       ]
     },
     "contact": "floor",
-    "material_note": "trim; neutral blockout; baseboard w",
+    "material_note": "trim; Fireplace wall baseboard",
     "confidence": 0.5,
     "shape": "box",
     "spatial_contract": {
@@ -1219,10 +1219,10 @@
           ],
           "extent_bottom_right": [
             3578,
-            3645
+            3646
           ]
         },
-        "interpretation": "baseboard w visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Fireplace wall baseboard; label reviewed at S3; existing room-space geometry retained."
       },
       "frame": {
         "origin_xyz": [
@@ -1300,7 +1300,7 @@
   },
   {
     "id": "baseboard_n",
-    "label": "baseboard n",
+    "label": "Window wall baseboard",
     "crop_bbox": [
       3578,
       2975,
@@ -1320,7 +1320,7 @@
       ]
     },
     "contact": "floor",
-    "material_note": "trim; neutral blockout; baseboard n",
+    "material_note": "trim; Window wall baseboard",
     "confidence": 0.5,
     "shape": "box",
     "spatial_contract": {
@@ -1341,7 +1341,7 @@
             3439
           ]
         },
-        "interpretation": "baseboard n visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Window wall baseboard; label reviewed at S3; existing room-space geometry retained."
       },
       "frame": {
         "origin_xyz": [
@@ -1611,7 +1611,7 @@
             0
           ],
           "extent_bottom_right": [
-            2236,
+            2237,
             2321
           ]
         },
@@ -1766,8 +1766,8 @@
             843
           ],
           "extent_bottom_right": [
-            2952,
-            2871
+            2953,
+            2872
           ]
         },
         "interpretation": "Raised rectangular wall moulding visible in annotated source crop; depth inferred from floorplan."
@@ -1922,7 +1922,7 @@
           ],
           "extent_bottom_right": [
             3482,
-            2871
+            2872
           ]
         },
         "interpretation": "Raised rectangular wall moulding visible in annotated source crop; depth inferred from floorplan."
@@ -2076,8 +2076,8 @@
             2424
           ],
           "extent_bottom_right": [
-            2329,
-            3869
+            2330,
+            3868
           ]
         },
         "interpretation": "Carved fireplace surround visible in annotated source crop; depth inferred from floorplan."
@@ -2639,7 +2639,7 @@
             1300
           ],
           "extent_bottom_right": [
-            4665,
+            4666,
             2978
           ]
         },
@@ -2755,11 +2755,12 @@
             1300
           ],
           "extent_bottom_right": [
-            4665,
+            4666,
             2978
           ]
         },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Context crop; individual fold correspondence uncertain."
       },
       "frame": {
         "origin_xyz": [
@@ -2865,11 +2866,12 @@
             1300
           ],
           "extent_bottom_right": [
-            4665,
+            4666,
             2978
           ]
         },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Context crop; individual fold correspondence uncertain."
       },
       "frame": {
         "origin_xyz": [
@@ -2975,11 +2977,12 @@
             1300
           ],
           "extent_bottom_right": [
-            4665,
+            4666,
             2978
           ]
         },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Context crop; individual fold correspondence uncertain."
       },
       "frame": {
         "origin_xyz": [
@@ -3085,11 +3088,12 @@
             1300
           ],
           "extent_bottom_right": [
-            4665,
+            4666,
             2978
           ]
         },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Context crop; individual fold correspondence uncertain."
       },
       "frame": {
         "origin_xyz": [
@@ -3195,11 +3199,12 @@
             1300
           ],
           "extent_bottom_right": [
-            4665,
+            4666,
             2978
           ]
         },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Context crop; individual fold correspondence uncertain."
       },
       "frame": {
         "origin_xyz": [
@@ -3305,11 +3310,12 @@
             1300
           ],
           "extent_bottom_right": [
-            4665,
+            4666,
             2978
           ]
         },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Context crop; individual fold correspondence uncertain."
       },
       "frame": {
         "origin_xyz": [
@@ -3415,11 +3421,12 @@
             1300
           ],
           "extent_bottom_right": [
-            4665,
+            4666,
             2978
           ]
         },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Context crop; individual fold correspondence uncertain."
       },
       "frame": {
         "origin_xyz": [
@@ -3525,11 +3532,12 @@
             1300
           ],
           "extent_bottom_right": [
-            4665,
+            4666,
             2978
           ]
         },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Context crop; individual fold correspondence uncertain."
       },
       "frame": {
         "origin_xyz": [
@@ -3635,11 +3643,12 @@
             1300
           ],
           "extent_bottom_right": [
-            4665,
+            4666,
             2978
           ]
         },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Context crop; individual fold correspondence uncertain."
       },
       "frame": {
         "origin_xyz": [
@@ -3745,11 +3754,12 @@
             1300
           ],
           "extent_bottom_right": [
-            4665,
+            4666,
             2978
           ]
         },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Context crop; individual fold correspondence uncertain."
       },
       "frame": {
         "origin_xyz": [
@@ -3855,11 +3865,12 @@
             1300
           ],
           "extent_bottom_right": [
-            4665,
+            4666,
             2978
           ]
         },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Context crop; individual fold correspondence uncertain."
       },
       "frame": {
         "origin_xyz": [
@@ -3965,11 +3976,12 @@
             1300
           ],
           "extent_bottom_right": [
-            4665,
+            4666,
             2978
           ]
         },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Context crop; individual fold correspondence uncertain."
       },
       "frame": {
         "origin_xyz": [
@@ -4075,11 +4087,12 @@
             1300
           ],
           "extent_bottom_right": [
-            4665,
+            4666,
             2978
           ]
         },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Context crop; individual fold correspondence uncertain."
       },
       "frame": {
         "origin_xyz": [
@@ -4185,11 +4198,12 @@
             1300
           ],
           "extent_bottom_right": [
-            4665,
+            4666,
             2978
           ]
         },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Context crop; individual fold correspondence uncertain."
       },
       "frame": {
         "origin_xyz": [
@@ -4295,11 +4309,12 @@
             1300
           ],
           "extent_bottom_right": [
-            4665,
+            4666,
             2978
           ]
         },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Context crop; individual fold correspondence uncertain."
       },
       "frame": {
         "origin_xyz": [
@@ -4405,11 +4420,12 @@
             1300
           ],
           "extent_bottom_right": [
-            4665,
+            4666,
             2978
           ]
         },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Context crop; individual fold correspondence uncertain."
       },
       "frame": {
         "origin_xyz": [
@@ -4515,11 +4531,12 @@
             1300
           ],
           "extent_bottom_right": [
-            4665,
+            4666,
             2978
           ]
         },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Context crop; individual fold correspondence uncertain."
       },
       "frame": {
         "origin_xyz": [
@@ -4745,7 +4762,8 @@
             2999
           ]
         },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Context crop; individual fold correspondence uncertain."
       },
       "frame": {
         "origin_xyz": [
@@ -4855,7 +4873,8 @@
             2999
           ]
         },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Context crop; individual fold correspondence uncertain."
       },
       "frame": {
         "origin_xyz": [
@@ -4965,7 +4984,8 @@
             2999
           ]
         },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Context crop; individual fold correspondence uncertain."
       },
       "frame": {
         "origin_xyz": [
@@ -5075,7 +5095,8 @@
             2999
           ]
         },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Context crop; individual fold correspondence uncertain."
       },
       "frame": {
         "origin_xyz": [
@@ -5185,7 +5206,8 @@
             2999
           ]
         },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Context crop; individual fold correspondence uncertain."
       },
       "frame": {
         "origin_xyz": [
@@ -5295,7 +5317,8 @@
             2999
           ]
         },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Context crop; individual fold correspondence uncertain."
       },
       "frame": {
         "origin_xyz": [
@@ -5405,7 +5428,8 @@
             2999
           ]
         },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Context crop; individual fold correspondence uncertain."
       },
       "frame": {
         "origin_xyz": [
@@ -5515,7 +5539,8 @@
             2999
           ]
         },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Context crop; individual fold correspondence uncertain."
       },
       "frame": {
         "origin_xyz": [
@@ -5625,7 +5650,8 @@
             2999
           ]
         },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Context crop; individual fold correspondence uncertain."
       },
       "frame": {
         "origin_xyz": [
@@ -5735,7 +5761,8 @@
             2999
           ]
         },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Context crop; individual fold correspondence uncertain."
       },
       "frame": {
         "origin_xyz": [
@@ -5845,7 +5872,8 @@
             2999
           ]
         },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Context crop; individual fold correspondence uncertain."
       },
       "frame": {
         "origin_xyz": [
@@ -5955,7 +5983,8 @@
             2999
           ]
         },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Context crop; individual fold correspondence uncertain."
       },
       "frame": {
         "origin_xyz": [
@@ -6065,7 +6094,8 @@
             2999
           ]
         },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Context crop; individual fold correspondence uncertain."
       },
       "frame": {
         "origin_xyz": [
@@ -6175,7 +6205,8 @@
             2999
           ]
         },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Context crop; individual fold correspondence uncertain."
       },
       "frame": {
         "origin_xyz": [
@@ -6285,7 +6316,8 @@
             2999
           ]
         },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Context crop; individual fold correspondence uncertain."
       },
       "frame": {
         "origin_xyz": [
@@ -6395,7 +6427,8 @@
             2999
           ]
         },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Context crop; individual fold correspondence uncertain."
       },
       "frame": {
         "origin_xyz": [
@@ -6505,7 +6538,8 @@
             2999
           ]
         },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Context crop; individual fold correspondence uncertain."
       },
       "frame": {
         "origin_xyz": [
@@ -6723,7 +6757,7 @@
           ],
           "extent_bottom_right": [
             4683,
-            2964
+            2965
           ],
           "tieback": [
             4015,
@@ -6857,7 +6891,7 @@
           ],
           "extent_bottom_right": [
             4077,
-            1991
+            1992
           ]
         },
         "interpretation": "Curtain tieback visible in annotated source crop; depth inferred from floorplan."
@@ -7101,7 +7135,7 @@
           ],
           "extent_bottom_right": [
             4772,
-            1991
+            1992
           ]
         },
         "interpretation": "Curtain tieback visible in annotated source crop; depth inferred from floorplan."
@@ -7307,7 +7341,7 @@
   },
   {
     "id": "tieback_2",
-    "label": "Curtain tieback",
+    "label": "Right curtain tieback (unconfirmed)",
     "crop_bbox": [
       5987,
       1885,
@@ -7327,8 +7361,8 @@
       ]
     },
     "contact": "drape_2",
-    "material_note": "metal; neutral blockout; Curtain tieback",
-    "confidence": 0.65,
+    "material_note": "metal; Right curtain tieback (unconfirmed)",
+    "confidence": 0.2,
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
@@ -7345,10 +7379,11 @@
           ],
           "extent_bottom_right": [
             6097,
-            1991
+            1992
           ]
         },
-        "interpretation": "Curtain tieback visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Right curtain tieback (unconfirmed); label reviewed at S3; existing room-space geometry retained.",
+        "identify_note": "Tieback not resolved in source; retained inferred contract with context crop."
       },
       "frame": {
         "origin_xyz": [
@@ -8260,7 +8295,7 @@
           ],
           "extent_bottom_right": [
             3337,
-            3583
+            3584
           ]
         },
         "interpretation": "Narrow bookcase sits against fireplace wall beyond chimney. Position revised using projected image ordering and wall clearance; furniture envelopes are approximate, not recovered meshes. Position revised using projected image ordering and wall clearance; furniture envelopes are approximate, not recovered meshes."
@@ -8484,7 +8519,7 @@
           ],
           "extent_bottom_right": [
             2701,
-            3697
+            3696
           ]
         },
         "interpretation": "Small floor globe between hearth and bookcase. Position revised using projected image ordering and wall clearance; furniture envelopes are approximate, not recovered meshes. Position revised using projected image ordering and wall clearance; furniture envelopes are approximate, not recovered meshes."
@@ -9098,7 +9133,7 @@
             2830
           ],
           "extent_bottom_right": [
-            3909,
+            3908,
             3645
           ]
         },
@@ -9704,7 +9739,7 @@
           ],
           "extent_bottom_right": [
             5622,
-            3735
+            3734
           ]
         },
         "interpretation": "Table with two frames and statue immediately in front of windows. Position revised using projected image ordering and wall clearance; furniture envelopes are approximate, not recovered meshes. Position revised using projected image ordering and wall clearance; furniture envelopes are approximate, not recovered meshes.",
@@ -10127,7 +10162,7 @@
             3611
           ],
           "extent_bottom_right": [
-            5715,
+            5714,
             3986
           ]
         },
@@ -10557,7 +10592,7 @@
             2122
           ],
           "extent_bottom_right": [
-            2181,
+            2182,
             2445
           ]
         },
@@ -10681,7 +10716,7 @@
           ],
           "extent_bottom_right": [
             2147,
-            2197
+            2198
           ]
         },
         "interpretation": "Tall white taper candle visible in annotated source crop; depth inferred from floorplan."
@@ -10803,8 +10838,8 @@
             2252
           ],
           "extent_bottom_right": [
-            1762,
-            2452
+            1761,
+            2451
           ]
         },
         "interpretation": "Small mantel clock visible in annotated source crop; depth inferred from floorplan."
@@ -11042,7 +11077,7 @@
           ],
           "extent_bottom_right": [
             3107,
-            2418
+            2417
           ]
         },
         "interpretation": "Two-arm wall sconce visible in annotated source crop; depth inferred from floorplan."
@@ -11159,7 +11194,7 @@
   },
   {
     "id": "bookcase_clock",
-    "label": "Round display instrument on stand",
+    "label": "Vintage broadcast microphone on stand",
     "crop_bbox": [
       2931,
       2390,
@@ -11183,7 +11218,7 @@
       "object_id": "bookcase",
       "height_m": 1.15
     },
-    "material_note": "metal; neutral blockout; Round display instrument on stand",
+    "material_note": "metal; Vintage broadcast microphone on stand",
     "confidence": 0.5,
     "shape": "box",
     "spatial_contract": {
@@ -11204,7 +11239,7 @@
             2720
           ]
         },
-        "interpretation": "Round display instrument on stand visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Vintage broadcast microphone on stand; label reviewed at S3; existing room-space geometry retained."
       },
       "frame": {
         "origin_xyz": [
@@ -11320,10 +11355,11 @@
           ],
           "extent_bottom_right": [
             2849,
-            3006
+            3005
           ]
         },
-        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Approximate book slot; some slots are occluded by furniture."
       },
       "frame": {
         "origin_xyz": [
@@ -11430,10 +11466,11 @@
           ],
           "extent_bottom_right": [
             2907,
-            3006
+            3005
           ]
         },
-        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Approximate book slot; some slots are occluded by furniture."
       },
       "frame": {
         "origin_xyz": [
@@ -11540,10 +11577,11 @@
           ],
           "extent_bottom_right": [
             2966,
-            3006
+            3005
           ]
         },
-        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Approximate book slot; some slots are occluded by furniture."
       },
       "frame": {
         "origin_xyz": [
@@ -11650,10 +11688,11 @@
           ],
           "extent_bottom_right": [
             3024,
-            3006
+            3005
           ]
         },
-        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Approximate book slot; some slots are occluded by furniture."
       },
       "frame": {
         "origin_xyz": [
@@ -11760,10 +11799,11 @@
           ],
           "extent_bottom_right": [
             3083,
-            3006
+            3005
           ]
         },
-        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Approximate book slot; some slots are occluded by furniture."
       },
       "frame": {
         "origin_xyz": [
@@ -11870,10 +11910,11 @@
           ],
           "extent_bottom_right": [
             3141,
-            3006
+            3005
           ]
         },
-        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Approximate book slot; some slots are occluded by furniture."
       },
       "frame": {
         "origin_xyz": [
@@ -11980,10 +12021,11 @@
           ],
           "extent_bottom_right": [
             3200,
-            3006
+            3005
           ]
         },
-        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Approximate book slot; some slots are occluded by furniture."
       },
       "frame": {
         "origin_xyz": [
@@ -12090,10 +12132,11 @@
           ],
           "extent_bottom_right": [
             2849,
-            3219
+            3218
           ]
         },
-        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Approximate book slot; some slots are occluded by furniture."
       },
       "frame": {
         "origin_xyz": [
@@ -12200,10 +12243,11 @@
           ],
           "extent_bottom_right": [
             2907,
-            3219
+            3218
           ]
         },
-        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Approximate book slot; some slots are occluded by furniture."
       },
       "frame": {
         "origin_xyz": [
@@ -12310,10 +12354,11 @@
           ],
           "extent_bottom_right": [
             2966,
-            3219
+            3218
           ]
         },
-        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Approximate book slot; some slots are occluded by furniture."
       },
       "frame": {
         "origin_xyz": [
@@ -12420,10 +12465,11 @@
           ],
           "extent_bottom_right": [
             3024,
-            3219
+            3218
           ]
         },
-        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Approximate book slot; some slots are occluded by furniture."
       },
       "frame": {
         "origin_xyz": [
@@ -12492,7 +12538,7 @@
   },
   {
     "id": "book_1_4",
-    "label": "Standing book",
+    "label": "Inferred book (occluded by chair)",
     "crop_bbox": [
       3028,
       3012,
@@ -12513,7 +12559,7 @@
     },
     "contact": "bookcase shelf",
     "material_note": "paper; neutral blockout; Standing book",
-    "confidence": 0.65,
+    "confidence": 0.2,
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
@@ -12530,10 +12576,11 @@
           ],
           "extent_bottom_right": [
             3083,
-            3219
+            3218
           ]
         },
-        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Approximate book slot; some slots are occluded by furniture."
       },
       "frame": {
         "origin_xyz": [
@@ -12602,7 +12649,7 @@
   },
   {
     "id": "book_1_5",
-    "label": "Standing book",
+    "label": "Inferred book (occluded by chair)",
     "crop_bbox": [
       3086,
       3012,
@@ -12623,7 +12670,7 @@
     },
     "contact": "bookcase shelf",
     "material_note": "dark; neutral blockout; Standing book",
-    "confidence": 0.65,
+    "confidence": 0.2,
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
@@ -12640,10 +12687,11 @@
           ],
           "extent_bottom_right": [
             3141,
-            3219
+            3218
           ]
         },
-        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Approximate book slot; some slots are occluded by furniture."
       },
       "frame": {
         "origin_xyz": [
@@ -12712,7 +12760,7 @@
   },
   {
     "id": "book_1_6",
-    "label": "Standing book",
+    "label": "Inferred book (occluded by chair)",
     "crop_bbox": [
       3145,
       3012,
@@ -12733,7 +12781,7 @@
     },
     "contact": "bookcase shelf",
     "material_note": "dark; neutral blockout; Standing book",
-    "confidence": 0.65,
+    "confidence": 0.2,
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
@@ -12750,10 +12798,11 @@
           ],
           "extent_bottom_right": [
             3200,
-            3219
+            3218
           ]
         },
-        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Approximate book slot; some slots are occluded by furniture."
       },
       "frame": {
         "origin_xyz": [
@@ -12863,7 +12912,8 @@
             3432
           ]
         },
-        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Approximate book slot; some slots are occluded by furniture."
       },
       "frame": {
         "origin_xyz": [
@@ -12973,7 +13023,8 @@
             3432
           ]
         },
-        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Approximate book slot; some slots are occluded by furniture."
       },
       "frame": {
         "origin_xyz": [
@@ -13042,7 +13093,7 @@
   },
   {
     "id": "book_2_2",
-    "label": "Standing book",
+    "label": "Inferred book (occluded by chair)",
     "crop_bbox": [
       2911,
       3226,
@@ -13063,7 +13114,7 @@
     },
     "contact": "bookcase shelf",
     "material_note": "dark; neutral blockout; Standing book",
-    "confidence": 0.65,
+    "confidence": 0.2,
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
@@ -13083,7 +13134,8 @@
             3432
           ]
         },
-        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Approximate book slot; some slots are occluded by furniture."
       },
       "frame": {
         "origin_xyz": [
@@ -13152,7 +13204,7 @@
   },
   {
     "id": "book_2_3",
-    "label": "Standing book",
+    "label": "Inferred book (occluded by chair)",
     "crop_bbox": [
       2969,
       3226,
@@ -13173,7 +13225,7 @@
     },
     "contact": "bookcase shelf",
     "material_note": "dark; neutral blockout; Standing book",
-    "confidence": 0.65,
+    "confidence": 0.2,
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
@@ -13193,7 +13245,8 @@
             3432
           ]
         },
-        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Approximate book slot; some slots are occluded by furniture."
       },
       "frame": {
         "origin_xyz": [
@@ -13262,7 +13315,7 @@
   },
   {
     "id": "book_2_4",
-    "label": "Standing book",
+    "label": "Inferred book (occluded by chair)",
     "crop_bbox": [
       3028,
       3226,
@@ -13283,7 +13336,7 @@
     },
     "contact": "bookcase shelf",
     "material_note": "paper; neutral blockout; Standing book",
-    "confidence": 0.65,
+    "confidence": 0.2,
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
@@ -13303,7 +13356,8 @@
             3432
           ]
         },
-        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Approximate book slot; some slots are occluded by furniture."
       },
       "frame": {
         "origin_xyz": [
@@ -13372,7 +13426,7 @@
   },
   {
     "id": "book_2_5",
-    "label": "Standing book",
+    "label": "Inferred book (occluded by chair)",
     "crop_bbox": [
       3086,
       3226,
@@ -13393,7 +13447,7 @@
     },
     "contact": "bookcase shelf",
     "material_note": "dark; neutral blockout; Standing book",
-    "confidence": 0.65,
+    "confidence": 0.2,
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
@@ -13413,7 +13467,8 @@
             3432
           ]
         },
-        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Approximate book slot; some slots are occluded by furniture."
       },
       "frame": {
         "origin_xyz": [
@@ -13482,7 +13537,7 @@
   },
   {
     "id": "book_2_6",
-    "label": "Standing book",
+    "label": "Inferred book (occluded by chair)",
     "crop_bbox": [
       3145,
       3226,
@@ -13503,7 +13558,7 @@
     },
     "contact": "bookcase shelf",
     "material_note": "dark; neutral blockout; Standing book",
-    "confidence": 0.65,
+    "confidence": 0.2,
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
@@ -13523,7 +13578,8 @@
             3432
           ]
         },
-        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Approximate book slot; some slots are occluded by furniture."
       },
       "frame": {
         "origin_xyz": [
@@ -13786,7 +13842,7 @@
             2834
           ],
           "extent_bottom_right": [
-            3730,
+            3729,
             2927
           ]
         },
@@ -13905,7 +13961,7 @@
             3040
           ],
           "extent_bottom_right": [
-            5625,
+            5626,
             3721
           ]
         },
@@ -14645,7 +14701,7 @@
           ],
           "extent_bottom_right": [
             4077,
-            3264
+            3263
           ]
         },
         "interpretation": "Stationery holder on round table visible in annotated source crop; depth inferred from floorplan."
@@ -14764,7 +14820,7 @@
           ],
           "extent_bottom_right": [
             3933,
-            3202
+            3201
           ]
         },
         "interpretation": "Papers in stationery holder visible in annotated source crop; depth inferred from floorplan."
@@ -14874,7 +14930,7 @@
           ],
           "extent_bottom_right": [
             3984,
-            3202
+            3201
           ]
         },
         "interpretation": "Papers in stationery holder visible in annotated source crop; depth inferred from floorplan."
@@ -14984,7 +15040,7 @@
           ],
           "extent_bottom_right": [
             4036,
-            3202
+            3201
           ]
         },
         "interpretation": "Papers in stationery holder visible in annotated source crop; depth inferred from floorplan."
@@ -15179,7 +15235,7 @@
   },
   {
     "id": "table_tray",
-    "label": "Small table tray",
+    "label": "Small lidded box on round table",
     "crop_bbox": [
       3716,
       3195,
@@ -15203,7 +15259,7 @@
       "object_id": "round_table",
       "height_m": 0.72
     },
-    "material_note": "metal; neutral blockout; Small table tray",
+    "material_note": "metal; Small lidded box on round table",
     "confidence": 0.5,
     "shape": "box",
     "spatial_contract": {
@@ -15224,7 +15280,7 @@
             3253
           ]
         },
-        "interpretation": "Small table tray visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Small lidded box on round table; label reviewed at S3; existing room-space geometry retained."
       },
       "frame": {
         "origin_xyz": [
@@ -15467,7 +15523,7 @@
           ],
           "extent_bottom_right": [
             667,
-            4632
+            4633
           ]
         },
         "interpretation": "Large desktop paper sheet visible in annotated source crop; depth inferred from floorplan."
@@ -15794,7 +15850,7 @@
   },
   {
     "id": "horse_pedestal",
-    "label": "Decorative horse plinth",
+    "label": "Stone plinth beneath wolf figurine",
     "crop_bbox": [
       306,
       3645,
@@ -15818,7 +15874,7 @@
       "object_id": "desk",
       "height_m": 0.8
     },
-    "material_note": "trim; neutral blockout; Decorative horse plinth",
+    "material_note": "trim; Stone plinth beneath wolf figurine",
     "confidence": 0.5,
     "shape": "box",
     "spatial_contract": {
@@ -15836,10 +15892,10 @@
           ],
           "extent_bottom_right": [
             719,
-            4048
+            4047
           ]
         },
-        "interpretation": "Decorative horse plinth visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Stone plinth beneath wolf figurine; label reviewed at S3; existing room-space geometry retained."
       },
       "frame": {
         "origin_xyz": [
@@ -15917,7 +15973,7 @@
   },
   {
     "id": "horse_figurine",
-    "label": "Small horse figurine",
+    "label": "She-wolf and infants figurine",
     "crop_bbox": [
       268,
       3377,
@@ -15937,7 +15993,7 @@
       ]
     },
     "contact": "horse_pedestal",
-    "material_note": "metal; neutral blockout; Small horse figurine",
+    "material_note": "metal; She-wolf and infants figurine",
     "confidence": 0.65,
     "shape": "box",
     "spatial_contract": {
@@ -15958,7 +16014,7 @@
             3697
           ]
         },
-        "interpretation": "Small horse figurine visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "She-wolf and infants figurine; label reviewed at S3; existing room-space geometry retained."
       },
       "frame": {
         "origin_xyz": [
@@ -16102,12 +16158,12 @@
   },
   {
     "id": "desk_photo_0",
-    "label": "Small desk photograph",
+    "label": "Small framed desktop print",
     "crop_bbox": [
       0,
-      3439,
-      186,
-      265
+      3466,
+      158,
+      234
     ],
     "bbox": {
       "min": [
@@ -16122,7 +16178,7 @@
       ]
     },
     "contact": "desk",
-    "material_note": "paper; neutral blockout; Small desk photograph",
+    "material_note": "paper; Small framed desktop print",
     "confidence": 0.65,
     "shape": "box",
     "spatial_contract": {
@@ -16136,14 +16192,14 @@
         "landmarks": {
           "extent_top_left": [
             0,
-            3439
+            3466
           ],
           "extent_bottom_right": [
-            186,
-            3704
+            158,
+            3700
           ]
         },
-        "interpretation": "Small desk photograph visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Small framed desktop print; label reviewed at S3; existing room-space geometry retained."
       },
       "frame": {
         "origin_xyz": [
@@ -16212,12 +16268,12 @@
   },
   {
     "id": "desk_photo_1",
-    "label": "Small desk photograph",
+    "label": "Upright framed desktop portrait",
     "crop_bbox": [
-      117,
-      3487,
-      186,
-      265
+      175,
+      3377,
+      193,
+      224
     ],
     "bbox": {
       "min": [
@@ -16232,7 +16288,7 @@
       ]
     },
     "contact": "desk",
-    "material_note": "paper; neutral blockout; Small desk photograph",
+    "material_note": "paper; Upright framed desktop portrait",
     "confidence": 0.65,
     "shape": "box",
     "spatial_contract": {
@@ -16245,15 +16301,15 @@
         "visible_extent": "crop_bbox in original source pixels",
         "landmarks": {
           "extent_top_left": [
-            117,
-            3487
+            175,
+            3377
           ],
           "extent_bottom_right": [
-            303,
-            3752
+            368,
+            3601
           ]
         },
-        "interpretation": "Small desk photograph visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Upright framed desktop portrait; label reviewed at S3; existing room-space geometry retained."
       },
       "frame": {
         "origin_xyz": [
@@ -16322,12 +16378,12 @@
   },
   {
     "id": "desk_photo_2",
-    "label": "Small desk photograph",
+    "label": "Printed card in desktop holder",
     "crop_bbox": [
-      179,
-      3535,
-      186,
-      265
+      124,
+      3556,
+      213,
+      175
     ],
     "bbox": {
       "min": [
@@ -16342,7 +16398,7 @@
       ]
     },
     "contact": "desk",
-    "material_note": "paper; neutral blockout; Small desk photograph",
+    "material_note": "paper; Printed card in desktop holder",
     "confidence": 0.65,
     "shape": "box",
     "spatial_contract": {
@@ -16355,15 +16411,15 @@
         "visible_extent": "crop_bbox in original source pixels",
         "landmarks": {
           "extent_top_left": [
-            179,
-            3535
+            124,
+            3556
           ],
           "extent_bottom_right": [
-            365,
-            3800
+            337,
+            3731
           ]
         },
-        "interpretation": "Small desk photograph visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Printed card in desktop holder; label reviewed at S3; existing room-space geometry retained."
       },
       "frame": {
         "origin_xyz": [
@@ -16655,9 +16711,9 @@
     "label": "Andiron spherical finial",
     "crop_bbox": [
       1352,
-      3442,
-      86,
-      89
+      3494,
+      90,
+      93
     ],
     "bbox": {
       "min": [
@@ -16686,11 +16742,11 @@
         "landmarks": {
           "extent_top_left": [
             1352,
-            3442
+            3494
           ],
           "extent_bottom_right": [
-            1438,
-            3532
+            1442,
+            3587
           ]
         },
         "interpretation": "Andiron spherical finial visible in annotated source crop; depth inferred from floorplan."
@@ -16874,10 +16930,10 @@
     "id": "andiron_ball_1",
     "label": "Andiron spherical finial",
     "crop_bbox": [
-      1803,
+      1799,
       3442,
       86,
-      89
+      97
     ],
     "bbox": {
       "min": [
@@ -16905,12 +16961,12 @@
         "visible_extent": "crop_bbox in original source pixels",
         "landmarks": {
           "extent_top_left": [
-            1803,
+            1799,
             3442
           ],
           "extent_bottom_right": [
-            1889,
-            3532
+            1885,
+            3539
           ]
         },
         "interpretation": "Andiron spherical finial visible in annotated source crop; depth inferred from floorplan."
@@ -17019,7 +17075,7 @@
             2713
           ],
           "extent_bottom_right": [
-            674,
+            675,
             3552
           ]
         },
@@ -17223,9 +17279,9 @@
     "label": "Upright fireplace tool",
     "crop_bbox": [
       705,
-      2713,
-      45,
-      839
+      3305,
+      152,
+      271
     ],
     "bbox": {
       "min": [
@@ -17254,11 +17310,11 @@
         "landmarks": {
           "extent_top_left": [
             705,
-            2713
+            3305
           ],
           "extent_bottom_right": [
-            750,
-            3552
+            857,
+            3576
           ]
         },
         "interpretation": "Upright fireplace tool visible in annotated source crop; depth inferred from floorplan."
