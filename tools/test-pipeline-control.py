@@ -5,6 +5,13 @@ from pathlib import Path
 
 
 class PipelineControlTest(unittest.TestCase):
+    def test_detail_builder_references_entry_file_without_embedding_it(self):
+        pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
+        run_one_detail = pipeline.split("run_one_detail() {", 1)[1].split("\n}\nrun_detail()", 1)[0]
+        self.assertIn('Object entry file: state/entry_$id.json', run_one_detail)
+        self.assertIn("Read the complete JSON file before editing.", run_one_detail)
+        self.assertNotIn('$(cat "$entry")', run_one_detail)
+
     def test_materials_gate_failure_is_scored_and_saved(self):
         pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
         run_materials = pipeline.split("run_materials() {", 1)[1].split("\n}\nwithin_s56_budget()", 1)[0]

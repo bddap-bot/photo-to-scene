@@ -98,7 +98,7 @@ run_one_detail() {
   for ((a=attempts+1; a<=limit; a++)); do
     ACTIVE_STAGE="object:$id"
     next_attempt; start=$(date +%s); marker="$STATE/detail_${id}_${ATTEMPT_SEQ}.started"; touch "$marker"; log "ENTER object:$id attempt=$a sequence=$ATTEMPT_SEQ"; [ -L "$ASSETS/$id.py" ] && unlink "$ASSETS/$id.py"
-    builder detail_builder.md "Object entry:\n$(cat "$entry")\n$feedback" -i "$STATE/crops/$id.png" || return $?
+    builder detail_builder.md "Object entry file: state/entry_$id.json\nRead the complete JSON file before editing.\n$feedback" -i "$STATE/crops/$id.png" || return $?
     verdict="$STATE/verdicts/object_${id}_${ATTEMPT_SEQ}.json"
     if verify_detail "$id" "$marker"; then { cat "$PROMPTS/detail_critic.md"; printf '\nThe supplied object stage tag is object:%s.\n' "$id"; } | codex exec --ephemeral --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -C "$ROOT" --output-schema "$SCHEMA" -o "$verdict" -i "$STATE/crops/$id.png" "$STATE/detail_$id.png" - || return $?; else write_check_verdict "$verdict" "$id" "$DETAIL_FAILURE"; fi
     score=$(score_of "$verdict"); record "object:$id" "$a" "$score" "$(( $(date +%s)-start ))" "$feedback" "$verdict" "$contract_hash"; log "SCORE object:$id attempt=$a score=$score contract=$contract_hash"
