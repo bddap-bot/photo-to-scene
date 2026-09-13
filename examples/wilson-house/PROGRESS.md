@@ -13,11 +13,12 @@
 - Initial identify score: 8/10 on attempt 1
 - Corrective identify scores: 8/10, 9/10, 8/10, 10/10, then 10/10 after the capped re-entry
 - Object contracts: 99 after consolidations and adding the photographed fireplace fender, right window jamb, and book rest; declaration and crop gates passed
-- Detail progress: `wall_w` requested a spatial correction; no asset completed
+- Detail objects finalized: 10/99 (`wall_w`, `floor`, `rug`, `sofa`, `ceiling`, `north_above`, `mantel`, `sheer_1`, `cornice_n`, `desk`)
+- Detail best scores: wall_w 7, floor 6, rug 8, sofa 6, ceiling 7, north_above 2, mantel 6, sheer_1 0, cornice_n 7, desk 0
 - GOTO history: five accepted detail → `blockout` spatial corrections; subsequent floorplan escalation rejected by the workflow cap
-- Defect found: [#16](https://github.com/bddap-bot/photo-to-scene/issues/16), invalid builder GOTO suppresses the first valid retry and consumes a detail attempt
+- Defects: [#16](https://github.com/bddap-bot/photo-to-scene/issues/16), [#17](https://github.com/bddap-bot/photo-to-scene/issues/17), [#18](https://github.com/bddap-bot/photo-to-scene/issues/18)
 - Corrective geometry: west-wall architecture has explicit included ownership; ceiling/cornices, portrait, window treatment, sofa, rocker, and orange chair silhouettes revised
 - Identification corrections: fixed hearth and microphone labels/crops, clarified the writing table, and added hanging tieback and fire-tool-holder entries
-- Current stage: detail, object `wall_w`
+- Current stage: detail; next object follows `desk`
 - Next `PHOTO_TO_SCENE_STAGE`: `detail`
 - Resume command: `PHOTO_TO_SCENE_ROOT=/home/bot/scratch/photo-to-scene/example/work PHOTO_TO_SCENE_STAGE=detail ./pipeline.sh /home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg`
