@@ -261,10 +261,23 @@
           "extent_bottom_right": [
             3527,
             3576
+          ],
+          "visible_wall_corner": [
+            3527,
+            1100
+          ],
+          "plaster_face_between_chimney_and_corner": [
+            2667,
+            1874
+          ],
+          "chimney_right_return": [
+            2381,
+            2201
           ]
         },
         "interpretation": "Fireplace wall plaster visible in annotated source crop; depth inferred from floorplan.",
-        "blockout_revision": "Re-entry correction: ceiling and connected shell lowered 0.227 m, approximately 3 percent image height at rear corner, superseding provisional S1 height."
+        "blockout_revision": "S4 spatial recourse resolved: permute width/depth and axes while preserving world bounds, floor contact, body region, external ownership and corrected height 3.7139255 m.",
+        "facing_note": "The visible broad plaster plane is world X=0. The room and exposed chimney projection are on its +X side; local +Y/front therefore points (+1,0). Local +X points (0,-1), along the wall toward the foreground."
       },
       "frame": {
         "origin_xyz": [
@@ -273,25 +286,21 @@
           0
         ],
         "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
           0.0,
           -1.0
         ],
+        "y_axis_xy": [
+          1.0,
+          0.0
+        ],
         "size_xyz": [
-          0.25,
           6.8,
+          0.25,
           3.7139255
         ]
       },
       "footprint_xy": [
         [
-          0.0,
-          6.8
-        ],
-        [
           -0.25,
           6.8
         ],
@@ -302,11 +311,15 @@
         [
           0.0,
           0.0
+        ],
+        [
+          0.0,
+          6.8
         ]
       ],
       "front_xy": [
-        0.0,
-        -1.0
+        1.0,
+        0.0
       ],
       "regions": [
         {
