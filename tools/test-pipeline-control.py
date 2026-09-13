@@ -5,6 +5,76 @@ from pathlib import Path
 
 
 class PipelineControlTest(unittest.TestCase):
+    def test_valid_builder_goto_survives_invalid_target_correction(self):
+        pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
+        builder = pipeline.split("builder() {", 1)[1].split("\n}\ncritic()", 1)[0]
+        builder = "builder() {" + builder + "\n}"
+        loop = pipeline.split("feedback=\n", 1)[1].split("done\nif [ ! -f", 1)[0]
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            state = root / "state"
+            prompts = root / "prompts"
+            state.mkdir()
+            prompts.mkdir()
+            (prompts / "builder.md").write_text("build")
+            script = f'''set -uo pipefail
+ROOT={root!s}; STATE={state!s}; PROMPTS={prompts!s}; SUPPRESS_BUILDER_GOTO=0; REQUEST_STAGE=; REQUEST_REASON=; BUILDER_GOTOS=4; CRITIC_GOTOS=0
+STAGES=(floorplan blockout identify detail integrate materials)
+VALID_STAGE_TEXT="floorplan blockout identify detail integrate materials"
+declare -A INVALID_RETRIES=()
+calls="$STATE/calls"
+printf 0 > "$calls"
+printf 0 > "$STATE/detail_records"
+log() {{ :; }}
+valid_stage() {{ local candidate=$1 known; for known in "${{STAGES[@]}}"; do [ "$candidate" = "$known" ] && return 0; done; return 1; }}
+codex() {{ local call; cat >/dev/null; call=$(( $(cat "$calls") + 1 )); printf '%s' "$call" > "$calls"; if [ "$call" -eq 1 ]; then printf '%s\n' '{{"target":"blockout","reason":"invalid field"}}' > "$STATE/goto.json"; else printf '%s\n' '{{"stage":"blockout","reason":"valid retry"}}' > "$STATE/goto.json"; fi; }}
+{builder}
+within_s56_budget() {{ return 0; }}
+run_floorplan() {{ return 0; }}
+run_blockout() {{ printf 'blockout=1 detail_records=%s builder_gotos=%s calls=%s\n' "$(cat "$STATE/detail_records")" "$BUILDER_GOTOS" "$(cat "$calls")"; exit 0; }}
+run_identify() {{ return 0; }}
+run_detail() {{ builder builder.md "${{2:-}}" || return $?; printf 1 > "$STATE/detail_records"; }}
+run_integrate() {{ return 0; }}
+run_materials() {{ return 0; }}
+PHOTO_TO_SCENE_STAGE=detail
+feedback=
+{loop}
+done
+'''
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=10)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("blockout=1 detail_records=0 builder_gotos=5 calls=2", result.stdout)
+
+    def test_second_invalid_builder_goto_is_ignored(self):
+        pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
+        builder = pipeline.split("builder() {", 1)[1].split("\n}\ncritic()", 1)[0]
+        builder = "builder() {" + builder + "\n}"
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            state = root / "state"
+            prompts = root / "prompts"
+            state.mkdir()
+            prompts.mkdir()
+            (prompts / "builder.md").write_text("build")
+            script = f'''set -uo pipefail
+ROOT={root!s}; STATE={state!s}; PROMPTS={prompts!s}; SUPPRESS_BUILDER_GOTO=0; REQUEST_STAGE=; REQUEST_REASON=
+STAGES=(floorplan blockout identify detail integrate materials)
+VALID_STAGE_TEXT="floorplan blockout identify detail integrate materials"
+calls="$STATE/calls"
+printf 0 > "$calls"
+log() {{ printf '%s\n' "$*"; }}
+valid_stage() {{ local candidate=$1 known; for known in "${{STAGES[@]}}"; do [ "$candidate" = "$known" ] && return 0; done; return 1; }}
+codex() {{ local call; cat >/dev/null; call=$(( $(cat "$calls") + 1 )); printf '%s' "$call" > "$calls"; printf '%s\n' '{{"target":"blockout","reason":"invalid field"}}' > "$STATE/goto.json"; }}
+{builder}
+rc=0
+builder builder.md '' || rc=$?
+printf 'rc=%s calls=%s\n' "$rc" "$(cat "$calls")"
+'''
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=10)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("rc=0 calls=2", result.stdout)
+        self.assertIn("second invalid target from same stage ignored", result.stdout)
+
     def test_detail_builder_references_entry_file_without_embedding_it(self):
         pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
         run_one_detail = pipeline.split("run_one_detail() {", 1)[1].split("\n}\nrun_detail()", 1)[0]
@@ -257,7 +327,7 @@ within_s56_budget() {{ return 0; }}
 run_floorplan() {{ return 0; }}
 run_blockout() {{ return 0; }}
 run_identify() {{ return 0; }}
-run_detail() {{ calls=$((calls+1)); if [ "$SUPPRESS_BUILDER_GOTO" -eq 1 ]; then SUPPRESS_BUILDER_GOTO=0; log "GOTO request suppressed origin=builder requested=$REQUEST_STAGE reason=builder $calls"; return 0; fi; if [ "$calls" -le 5 ] || [ "$calls" -eq 8 ]; then REQUEST_STAGE=detail; REQUEST_REASON="builder $calls"; return 42; fi; if [ "$calls" -eq 6 ]; then REQUEST_STAGE=; REQUEST_REASON="invalid builder"; return 42; fi; return 0; }}
+run_detail() {{ calls=$((calls+1)); if [ "$SUPPRESS_BUILDER_GOTO" -eq 1 ]; then SUPPRESS_BUILDER_GOTO=0; log "GOTO cap request ignored origin=builder requested=$REQUEST_STAGE reason=builder $calls"; return 0; fi; if [ "$calls" -le 6 ]; then REQUEST_STAGE=detail; REQUEST_REASON="builder $calls"; return 42; fi; return 0; }}
 run_integrate() {{ if [ "$critic_sent" -eq 0 ]; then critic_sent=1; REQUEST_STAGE=detail; REQUEST_REASON="late critic"; return 43; fi; return 0; }}
 run_materials() {{ return 0; }}
 PHOTO_TO_SCENE_STAGE=detail
@@ -269,10 +339,9 @@ cat "$STATE/log"
 '''
             result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=10)
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("builder=5 critic=1 calls=9", result.stdout)
-        self.assertIn("GOTO rejected origin=builder requested= reason=target is not in canonical stage set", result.stdout)
-        self.assertIn("GOTO request suppressed origin=builder", result.stdout)
-        self.assertIn("GOTO cap reached origin=builder requested=detail reason=builder 8", result.stdout)
+        self.assertIn("builder=5 critic=1 calls=8", result.stdout)
+        self.assertIn("GOTO cap request ignored origin=builder", result.stdout)
+        self.assertIn("GOTO cap reached origin=builder requested=detail reason=builder 6", result.stdout)
         self.assertIn("GOTO count=1 origin=critic stage=detail reason=late critic", result.stdout)
 
 

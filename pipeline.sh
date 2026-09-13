@@ -32,20 +32,28 @@ record() { printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$1" "$2" "$3" "$4" "$5" "$6" "
 valid_stage() { local candidate=$1 known id; for known in "${STAGES[@]}"; do [ "$candidate" = "$known" ] && return 0; done; case "$candidate" in object:*) id=${candidate#object:}; [ -f "$STATE/objects.json" ] && jq -e --arg id "$id" 'any(.id == $id)' "$STATE/objects.json" >/dev/null ;; *) return 1 ;; esac; }
 spatial_validate() { local output_arg=; [ -z "${3:-}" ] || output_arg="--output '$3'"; nix-shell -p python3 --run "python3 '$PIPELINE_DIR/tools/spatial-contract.py' '$STATE/objects.json' --ids '$1' ${2:-} $output_arg"; }
 builder() {
-  local prompt=$1 feedback=${2:-}
+  local prompt=$1 feedback=${2:-} command_rc invalid_retry=0
   shift 2
-  rm -f "$STATE/goto.json"
-  { cat "$PROMPTS/$prompt"; if [ -n "$feedback" ]; then printf '\nOne-reentry correction context follows:\n%s\n' "$feedback"; fi; } | codex exec --ephemeral --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -C "$ROOT" "$@" -
-  local command_rc=$?
-  [ "$command_rc" -eq 0 ] || return "$command_rc"
-  if [ -f "$STATE/goto.json" ]; then
-    REQUEST_STAGE=$(jq -r '.stage // ""' "$STATE/goto.json")
-    REQUEST_REASON=$(jq -r '.reason // ""' "$STATE/goto.json")
+  while :; do
     rm -f "$STATE/goto.json"
-    if [ "$SUPPRESS_BUILDER_GOTO" -eq 1 ]; then SUPPRESS_BUILDER_GOTO=0; log "GOTO cap request ignored origin=builder requested=$REQUEST_STAGE reason=$REQUEST_REASON"; return 0; fi
-    return 42
-  fi
-  SUPPRESS_BUILDER_GOTO=0
+    { cat "$PROMPTS/$prompt"; if [ -n "$feedback" ]; then printf '\nOne-reentry correction context follows:\n%s\n' "$feedback"; fi; } | codex exec --ephemeral --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -C "$ROOT" "$@" -
+    command_rc=$?
+    [ "$command_rc" -eq 0 ] || return "$command_rc"
+    if [ -f "$STATE/goto.json" ]; then
+      REQUEST_STAGE=$(jq -r '.stage // ""' "$STATE/goto.json")
+      REQUEST_REASON=$(jq -r '.reason // ""' "$STATE/goto.json")
+      rm -f "$STATE/goto.json"
+      if [ "$SUPPRESS_BUILDER_GOTO" -eq 1 ]; then SUPPRESS_BUILDER_GOTO=0; log "GOTO cap request ignored origin=builder requested=$REQUEST_STAGE reason=$REQUEST_REASON"; return 0; fi
+      if valid_stage "$REQUEST_STAGE"; then return 42; fi
+      log "GOTO rejected origin=builder requested=$REQUEST_STAGE reason=target is not in canonical stage set"
+      if [ "$invalid_retry" -eq 1 ]; then log "GOTO rejected origin=builder requested=$REQUEST_STAGE reason=second invalid target from same stage ignored"; return 0; fi
+      invalid_retry=1
+      feedback="${feedback:+$feedback$'\n'}Your GOTO target $REQUEST_STAGE is not a stage. Valid stages: $VALID_STAGE_TEXT. Re-raise with a valid one or continue."
+      continue
+    fi
+    SUPPRESS_BUILDER_GOTO=0
+    return 0
+  done
 }
 critic() { local prompt=$1 output=$2; shift 2; codex exec --ephemeral --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -C "$ROOT" --output-schema "$SCHEMA" -o "$output" "$@" - < "$PROMPTS/$prompt"; }
 detail_attempts() { awk -F '\t' -v stage="object:$1" -v contract="$2" '$1==stage && $7==contract {n++} END {print n+0}' "$STATE/records.tsv"; }
@@ -143,7 +151,7 @@ while :; do
   case "$current" in floorplan) run_floorplan "$feedback"; rc=$?; next=blockout ;; blockout) run_blockout "$feedback"; rc=$?; next=identify ;; identify) run_identify "$feedback"; rc=$?; next=detail ;; detail) run_detail "" "$feedback"; rc=$?; next=integrate ;; object:*) run_detail "$current" "$feedback"; rc=$?; next=integrate ;; integrate) run_integrate "$feedback"; rc=$?; next=materials ;; materials) run_materials "$feedback"; rc=$?; next='done' ;; *) log "FAIL invalid current stage=$current"; exit 2 ;; esac
   if [ "$rc" -eq 42 ] || [ "$rc" -eq 43 ]; then
     origin=$([ "$rc" -eq 42 ] && printf builder || printf critic)
-    if ! valid_stage "$REQUEST_STAGE"; then key="$origin:$ACTIVE_STAGE"; log "GOTO rejected origin=$origin requested=$REQUEST_STAGE reason=target is not in canonical stage set"; if [ "$origin" = builder ]; then SUPPRESS_BUILDER_GOTO=1; feedback="Your GOTO target $REQUEST_STAGE is not a stage. Valid stages: $VALID_STAGE_TEXT. Re-raise with a valid one or continue."; continue; fi; if [ "${INVALID_RETRIES[$key]:-0}" -eq 0 ]; then INVALID_RETRIES[$key]=1; feedback="Your GOTO target $REQUEST_STAGE is not a stage. Valid stages: $VALID_STAGE_TEXT. Re-raise with a valid one or continue."; continue; fi; log "GOTO rejected origin=$origin requested=$REQUEST_STAGE reason=second invalid target from same stage ignored"; current=$next; feedback=; continue; fi
+    if ! valid_stage "$REQUEST_STAGE"; then key="$origin:$ACTIVE_STAGE"; log "GOTO rejected origin=$origin requested=$REQUEST_STAGE reason=target is not in canonical stage set"; if [ "${INVALID_RETRIES[$key]:-0}" -eq 0 ]; then INVALID_RETRIES[$key]=1; feedback="Your GOTO target $REQUEST_STAGE is not a stage. Valid stages: $VALID_STAGE_TEXT. Re-raise with a valid one or continue."; continue; fi; log "GOTO rejected origin=$origin requested=$REQUEST_STAGE reason=second invalid target from same stage ignored"; current=$next; feedback=; continue; fi
     key="$origin:$ACTIVE_STAGE:$REQUEST_STAGE"
     if { [ "$origin" = builder ] && [ "$BUILDER_GOTOS" -ge 5 ]; } || { [ "$origin" = critic ] && [ "$CRITIC_GOTOS" -ge 5 ]; }; then log "GOTO cap reached origin=$origin requested=$REQUEST_STAGE reason=$REQUEST_REASON"; if [ "$origin" = builder ]; then SUPPRESS_BUILDER_GOTO=1; feedback="The builder GOTO cap is reached. Continue and complete the current stage without another GOTO."; continue; fi; log "GOTO cap request ignored origin=$origin requested=$REQUEST_STAGE reason=$REQUEST_REASON"; current=$next; feedback=; [ "$current" = 'done' ] && break; continue; fi
     if [ "$origin" = builder ]; then BUILDER_GOTOS=$((BUILDER_GOTOS+1)); printf '%s' "$BUILDER_GOTOS" > "$STATE/builder_goto_count"; count=$BUILDER_GOTOS; else CRITIC_GOTOS=$((CRITIC_GOTOS+1)); printf '%s' "$CRITIC_GOTOS" > "$STATE/critic_goto_count"; count=$CRITIC_GOTOS; fi
