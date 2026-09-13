@@ -111,7 +111,7 @@
   },
   {
     "id": "ceiling",
-    "label": "Flat ceiling",
+    "label": "Ceiling plane fitted to source cornice slopes",
     "crop_bbox": [
       1445,
       0,
@@ -120,20 +120,20 @@
     ],
     "bbox": {
       "min": [
-        0.0,
-        0.0,
-        3.7139255
+        -2.961883751595451e-07,
+        -3.136728992103599e-07,
+        3.716907262802124
       ],
       "max": [
-        7.2,
-        6.8,
-        3.8139255000000003
+        7.200000286102295,
+        6.8000006675720215,
+        5.375527858734131
       ]
     },
     "contact": "wall tops",
     "material_note": "wall; neutral blockout; Flat ceiling",
     "confidence": 0.65,
-    "shape": "box",
+    "shape": "sloped_slab",
     "spatial_contract": {
       "source_evidence": {
         "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
@@ -150,16 +150,21 @@
           "extent_bottom_right": [
             6114,
             973
+          ],
+          "rear_ceiling_corner": [
+            3529,
+            975
           ]
         },
         "interpretation": "Flat ceiling visible in annotated source crop; depth inferred from floorplan.",
-        "blockout_revision": "Re-entry correction: ceiling and connected shell lowered 0.227 m, approximately 3 percent image height at rear corner, superseding provisional S1 height."
+        "blockout_revision": "Current one-reentry geometry overrides prior inferred envelopes; see state/blockout_reentry_validation.json.",
+        "facing_note": "Axes retained from floorplan; visible west chimney return and north window field establish handedness."
       },
       "frame": {
         "origin_xyz": [
-          3.6,
-          3.4,
-          3.7139255
+          3.5999999046325684,
+          3.4000000953674316,
+          3.716907262802124
         ],
         "x_axis_xy": [
           -1.0,
@@ -170,27 +175,27 @@
           -1.0
         ],
         "size_xyz": [
-          7.2,
-          6.8,
-          0.1
+          7.20000058229067,
+          6.800000981244921,
+          1.6586205959320068
         ]
       },
       "footprint_xy": [
         [
-          7.2,
-          6.8
+          7.200000286102295,
+          6.8000006675720215
         ],
         [
-          0.0,
-          6.8
+          -2.961883751595451e-07,
+          6.8000006675720215
         ],
         [
-          0.0,
-          0.0
+          -2.961883751595451e-07,
+          -3.136728992103599e-07
         ],
         [
-          7.2,
-          0.0
+          7.200000286102295,
+          -3.136728992103599e-07
         ]
       ],
       "front_xy": [
@@ -202,14 +207,14 @@
           "id": "body",
           "bbox": {
             "min": [
-              0.0,
-              0.0,
-              3.7139255
+              -2.961883751595451e-07,
+              -3.136728992103599e-07,
+              3.716907262802124
             ],
             "max": [
-              7.2,
-              6.8,
-              3.8139255000000003
+              7.200000286102295,
+              6.8000006675720215,
+              5.375527858734131
             ]
           }
         }
@@ -217,12 +222,18 @@
       "relationships": [],
       "ownership": {
         "children": "external"
+      },
+      "ceiling_plane": {
+        "equation": "z = rear_height_m + slope_dz_dy * (y - 6.8)",
+        "rear_height_m": 3.714217543601994,
+        "slope_dz_dy": -0.23,
+        "note": "Single-view S2 plane fit to revised corner and cornice slopes, superseding the provisional flat ceiling; not a surveyed room slope."
       }
     }
   },
   {
     "id": "wall_w",
-    "label": "Fireplace wall plaster",
+    "label": "Fireplace wall with chimney breast and raised architectural trim",
     "crop_bbox": [
       0,
       0,
@@ -233,18 +244,18 @@
       "min": [
         -0.25,
         0.0,
-        0
+        0.0
       ],
       "max": [
-        0.0,
-        6.8,
-        3.7139255
+        0.5600000023841858,
+        6.800000190734863,
+        5.277544975280762
       ]
     },
     "contact": "floor",
-    "material_note": "wall; neutral blockout; Fireplace wall plaster",
+    "material_note": "Neutral warm-gray plaster and lighter raised trim for blockout; detailed finish should follow the source golden-brown aged plaster and gilded mouldings.",
     "confidence": 0.5,
-    "shape": "box",
+    "shape": "architectural_assembly",
     "spatial_contract": {
       "source_evidence": {
         "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
@@ -273,30 +284,58 @@
           "chimney_right_return": [
             2381,
             2201
+          ],
+          "chimney_face_above_mantel": [
+            2133,
+            1720
+          ],
+          "chimney_return_outer_edge": [
+            2458,
+            2373
+          ],
+          "central_panel_left_rail": [
+            729,
+            1376
+          ],
+          "central_panel_right_rail": [
+            2237,
+            1376
+          ],
+          "raised_ceiling_cornice": [
+            2649,
+            826
+          ],
+          "dado_rail_beyond_breast": [
+            2605,
+            2803
+          ],
+          "rear_ceiling_corner": [
+            3529,
+            975
           ]
         },
         "interpretation": "Fireplace wall plaster visible in annotated source crop; depth inferred from floorplan.",
-        "blockout_revision": "S4 spatial recourse resolved: permute width/depth and axes while preserving world bounds, floor contact, body region, external ownership and corrected height 3.7139255 m.",
-        "facing_note": "The visible broad plaster plane is world X=0. The room and exposed chimney projection are on its +X side; local +Y/front therefore points (+1,0). Local +X points (0,-1), along the wall toward the foreground."
+        "blockout_revision": "Current one-reentry geometry overrides prior inferred envelopes; see state/blockout_reentry_validation.json.",
+        "facing_note": "Axes retained from floorplan; visible west chimney return and north window field establish handedness."
       },
       "frame": {
         "origin_xyz": [
-          -0.125,
-          3.4,
-          0
-        ],
-        "x_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "y_axis_xy": [
-          1.0,
+          0.1550000011920929,
+          3.4000000953674316,
           0.0
         ],
+        "x_axis_xy": [
+          0,
+          -1
+        ],
+        "y_axis_xy": [
+          1,
+          0
+        ],
         "size_xyz": [
-          6.8,
-          0.25,
-          3.7139255
+          6.800000190734863,
+          0.8100000023841858,
+          5.277544975280762
         ]
       },
       "footprint_xy": [
@@ -306,34 +345,830 @@
         ],
         [
           -0.25,
-          0.0
+          0
         ],
         [
-          0.0,
-          0.0
+          0.18,
+          0
         ],
         [
-          0.0,
+          0.18,
+          2.01
+        ],
+        [
+          0.56,
+          2.01
+        ],
+        [
+          0.56,
+          4.89
+        ],
+        [
+          0.18,
+          4.89
+        ],
+        [
+          0.18,
           6.8
         ]
       ],
       "front_xy": [
-        1.0,
-        0.0
+        1,
+        0
       ],
       "regions": [
+        {
+          "id": "base_cap_breast",
+          "bbox": {
+            "min": [
+              0.3799999952316284,
+              2.0999999046325684,
+              0.15000000596046448
+            ],
+            "max": [
+              0.48500001430511475,
+              4.800000190734863,
+              0.1850000023841858
+            ]
+          }
+        },
+        {
+          "id": "base_cap_far",
+          "bbox": {
+            "min": [
+              0.0,
+              4.800000190734863,
+              0.15000000596046448
+            ],
+            "max": [
+              0.10499999672174454,
+              6.800000190734863,
+              0.1850000023841858
+            ]
+          }
+        },
+        {
+          "id": "base_cap_far_return",
+          "bbox": {
+            "min": [
+              0.0,
+              4.747500419616699,
+              0.15000000596046448
+            ],
+            "max": [
+              0.48500001430511475,
+              4.852499961853027,
+              0.1850000023841858
+            ]
+          }
+        },
+        {
+          "id": "base_cap_near",
+          "bbox": {
+            "min": [
+              0.0,
+              0.0,
+              0.15000000596046448
+            ],
+            "max": [
+              0.10499999672174454,
+              2.0999999046325684,
+              0.1850000023841858
+            ]
+          }
+        },
+        {
+          "id": "base_cap_near_return",
+          "bbox": {
+            "min": [
+              0.0,
+              2.047499895095825,
+              0.15000000596046448
+            ],
+            "max": [
+              0.48500001430511475,
+              2.1524999141693115,
+              0.1850000023841858
+            ]
+          }
+        },
+        {
+          "id": "base_plinth_breast",
+          "bbox": {
+            "min": [
+              0.3799999952316284,
+              2.0999999046325684,
+              0.0
+            ],
+            "max": [
+              0.45499998331069946,
+              4.800000190734863,
+              0.15000000596046448
+            ]
+          }
+        },
+        {
+          "id": "base_plinth_far",
+          "bbox": {
+            "min": [
+              0.0,
+              4.800000190734863,
+              0.0
+            ],
+            "max": [
+              0.07500000298023224,
+              6.800000190734863,
+              0.15000000596046448
+            ]
+          }
+        },
+        {
+          "id": "base_plinth_far_return",
+          "bbox": {
+            "min": [
+              0.0,
+              4.762500286102295,
+              0.0
+            ],
+            "max": [
+              0.45500001311302185,
+              4.837500095367432,
+              0.15000000596046448
+            ]
+          }
+        },
+        {
+          "id": "base_plinth_near",
+          "bbox": {
+            "min": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "max": [
+              0.07500000298023224,
+              2.0999999046325684,
+              0.15000000596046448
+            ]
+          }
+        },
+        {
+          "id": "base_plinth_near_return",
+          "bbox": {
+            "min": [
+              0.0,
+              2.0625,
+              0.0
+            ],
+            "max": [
+              0.45500001311302185,
+              2.1374998092651367,
+              0.15000000596046448
+            ]
+          }
+        },
         {
           "id": "body",
           "bbox": {
             "min": [
               -0.25,
               0.0,
-              0
+              0.0
             ],
             "max": [
               0.0,
-              6.8,
-              3.7139255
+              6.800000190734863,
+              5.277544975280762
+            ]
+          }
+        },
+        {
+          "id": "chimney__body",
+          "bbox": {
+            "min": [
+              0.0,
+              2.0999999046325684,
+              0.0
+            ],
+            "max": [
+              0.3799999952316284,
+              4.800000190734863,
+              4.7945451736450195
+            ]
+          }
+        },
+        {
+          "id": "cornice_cove_breast",
+          "bbox": {
+            "min": [
+              0.3799999952316284,
+              2.0999999046325684,
+              3.994889736175537
+            ],
+            "max": [
+              0.5,
+              4.800000190734863,
+              4.694545269012451
+            ]
+          }
+        },
+        {
+          "id": "cornice_cove_far",
+          "bbox": {
+            "min": [
+              0.0,
+              4.800000190734863,
+              3.5348899364471436
+            ],
+            "max": [
+              0.11999999731779099,
+              6.800000190734863,
+              4.073544979095459
+            ]
+          }
+        },
+        {
+          "id": "cornice_cove_far_return",
+          "bbox": {
+            "min": [
+              0.0,
+              4.740000247955322,
+              3.9810898303985596
+            ],
+            "max": [
+              0.5,
+              4.860000133514404,
+              4.087345123291016
+            ]
+          }
+        },
+        {
+          "id": "cornice_cove_near",
+          "bbox": {
+            "min": [
+              0.0,
+              0.0,
+              4.615890026092529
+            ],
+            "max": [
+              0.11999999731779099,
+              2.0999999046325684,
+              5.177545070648193
+            ]
+          }
+        },
+        {
+          "id": "cornice_cove_near_return",
+          "bbox": {
+            "min": [
+              0.0,
+              2.0399999618530273,
+              4.602089881896973
+            ],
+            "max": [
+              0.5,
+              2.1599998474121094,
+              4.70834493637085
+            ]
+          }
+        },
+        {
+          "id": "cornice_crown_breast",
+          "bbox": {
+            "min": [
+              0.3799999952316284,
+              2.0999999046325684,
+              4.074889659881592
+            ],
+            "max": [
+              0.5600000023841858,
+              4.800000190734863,
+              4.774545192718506
+            ]
+          }
+        },
+        {
+          "id": "cornice_crown_far",
+          "bbox": {
+            "min": [
+              0.0,
+              4.800000190734863,
+              3.6148898601531982
+            ],
+            "max": [
+              0.18000000715255737,
+              6.800000190734863,
+              4.153544902801514
+            ]
+          }
+        },
+        {
+          "id": "cornice_crown_far_return",
+          "bbox": {
+            "min": [
+              0.0,
+              4.710000038146973,
+              4.054189682006836
+            ],
+            "max": [
+              0.5600000023841858,
+              4.890000343322754,
+              4.1742448806762695
+            ]
+          }
+        },
+        {
+          "id": "cornice_crown_near",
+          "bbox": {
+            "min": [
+              0.0,
+              0.0,
+              4.695889949798584
+            ],
+            "max": [
+              0.18000000715255737,
+              2.0999999046325684,
+              5.257544994354248
+            ]
+          }
+        },
+        {
+          "id": "cornice_crown_near_return",
+          "bbox": {
+            "min": [
+              0.0,
+              2.009999990463257,
+              4.675189971923828
+            ],
+            "max": [
+              0.5600000023841858,
+              2.18999981880188,
+              4.795245170593262
+            ]
+          }
+        },
+        {
+          "id": "cornice_lower_breast",
+          "bbox": {
+            "min": [
+              0.3799999952316284,
+              2.0999999046325684,
+              3.944889545440674
+            ],
+            "max": [
+              0.44999998807907104,
+              4.800000190734863,
+              4.6145453453063965
+            ]
+          }
+        },
+        {
+          "id": "cornice_lower_far",
+          "bbox": {
+            "min": [
+              0.0,
+              4.800000190734863,
+              3.4848897457122803
+            ],
+            "max": [
+              0.07000000029802322,
+              6.800000190734863,
+              3.9935450553894043
+            ]
+          }
+        },
+        {
+          "id": "cornice_lower_far_return",
+          "bbox": {
+            "min": [
+              0.0,
+              4.765000343322754,
+              3.9368395805358887
+            ],
+            "max": [
+              0.44999998807907104,
+              4.835000038146973,
+              4.0015950202941895
+            ]
+          }
+        },
+        {
+          "id": "cornice_lower_near",
+          "bbox": {
+            "min": [
+              0.0,
+              0.0,
+              4.565889835357666
+            ],
+            "max": [
+              0.07000000029802322,
+              2.0999999046325684,
+              5.097545146942139
+            ]
+          }
+        },
+        {
+          "id": "cornice_lower_near_return",
+          "bbox": {
+            "min": [
+              0.0,
+              2.06499981880188,
+              4.557839870452881
+            ],
+            "max": [
+              0.44999998807907104,
+              2.134999990463257,
+              4.622595310211182
+            ]
+          }
+        },
+        {
+          "id": "dado_lower_breast",
+          "bbox": {
+            "min": [
+              0.3800000250339508,
+              2.0999999046325684,
+              0.5600000023841858
+            ],
+            "max": [
+              0.4050000011920929,
+              4.800000190734863,
+              0.5849999785423279
+            ]
+          }
+        },
+        {
+          "id": "dado_lower_far",
+          "bbox": {
+            "min": [
+              0.0,
+              4.800000190734863,
+              0.5600000023841858
+            ],
+            "max": [
+              0.02500000037252903,
+              6.800000190734863,
+              0.5849999785423279
+            ]
+          }
+        },
+        {
+          "id": "dado_lower_far_return",
+          "bbox": {
+            "min": [
+              0.0,
+              4.787500381469727,
+              0.5600000023841858
+            ],
+            "max": [
+              0.4050000011920929,
+              4.8125,
+              0.5849999785423279
+            ]
+          }
+        },
+        {
+          "id": "dado_lower_near",
+          "bbox": {
+            "min": [
+              0.0,
+              0.0,
+              0.5600000023841858
+            ],
+            "max": [
+              0.02500000037252903,
+              2.0999999046325684,
+              0.5849999785423279
+            ]
+          }
+        },
+        {
+          "id": "dado_lower_near_return",
+          "bbox": {
+            "min": [
+              0.0,
+              2.0874998569488525,
+              0.5600000023841858
+            ],
+            "max": [
+              0.4050000011920929,
+              2.112499952316284,
+              0.5849999785423279
+            ]
+          }
+        },
+        {
+          "id": "dado_rail_breast",
+          "bbox": {
+            "min": [
+              0.3799999952316284,
+              2.0999999046325684,
+              0.5850000381469727
+            ],
+            "max": [
+              0.42500001192092896,
+              4.800000190734863,
+              0.6399999856948853
+            ]
+          }
+        },
+        {
+          "id": "dado_rail_far",
+          "bbox": {
+            "min": [
+              0.0,
+              4.800000190734863,
+              0.5850000381469727
+            ],
+            "max": [
+              0.04500000178813934,
+              6.800000190734863,
+              0.6399999856948853
+            ]
+          }
+        },
+        {
+          "id": "dado_rail_far_return",
+          "bbox": {
+            "min": [
+              0.0,
+              4.777500152587891,
+              0.5850000381469727
+            ],
+            "max": [
+              0.42500001192092896,
+              4.822500228881836,
+              0.6399999856948853
+            ]
+          }
+        },
+        {
+          "id": "dado_rail_near",
+          "bbox": {
+            "min": [
+              0.0,
+              0.0,
+              0.5850000381469727
+            ],
+            "max": [
+              0.04500000178813934,
+              2.0999999046325684,
+              0.6399999856948853
+            ]
+          }
+        },
+        {
+          "id": "dado_rail_near_return",
+          "bbox": {
+            "min": [
+              0.0,
+              2.0774998664855957,
+              0.5850000381469727
+            ],
+            "max": [
+              0.42500001192092896,
+              2.122499942779541,
+              0.6399999856948853
+            ]
+          }
+        },
+        {
+          "id": "wall_panel_0__bottom",
+          "bbox": {
+            "min": [
+              0.006500000134110451,
+              0.125,
+              0.3500000238418579
+            ],
+            "max": [
+              0.04150000214576721,
+              1.875,
+              0.375
+            ]
+          }
+        },
+        {
+          "id": "wall_panel_0__left",
+          "bbox": {
+            "min": [
+              0.006500000134110451,
+              1.8499999046325684,
+              0.3500000238418579
+            ],
+            "max": [
+              0.04150000214576721,
+              1.875,
+              3.6500000953674316
+            ]
+          }
+        },
+        {
+          "id": "wall_panel_0__right",
+          "bbox": {
+            "min": [
+              0.006500000134110451,
+              0.125,
+              0.3500000238418579
+            ],
+            "max": [
+              0.04150000214576721,
+              0.15000000596046448,
+              3.6500000953674316
+            ]
+          }
+        },
+        {
+          "id": "wall_panel_0__top",
+          "bbox": {
+            "min": [
+              0.006500000134110451,
+              0.125,
+              3.625
+            ],
+            "max": [
+              0.04150000214576721,
+              1.875,
+              3.6500000953674316
+            ]
+          }
+        },
+        {
+          "id": "wall_panel_1__bottom",
+          "bbox": {
+            "min": [
+              0.3779999911785126,
+              2.259999990463257,
+              1.7400000095367432
+            ],
+            "max": [
+              0.4230000078678131,
+              4.640000343322754,
+              1.7650001049041748
+            ]
+          }
+        },
+        {
+          "id": "wall_panel_1__left",
+          "bbox": {
+            "min": [
+              0.3779999911785126,
+              4.615000247955322,
+              1.7400001287460327
+            ],
+            "max": [
+              0.4230000078678131,
+              4.639999866485596,
+              3.7899999618530273
+            ]
+          }
+        },
+        {
+          "id": "wall_panel_1__right",
+          "bbox": {
+            "min": [
+              0.3779999911785126,
+              2.259999990463257,
+              1.7400001287460327
+            ],
+            "max": [
+              0.4230000078678131,
+              2.2850000858306885,
+              3.7899999618530273
+            ]
+          }
+        },
+        {
+          "id": "wall_panel_1__top",
+          "bbox": {
+            "min": [
+              0.3779999911785126,
+              2.259999990463257,
+              3.7649998664855957
+            ],
+            "max": [
+              0.4230000078678131,
+              4.640000343322754,
+              3.7899999618530273
+            ]
+          }
+        },
+        {
+          "id": "wall_panel_2__bottom",
+          "bbox": {
+            "min": [
+              0.006500000134110451,
+              4.890000343322754,
+              0.949999988079071
+            ],
+            "max": [
+              0.04150000214576721,
+              5.909999847412109,
+              0.9749999642372131
+            ]
+          }
+        },
+        {
+          "id": "wall_panel_2__left",
+          "bbox": {
+            "min": [
+              0.006500000134110451,
+              5.885000228881836,
+              0.9499999284744263
+            ],
+            "max": [
+              0.04150000214576721,
+              5.909999847412109,
+              3.4800000190734863
+            ]
+          }
+        },
+        {
+          "id": "wall_panel_2__right",
+          "bbox": {
+            "min": [
+              0.006500000134110451,
+              4.890000343322754,
+              0.9499999284744263
+            ],
+            "max": [
+              0.04150000214576721,
+              4.914999961853027,
+              3.4800000190734863
+            ]
+          }
+        },
+        {
+          "id": "wall_panel_2__top",
+          "bbox": {
+            "min": [
+              0.006500000134110451,
+              4.890000343322754,
+              3.4549999237060547
+            ],
+            "max": [
+              0.04150000214576721,
+              5.909999847412109,
+              3.4800000190734863
+            ]
+          }
+        },
+        {
+          "id": "wall_panel_3__bottom",
+          "bbox": {
+            "min": [
+              0.006500000134110451,
+              5.975000381469727,
+              0.949999988079071
+            ],
+            "max": [
+              0.04150000214576721,
+              6.625,
+              0.9749999642372131
+            ]
+          }
+        },
+        {
+          "id": "wall_panel_3__left",
+          "bbox": {
+            "min": [
+              0.006500000134110451,
+              6.600000381469727,
+              0.9500000476837158
+            ],
+            "max": [
+              0.04150000214576721,
+              6.625,
+              3.319999933242798
+            ]
+          }
+        },
+        {
+          "id": "wall_panel_3__right",
+          "bbox": {
+            "min": [
+              0.006500000134110451,
+              5.975000381469727,
+              0.9500000476837158
+            ],
+            "max": [
+              0.04150000214576721,
+              6.0,
+              3.319999933242798
+            ]
+          }
+        },
+        {
+          "id": "wall_panel_3__top",
+          "bbox": {
+            "min": [
+              0.006500000134110451,
+              5.975000381469727,
+              3.294999837875366
+            ],
+            "max": [
+              0.04150000214576721,
+              6.625,
+              3.319999933242798
             ]
           }
         }
@@ -346,10 +1181,40 @@
           "support_region": "body",
           "metres": 0,
           "tolerance_m": 0.03
+        },
+        {
+          "type": "projection_depth",
+          "with": "wall_w",
+          "region": "chimney__body",
+          "metres": 0.38,
+          "wall_face_x_m": 0
         }
       ],
       "ownership": {
-        "children": "external"
+        "children": "included",
+        "included_components": [
+          "chimney",
+          "cornice_w",
+          "baseboard_w",
+          "wall_panel_0",
+          "wall_panel_1",
+          "wall_panel_2",
+          "wall_panel_3"
+        ],
+        "external_objects": [
+          "mantel",
+          "portrait",
+          "firebox",
+          "hearth",
+          "sconce"
+        ],
+        "instruction": "Build all named architectural regions as wall_w. Absorbed component IDs are region provenance only, not independent build entries. Fireplace, portrait and decor remain separately owned."
+      },
+      "ceiling_plane": {
+        "equation": "z = rear_height_m + slope_dz_dy * (y - 6.8)",
+        "rear_height_m": 3.714217543601994,
+        "slope_dz_dy": -0.23,
+        "note": "Single-view S2 plane fit to revised corner and cornice slopes, superseding the provisional flat ceiling; not a surveyed room slope."
       }
     }
   },
@@ -364,14 +1229,14 @@
     ],
     "bbox": {
       "min": [
-        0.0,
-        6.8,
-        0
+        -9.87877335489884e-09,
+        6.800000190734863,
+        0.0
       ],
       "max": [
         1.0,
-        7.05,
-        3.7139255
+        7.050000190734863,
+        3.7115278244018555
       ]
     },
     "contact": "floor",
@@ -394,16 +1259,21 @@
           "extent_bottom_right": [
             4042,
             3026
+          ],
+          "rear_ceiling_corner": [
+            3529,
+            975
           ]
         },
         "interpretation": "Plaster left of windows; label reviewed at S3; existing room-space geometry retained.",
-        "blockout_revision": "Re-entry correction: ceiling and connected shell lowered 0.227 m, approximately 3 percent image height at rear corner, superseding provisional S1 height."
+        "blockout_revision": "Current one-reentry geometry overrides prior inferred envelopes; see state/blockout_reentry_validation.json.",
+        "facing_note": "Axes retained from floorplan; visible west chimney return and north window field establish handedness."
       },
       "frame": {
         "origin_xyz": [
           0.5,
-          6.925,
-          0
+          6.925000190734863,
+          0.0
         ],
         "x_axis_xy": [
           -1.0,
@@ -414,27 +1284,27 @@
           -1.0
         ],
         "size_xyz": [
-          1,
+          1.0000000098787734,
           0.25,
-          3.7139255
+          3.7115278244018555
         ]
       },
       "footprint_xy": [
         [
           1.0,
-          7.05
+          7.050000190734863
         ],
         [
-          0.0,
-          7.05
+          -9.87877335489884e-09,
+          7.050000190734863
         ],
         [
-          0.0,
-          6.8
+          -9.87877335489884e-09,
+          6.800000190734863
         ],
         [
           1.0,
-          6.8
+          6.800000190734863
         ]
       ],
       "front_xy": [
@@ -446,14 +1316,14 @@
           "id": "body",
           "bbox": {
             "min": [
-              0.0,
-              6.8,
-              0
+              -9.87877335489884e-09,
+              6.800000190734863,
+              0.0
             ],
             "max": [
               1.0,
-              7.05,
-              3.7139255
+              7.050000190734863,
+              3.7115278244018555
             ]
           }
         }
@@ -470,6 +1340,12 @@
       ],
       "ownership": {
         "children": "external"
+      },
+      "ceiling_plane": {
+        "equation": "z = rear_height_m + slope_dz_dy * (y - 6.8)",
+        "rear_height_m": 3.714217543601994,
+        "slope_dz_dy": -0.23,
+        "note": "Single-view S2 plane fit to revised corner and cornice slopes, superseding the provisional flat ceiling; not a surveyed room slope."
       }
     }
   },
@@ -484,14 +1360,14 @@
     ],
     "bbox": {
       "min": [
-        5.8999999999999995,
-        6.8,
-        0
+        5.900000095367432,
+        6.800000190734863,
+        0.0
       ],
       "max": [
-        7.2,
-        7.05,
-        3.7139255
+        7.200000286102295,
+        7.050000190734863,
+        3.7115278244018555
       ]
     },
     "contact": "floor",
@@ -514,16 +1390,21 @@
           "extent_bottom_right": [
             6114,
             2957
+          ],
+          "rear_ceiling_corner": [
+            3529,
+            975
           ]
         },
         "interpretation": "Plaster at right window edge; label reviewed at S3; existing room-space geometry retained.",
-        "blockout_revision": "Re-entry correction: ceiling and connected shell lowered 0.227 m, approximately 3 percent image height at rear corner, superseding provisional S1 height."
+        "blockout_revision": "Current one-reentry geometry overrides prior inferred envelopes; see state/blockout_reentry_validation.json.",
+        "facing_note": "Axes retained from floorplan; visible west chimney return and north window field establish handedness."
       },
       "frame": {
         "origin_xyz": [
-          6.55,
-          6.925,
-          0
+          6.550000190734863,
+          6.925000190734863,
+          0.0
         ],
         "x_axis_xy": [
           -1.0,
@@ -534,27 +1415,27 @@
           -1.0
         ],
         "size_xyz": [
-          1.3,
+          1.3000001907348633,
           0.25,
-          3.7139255
+          3.7115278244018555
         ]
       },
       "footprint_xy": [
         [
-          7.2,
-          7.05
+          7.200000286102295,
+          7.050000190734863
         ],
         [
-          5.8999999999999995,
-          7.05
+          5.900000095367432,
+          7.050000190734863
         ],
         [
-          5.8999999999999995,
-          6.8
+          5.900000095367432,
+          6.800000190734863
         ],
         [
-          7.2,
-          6.8
+          7.200000286102295,
+          6.800000190734863
         ]
       ],
       "front_xy": [
@@ -566,14 +1447,14 @@
           "id": "body",
           "bbox": {
             "min": [
-              5.8999999999999995,
-              6.8,
-              0
+              5.900000095367432,
+              6.800000190734863,
+              0.0
             ],
             "max": [
-              7.2,
-              7.05,
-              3.7139255
+              7.200000286102295,
+              7.050000190734863,
+              3.7115278244018555
             ]
           }
         }
@@ -590,6 +1471,12 @@
       ],
       "ownership": {
         "children": "external"
+      },
+      "ceiling_plane": {
+        "equation": "z = rear_height_m + slope_dz_dy * (y - 6.8)",
+        "rear_height_m": 3.714217543601994,
+        "slope_dz_dy": -0.23,
+        "note": "Single-view S2 plane fit to revised corner and cornice slopes, superseding the provisional flat ceiling; not a surveyed room slope."
       }
     }
   },
@@ -724,13 +1611,13 @@
     "bbox": {
       "min": [
         1.0,
-        6.8,
-        3.12
+        6.800000190734863,
+        3.120000123977661
       ],
       "max": [
-        5.9,
-        7.05,
-        3.7139255
+        5.900000095367432,
+        7.050000190734863,
+        3.7115275859832764
       ]
     },
     "contact": "floor",
@@ -753,16 +1640,21 @@
           "extent_bottom_right": [
             6114,
             1358
+          ],
+          "rear_ceiling_corner": [
+            3529,
+            975
           ]
         },
         "interpretation": "Plaster above windows; label reviewed at S3; existing room-space geometry retained.",
-        "blockout_revision": "Re-entry correction: ceiling and connected shell lowered 0.227 m, approximately 3 percent image height at rear corner, superseding provisional S1 height."
+        "blockout_revision": "Current one-reentry geometry overrides prior inferred envelopes; see state/blockout_reentry_validation.json.",
+        "facing_note": "Axes retained from floorplan; visible west chimney return and north window field establish handedness."
       },
       "frame": {
         "origin_xyz": [
-          3.45,
-          6.925,
-          3.12
+          3.450000047683716,
+          6.925000190734863,
+          3.120000123977661
         ],
         "x_axis_xy": [
           -1.0,
@@ -773,27 +1665,27 @@
           -1.0
         ],
         "size_xyz": [
-          4.9,
+          4.900000095367432,
           0.25,
-          0.5939255000000001
+          0.5915274620056152
         ]
       },
       "footprint_xy": [
         [
-          5.9,
-          7.05
+          5.900000095367432,
+          7.050000190734863
         ],
         [
           1.0,
-          7.05
+          7.050000190734863
         ],
         [
           1.0,
-          6.8
+          6.800000190734863
         ],
         [
-          5.9,
-          6.8
+          5.900000095367432,
+          6.800000190734863
         ]
       ],
       "front_xy": [
@@ -806,13 +1698,13 @@
           "bbox": {
             "min": [
               1.0,
-              6.8,
-              3.12
+              6.800000190734863,
+              3.120000123977661
             ],
             "max": [
-              5.9,
-              7.05,
-              3.7139255
+              5.900000095367432,
+              7.050000190734863,
+              3.7115275859832764
             ]
           }
         }
@@ -829,246 +1721,12 @@
       ],
       "ownership": {
         "children": "external"
-      }
-    }
-  },
-  {
-    "id": "chimney",
-    "label": "Projecting chimney breast",
-    "crop_bbox": [
-      0,
-      0,
-      2460,
-      3748
-    ],
-    "bbox": {
-      "min": [
-        0.0,
-        2.1,
-        0
-      ],
-      "max": [
-        0.38,
-        4.800000000000001,
-        3.7139255
-      ]
-    },
-    "contact": "floor",
-    "material_note": "wall; neutral blockout; Projecting chimney breast",
-    "confidence": 0.5,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            0,
-            0
-          ],
-          "extent_bottom_right": [
-            2460,
-            3748
-          ]
-        },
-        "interpretation": "Projecting chimney breast visible in annotated source crop; depth inferred from floorplan.",
-        "blockout_revision": "Re-entry correction: ceiling and connected shell lowered 0.227 m, approximately 3 percent image height at rear corner, superseding provisional S1 height."
       },
-      "frame": {
-        "origin_xyz": [
-          0.19,
-          3.45,
-          0
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.38,
-          2.7,
-          3.7139255
-        ]
-      },
-      "footprint_xy": [
-        [
-          0.38,
-          4.800000000000001
-        ],
-        [
-          0.0,
-          4.800000000000001
-        ],
-        [
-          0.0,
-          2.1
-        ],
-        [
-          0.38,
-          2.1
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              0.0,
-              2.1,
-              0
-            ],
-            "max": [
-              0.38,
-              4.800000000000001,
-              3.7139255
-            ]
-          }
-        }
-      ],
-      "relationships": [
-        {
-          "type": "supported_by",
-          "with": "floor",
-          "region": "body",
-          "support_region": "body",
-          "metres": 0,
-          "tolerance_m": 0.03
-        }
-      ],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "cornice_w",
-    "label": "Fireplace wall crown moulding",
-    "crop_bbox": [
-      34,
-      0,
-      3492,
-      1100
-    ],
-    "bbox": {
-      "min": [
-        0.0,
-        0.0,
-        3.5139255
-      ],
-      "max": [
-        0.17,
-        6.8,
-        3.6939255
-      ]
-    },
-    "contact": "floor",
-    "material_note": "trim; Fireplace wall crown moulding",
-    "confidence": 0.5,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            34,
-            0
-          ],
-          "extent_bottom_right": [
-            3526,
-            1100
-          ]
-        },
-        "interpretation": "Fireplace wall crown moulding; label reviewed at S3; existing room-space geometry retained.",
-        "blockout_revision": "Re-entry correction: ceiling and connected shell lowered 0.227 m, approximately 3 percent image height at rear corner, superseding provisional S1 height."
-      },
-      "frame": {
-        "origin_xyz": [
-          0.085,
-          3.4,
-          3.5139255
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.17,
-          6.8,
-          0.18
-        ]
-      },
-      "footprint_xy": [
-        [
-          0.17,
-          6.8
-        ],
-        [
-          0.0,
-          6.8
-        ],
-        [
-          0.0,
-          0.0
-        ],
-        [
-          0.17,
-          0.0
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              0.0,
-              0.0,
-              3.5139255
-            ],
-            "max": [
-              0.17,
-              6.8,
-              3.6939255
-            ]
-          }
-        }
-      ],
-      "relationships": [
-        {
-          "type": "supported_by",
-          "with": "floor",
-          "region": "body",
-          "support_region": "body",
-          "metres": 0,
-          "tolerance_m": 0.03
-        }
-      ],
-      "ownership": {
-        "children": "external"
+      "ceiling_plane": {
+        "equation": "z = rear_height_m + slope_dz_dy * (y - 6.8)",
+        "rear_height_m": 3.714217543601994,
+        "slope_dz_dy": -0.23,
+        "note": "Single-view S2 plane fit to revised corner and cornice slopes, superseding the provisional flat ceiling; not a surveyed room slope."
       }
     }
   },
@@ -1083,17 +1741,17 @@
     ],
     "bbox": {
       "min": [
-        0.0,
-        6.6000000000000005,
-        3.5139255
+        -7.69323715843484e-09,
+        6.59999942779541,
+        3.5169074535369873
       ],
       "max": [
-        7.2,
-        6.8,
-        3.6939255
+        7.199999809265137,
+        6.800000190734863,
+        3.73752760887146
       ]
     },
-    "contact": "floor",
+    "contact": "north wall crown",
     "material_note": "trim; Window wall crown moulding",
     "confidence": 0.5,
     "shape": "box",
@@ -1113,16 +1771,21 @@
           "extent_bottom_right": [
             6114,
             1169
+          ],
+          "rear_ceiling_corner": [
+            3529,
+            975
           ]
         },
         "interpretation": "Window wall crown moulding; label reviewed at S3; existing room-space geometry retained.",
-        "blockout_revision": "Re-entry correction: ceiling and connected shell lowered 0.227 m, approximately 3 percent image height at rear corner, superseding provisional S1 height."
+        "blockout_revision": "Current one-reentry geometry overrides prior inferred envelopes; see state/blockout_reentry_validation.json.",
+        "facing_note": "Axes retained from floorplan; visible west chimney return and north window field establish handedness."
       },
       "frame": {
         "origin_xyz": [
-          3.6,
-          6.7,
-          3.5139255
+          3.5999999046325684,
+          6.699999809265137,
+          3.5169074535369873
         ],
         "x_axis_xy": [
           -1.0,
@@ -1133,27 +1796,27 @@
           -1.0
         ],
         "size_xyz": [
-          7.2,
-          0.2,
-          0.18
+          7.199999816958374,
+          0.20000076293945312,
+          0.22062015533447266
         ]
       },
       "footprint_xy": [
         [
-          7.2,
-          6.8
+          7.199999809265137,
+          6.800000190734863
         ],
         [
-          0.0,
-          6.8
+          -7.69323715843484e-09,
+          6.800000190734863
         ],
         [
-          0.0,
-          6.6000000000000005
+          -7.69323715843484e-09,
+          6.59999942779541
         ],
         [
-          7.2,
-          6.6000000000000005
+          7.199999809265137,
+          6.59999942779541
         ]
       ],
       "front_xy": [
@@ -1165,149 +1828,33 @@
           "id": "body",
           "bbox": {
             "min": [
-              0.0,
-              6.6000000000000005,
-              3.5139255
+              -7.69323715843484e-09,
+              6.59999942779541,
+              3.5169074535369873
             ],
             "max": [
-              7.2,
-              6.8,
-              3.6939255
+              7.199999809265137,
+              6.800000190734863,
+              3.73752760887146
             ]
           }
         }
       ],
       "relationships": [
         {
-          "type": "supported_by",
-          "with": "floor",
-          "region": "body",
-          "support_region": "body",
-          "metres": 0,
-          "tolerance_m": 0.03
+          "type": "vertical_offset",
+          "with": "ceiling",
+          "metres": -0.11
         }
       ],
       "ownership": {
         "children": "external"
-      }
-    }
-  },
-  {
-    "id": "baseboard_w",
-    "label": "Fireplace wall baseboard",
-    "crop_bbox": [
-      0,
-      3061,
-      3578,
-      585
-    ],
-    "bbox": {
-      "min": [
-        0.0,
-        0.0,
-        0
-      ],
-      "max": [
-        0.1,
-        6.8,
-        0.17
-      ]
-    },
-    "contact": "floor",
-    "material_note": "trim; Fireplace wall baseboard",
-    "confidence": 0.5,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            0,
-            3061
-          ],
-          "extent_bottom_right": [
-            3578,
-            3646
-          ]
-        },
-        "interpretation": "Fireplace wall baseboard; label reviewed at S3; existing room-space geometry retained."
       },
-      "frame": {
-        "origin_xyz": [
-          0.05,
-          3.4,
-          0
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.1,
-          6.8,
-          0.17
-        ]
-      },
-      "footprint_xy": [
-        [
-          0.1,
-          6.8
-        ],
-        [
-          0.0,
-          6.8
-        ],
-        [
-          0.0,
-          0.0
-        ],
-        [
-          0.1,
-          0.0
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              0.0,
-              0.0,
-              0
-            ],
-            "max": [
-              0.1,
-              6.8,
-              0.17
-            ]
-          }
-        }
-      ],
-      "relationships": [
-        {
-          "type": "supported_by",
-          "with": "floor",
-          "region": "body",
-          "support_region": "body",
-          "metres": 0,
-          "tolerance_m": 0.03
-        }
-      ],
-      "ownership": {
-        "children": "external"
+      "ceiling_plane": {
+        "equation": "z = rear_height_m + slope_dz_dy * (y - 6.8)",
+        "rear_height_m": 3.714217543601994,
+        "slope_dz_dy": -0.23,
+        "note": "Single-view S2 plane fit to revised corner and cornice slopes, superseding the provisional flat ceiling; not a surveyed room slope."
       }
     }
   },
@@ -1425,626 +1972,6 @@
           "tolerance_m": 0.03
         }
       ],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "wall_panel_0",
-    "label": "Raised rectangular wall moulding",
-    "crop_bbox": [
-      0,
-      0,
-      757,
-      3198
-    ],
-    "bbox": {
-      "min": [
-        0.006499999999999999,
-        0.125,
-        0.35
-      ],
-      "max": [
-        0.0415,
-        1.875,
-        3.65
-      ]
-    },
-    "contact": "west wall",
-    "material_note": "trim; neutral blockout; Raised rectangular wall moulding",
-    "confidence": 0.65,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            0,
-            0
-          ],
-          "extent_bottom_right": [
-            757,
-            3198
-          ]
-        },
-        "interpretation": "Raised rectangular wall moulding visible in annotated source crop; depth inferred from floorplan."
-      },
-      "frame": {
-        "origin_xyz": [
-          0.024,
-          1.0,
-          0.35
-        ],
-        "x_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "y_axis_xy": [
-          1.0,
-          0.0
-        ],
-        "size_xyz": [
-          1.75,
-          0.035,
-          3.3
-        ]
-      },
-      "footprint_xy": [
-        [
-          0.006499999999999999,
-          1.875
-        ],
-        [
-          0.006499999999999999,
-          0.125
-        ],
-        [
-          0.0415,
-          0.125
-        ],
-        [
-          0.0415,
-          1.875
-        ]
-      ],
-      "front_xy": [
-        1.0,
-        0.0
-      ],
-      "regions": [
-        {
-          "id": "left",
-          "bbox": {
-            "min": [
-              0.006499999999999999,
-              1.85,
-              0.35
-            ],
-            "max": [
-              0.0415,
-              1.875,
-              3.65
-            ]
-          }
-        },
-        {
-          "id": "right",
-          "bbox": {
-            "min": [
-              0.006499999999999999,
-              0.125,
-              0.35
-            ],
-            "max": [
-              0.0415,
-              0.15000000000000002,
-              3.65
-            ]
-          }
-        },
-        {
-          "id": "bottom",
-          "bbox": {
-            "min": [
-              0.006499999999999999,
-              0.125,
-              0.35
-            ],
-            "max": [
-              0.0415,
-              1.875,
-              0.375
-            ]
-          }
-        },
-        {
-          "id": "top",
-          "bbox": {
-            "min": [
-              0.006499999999999999,
-              0.125,
-              3.625
-            ],
-            "max": [
-              0.0415,
-              1.875,
-              3.65
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "wall_panel_1",
-    "label": "Raised rectangular wall moulding",
-    "crop_bbox": [
-      723,
-      0,
-      1514,
-      2321
-    ],
-    "bbox": {
-      "min": [
-        0.3875,
-        2.2600000000000002,
-        1.74
-      ],
-      "max": [
-        0.42250000000000004,
-        4.640000000000001,
-        3.79
-      ]
-    },
-    "contact": "west wall",
-    "material_note": "trim; neutral blockout; Raised rectangular wall moulding",
-    "confidence": 0.65,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            723,
-            0
-          ],
-          "extent_bottom_right": [
-            2237,
-            2321
-          ]
-        },
-        "interpretation": "Raised rectangular wall moulding visible in annotated source crop; depth inferred from floorplan."
-      },
-      "frame": {
-        "origin_xyz": [
-          0.405,
-          3.45,
-          1.74
-        ],
-        "x_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "y_axis_xy": [
-          1.0,
-          0.0
-        ],
-        "size_xyz": [
-          2.38,
-          0.035,
-          2.05
-        ]
-      },
-      "footprint_xy": [
-        [
-          0.3875,
-          4.640000000000001
-        ],
-        [
-          0.3875,
-          2.2600000000000002
-        ],
-        [
-          0.42250000000000004,
-          2.2600000000000002
-        ],
-        [
-          0.42250000000000004,
-          4.640000000000001
-        ]
-      ],
-      "front_xy": [
-        1.0,
-        0.0
-      ],
-      "regions": [
-        {
-          "id": "left",
-          "bbox": {
-            "min": [
-              0.3875,
-              4.615,
-              1.74
-            ],
-            "max": [
-              0.42250000000000004,
-              4.640000000000001,
-              3.79
-            ]
-          }
-        },
-        {
-          "id": "right",
-          "bbox": {
-            "min": [
-              0.3875,
-              2.2600000000000002,
-              1.74
-            ],
-            "max": [
-              0.42250000000000004,
-              2.285,
-              3.79
-            ]
-          }
-        },
-        {
-          "id": "bottom",
-          "bbox": {
-            "min": [
-              0.3875,
-              2.2600000000000002,
-              1.74
-            ],
-            "max": [
-              0.42250000000000004,
-              4.640000000000001,
-              1.765
-            ]
-          }
-        },
-        {
-          "id": "top",
-          "bbox": {
-            "min": [
-              0.3875,
-              2.2600000000000002,
-              3.7649999999999997
-            ],
-            "max": [
-              0.42250000000000004,
-              4.640000000000001,
-              3.79
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "wall_panel_2",
-    "label": "Raised rectangular wall moulding",
-    "crop_bbox": [
-      2402,
-      843,
-      551,
-      2029
-    ],
-    "bbox": {
-      "min": [
-        0.006499999999999999,
-        4.890000000000001,
-        0.95
-      ],
-      "max": [
-        0.0415,
-        5.91,
-        3.4799999999999995
-      ]
-    },
-    "contact": "west wall",
-    "material_note": "trim; neutral blockout; Raised rectangular wall moulding",
-    "confidence": 0.65,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            2402,
-            843
-          ],
-          "extent_bottom_right": [
-            2953,
-            2872
-          ]
-        },
-        "interpretation": "Raised rectangular wall moulding visible in annotated source crop; depth inferred from floorplan."
-      },
-      "frame": {
-        "origin_xyz": [
-          0.024,
-          5.4,
-          0.95
-        ],
-        "x_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "y_axis_xy": [
-          1.0,
-          0.0
-        ],
-        "size_xyz": [
-          1.02,
-          0.035,
-          2.53
-        ]
-      },
-      "footprint_xy": [
-        [
-          0.006499999999999999,
-          5.91
-        ],
-        [
-          0.006499999999999999,
-          4.890000000000001
-        ],
-        [
-          0.0415,
-          4.890000000000001
-        ],
-        [
-          0.0415,
-          5.91
-        ]
-      ],
-      "front_xy": [
-        1.0,
-        0.0
-      ],
-      "regions": [
-        {
-          "id": "left",
-          "bbox": {
-            "min": [
-              0.006499999999999999,
-              5.885000000000001,
-              0.95
-            ],
-            "max": [
-              0.0415,
-              5.91,
-              3.4799999999999995
-            ]
-          }
-        },
-        {
-          "id": "right",
-          "bbox": {
-            "min": [
-              0.006499999999999999,
-              4.890000000000001,
-              0.95
-            ],
-            "max": [
-              0.0415,
-              4.915,
-              3.4799999999999995
-            ]
-          }
-        },
-        {
-          "id": "bottom",
-          "bbox": {
-            "min": [
-              0.006499999999999999,
-              4.890000000000001,
-              0.95
-            ],
-            "max": [
-              0.0415,
-              5.91,
-              0.975
-            ]
-          }
-        },
-        {
-          "id": "top",
-          "bbox": {
-            "min": [
-              0.006499999999999999,
-              4.890000000000001,
-              3.455
-            ],
-            "max": [
-              0.0415,
-              5.91,
-              3.4799999999999995
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "wall_panel_3",
-    "label": "Raised rectangular wall moulding",
-    "crop_bbox": [
-      2931,
-      843,
-      551,
-      2029
-    ],
-    "bbox": {
-      "min": [
-        0.006499999999999999,
-        5.975,
-        0.95
-      ],
-      "max": [
-        0.0415,
-        6.625,
-        3.3200000000000003
-      ]
-    },
-    "contact": "west wall",
-    "material_note": "trim; neutral blockout; Raised rectangular wall moulding",
-    "confidence": 0.65,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            2931,
-            843
-          ],
-          "extent_bottom_right": [
-            3482,
-            2872
-          ]
-        },
-        "interpretation": "Raised rectangular wall moulding visible in annotated source crop; depth inferred from floorplan."
-      },
-      "frame": {
-        "origin_xyz": [
-          0.024,
-          6.3,
-          0.95
-        ],
-        "x_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "y_axis_xy": [
-          1.0,
-          0.0
-        ],
-        "size_xyz": [
-          0.65,
-          0.035,
-          2.37
-        ]
-      },
-      "footprint_xy": [
-        [
-          0.006499999999999999,
-          6.625
-        ],
-        [
-          0.006499999999999999,
-          5.975
-        ],
-        [
-          0.0415,
-          5.975
-        ],
-        [
-          0.0415,
-          6.625
-        ]
-      ],
-      "front_xy": [
-        1.0,
-        0.0
-      ],
-      "regions": [
-        {
-          "id": "left",
-          "bbox": {
-            "min": [
-              0.006499999999999999,
-              6.6,
-              0.95
-            ],
-            "max": [
-              0.0415,
-              6.625,
-              3.3200000000000003
-            ]
-          }
-        },
-        {
-          "id": "right",
-          "bbox": {
-            "min": [
-              0.006499999999999999,
-              5.975,
-              0.95
-            ],
-            "max": [
-              0.0415,
-              6.0,
-              3.3200000000000003
-            ]
-          }
-        },
-        {
-          "id": "bottom",
-          "bbox": {
-            "min": [
-              0.006499999999999999,
-              5.975,
-              0.95
-            ],
-            "max": [
-              0.0415,
-              6.625,
-              0.975
-            ]
-          }
-        },
-        {
-          "id": "top",
-          "bbox": {
-            "min": [
-              0.006499999999999999,
-              5.975,
-              3.295
-            ],
-            "max": [
-              0.0415,
-              6.625,
-              3.3200000000000003
-            ]
-          }
-        }
-      ],
-      "relationships": [],
       "ownership": {
         "children": "external"
       }
@@ -2235,7 +2162,7 @@
         1.13
       ]
     },
-    "contact": "chimney",
+    "contact": "wall_w chimney__body",
     "material_note": "dark; neutral blockout; Dark fireplace opening",
     "confidence": 0.65,
     "shape": "box",
@@ -2455,17 +2382,17 @@
     ],
     "bbox": {
       "min": [
-        0.39,
-        2.8000000000000003,
-        1.925
+        0.38999995589256287,
+        2.799999952316284,
+        1.9250000715255737
       ],
       "max": [
-        0.47,
-        4.1000000000000005,
-        3.875
+        0.4700000286102295,
+        4.099999904632568,
+        3.9015238285064697
       ]
     },
-    "contact": "chimney",
+    "contact": "wall_w chimney__body",
     "material_note": "trim; neutral blockout; Large framed portrait",
     "confidence": 0.65,
     "shape": "box",
@@ -2485,15 +2412,33 @@
           "extent_bottom_right": [
             2119,
             2191
+          ],
+          "frame_upper_left": [
+            977,
+            280
+          ],
+          "frame_upper_right": [
+            2102,
+            601
+          ],
+          "frame_bottom_left": [
+            975,
+            2108
+          ],
+          "frame_bottom_right": [
+            2035,
+            2182
           ]
         },
-        "interpretation": "Large framed portrait visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Large framed portrait visible in annotated source crop; depth inferred from floorplan.",
+        "blockout_revision": "Window/sofa/portrait correction; geometry and declarations updated together from preserved baseline.",
+        "facing_note": "Retained floorplan room front; named source silhouette landmarks determine left/right handedness."
       },
       "frame": {
         "origin_xyz": [
-          0.43,
-          3.45,
-          1.925
+          0.4300000071525574,
+          3.4499998092651367,
+          1.9250000715255737
         ],
         "x_axis_xy": [
           0.0,
@@ -2504,27 +2449,27 @@
           0.0
         ],
         "size_xyz": [
-          1.3,
-          0.08,
-          1.95
+          1.2999999523162842,
+          0.08000007271766663,
+          1.976523756980896
         ]
       },
       "footprint_xy": [
         [
-          0.39,
-          4.1000000000000005
+          0.38999995589256287,
+          4.099999904632568
         ],
         [
-          0.39,
-          2.8000000000000003
+          0.38999995589256287,
+          2.799999952316284
         ],
         [
-          0.47,
-          2.8000000000000003
+          0.4700000286102295,
+          2.799999952316284
         ],
         [
-          0.47,
-          4.1000000000000005
+          0.4700000286102295,
+          4.099999904632568
         ]
       ],
       "front_xy": [
@@ -2536,14 +2481,14 @@
           "id": "canvas",
           "bbox": {
             "min": [
-              0.39,
-              2.8800000000000003,
-              1.995
+              0.38999995589256287,
+              2.880000114440918,
+              1.9959522485733032
             ],
             "max": [
-              0.44,
-              4.0200000000000005,
-              3.8049999999999997
+              0.4400000274181366,
+              4.019999980926514,
+              3.830571413040161
             ]
           }
         },
@@ -2551,29 +2496,14 @@
           "id": "left_frame",
           "bbox": {
             "min": [
-              0.39,
-              4.0200000000000005,
-              1.925
+              0.39000001549720764,
+              4.019999980926514,
+              1.9250000715255737
             ],
             "max": [
-              0.47,
-              4.1000000000000005,
-              3.875
-            ]
-          }
-        },
-        {
-          "id": "right_frame",
-          "bbox": {
-            "min": [
-              0.39,
-              2.8000000000000003,
-              1.925
-            ],
-            "max": [
-              0.47,
-              2.8800000000000003,
-              3.875
+              0.4699999988079071,
+              4.099999904632568,
+              3.9015238285064697
             ]
           }
         },
@@ -2581,14 +2511,29 @@
           "id": "lower_frame",
           "bbox": {
             "min": [
-              0.39,
-              2.8000000000000003,
-              1.925
+              0.38999998569488525,
+              2.799999952316284,
+              1.9250000715255737
             ],
             "max": [
-              0.47,
-              4.1000000000000005,
-              1.995
+              0.4700000286102295,
+              4.099999904632568,
+              1.9950000047683716
+            ]
+          }
+        },
+        {
+          "id": "right_frame",
+          "bbox": {
+            "min": [
+              0.39000001549720764,
+              2.799999952316284,
+              1.9250000715255737
+            ],
+            "max": [
+              0.4699999988079071,
+              2.879999876022339,
+              3.9015238285064697
             ]
           }
         },
@@ -2596,19 +2541,26 @@
           "id": "upper_frame",
           "bbox": {
             "min": [
-              0.39,
-              2.8000000000000003,
-              3.8049999999999997
+              0.38999998569488525,
+              2.799999952316284,
+              3.8315234184265137
             ],
             "max": [
-              0.47,
-              4.1000000000000005,
-              3.875
+              0.4700000286102295,
+              4.099999904632568,
+              3.9015238285064697
             ]
           }
         }
       ],
-      "relationships": [],
+      "relationships": [
+        {
+          "type": "top_edge_shift",
+          "with": "portrait",
+          "metres": -0.11094987392419853,
+          "bottom_z_m": 1.9250000715255737
+        }
+      ],
       "ownership": {
         "children": "external"
       }
@@ -6631,14 +6583,14 @@
     ],
     "bbox": {
       "min": [
-        0.9250000000000003,
-        6.48,
-        3.04
+        0.9249999523162842,
+        6.479999542236328,
+        2.910508871078491
       ],
       "max": [
-        5.975,
-        6.68,
-        3.16
+        5.975000381469727,
+        6.680000305175781,
+        3.159700393676758
       ]
     },
     "contact": "north wall",
@@ -6664,13 +6616,14 @@
           ]
         },
         "interpretation": "Ornamental curtain rail visible in annotated source crop; depth inferred from floorplan.",
-        "blockout_revision": "Rail source endpoints approximately (1158,400) and (1777,285), inspection pixels, establish a lower head than S1. Opening head revised to 3.12 m; no resolved exterior objects."
+        "blockout_revision": "Window/sofa/portrait correction; geometry and declarations updated together from preserved baseline.",
+        "facing_note": "Retained floorplan room front; named source silhouette landmarks determine left/right handedness."
       },
       "frame": {
         "origin_xyz": [
-          3.45,
-          6.58,
-          3.04
+          3.450000286102295,
+          6.579999923706055,
+          2.910508871078491
         ],
         "x_axis_xy": [
           -1.0,
@@ -6681,27 +6634,27 @@
           -1.0
         ],
         "size_xyz": [
-          5.05,
-          0.2,
-          0.12
+          5.050000429153442,
+          0.20000076293945312,
+          0.2491915225982666
         ]
       },
       "footprint_xy": [
         [
-          5.975,
-          6.68
+          5.975000381469727,
+          6.680000305175781
         ],
         [
-          0.9250000000000003,
-          6.68
+          0.9249999523162842,
+          6.680000305175781
         ],
         [
-          0.9250000000000003,
-          6.48
+          0.9249999523162842,
+          6.479999542236328
         ],
         [
-          5.975,
-          6.48
+          5.975000381469727,
+          6.479999542236328
         ]
       ],
       "front_xy": [
@@ -6713,19 +6666,26 @@
           "id": "body",
           "bbox": {
             "min": [
-              0.9250000000000003,
-              6.48,
-              3.04
+              0.9249999523162842,
+              6.479999542236328,
+              2.910508871078491
             ],
             "max": [
-              5.975,
-              6.68,
-              3.16
+              5.975000381469727,
+              6.680000305175781,
+              3.159700393676758
             ]
           }
         }
       ],
-      "relationships": [],
+      "relationships": [
+        {
+          "type": "image_vertical_shift",
+          "with": "curtain_rail",
+          "right_edge_fraction_height": 0.04,
+          "left_edge_fraction_height": 0
+        }
+      ],
       "ownership": {
         "children": "external"
       }
@@ -6742,14 +6702,14 @@
     ],
     "bbox": {
       "min": [
-        0.6900000274181366,
+        0.6899999976158142,
         6.546999931335449,
         0.7987823486328125
       ],
       "max": [
-        2.150000125169754,
+        2.1500000953674316,
         6.625,
-        3.044206142425537
+        3.041095495223999
       ]
     },
     "contact": "curtain rail",
@@ -6783,7 +6743,8 @@
           ]
         },
         "interpretation": "Long gathered curtain with diagonal sweep visible in annotated source crop; depth inferred from floorplan.",
-        "blockout_revision": "Rail source endpoints approximately (1158,400) and (1777,285), inspection pixels, establish a lower head than S1. Opening head revised to 3.12 m; no resolved exterior objects."
+        "blockout_revision": "Window/sofa/portrait correction; geometry and declarations updated together from preserved baseline.",
+        "facing_note": "Retained floorplan room front; named source silhouette landmarks determine left/right handedness."
       },
       "frame": {
         "origin_xyz": [
@@ -6802,24 +6763,24 @@
         "size_xyz": [
           1.4600000977516174,
           0.07800006866455078,
-          2.2454237937927246
+          2.2423131465911865
         ]
       },
       "footprint_xy": [
         [
-          2.150000125169754,
+          2.1500000953674316,
           6.625
         ],
         [
-          0.6900000274181366,
+          0.6899999976158142,
           6.625
         ],
         [
-          0.6900000274181366,
+          0.6899999976158142,
           6.546999931335449
         ],
         [
-          2.150000125169754,
+          2.1500000953674316,
           6.546999931335449
         ]
       ],
@@ -6839,7 +6800,7 @@
             "max": [
               2.1500000953674316,
               6.625,
-              3.044206142425537
+              3.041095495223999
             ]
           }
         },
@@ -6986,14 +6947,14 @@
     ],
     "bbox": {
       "min": [
-        2.3800002336502075,
+        2.380000114440918,
         6.546999931335449,
         0.7987822890281677
       ],
       "max": [
-        3.840000033378601,
+        3.8399999141693115,
         6.625,
-        3.044205904006958
+        2.949505567550659
       ]
     },
     "contact": "curtain rail",
@@ -7027,7 +6988,8 @@
           ]
         },
         "interpretation": "Long gathered curtain with diagonal sweep visible in annotated source crop; depth inferred from floorplan.",
-        "blockout_revision": "Rail source endpoints approximately (1158,400) and (1777,285), inspection pixels, establish a lower head than S1. Opening head revised to 3.12 m; no resolved exterior objects."
+        "blockout_revision": "Window/sofa/portrait correction; geometry and declarations updated together from preserved baseline.",
+        "facing_note": "Retained floorplan room front; named source silhouette landmarks determine left/right handedness."
       },
       "frame": {
         "origin_xyz": [
@@ -7046,24 +7008,24 @@
         "size_xyz": [
           1.4599997997283936,
           0.07800006866455078,
-          2.2454236149787903
+          2.1507232785224915
         ]
       },
       "footprint_xy": [
         [
-          3.840000033378601,
+          3.8399999141693115,
           6.625
         ],
         [
-          2.3800002336502075,
+          2.380000114440918,
           6.625
         ],
         [
-          2.3800002336502075,
+          2.380000114440918,
           6.546999931335449
         ],
         [
-          3.840000033378601,
+          3.8399999141693115,
           6.546999931335449
         ]
       ],
@@ -7077,13 +7039,13 @@
           "bbox": {
             "min": [
               2.5999999046325684,
-              6.547000408172607,
-              2.172752857208252
+              6.547000885009766,
+              2.1725924015045166
             ],
             "max": [
               3.8399999141693115,
               6.625,
-              3.044205904006958
+              2.949505567550659
             ]
           }
         },
@@ -7230,14 +7192,14 @@
     ],
     "bbox": {
       "min": [
-        4.6600000858306885,
-        6.546999931335449,
-        0.7987822890281677
+        3.49900221824646,
+        6.484999656677246,
+        1.1154593229293823
       ],
       "max": [
-        6.020000219345093,
-        6.625,
-        3.044206142425537
+        4.10319709777832,
+        6.5460004806518555,
+        2.9989986419677734
       ]
     },
     "contact": "curtain rail",
@@ -7268,16 +7230,29 @@
           "cornice_attachment": [
             5643,
             1066
+          ],
+          "outer_panel_head_left": [
+            5591,
+            1052
+          ],
+          "outer_panel_gather": [
+            6021,
+            1774
+          ],
+          "outer_panel_tail_left": [
+            6021,
+            2933
           ]
         },
         "interpretation": "Long gathered curtain with diagonal sweep visible in annotated source crop; depth inferred from floorplan.",
-        "blockout_revision": "Rail source endpoints approximately (1158,400) and (1777,285), inspection pixels, establish a lower head than S1. Opening head revised to 3.12 m; no resolved exterior objects."
+        "blockout_revision": "Window/sofa/portrait correction; geometry and declarations updated together from preserved baseline.",
+        "facing_note": "Panel sweeps from image-left head toward image-right gather; tail follows right crop edge. Front faces room south."
       },
       "frame": {
         "origin_xyz": [
-          5.340000152587891,
-          6.585999965667725,
-          0.7987822890281677
+          3.8010997772216797,
+          6.515500068664551,
+          1.1154593229293823
         ],
         "x_axis_xy": [
           -1.0,
@@ -7288,27 +7263,27 @@
           -1.0
         ],
         "size_xyz": [
-          1.3600001335144043,
-          0.07800006866455078,
-          2.2454238533973694
+          0.6041948795318604,
+          0.061000823974609375,
+          1.8835393190383911
         ]
       },
       "footprint_xy": [
         [
-          6.020000219345093,
-          6.625
+          4.10319709777832,
+          6.5460004806518555
         ],
         [
-          4.6600000858306885,
-          6.625
+          3.49900221824646,
+          6.5460004806518555
         ],
         [
-          4.6600000858306885,
-          6.546999931335449
+          3.49900221824646,
+          6.484999656677246
         ],
         [
-          6.020000219345093,
-          6.546999931335449
+          4.10319709777832,
+          6.484999656677246
         ]
       ],
       "front_xy": [
@@ -7320,14 +7295,14 @@
           "id": "gathered_diagonal_sweep",
           "bbox": {
             "min": [
-              4.659999847412109,
-              6.547000408172607,
-              2.172752857208252
+              3.49900221824646,
+              6.485000133514404,
+              2.201385021209717
             ],
             "max": [
-              5.900000095367432,
-              6.625,
-              3.044206142425537
+              4.10319709777832,
+              6.5460004806518555,
+              2.9989986419677734
             ]
           }
         },
@@ -7335,14 +7310,14 @@
           "id": "long_pleated_tail",
           "bbox": {
             "min": [
-              5.440000057220459,
-              6.546999931335449,
-              0.7987822890281677
+              3.899512767791748,
+              6.484999656677246,
+              1.1154593229293823
             ],
             "max": [
-              6.019999980926514,
-              6.625,
-              2.180424928665161
+              4.100844860076904,
+              6.5460004806518555,
+              2.217263698577881
             ]
           }
         }
@@ -7355,7 +7330,7 @@
   },
   {
     "id": "tieback_2",
-    "label": "Right curtain tieback (unconfirmed)",
+    "label": "Outer-right curtain gathered band (partly cropped)",
     "crop_bbox": [
       5987,
       1885,
@@ -7364,14 +7339,14 @@
     ],
     "bbox": {
       "min": [
-        5.62,
-        6.4575,
-        2.16
+        3.904658555984497,
+        6.485019683837891,
+        2.195577621459961
       ],
       "max": [
-        5.94,
-        6.4925,
-        2.21
+        4.064519882202148,
+        6.5460004806518555,
+        2.2409348487854004
       ]
     },
     "contact": "drape_2",
@@ -7397,13 +7372,15 @@
           ]
         },
         "interpretation": "Right curtain tieback (unconfirmed); label reviewed at S3; existing room-space geometry retained.",
-        "identify_note": "Tieback not resolved in source; retained inferred contract with context crop."
+        "identify_note": "Tieback not resolved in source; retained inferred contract with context crop.",
+        "blockout_revision": "Window/sofa/portrait correction; geometry and declarations updated together from preserved baseline.",
+        "facing_note": "Retained floorplan room front; named source silhouette landmarks determine left/right handedness."
       },
       "frame": {
         "origin_xyz": [
-          5.78,
-          6.475,
-          2.16
+          3.984589099884033,
+          6.515510082244873,
+          2.195577621459961
         ],
         "x_axis_xy": [
           -1.0,
@@ -7414,27 +7391,27 @@
           -1.0
         ],
         "size_xyz": [
-          0.32,
-          0.035,
-          0.05
+          0.15986132621765137,
+          0.060980796813964844,
+          0.04535722732543945
         ]
       },
       "footprint_xy": [
         [
-          5.94,
-          6.4925
+          4.064519882202148,
+          6.5460004806518555
         ],
         [
-          5.62,
-          6.4925
+          3.904658555984497,
+          6.5460004806518555
         ],
         [
-          5.62,
-          6.4575
+          3.904658555984497,
+          6.485019683837891
         ],
         [
-          5.94,
-          6.4575
+          4.064519882202148,
+          6.485019683837891
         ]
       ],
       "front_xy": [
@@ -7446,14 +7423,14 @@
           "id": "body",
           "bbox": {
             "min": [
-              5.62,
-              6.4575,
-              2.16
+              3.904658555984497,
+              6.485019683837891,
+              2.195577621459961
             ],
             "max": [
-              5.94,
-              6.4925,
-              2.21
+              4.064519882202148,
+              6.5460004806518555,
+              2.2409348487854004
             ]
           }
         }
@@ -7475,14 +7452,14 @@
     ],
     "bbox": {
       "min": [
-        3.59,
-        6.510000000000001,
-        3.16
+        3.5899999141693115,
+        6.510000228881836,
+        2.9753897190093994
       ],
       "max": [
-        4.01,
-        6.63,
-        3.56
+        4.009999752044678,
+        6.630000114440918,
+        3.404252529144287
       ]
     },
     "contact": "curtain rail",
@@ -7507,13 +7484,15 @@
             1128
           ]
         },
-        "interpretation": "Leaf crest above curtain rail visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Leaf crest above curtain rail visible in annotated source crop; depth inferred from floorplan.",
+        "blockout_revision": "Window/sofa/portrait correction; geometry and declarations updated together from preserved baseline.",
+        "facing_note": "Retained floorplan room front; named source silhouette landmarks determine left/right handedness."
       },
       "frame": {
         "origin_xyz": [
-          3.8,
-          6.57,
-          3.16
+          3.799999713897705,
+          6.570000171661377,
+          2.9753897190093994
         ],
         "x_axis_xy": [
           -1.0,
@@ -7524,27 +7503,27 @@
           -1.0
         ],
         "size_xyz": [
-          0.42,
-          0.12,
-          0.4
+          0.4199998378753662,
+          0.11999988555908203,
+          0.4288628101348877
         ]
       },
       "footprint_xy": [
         [
-          4.01,
-          6.63
+          4.009999752044678,
+          6.630000114440918
         ],
         [
-          3.59,
-          6.63
+          3.5899999141693115,
+          6.630000114440918
         ],
         [
-          3.59,
-          6.510000000000001
+          3.5899999141693115,
+          6.510000228881836
         ],
         [
-          4.01,
-          6.510000000000001
+          4.009999752044678,
+          6.510000228881836
         ]
       ],
       "front_xy": [
@@ -7556,14 +7535,14 @@
           "id": "body",
           "bbox": {
             "min": [
-              3.59,
-              6.510000000000001,
-              3.16
+              3.5899999141693115,
+              6.510000228881836,
+              2.9753897190093994
             ],
             "max": [
-              4.01,
-              6.63,
-              3.56
+              4.009999752044678,
+              6.630000114440918,
+              3.404252529144287
             ]
           }
         }
@@ -7823,14 +7802,14 @@
     ],
     "bbox": {
       "min": [
-        2.8123840429256406,
-        1.8114929473092358,
+        2.812277317047119,
+        1.810448408126831,
         0.0
       ],
       "max": [
-        4.798769082837299,
-        3.2272700989554126,
-        0.9900000095367432
+        4.798581600189209,
+        3.227724075317383,
+        1.0688632726669312
       ]
     },
     "contact": "floor",
@@ -7864,12 +7843,13 @@
           ]
         },
         "interpretation": "Large curved upholstered back crosses foreground and occludes hearth; long axis approximately toward window wall. Position revised using projected image ordering and wall clearance; furniture envelopes are approximate, not recovered meshes. Position revised using projected image ordering and wall clearance; furniture envelopes are approximate, not recovered meshes.",
-        "blockout_revision": "Latest correction: local width compressed with left outline anchored to place rightmost evaluated mesh vertex at 66% image width; factor 0.8360490873455548"
+        "blockout_revision": "Window/sofa/portrait correction; geometry and declarations updated together from preserved baseline.",
+        "facing_note": "Retained floorplan room front; named source silhouette landmarks determine left/right handedness."
       },
       "frame": {
         "origin_xyz": [
-          3.8055765628814697,
-          2.519381523132324,
+          3.805429220199585,
+          2.5190861225128174,
           0.0
         ],
         "x_axis_xy": [
@@ -7881,27 +7861,27 @@
           0.98052239591946
         ],
         "size_xyz": [
-          1.8092095628380775,
-          1.0815002024173737,
-          0.9900000095367432
+          1.8088047206401825,
+          1.0831096172332764,
+          1.0688632726669312
         ]
       },
       "footprint_xy": [
         [
-          3.024798587562908,
-          1.8114929473092358
+          3.025007963180542,
+          1.810448408126831
         ],
         [
-          4.798769082837299,
-          2.1668349292937483
+          4.798581600189209,
+          2.165710926055908
         ],
         [
-          4.586354538200031,
-          3.2272700989554126
+          4.585850715637207,
+          3.227724075317383
         ],
         [
-          2.8123840429256406,
-          2.8719281169709
+          2.812277317047119,
+          2.8724615573883057
         ]
       ],
       "front_xy": [
@@ -7928,14 +7908,14 @@
           "id": "arm_base_1",
           "bbox": {
             "min": [
-              4.375139236450195,
-              2.279447555541992,
+              4.374748229980469,
+              2.279536008834839,
               0.09999999403953552
             ],
             "max": [
-              4.712807655334473,
-              3.0658390522003174,
-              0.5399999618530273
+              4.712697505950928,
+              3.066131591796875,
+              0.5118787288665771
             ]
           }
         },
@@ -7943,14 +7923,14 @@
           "id": "back_crest",
           "bbox": {
             "min": [
-              3.0143818855285645,
-              1.8431415557861328,
-              0.7000000476837158
+              3.0143120288848877,
+              1.8431041240692139,
+              0.7185736894607544
             ],
             "max": [
-              4.74319314956665,
-              2.4646425247192383,
-              0.9900000095367432
+              4.743265151977539,
+              2.4647040367126465,
+              1.0688632726669312
             ]
           }
         },
@@ -8033,14 +8013,14 @@
           "id": "rolled_arm_1",
           "bbox": {
             "min": [
-              4.360559463500977,
-              2.1990513801574707,
-              0.28999999165534973
+              4.359989166259766,
+              2.199366569519043,
+              0.2765450179576874
             ],
             "max": [
-              4.717075347900391,
-              3.1977131366729736,
-              0.8300000429153442
+              4.71663236618042,
+              3.1981499195098877,
+              0.7780730724334717
             ]
           }
         },
@@ -8048,14 +8028,14 @@
           "id": "rounded_back",
           "bbox": {
             "min": [
-              3.032378911972046,
-              1.8476996421813965,
-              0.09999999403953552
+              3.032761573791504,
+              1.8468564748764038,
+              0.17547309398651123
             ],
             "max": [
-              4.725196361541748,
-              2.4600844383239746,
-              0.8899999856948853
+              4.725992202758789,
+              2.4598965644836426,
+              0.9680177569389343
             ]
           }
         },
@@ -8083,6 +8063,11 @@
           "support_region": "body",
           "metres": 0,
           "tolerance_m": 0.03
+        },
+        {
+          "type": "back_height_shift",
+          "with": "sofa",
+          "right_end_fraction_image_height": 0.05
         }
       ],
       "ownership": {
@@ -9449,14 +9434,14 @@
     ],
     "bbox": {
       "min": [
-        2.6501265374774645,
-        4.4459246109890325,
+        2.6501269340515137,
+        4.445336818695068,
         0.0
       ],
       "max": [
-        3.5578436048870374,
-        5.790782122714581,
-        0.9199999570846558
+        3.560450315475464,
+        5.7907819747924805,
+        0.9582644104957581
       ]
     },
     "contact": "floor",
@@ -9485,8 +9470,8 @@
             3160
           ],
           "front_seat_edge": [
-            4367,
-            3890
+            4136,
+            3784
           ],
           "back_top_left": [
             4542,
@@ -9499,16 +9484,32 @@
           "back_lower_left": [
             4318,
             3697
+          ],
+          "near_arm_front": [
+            4503,
+            3443
+          ],
+          "near_arm_back": [
+            4857,
+            3375
+          ],
+          "curved_front_support": [
+            4402,
+            3768
+          ],
+          "crest_center": [
+            4770,
+            3092
           ]
         },
         "interpretation": "Cane rocking chair sits nearest camera in central group, angled toward fireplace. Position revised using projected image ordering and wall clearance; furniture envelopes are approximate, not recovered meshes. Position revised using projected image ordering and wall clearance; furniture envelopes are approximate, not recovered meshes. Envelope refined to 0.68 by 0.95 m to leave a 138 px floor margin in projection; depth is the runner footprint.",
-        "facing_note": "Vector from back toward exposed seat establishes front; rocker opens image-left toward fireplace. Sofa back faces camera and seat opens into room.",
-        "blockout_revision": "Latest correction: translated 2.5% image width left; back top lowered 0.10 m, slender arms and seat; continuous curved 1.2 m runners."
+        "facing_note": "Crest-to-exposed-seat direction establishes front toward image left; near arm and visible curved support establish handedness. Retain accepted room front axis.",
+        "blockout_revision": "Current one-reentry geometry overrides prior inferred envelopes; see state/blockout_reentry_validation.json."
       },
       "frame": {
         "origin_xyz": [
-          3.103985071182251,
-          5.118353366851807,
+          3.105288505554199,
+          5.1180596351623535,
           0.0
         ],
         "x_axis_xy": [
@@ -9520,27 +9521,27 @@
           -0.9754998780625229
         ],
         "size_xyz": [
-          0.6528003290295601,
-          1.2314111813902855,
-          0.9199999570846558
+          0.6554721593856812,
+          1.2314110398292542,
+          0.9582644104957581
         ]
       },
       "footprint_xy": [
         [
-          3.5578436048870374,
-          5.647166068280083
+          3.560450315475464,
+          5.646578311920166
         ],
         [
-          2.9210369635195264,
-          5.790782122714581
+          2.921037197113037,
+          5.7907819747924805
         ],
         [
-          2.6501265374774645,
-          4.58954066542353
+          2.6501269340515137,
+          4.589540481567383
         ],
         [
-          3.2869331788449756,
-          4.4459246109890325
+          3.2895398139953613,
+          4.445336818695068
         ]
       ],
       "front_xy": [
@@ -9552,14 +9553,14 @@
           "id": "arm_-1",
           "bbox": {
             "min": [
-              3.2914931774139404,
-              4.714083671569824,
-              0.6017999649047852
+              3.305413007736206,
+              4.747166633605957,
+              0.6100180149078369
             ],
             "max": [
-              3.472517728805542,
-              5.329974174499512,
-              0.6629999876022339
+              3.4554293155670166,
+              5.282289505004883,
+              0.6818588376045227
             ]
           }
         },
@@ -9567,29 +9568,524 @@
           "id": "arm_1",
           "bbox": {
             "min": [
-              2.7210206985473633,
-              4.842739582061768,
-              0.6017999649047852
+              2.734940767288208,
+              4.875823020935059,
+              0.6100180149078369
             ],
             "max": [
-              2.902045249938965,
-              5.458630084991455,
-              0.6629999876022339
+              2.8849570751190186,
+              5.410945892333984,
+              0.6818588376045227
             ]
           }
         },
         {
-          "id": "back",
+          "id": "back_bottom_rail",
           "bbox": {
             "min": [
-              2.8400182723999023,
-              5.277571678161621,
-              0.4284000098705292
+              2.984241008758545,
+              5.3673415184021,
+              0.4074767529964447
             ],
             "max": [
-              3.552664279937744,
-              5.778164863586426,
-              0.9199999570846558
+              3.4841980934143066,
+              5.53201150894165,
+              0.44932326674461365
+            ]
+          }
+        },
+        {
+          "id": "back_center_stile",
+          "bbox": {
+            "min": [
+              3.2172975540161133,
+              5.433840751647949,
+              0.42348769307136536
+            ],
+            "max": [
+              3.266143321990967,
+              5.621565818786621,
+              0.9249122738838196
+            ]
+          }
+        },
+        {
+          "id": "back_crossrail",
+          "bbox": {
+            "min": [
+              2.99086332321167,
+              5.443120956420898,
+              0.6434447169303894
+            ],
+            "max": [
+              3.4919772148132324,
+              5.606043338775635,
+              0.6852912306785583
+            ]
+          }
+        },
+        {
+          "id": "cane_panel_0_0",
+          "bbox": {
+            "min": [
+              3.2532827854156494,
+              5.410139560699463,
+              0.45789599418640137
+            ],
+            "max": [
+              3.461805820465088,
+              5.525248050689697,
+              0.642209529876709
+            ]
+          }
+        },
+        {
+          "id": "cane_panel_0_1",
+          "bbox": {
+            "min": [
+              3.2604100704193115,
+              5.48425817489624,
+              0.6889479160308838
+            ],
+            "max": [
+              3.4700863361358643,
+              5.6049017906188965,
+              0.892926812171936
+            ]
+          }
+        },
+        {
+          "id": "cane_panel_1_0",
+          "bbox": {
+            "min": [
+              3.018329620361328,
+              5.46857213973999,
+              0.45789599418640137
+            ],
+            "max": [
+              3.226362705230713,
+              5.583025932312012,
+              0.6421804428100586
+            ]
+          }
+        },
+        {
+          "id": "cane_panel_1_1",
+          "bbox": {
+            "min": [
+              3.024831533432007,
+              5.541848182678223,
+              0.6889479160308838
+            ],
+            "max": [
+              3.233964204788208,
+              5.661766052246094,
+              0.8928977847099304
+            ]
+          }
+        },
+        {
+          "id": "cane_rib_0_0_1",
+          "bbox": {
+            "min": [
+              3.4217820167541504,
+              5.409661293029785,
+              0.4571671783924103
+            ],
+            "max": [
+              3.4327034950256348,
+              5.472594261169434,
+              0.6405168175697327
+            ]
+          }
+        },
+        {
+          "id": "cane_rib_0_0_2",
+          "bbox": {
+            "min": [
+              3.3931119441986084,
+              5.416792392730713,
+              0.4571681320667267
+            ],
+            "max": [
+              3.4039738178253174,
+              5.479644775390625,
+              0.6405158042907715
+            ]
+          }
+        },
+        {
+          "id": "cane_rib_0_0_3",
+          "bbox": {
+            "min": [
+              3.3644423484802246,
+              5.423923492431641,
+              0.45716914534568787
+            ],
+            "max": [
+              3.375244379043579,
+              5.486695289611816,
+              0.6405149102210999
+            ]
+          }
+        },
+        {
+          "id": "cane_rib_0_0_4",
+          "bbox": {
+            "min": [
+              3.335772752761841,
+              5.431055068969727,
+              0.4571700990200043
+            ],
+            "max": [
+              3.3465147018432617,
+              5.493744850158691,
+              0.6405138969421387
+            ]
+          }
+        },
+        {
+          "id": "cane_rib_0_0_5",
+          "bbox": {
+            "min": [
+              3.307102680206299,
+              5.4381866455078125,
+              0.45717111229896545
+            ],
+            "max": [
+              3.3177855014801025,
+              5.500795364379883,
+              0.6405129432678223
+            ]
+          }
+        },
+        {
+          "id": "cane_rib_0_0_6",
+          "bbox": {
+            "min": [
+              3.278433084487915,
+              5.445318222045898,
+              0.4571720361709595
+            ],
+            "max": [
+              3.289055824279785,
+              5.507844924926758,
+              0.6405119299888611
+            ]
+          }
+        },
+        {
+          "id": "cane_rib_0_1_1",
+          "bbox": {
+            "min": [
+              3.4293365478515625,
+              5.483684062957764,
+              0.6882190704345703
+            ],
+            "max": [
+              3.440901041030884,
+              5.552917003631592,
+              0.8912328481674194
+            ]
+          }
+        },
+        {
+          "id": "cane_rib_0_1_2",
+          "bbox": {
+            "min": [
+              3.400590181350708,
+              5.4907121658325195,
+              0.6882200241088867
+            ],
+            "max": [
+              3.412088394165039,
+              5.559855937957764,
+              0.891231894493103
+            ]
+          }
+        },
+        {
+          "id": "cane_rib_0_1_3",
+          "bbox": {
+            "min": [
+              3.3718442916870117,
+              5.497741222381592,
+              0.6882210969924927
+            ],
+            "max": [
+              3.3832764625549316,
+              5.5667948722839355,
+              0.8912309408187866
+            ]
+          }
+        },
+        {
+          "id": "cane_rib_0_1_4",
+          "bbox": {
+            "min": [
+              3.3430981636047363,
+              5.504769802093506,
+              0.6882219910621643
+            ],
+            "max": [
+              3.354463577270508,
+              5.573733329772949,
+              0.8912299275398254
+            ]
+          }
+        },
+        {
+          "id": "cane_rib_0_1_5",
+          "bbox": {
+            "min": [
+              3.314351797103882,
+              5.51179838180542,
+              0.6882230639457703
+            ],
+            "max": [
+              3.3256516456604004,
+              5.580672264099121,
+              0.8912289142608643
+            ]
+          }
+        },
+        {
+          "id": "cane_rib_0_1_6",
+          "bbox": {
+            "min": [
+              3.2856059074401855,
+              5.518827438354492,
+              0.6882239580154419
+            ],
+            "max": [
+              3.2968392372131348,
+              5.587610244750977,
+              0.8912279605865479
+            ]
+          }
+        },
+        {
+          "id": "cane_rib_1_0_1",
+          "bbox": {
+            "min": [
+              3.1868293285369873,
+              5.468103885650635,
+              0.4571751654148102
+            ],
+            "max": [
+              3.1972615718841553,
+              5.530371189117432,
+              0.6405088305473328
+            ]
+          }
+        },
+        {
+          "id": "cane_rib_1_0_2",
+          "bbox": {
+            "min": [
+              3.1581594944000244,
+              5.475235462188721,
+              0.45717620849609375
+            ],
+            "max": [
+              3.168532371520996,
+              5.537421703338623,
+              0.6405078768730164
+            ]
+          }
+        },
+        {
+          "id": "cane_rib_1_0_3",
+          "bbox": {
+            "min": [
+              3.1294896602630615,
+              5.482367038726807,
+              0.4571771025657654
+            ],
+            "max": [
+              3.139802932739258,
+              5.544471740722656,
+              0.6405068635940552
+            ]
+          }
+        },
+        {
+          "id": "cane_rib_1_0_4",
+          "bbox": {
+            "min": [
+              3.1008200645446777,
+              5.489498615264893,
+              0.45717811584472656
+            ],
+            "max": [
+              3.1110734939575195,
+              5.551522254943848,
+              0.6405059695243835
+            ]
+          }
+        },
+        {
+          "id": "cane_rib_1_0_5",
+          "bbox": {
+            "min": [
+              3.0721499919891357,
+              5.49662971496582,
+              0.45717906951904297
+            ],
+            "max": [
+              3.0823440551757812,
+              5.5585713386535645,
+              0.6405048966407776
+            ]
+          }
+        },
+        {
+          "id": "cane_rib_1_0_6",
+          "bbox": {
+            "min": [
+              3.043480634689331,
+              5.503760814666748,
+              0.4571800231933594
+            ],
+            "max": [
+              3.053614377975464,
+              5.565621852874756,
+              0.6405039429664612
+            ]
+          }
+        },
+        {
+          "id": "cane_rib_1_1_1",
+          "bbox": {
+            "min": [
+              3.193758249282837,
+              5.541284561157227,
+              0.6882270574569702
+            ],
+            "max": [
+              3.204780340194702,
+              5.6097798347473145,
+              0.8912248611450195
+            ]
+          }
+        },
+        {
+          "id": "cane_rib_1_1_2",
+          "bbox": {
+            "min": [
+              3.1650123596191406,
+              5.548313617706299,
+              0.6882281303405762
+            ],
+            "max": [
+              3.1759684085845947,
+              5.6167192459106445,
+              0.8912238478660583
+            ]
+          }
+        },
+        {
+          "id": "cane_rib_1_1_3",
+          "bbox": {
+            "min": [
+              3.136265993118286,
+              5.555342674255371,
+              0.6882290244102478
+            ],
+            "max": [
+              3.147156000137329,
+              5.623657703399658,
+              0.8912228941917419
+            ]
+          }
+        },
+        {
+          "id": "cane_rib_1_1_4",
+          "bbox": {
+            "min": [
+              3.1075198650360107,
+              5.562370777130127,
+              0.688230037689209
+            ],
+            "max": [
+              3.1183435916900635,
+              5.630596160888672,
+              0.8912220001220703
+            ]
+          }
+        },
+        {
+          "id": "cane_rib_1_1_5",
+          "bbox": {
+            "min": [
+              3.0787734985351562,
+              5.569399356842041,
+              0.6882309913635254
+            ],
+            "max": [
+              3.089531421661377,
+              5.6375346183776855,
+              0.8912209272384644
+            ]
+          }
+        },
+        {
+          "id": "cane_rib_1_1_6",
+          "bbox": {
+            "min": [
+              3.05002760887146,
+              5.576427936553955,
+              0.6882319450378418
+            ],
+            "max": [
+              3.060718536376953,
+              5.644473075866699,
+              0.891219973564148
+            ]
+          }
+        },
+        {
+          "id": "curved_arm_support_-1",
+          "bbox": {
+            "min": [
+              3.316164016723633,
+              4.778411388397217,
+              0.3967706859111786
+            ],
+            "max": [
+              3.352388620376587,
+              4.844081878662109,
+              0.6366060376167297
+            ]
+          }
+        },
+        {
+          "id": "curved_arm_support_1",
+          "bbox": {
+            "min": [
+              2.7456917762756348,
+              4.907067775726318,
+              0.3967706859111786
+            ],
+            "max": [
+              2.781916379928589,
+              4.972738265991211,
+              0.6366060376167297
+            ]
+          }
+        },
+        {
+          "id": "left_stile",
+          "bbox": {
+            "min": [
+              3.4559996128082275,
+              5.367249965667725,
+              0.4216773509979248
+            ],
+            "max": [
+              3.5181424617767334,
+              5.5680460929870605,
+              0.9267225861549377
             ]
           }
         },
@@ -9654,6 +10150,51 @@
           }
         },
         {
+          "id": "rear_arm_support_-1",
+          "bbox": {
+            "min": [
+              3.4258291721343994,
+              5.265211582183838,
+              0.41999998688697815
+            ],
+            "max": [
+              3.4585113525390625,
+              5.312501430511475,
+              0.6521196961402893
+            ]
+          }
+        },
+        {
+          "id": "rear_arm_support_1",
+          "bbox": {
+            "min": [
+              2.8553569316864014,
+              5.3938679695129395,
+              0.41999998688697815
+            ],
+            "max": [
+              2.8880391120910645,
+              5.441157817840576,
+              0.6521196961402893
+            ]
+          }
+        },
+        {
+          "id": "right_stile",
+          "bbox": {
+            "min": [
+              2.966651439666748,
+              5.489255905151367,
+              0.42183059453964233
+            ],
+            "max": [
+              3.0260884761810303,
+              5.68626070022583,
+              0.926569402217865
+            ]
+          }
+        },
+        {
           "id": "runner_-1",
           "bbox": {
             "min": [
@@ -9674,7 +10215,7 @@
             "min": [
               2.6662635803222656,
               4.580633163452148,
-              0.0010277852416038513
+              0.0010277871042490005
             ],
             "max": [
               2.9712343215942383,
@@ -9697,6 +10238,21 @@
               0.4487999975681305
             ]
           }
+        },
+        {
+          "id": "shaped_crest",
+          "bbox": {
+            "min": [
+              2.994494676589966,
+              5.519647121429443,
+              0.8806823492050171
+            ],
+            "max": [
+              3.5049238204956055,
+              5.680530548095703,
+              0.9582644104957581
+            ]
+          }
         }
       ],
       "relationships": [
@@ -9707,10 +10263,15 @@
           "support_region": "body",
           "metres": 0,
           "tolerance_m": 0.03
+        },
+        {
+          "type": "arm_diameter",
+          "with": "rocker",
+          "metres": 0.032
         }
       ],
       "ownership": {
-        "children": "external"
+        "children": "included"
       }
     }
   },
