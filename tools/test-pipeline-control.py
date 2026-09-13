@@ -145,12 +145,77 @@ printf 'rc=%s calls=%s\n' "$rc" "$(cat "$calls")"
         self.assertIn("rc=0 calls=2", result.stdout)
         self.assertIn("second invalid target from same stage ignored", result.stdout)
 
-    def test_detail_builder_references_entry_file_without_embedding_it(self):
+    def test_dense_detail_contract_does_not_expand_builder_request(self):
         pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
+        builder = pipeline.split("builder() {", 1)[1].split("\n}\ncritic()", 1)[0]
+        builder = "builder() {" + builder + "\n}"
         run_one_detail = pipeline.split("run_one_detail() {", 1)[1].split("\n}\nrun_detail()", 1)[0]
-        self.assertIn('Object entry file: state/entry_$id.json', run_one_detail)
-        self.assertIn("Read the complete JSON file before editing.", run_one_detail)
-        self.assertNotIn('$(cat "$entry")', run_one_detail)
+        run_one_detail = "run_one_detail() {" + run_one_detail + "\n}"
+        detail_helpers = "\n".join(
+            line
+            for line in pipeline.splitlines()
+            if line.startswith("detail_attempts()")
+            or line.startswith("detail_best()")
+            or line.startswith("write_check_verdict()")
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            state = root / "state"
+            prompts = root / "prompts"
+            assets = root / "assets"
+            (state / "attempts").mkdir(parents=True)
+            (state / "verdicts").mkdir()
+            (state / "crops").mkdir()
+            prompts.mkdir()
+            assets.mkdir()
+            detail_prompt = Path(__file__).parents[1].joinpath("prompts/detail_builder.md").read_text()
+            (prompts / "detail_builder.md").write_text(detail_prompt)
+            dense_contract = "x" * 1_100_000
+            (state / "objects.json").write_text(
+                '[{"id":"dense","crop_bbox":[0,0,1,1],"spatial_contract":{"mesh":"'
+                + dense_contract
+                + '"}}]'
+            )
+            (state / "records.tsv").write_text("")
+            (state / "progress.md").write_text("")
+            script = f'''set -uo pipefail
+ROOT={root!s}; STATE={state!s}; PROMPTS={prompts!s}; ASSETS={assets!s}; REQUEST_STAGE=; REQUEST_REASON=; BUILDER_GOTOS=0; ATTEMPT_SEQ=0
+log() {{ :; }}
+inbox() {{ :; }}
+next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
+score_of() {{ printf 8; }}
+record() {{ printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$1" "$2" "$3" "$4" "$5" "$6" "${{7:-}}" >> "$STATE/records.tsv"; }}
+valid_stage() {{ return 1; }}
+codex() {{
+  local arg previous= workdir=
+  for arg in "$@"; do
+    if [ "$previous" = -C ]; then workdir=$arg; break; fi
+    previous=$arg
+  done
+  [ "$workdir" = "$ROOT" ] || return 91
+  [ -s "$workdir/state/entry_dense.json" ] || return 92
+  tee "$STATE/request" | wc -m > "$STATE/request_chars"
+}}
+{builder}
+{detail_helpers}
+verify_detail() {{ DETAIL_FAILURE="asset check failed: expected in request-size test"; return 1; }}
+{run_one_detail}
+run_one_detail dense
+printf '%s %s\n' "$(wc -m < "$STATE/entry_dense.json")" "$(cat "$STATE/request_chars")"
+'''
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=10)
+            request = (state / "request").read_text()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        entry_chars, request_chars = map(int, result.stdout.split())
+        self.assertGreater(entry_chars, 1_048_576)
+        self.assertLess(request_chars, 4_096)
+        self.assertIn(
+            "\nOne-reentry correction context follows:\n"
+            "Object entry file: state/entry_dense.json\n"
+            "Read the complete JSON file before editing.\n",
+            request,
+        )
+        self.assertNotIn(dense_contract, request)
 
     def test_detail_gate_accepts_composed_workspace_texture_path(self):
         pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()

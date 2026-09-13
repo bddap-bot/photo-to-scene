@@ -98,7 +98,7 @@ run_identify() {
   cp "$STATE/attempts/identify_${bestdir}/objects.json" "$STATE/objects.json"; cp "$STATE/attempts/identify_${bestdir}/objects_sheet.png" "$STATE/objects_sheet.png"; command -v botq >/dev/null 2>&1 && botq notify-hub "photo-to-scene: objects sheet ready $STATE/objects_sheet.png" || true; inbox
 }
 run_one_detail() {
-  local id=$1 feedback=${2:-} force=${3:-0} entry="$STATE/entry_$1.json" best bestseq start score a verdict attempts marker limit contract_hash
+  local id=$1 feedback=${2:-} force=${3:-0} entry="$STATE/entry_$1.json" best bestseq start score a verdict attempts marker limit contract_hash detail_context
   jq --arg id "$id" '.[] | select(.id==$id)' "$STATE/objects.json" > "$entry"
   contract_hash=$(jq -cS '.spatial_contract' "$entry" | sha256sum | cut -d ' ' -f1)
   attempts=$(detail_attempts "$id" "$contract_hash"); best=$(detail_best "$id" "$contract_hash")
@@ -113,7 +113,9 @@ run_one_detail() {
   for ((a=attempts+1; a<=limit; a++)); do
     ACTIVE_STAGE="object:$id"
     next_attempt; start=$(date +%s); marker="$STATE/detail_${id}_${ATTEMPT_SEQ}.started"; touch "$marker"; log "ENTER object:$id attempt=$a sequence=$ATTEMPT_SEQ"; [ -L "$ASSETS/$id.py" ] && unlink "$ASSETS/$id.py"
-    builder detail_builder.md "Object entry file: state/entry_$id.json\nRead the complete JSON file before editing.\n$feedback" -i "$STATE/crops/$id.png" || return $?
+    printf -v detail_context 'Object entry file: state/entry_%s.json\nRead the complete JSON file before editing.' "$id"
+    [ -z "$feedback" ] || detail_context+=$'\n'"$feedback"
+    builder detail_builder.md "$detail_context" -i "$STATE/crops/$id.png" || return $?
     verdict="$STATE/verdicts/object_${id}_${ATTEMPT_SEQ}.json"
     if verify_detail "$id" "$marker"; then { cat "$PROMPTS/detail_critic.md"; printf '\nThe supplied object stage tag is object:%s.\n' "$id"; } | codex exec --ephemeral --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -C "$ROOT" --output-schema "$SCHEMA" -o "$verdict" -i "$STATE/crops/$id.png" "$STATE/detail_$id.png" - || return $?; else write_check_verdict "$verdict" "$id" "$DETAIL_FAILURE"; fi
     score=$(score_of "$verdict"); record "object:$id" "$a" "$score" "$(( $(date +%s)-start ))" "$feedback" "$verdict" "$contract_hash"; log "SCORE object:$id attempt=$a score=$score contract=$contract_hash"
