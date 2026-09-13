@@ -35,6 +35,11 @@
       "why": "JSON contracts and schemas must parse."
     },
     {
+      "paths": ["examples/*.png", "examples/**/*.png", "examples/*.jpg", "examples/**/*.jpg"],
+      "tests": ["nix-shell -p imagemagick --run 'find examples -type f \\( -name \"*.png\" -o -name \"*.jpg\" \\) -print0 | xargs -0 magick identify >/dev/null'"],
+      "why": "Worked-example image artifacts must be readable."
+    },
+    {
       "paths": ["*.md", "**/*.md", ".gitignore", "LICENSE-*"],
       "tests": [],
       "why": "Documentation, licenses, and local cache exclusions have no executable check."
