@@ -1,0 +1,624 @@
+{
+  "schema_version": "1.0",
+  "stage": "S1 FLOORPLAN",
+  "reference_image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+  "units": "metres",
+  "coordinate_convention": {
+    "origin": "southwest interior corner of provisional rectangular shell",
+    "x": "east, right in plan",
+    "y": "north, up in plan",
+    "z": "up from finished floor",
+    "north": "diagram convention only, geographic bearing unknown",
+    "rotation": "degrees counterclockwise from +x; furniture size is local x,y"
+  },
+  "inference_notice": "Single-view approximate reconstruction, not a measured survey. Hidden east/south walls are closure assumptions. No doorway is visible. Window divisions are inferred through curtains.",
+  "scale_anchor": {
+    "feature": "fireplace mantel",
+    "assumed_width_m": 1.88,
+    "assumed_height_m": 1.58,
+    "plausible_width_range_m": [
+      1.8,
+      2.3
+    ],
+    "confidence": "medium-low",
+    "evidence": "Mantel is approximately twice the nearby upholstered chair width in perspective; ornate tall surround supports a roughly 1.6 m shelf height. No known metric object is available. Refined within original plausible width interval using shelf endpoints; metric scale remains approximate. Refined within original plausible width interval using shelf endpoints; metric scale remains approximate."
+  },
+  "room": {
+    "polygon_m": [
+      [
+        0,
+        0
+      ],
+      [
+        7.2,
+        0
+      ],
+      [
+        7.2,
+        6.8
+      ],
+      [
+        0,
+        6.8
+      ]
+    ],
+    "wall_height_m": 3.9409255,
+    "wall_thickness_m": 0.25,
+    "dimension_evidence": {
+      "width": "7.2 m assumed hidden closure, expanded to contain the revised camera at x=6.36 m; east boundary is unconstrained by the photograph.",
+      "depth": "6.8 m provisional: fireplace projection, corner bookcase and foreground sofa require multiple furniture depth zones; south limit unseen.",
+      "height": "3.94 m joint camera/elevation fit to ceiling corner at pixel (1025,283) and portrait; provisional, not surveyed.",
+      "wall_thickness": "0.25 m drawing/model convention; hidden construction cannot be recovered."
+    },
+    "uncertainty_m": {
+      "width": 1.2,
+      "depth": 1.5,
+      "height": 0.5
+    }
+  },
+  "walls": [
+    {
+      "id": "W",
+      "label": "W \u2014 fireplace wall",
+      "start_m": [
+        0,
+        0
+      ],
+      "end_m": [
+        0,
+        6.8
+      ],
+      "height_m": 3.9409255,
+      "visibility": "partly visible",
+      "evidence": "Left wall panels and cornice recede to visible room corner."
+    },
+    {
+      "id": "N",
+      "label": "N \u2014 window wall",
+      "start_m": [
+        0,
+        6.8
+      ],
+      "end_m": [
+        7.2,
+        6.8
+      ],
+      "height_m": 3.9409255,
+      "visibility": "partly visible",
+      "evidence": "Right wall meets fireplace wall at visible corner; far right termination cropped."
+    },
+    {
+      "id": "E",
+      "label": "E \u2014 assumed boundary",
+      "start_m": [
+        7.2,
+        6.8
+      ],
+      "end_m": [
+        7.2,
+        0
+      ],
+      "height_m": 3.9409255,
+      "visibility": "unseen",
+      "evidence": "Rectangular closure only; no photographic evidence for position."
+    },
+    {
+      "id": "S",
+      "label": "S \u2014 assumed boundary",
+      "start_m": [
+        7.2,
+        0
+      ],
+      "end_m": [
+        0,
+        0
+      ],
+      "height_m": 3.9409255,
+      "visibility": "unseen",
+      "evidence": "Rectangular closure behind camera; no photographic evidence for position."
+    }
+  ],
+  "openings": [
+    {
+      "id": "window_group",
+      "wall_id": "N",
+      "type": "curtained window group",
+      "start_m": [
+        1.0,
+        6.8
+      ],
+      "end_m": [
+        5.9,
+        6.8
+      ],
+      "width_m": 4.9,
+      "sill_height_m": 0.8,
+      "head_height_m": 3.65,
+      "confidence": "low",
+      "inferred_division_x_m": [
+        2.7
+      ],
+      "evidence": "Two broad lace-covered light fields separated by a tied-back rust drape. Right edge cropped; neither sash layout nor exact opening count is recoverable. Width includes concealed intermediate framing."
+    }
+  ],
+  "fixed_features": [
+    {
+      "id": "chimney",
+      "label": "Chimney breast",
+      "center_m": [
+        0.19,
+        3.45
+      ],
+      "size_m": [
+        0.38,
+        2.7
+      ],
+      "height_m": 3.9409255,
+      "rotation_deg": 0,
+      "evidence": "Strong projecting vertical return to right of mantel; width includes surrounding panel. Depth estimated from visible side return.",
+      "confidence": "low",
+      "dimension_status": "inferred; approximate furniture envelope"
+    },
+    {
+      "id": "mantel",
+      "label": "Fireplace / mantel",
+      "center_m": [
+        0.52,
+        3.36
+      ],
+      "size_m": [
+        0.5,
+        1.88
+      ],
+      "height_m": 1.58,
+      "rotation_deg": 0,
+      "evidence": "Prominent carved surround on left wall; width is scale anchor. Shelf projects beyond breast. Revised shelf extent and elevation to match photographed endpoints after camera fit. Revised shelf extent and elevation to match photographed endpoints after camera fit.",
+      "confidence": "low",
+      "dimension_status": "inferred; approximate furniture envelope"
+    },
+    {
+      "id": "hearth",
+      "label": "Hearth",
+      "center_m": [
+        0.85,
+        3.45
+      ],
+      "size_m": [
+        0.6,
+        1.9
+      ],
+      "height_m": 0.06,
+      "rotation_deg": 0,
+      "evidence": "Dark floor-level fireplace edge partly hidden by sofa and fire tools.",
+      "confidence": "low",
+      "dimension_status": "inferred; approximate furniture envelope"
+    },
+    {
+      "id": "radiator",
+      "label": "Radiator zone",
+      "center_m": [
+        3.65,
+        6.61
+      ],
+      "size_m": [
+        4.1,
+        0.28
+      ],
+      "height_m": 0.7,
+      "rotation_deg": 0,
+      "evidence": "Grille visible below window sill behind chairs and draped table.",
+      "confidence": "low",
+      "dimension_status": "inferred; approximate furniture envelope"
+    }
+  ],
+  "wall_decor": [
+    {
+      "id": "portrait",
+      "wall_id": "W",
+      "center_m": [
+        0.4,
+        3.45,
+        2.9
+      ],
+      "width_m": 1.3,
+      "height_m": 1.95,
+      "evidence": "Large framed portrait centered directly over mantel; relative size estimated against mantel."
+    },
+    {
+      "id": "sconce",
+      "wall_id": "W",
+      "center_m": [
+        0.06,
+        5.45,
+        2.05
+      ],
+      "width_m": 0.28,
+      "height_m": 0.5,
+      "evidence": "Two lit shades over corner bookcase, between chimney and corner."
+    }
+  ],
+  "furniture_zones": [
+    {
+      "id": "rug",
+      "label": "Persian rug",
+      "center_m": [
+        3.65,
+        3.65
+      ],
+      "size_m": [
+        5.4,
+        5.5
+      ],
+      "height_m": 0.015,
+      "rotation_deg": 0,
+      "evidence": "Large patterned rug covers central seating floor; foreground and right edges cropped.",
+      "confidence": "low",
+      "dimension_status": "inferred; approximate furniture envelope"
+    },
+    {
+      "id": "sofa",
+      "label": "Foreground sofa",
+      "center_m": [
+        3.9563,
+        2.4015
+      ],
+      "size_m": [
+        3.0,
+        1.05
+      ],
+      "height_m": 0.95,
+      "rotation_deg": -12,
+      "evidence": "Large curved upholstered back crosses foreground and occludes hearth; long axis approximately toward window wall. Position revised using projected image ordering and wall clearance; furniture envelopes are approximate, not recovered meshes. Position revised using projected image ordering and wall clearance; furniture envelopes are approximate, not recovered meshes.",
+      "confidence": "low",
+      "dimension_status": "inferred; approximate furniture envelope"
+    },
+    {
+      "id": "desk",
+      "label": "Foreground desk",
+      "center_m": [
+        2.7241,
+        1.65
+      ],
+      "size_m": [
+        1.8,
+        0.9
+      ],
+      "height_m": 0.8,
+      "rotation_deg": 0,
+      "evidence": "Dark tabletop with bowl and papers at lower left, behind sofa from camera view. Position revised using projected image ordering and wall clearance; furniture envelopes are approximate, not recovered meshes. Position revised using projected image ordering and wall clearance; furniture envelopes are approximate, not recovered meshes.",
+      "confidence": "low",
+      "dimension_status": "inferred; approximate furniture envelope"
+    },
+    {
+      "id": "bookcase",
+      "label": "Bookcase",
+      "center_m": [
+        0.35,
+        5.65
+      ],
+      "size_m": [
+        0.7,
+        0.9
+      ],
+      "height_m": 1.15,
+      "rotation_deg": 0,
+      "evidence": "Narrow bookcase sits against fireplace wall beyond chimney. Position revised using projected image ordering and wall clearance; furniture envelopes are approximate, not recovered meshes. Position revised using projected image ordering and wall clearance; furniture envelopes are approximate, not recovered meshes.",
+      "confidence": "low",
+      "dimension_status": "inferred; approximate furniture envelope"
+    },
+    {
+      "id": "globe",
+      "label": "Globe",
+      "center_m": [
+        0.3567,
+        4.7981
+      ],
+      "size_m": [
+        0.42,
+        0.42
+      ],
+      "height_m": 0.95,
+      "rotation_deg": 0,
+      "evidence": "Small floor globe between hearth and bookcase. Position revised using projected image ordering and wall clearance; furniture envelopes are approximate, not recovered meshes. Position revised using projected image ordering and wall clearance; furniture envelopes are approximate, not recovered meshes.",
+      "confidence": "low",
+      "dimension_status": "inferred; approximate furniture envelope"
+    },
+    {
+      "id": "gold_chair",
+      "label": "Gold chair",
+      "center_m": [
+        1.9849,
+        4.6945
+      ],
+      "size_m": [
+        0.82,
+        0.86
+      ],
+      "height_m": 1.05,
+      "rotation_deg": 0,
+      "evidence": "Front-facing gold chair overlaps corner bookcase; standard chair width anchors furniture sizes. Position revised using projected image ordering and wall clearance; furniture envelopes are approximate, not recovered meshes. Position revised using projected image ordering and wall clearance; furniture envelopes are approximate, not recovered meshes.",
+      "confidence": "low",
+      "dimension_status": "inferred; approximate furniture envelope"
+    },
+    {
+      "id": "red_chair",
+      "label": "Red chair",
+      "center_m": [
+        2.0304,
+        5.85
+      ],
+      "size_m": [
+        0.7,
+        0.65
+      ],
+      "height_m": 1.05,
+      "rotation_deg": 0,
+      "evidence": "Red chair behind small round table, adjacent to lace curtains. Position revised using projected image ordering and wall clearance; furniture envelopes are approximate, not recovered meshes. Position revised using projected image ordering and wall clearance; furniture envelopes are approximate, not recovered meshes.",
+      "confidence": "low",
+      "dimension_status": "inferred; approximate furniture envelope"
+    },
+    {
+      "id": "lamp_table",
+      "label": "Lamp / side table",
+      "center_m": [
+        1.4062,
+        5.9
+      ],
+      "size_m": [
+        0.62,
+        0.55
+      ],
+      "height_m": 0.75,
+      "rotation_deg": 0,
+      "evidence": "Small table and lamp behind gold chair; lamp top approximately 1.55 m. Position revised using projected image ordering and wall clearance; furniture envelopes are approximate, not recovered meshes. Position revised using projected image ordering and wall clearance; furniture envelopes are approximate, not recovered meshes.",
+      "confidence": "low",
+      "dimension_status": "inferred; approximate furniture envelope"
+    },
+    {
+      "id": "round_table",
+      "label": "Round table",
+      "center_m": [
+        2.05,
+        5.16
+      ],
+      "size_m": [
+        0.55,
+        0.55
+      ],
+      "height_m": 0.72,
+      "rotation_deg": 0,
+      "evidence": "Small pedestal table between upholstered chair and rocker. Position revised using projected image ordering and wall clearance; furniture envelopes are approximate, not recovered meshes. Position revised using projected image ordering and wall clearance; furniture envelopes are approximate, not recovered meshes.",
+      "confidence": "low",
+      "dimension_status": "inferred; approximate furniture envelope"
+    },
+    {
+      "id": "rocker",
+      "label": "Rocking chair",
+      "center_m": [
+        3.1869,
+        5.0957
+      ],
+      "size_m": [
+        0.68,
+        0.95
+      ],
+      "height_m": 1.15,
+      "rotation_deg": -25,
+      "evidence": "Cane rocking chair sits nearest camera in central group, angled toward fireplace. Position revised using projected image ordering and wall clearance; furniture envelopes are approximate, not recovered meshes. Position revised using projected image ordering and wall clearance; furniture envelopes are approximate, not recovered meshes. Envelope refined to 0.68 by 0.95 m to leave a 138 px floor margin in projection; depth is the runner footprint.",
+      "confidence": "low",
+      "dimension_status": "inferred; approximate furniture envelope"
+    },
+    {
+      "id": "display_table",
+      "label": "Draped table",
+      "center_m": [
+        3.0551,
+        6.25
+      ],
+      "size_m": [
+        1.3,
+        0.64
+      ],
+      "height_m": 0.78,
+      "rotation_deg": 0,
+      "evidence": "Table with two frames and statue immediately in front of windows. Position revised using projected image ordering and wall clearance; furniture envelopes are approximate, not recovered meshes. Position revised using projected image ordering and wall clearance; furniture envelopes are approximate, not recovered meshes.",
+      "confidence": "low",
+      "dimension_status": "inferred; approximate furniture envelope"
+    },
+    {
+      "id": "orange_chair",
+      "label": "Orange chair",
+      "center_m": [
+        4.0198,
+        5.95
+      ],
+      "size_m": [
+        1.05,
+        0.95
+      ],
+      "height_m": 1.0,
+      "rotation_deg": 0,
+      "evidence": "Rightmost upholstered chair partly cropped; inferred width from seat and arm. Position revised using projected image ordering and wall clearance; furniture envelopes are approximate, not recovered meshes. Position revised using projected image ordering and wall clearance; furniture envelopes are approximate, not recovered meshes.",
+      "confidence": "low",
+      "dimension_status": "inferred; approximate furniture envelope"
+    },
+    {
+      "id": "stool",
+      "label": "Footstool",
+      "center_m": [
+        4.0943,
+        5.2
+      ],
+      "size_m": [
+        0.7,
+        0.43
+      ],
+      "height_m": 0.28,
+      "rotation_deg": 0,
+      "evidence": "Low footstool visible beneath and ahead of right chair. Position revised using projected image ordering and wall clearance; furniture envelopes are approximate, not recovered meshes. Position revised using projected image ordering and wall clearance; furniture envelopes are approximate, not recovered meshes.",
+      "confidence": "low",
+      "dimension_status": "inferred; approximate furniture envelope"
+    }
+  ],
+  "camera": {
+    "position_m": [
+      6.355652,
+      1.198827,
+      1.502798
+    ],
+    "target_m": [
+      2.34229,
+      4.179364,
+      1.599364
+    ],
+    "up": [
+      0,
+      0,
+      1
+    ],
+    "focal_length_mm": 31.8241336,
+    "sensor_width_mm": 36,
+    "sensor_height_mm": 28.524479459763647,
+    "horizontal_fov_deg": 58.98573750040917,
+    "image_size_px": [
+      1777,
+      1408
+    ],
+    "projection": "perspective",
+    "confidence": "low",
+    "evidence": "Joint approximate pinhole fit to mantel, framed portrait and visible ceiling corner. Small 1.11 degree upward tilt replaces earlier 4.4 degree tilt. Lens is inferred full-frame equivalent, not EXIF. Principal point at image center; zero roll; no lens shift.",
+    "vertical_fov_deg": 48.279836334831685,
+    "pitch_deg": 1.1066408918506314
+  },
+  "occlusion_constraints": [
+    "Sofa is in front of fireplace lower edge and central seating.",
+    "Gold chair is in front of bookcase.",
+    "Rocking chair is in front of draped table and red chair.",
+    "Draped table and orange chair stand in front of window sill."
+  ],
+  "assumptions": [
+    "Room is orthogonal with flat ceiling and projecting chimney breast.",
+    "Window wall continues outside right crop; room boundary is provisional.",
+    "All dimensions are inferred; furniture positions may vary approximately 0.3\u20130.6 m.",
+    "Do not interpret the absence of visible doors as a doorless room."
+  ],
+  "projection_validation": {
+    "method": "Pinhole projection with square pixels, centered principal point. Furniture boxes are conservative envelopes, not silhouette matches.",
+    "checks": [
+      {
+        "id": "ceiling_corner",
+        "world_point_m": [
+          0,
+          6.8,
+          3.9409255
+        ],
+        "reference_pixel": [
+          1025,
+          283
+        ],
+        "projected_pixel": [
+          1019.42,
+          283.01
+        ]
+      },
+      {
+        "id": "mantel_left",
+        "world_point_m": [
+          0.77,
+          2.42,
+          1.58
+        ],
+        "reference_pixel": [
+          180,
+          710
+        ],
+        "projected_pixel": [
+          180.38,
+          711.08
+        ]
+      },
+      {
+        "id": "mantel_right",
+        "world_point_m": [
+          0.77,
+          4.3,
+          1.58
+        ],
+        "reference_pixel": [
+          675,
+          715
+        ],
+        "projected_pixel": [
+          680.02,
+          715.19
+        ]
+      },
+      {
+        "id": "gold_chair",
+        "projected_center_pixel": [
+          945.01,
+          1010.0
+        ],
+        "projected_envelope_bbox_px": [
+          780.02,
+          849.67,
+          1114.57,
+          1208.7
+        ]
+      },
+      {
+        "id": "red_chair",
+        "projected_center_pixel": [
+          1180.01,
+          981.12
+        ],
+        "projected_envelope_bbox_px": [
+          1058.85,
+          840.36,
+          1305.01,
+          1145.65
+        ]
+      },
+      {
+        "id": "rocker",
+        "projected_center_pixel": [
+          1290.0,
+          1035.0
+        ],
+        "projected_envelope_bbox_px": [
+          1105.95,
+          839.17,
+          1493.95,
+          1269.88
+        ]
+      },
+      {
+        "id": "display_table",
+        "projected_center_pixel": [
+          1470.0,
+          1044.41
+        ],
+        "projected_envelope_bbox_px": [
+          1267.7,
+          912.94,
+          1698.13,
+          1214.37
+        ]
+      },
+      {
+        "id": "orange_chair",
+        "projected_center_pixel": [
+          1700.0,
+          1070.45
+        ],
+        "projected_envelope_bbox_px": [
+          1449.62,
+          880.58,
+          1966.7,
+          1328.56
+        ]
+      }
+    ],
+    "limitations": "Furniture vertical framing remains approximate; right chair is intentionally cropped. Architectural landmark agreement does not resolve single-view scale ambiguity."
+  }
+}
