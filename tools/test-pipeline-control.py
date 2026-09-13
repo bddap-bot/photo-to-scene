@@ -1,3 +1,5 @@
+import os
+import shlex
 import subprocess
 import tempfile
 import unittest
@@ -149,6 +151,47 @@ printf 'rc=%s calls=%s\n' "$rc" "$(cat "$calls")"
         self.assertIn('Object entry file: state/entry_$id.json', run_one_detail)
         self.assertIn("Read the complete JSON file before editing.", run_one_detail)
         self.assertNotIn('$(cat "$entry")', run_one_detail)
+
+    def test_detail_gate_accepts_composed_workspace_texture_path(self):
+        pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
+        verify_detail = pipeline.split("verify_detail() {", 1)[1].split("\n}\nwrite_check_verdict()", 1)[0]
+        verify_detail = "verify_detail() {" + verify_detail + "\n}"
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            assets = root / "assets"
+            state = root / "state"
+            textures = root / "textures"
+            assets.mkdir()
+            state.mkdir()
+            textures.mkdir()
+            (assets / "generic.py").write_text("def build(entry, collection=None): return []\n")
+            (assets / "sheer.py").write_text(
+                "from pathlib import Path\n"
+                "def build(entry, collection=None):\n"
+                "    return bpy.data.images.load(str(Path(__file__).resolve().parents[1] / 'textures/lace.png'))\n"
+            )
+            (textures / "lace.png").write_bytes(b"texture")
+            marker = state / "detail_sheer_1.started"
+            render = state / "detail_sheer.png"
+            marker.write_text("")
+            render.write_text("render")
+            os.utime(marker, (1, 1))
+            os.utime(render, (2, 2))
+            script = f'''set -uo pipefail
+PIPELINE_DIR={shlex.quote(str(Path(__file__).parents[1]))}
+ASSETS={shlex.quote(str(assets))}
+STATE={shlex.quote(str(state))}
+TEXTURES={shlex.quote(str(textures))}
+{verify_detail}
+if verify_detail sheer "$STATE/detail_sheer_1.started"; then
+  printf 'PASS\\n'
+else
+  printf 'FAIL: %s\\n' "$DETAIL_FAILURE"
+fi
+'''
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=30)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout, "PASS\n")
 
     def test_materials_gate_failure_is_scored_and_saved(self):
         pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()

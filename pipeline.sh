@@ -76,7 +76,7 @@ verify_detail() {
   while IFS= read -r other; do [ "$other" = "$asset" ] && continue; [ "$other" = "$ASSETS/generic.py" ] && continue; if cmp -s "$asset" "$other"; then DETAIL_FAILURE="asset check failed: assets/$id.py is byte-identical to ${other##*/}"; return 1; fi; done < <(find "$ASSETS" -maxdepth 1 \( -type f -o -type l \) -name '*.py' | sort)
   if ! grep -Eq '^def[[:space:]]+build\(' "$asset"; then DETAIL_FAILURE="asset check failed: assets/$id.py does not define build(entry, collection=None)"; return 1; fi
   if grep -Eq '(/home/|/Users/)|(^|[^A-Za-z])\.\./' "$asset"; then DETAIL_FAILURE="asset check failed: texture reference escapes ROOT/textures"; return 1; fi
-  while IFS= read -r ref; do case "$ref" in "$TEXTURES"/*) ;; *) DETAIL_FAILURE="asset check failed: texture reference $ref is outside ROOT/textures"; return 1 ;; esac; done < <(grep -Eo '/[^"'"'"'[:space:]]+\.(jpg|jpeg|png|exr|hdr|tif|tiff)' "$asset" || true)
+  while IFS= read -r ref; do case "$ref" in "$TEXTURES"/*) ;; *) DETAIL_FAILURE="asset check failed: texture reference $ref is outside ROOT/textures"; return 1 ;; esac; done < <(grep -Eo '["'"'"']/[^"'"'"'[:space:]]+\.(jpg|jpeg|png|exr|hdr|tif|tiff)' "$asset" | cut -c 2- || true)
   if [ ! -f "$STATE/detail_$id.png" ] || [ ! "$STATE/detail_$id.png" -nt "$marker" ]; then DETAIL_FAILURE="asset check failed: state/detail_$id.png is not a fresh render from this builder attempt"; return 1; fi
 }
 write_check_verdict() { local path=$1 id=$2 failure=$3; jq -n --arg summary "$failure" --arg stage "object:$id" '{score:0,summary:$summary,corrections:[$summary],top_stage:$stage,wrong_labels:[],missing_objects:[]}' > "$path"; }
