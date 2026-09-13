@@ -2568,7 +2568,7 @@
   },
   {
     "id": "sheer_0",
-    "label": "Luminous lace curtain field",
+    "label": "Left lace curtain field including folds",
     "crop_bbox": [
       4060,
       1300,
@@ -2588,7 +2588,7 @@
       ]
     },
     "contact": "curtain rail",
-    "material_note": "glass; neutral blockout; Luminous lace curtain field",
+    "material_note": "Translucent white patterned lace textile",
     "confidence": 0.65,
     "shape": "box",
     "spatial_contract": {
@@ -2610,7 +2610,8 @@
           ]
         },
         "interpretation": "Luminous lace curtain field visible in annotated source crop; depth inferred from floorplan.",
-        "blockout_revision": "Rail source endpoints approximately (1158,400) and (1777,285), inspection pixels, establish a lower head than S1. Opening head revised to 3.12 m; no resolved exterior objects."
+        "blockout_revision": "Rail source endpoints approximately (1158,400) and (1777,285), inspection pixels, establish a lower head than S1. Opening head revised to 3.12 m; no resolved exterior objects.",
+        "identify_note": "Repeated fold context crops consolidated into this visible textile field."
       },
       "frame": {
         "origin_xyz": [
@@ -2673,7 +2674,7 @@
       ],
       "relationships": [],
       "ownership": {
-        "children": "external"
+        "children": "included"
       },
       "appearance": {
         "aperture_background": "source_visible",
@@ -2683,1895 +2684,8 @@
     }
   },
   {
-    "id": "lace_fold_0_1",
-    "label": "Lace curtain vertical fold",
-    "crop_bbox": [
-      4060,
-      1300,
-      606,
-      1678
-    ],
-    "bbox": {
-      "min": [
-        1.0899444444444446,
-        6.742,
-        0.8
-      ],
-      "max": [
-        1.0989444444444445,
-        6.7540000000000004,
-        3.05
-      ]
-    },
-    "contact": "curtain rail",
-    "material_note": "paper; neutral blockout; Lace curtain vertical fold",
-    "confidence": 0.65,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            4060,
-            1300
-          ],
-          "extent_bottom_right": [
-            4666,
-            2978
-          ]
-        },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Context crop; individual fold correspondence uncertain."
-      },
-      "frame": {
-        "origin_xyz": [
-          1.0944444444444446,
-          6.748,
-          0.8
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.009,
-          0.012,
-          2.25
-        ]
-      },
-      "footprint_xy": [
-        [
-          1.0989444444444445,
-          6.7540000000000004
-        ],
-        [
-          1.0899444444444446,
-          6.7540000000000004
-        ],
-        [
-          1.0899444444444446,
-          6.742
-        ],
-        [
-          1.0989444444444445,
-          6.742
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              1.0899444444444446,
-              6.742,
-              0.8
-            ],
-            "max": [
-              1.0989444444444445,
-              6.7540000000000004,
-              3.05
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "lace_fold_0_2",
-    "label": "Lace curtain vertical fold",
-    "crop_bbox": [
-      4060,
-      1300,
-      606,
-      1678
-    ],
-    "bbox": {
-      "min": [
-        1.184388888888889,
-        6.742,
-        0.8
-      ],
-      "max": [
-        1.1933888888888888,
-        6.7540000000000004,
-        3.05
-      ]
-    },
-    "contact": "curtain rail",
-    "material_note": "paper; neutral blockout; Lace curtain vertical fold",
-    "confidence": 0.65,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            4060,
-            1300
-          ],
-          "extent_bottom_right": [
-            4666,
-            2978
-          ]
-        },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Context crop; individual fold correspondence uncertain."
-      },
-      "frame": {
-        "origin_xyz": [
-          1.1888888888888889,
-          6.748,
-          0.8
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.009,
-          0.012,
-          2.25
-        ]
-      },
-      "footprint_xy": [
-        [
-          1.1933888888888888,
-          6.7540000000000004
-        ],
-        [
-          1.184388888888889,
-          6.7540000000000004
-        ],
-        [
-          1.184388888888889,
-          6.742
-        ],
-        [
-          1.1933888888888888,
-          6.742
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              1.184388888888889,
-              6.742,
-              0.8
-            ],
-            "max": [
-              1.1933888888888888,
-              6.7540000000000004,
-              3.05
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "lace_fold_0_3",
-    "label": "Lace curtain vertical fold",
-    "crop_bbox": [
-      4060,
-      1300,
-      606,
-      1678
-    ],
-    "bbox": {
-      "min": [
-        1.2788333333333335,
-        6.742,
-        0.8
-      ],
-      "max": [
-        1.2878333333333334,
-        6.7540000000000004,
-        3.05
-      ]
-    },
-    "contact": "curtain rail",
-    "material_note": "paper; neutral blockout; Lace curtain vertical fold",
-    "confidence": 0.65,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            4060,
-            1300
-          ],
-          "extent_bottom_right": [
-            4666,
-            2978
-          ]
-        },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Context crop; individual fold correspondence uncertain."
-      },
-      "frame": {
-        "origin_xyz": [
-          1.2833333333333334,
-          6.748,
-          0.8
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.009,
-          0.012,
-          2.25
-        ]
-      },
-      "footprint_xy": [
-        [
-          1.2878333333333334,
-          6.7540000000000004
-        ],
-        [
-          1.2788333333333335,
-          6.7540000000000004
-        ],
-        [
-          1.2788333333333335,
-          6.742
-        ],
-        [
-          1.2878333333333334,
-          6.742
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              1.2788333333333335,
-              6.742,
-              0.8
-            ],
-            "max": [
-              1.2878333333333334,
-              6.7540000000000004,
-              3.05
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "lace_fold_0_4",
-    "label": "Lace curtain vertical fold",
-    "crop_bbox": [
-      4060,
-      1300,
-      606,
-      1678
-    ],
-    "bbox": {
-      "min": [
-        1.3732777777777778,
-        6.742,
-        0.8
-      ],
-      "max": [
-        1.3822777777777777,
-        6.7540000000000004,
-        3.05
-      ]
-    },
-    "contact": "curtain rail",
-    "material_note": "paper; neutral blockout; Lace curtain vertical fold",
-    "confidence": 0.65,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            4060,
-            1300
-          ],
-          "extent_bottom_right": [
-            4666,
-            2978
-          ]
-        },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Context crop; individual fold correspondence uncertain."
-      },
-      "frame": {
-        "origin_xyz": [
-          1.3777777777777778,
-          6.748,
-          0.8
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.009,
-          0.012,
-          2.25
-        ]
-      },
-      "footprint_xy": [
-        [
-          1.3822777777777777,
-          6.7540000000000004
-        ],
-        [
-          1.3732777777777778,
-          6.7540000000000004
-        ],
-        [
-          1.3732777777777778,
-          6.742
-        ],
-        [
-          1.3822777777777777,
-          6.742
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              1.3732777777777778,
-              6.742,
-              0.8
-            ],
-            "max": [
-              1.3822777777777777,
-              6.7540000000000004,
-              3.05
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "lace_fold_0_5",
-    "label": "Lace curtain vertical fold",
-    "crop_bbox": [
-      4060,
-      1300,
-      606,
-      1678
-    ],
-    "bbox": {
-      "min": [
-        1.4677222222222224,
-        6.742,
-        0.8
-      ],
-      "max": [
-        1.4767222222222223,
-        6.7540000000000004,
-        3.05
-      ]
-    },
-    "contact": "curtain rail",
-    "material_note": "paper; neutral blockout; Lace curtain vertical fold",
-    "confidence": 0.65,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            4060,
-            1300
-          ],
-          "extent_bottom_right": [
-            4666,
-            2978
-          ]
-        },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Context crop; individual fold correspondence uncertain."
-      },
-      "frame": {
-        "origin_xyz": [
-          1.4722222222222223,
-          6.748,
-          0.8
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.009,
-          0.012,
-          2.25
-        ]
-      },
-      "footprint_xy": [
-        [
-          1.4767222222222223,
-          6.7540000000000004
-        ],
-        [
-          1.4677222222222224,
-          6.7540000000000004
-        ],
-        [
-          1.4677222222222224,
-          6.742
-        ],
-        [
-          1.4767222222222223,
-          6.742
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              1.4677222222222224,
-              6.742,
-              0.8
-            ],
-            "max": [
-              1.4767222222222223,
-              6.7540000000000004,
-              3.05
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "lace_fold_0_6",
-    "label": "Lace curtain vertical fold",
-    "crop_bbox": [
-      4060,
-      1300,
-      606,
-      1678
-    ],
-    "bbox": {
-      "min": [
-        1.562166666666667,
-        6.742,
-        0.8
-      ],
-      "max": [
-        1.5711666666666668,
-        6.7540000000000004,
-        3.05
-      ]
-    },
-    "contact": "curtain rail",
-    "material_note": "paper; neutral blockout; Lace curtain vertical fold",
-    "confidence": 0.65,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            4060,
-            1300
-          ],
-          "extent_bottom_right": [
-            4666,
-            2978
-          ]
-        },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Context crop; individual fold correspondence uncertain."
-      },
-      "frame": {
-        "origin_xyz": [
-          1.5666666666666669,
-          6.748,
-          0.8
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.009,
-          0.012,
-          2.25
-        ]
-      },
-      "footprint_xy": [
-        [
-          1.5711666666666668,
-          6.7540000000000004
-        ],
-        [
-          1.562166666666667,
-          6.7540000000000004
-        ],
-        [
-          1.562166666666667,
-          6.742
-        ],
-        [
-          1.5711666666666668,
-          6.742
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              1.562166666666667,
-              6.742,
-              0.8
-            ],
-            "max": [
-              1.5711666666666668,
-              6.7540000000000004,
-              3.05
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "lace_fold_0_7",
-    "label": "Lace curtain vertical fold",
-    "crop_bbox": [
-      4060,
-      1300,
-      606,
-      1678
-    ],
-    "bbox": {
-      "min": [
-        1.6566111111111113,
-        6.742,
-        0.8
-      ],
-      "max": [
-        1.6656111111111112,
-        6.7540000000000004,
-        3.05
-      ]
-    },
-    "contact": "curtain rail",
-    "material_note": "paper; neutral blockout; Lace curtain vertical fold",
-    "confidence": 0.65,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            4060,
-            1300
-          ],
-          "extent_bottom_right": [
-            4666,
-            2978
-          ]
-        },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Context crop; individual fold correspondence uncertain."
-      },
-      "frame": {
-        "origin_xyz": [
-          1.6611111111111112,
-          6.748,
-          0.8
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.009,
-          0.012,
-          2.25
-        ]
-      },
-      "footprint_xy": [
-        [
-          1.6656111111111112,
-          6.7540000000000004
-        ],
-        [
-          1.6566111111111113,
-          6.7540000000000004
-        ],
-        [
-          1.6566111111111113,
-          6.742
-        ],
-        [
-          1.6656111111111112,
-          6.742
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              1.6566111111111113,
-              6.742,
-              0.8
-            ],
-            "max": [
-              1.6656111111111112,
-              6.7540000000000004,
-              3.05
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "lace_fold_0_8",
-    "label": "Lace curtain vertical fold",
-    "crop_bbox": [
-      4060,
-      1300,
-      606,
-      1678
-    ],
-    "bbox": {
-      "min": [
-        1.7510555555555556,
-        6.742,
-        0.8
-      ],
-      "max": [
-        1.7600555555555555,
-        6.7540000000000004,
-        3.05
-      ]
-    },
-    "contact": "curtain rail",
-    "material_note": "paper; neutral blockout; Lace curtain vertical fold",
-    "confidence": 0.65,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            4060,
-            1300
-          ],
-          "extent_bottom_right": [
-            4666,
-            2978
-          ]
-        },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Context crop; individual fold correspondence uncertain."
-      },
-      "frame": {
-        "origin_xyz": [
-          1.7555555555555555,
-          6.748,
-          0.8
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.009,
-          0.012,
-          2.25
-        ]
-      },
-      "footprint_xy": [
-        [
-          1.7600555555555555,
-          6.7540000000000004
-        ],
-        [
-          1.7510555555555556,
-          6.7540000000000004
-        ],
-        [
-          1.7510555555555556,
-          6.742
-        ],
-        [
-          1.7600555555555555,
-          6.742
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              1.7510555555555556,
-              6.742,
-              0.8
-            ],
-            "max": [
-              1.7600555555555555,
-              6.7540000000000004,
-              3.05
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "lace_fold_0_9",
-    "label": "Lace curtain vertical fold",
-    "crop_bbox": [
-      4060,
-      1300,
-      606,
-      1678
-    ],
-    "bbox": {
-      "min": [
-        1.8455000000000001,
-        6.742,
-        0.8
-      ],
-      "max": [
-        1.8545,
-        6.7540000000000004,
-        3.05
-      ]
-    },
-    "contact": "curtain rail",
-    "material_note": "paper; neutral blockout; Lace curtain vertical fold",
-    "confidence": 0.65,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            4060,
-            1300
-          ],
-          "extent_bottom_right": [
-            4666,
-            2978
-          ]
-        },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Context crop; individual fold correspondence uncertain."
-      },
-      "frame": {
-        "origin_xyz": [
-          1.85,
-          6.748,
-          0.8
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.009,
-          0.012,
-          2.25
-        ]
-      },
-      "footprint_xy": [
-        [
-          1.8545,
-          6.7540000000000004
-        ],
-        [
-          1.8455000000000001,
-          6.7540000000000004
-        ],
-        [
-          1.8455000000000001,
-          6.742
-        ],
-        [
-          1.8545,
-          6.742
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              1.8455000000000001,
-              6.742,
-              0.8
-            ],
-            "max": [
-              1.8545,
-              6.7540000000000004,
-              3.05
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "lace_fold_0_10",
-    "label": "Lace curtain vertical fold",
-    "crop_bbox": [
-      4060,
-      1300,
-      606,
-      1678
-    ],
-    "bbox": {
-      "min": [
-        1.9399444444444445,
-        6.742,
-        0.8
-      ],
-      "max": [
-        1.9489444444444444,
-        6.7540000000000004,
-        3.05
-      ]
-    },
-    "contact": "curtain rail",
-    "material_note": "paper; neutral blockout; Lace curtain vertical fold",
-    "confidence": 0.65,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            4060,
-            1300
-          ],
-          "extent_bottom_right": [
-            4666,
-            2978
-          ]
-        },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Context crop; individual fold correspondence uncertain."
-      },
-      "frame": {
-        "origin_xyz": [
-          1.9444444444444444,
-          6.748,
-          0.8
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.009,
-          0.012,
-          2.25
-        ]
-      },
-      "footprint_xy": [
-        [
-          1.9489444444444444,
-          6.7540000000000004
-        ],
-        [
-          1.9399444444444445,
-          6.7540000000000004
-        ],
-        [
-          1.9399444444444445,
-          6.742
-        ],
-        [
-          1.9489444444444444,
-          6.742
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              1.9399444444444445,
-              6.742,
-              0.8
-            ],
-            "max": [
-              1.9489444444444444,
-              6.7540000000000004,
-              3.05
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "lace_fold_0_11",
-    "label": "Lace curtain vertical fold",
-    "crop_bbox": [
-      4060,
-      1300,
-      606,
-      1678
-    ],
-    "bbox": {
-      "min": [
-        2.0343888888888886,
-        6.742,
-        0.8
-      ],
-      "max": [
-        2.043388888888889,
-        6.7540000000000004,
-        3.05
-      ]
-    },
-    "contact": "curtain rail",
-    "material_note": "paper; neutral blockout; Lace curtain vertical fold",
-    "confidence": 0.65,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            4060,
-            1300
-          ],
-          "extent_bottom_right": [
-            4666,
-            2978
-          ]
-        },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Context crop; individual fold correspondence uncertain."
-      },
-      "frame": {
-        "origin_xyz": [
-          2.0388888888888888,
-          6.748,
-          0.8
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.009,
-          0.012,
-          2.25
-        ]
-      },
-      "footprint_xy": [
-        [
-          2.043388888888889,
-          6.7540000000000004
-        ],
-        [
-          2.0343888888888886,
-          6.7540000000000004
-        ],
-        [
-          2.0343888888888886,
-          6.742
-        ],
-        [
-          2.043388888888889,
-          6.742
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              2.0343888888888886,
-              6.742,
-              0.8
-            ],
-            "max": [
-              2.043388888888889,
-              6.7540000000000004,
-              3.05
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "lace_fold_0_12",
-    "label": "Lace curtain vertical fold",
-    "crop_bbox": [
-      4060,
-      1300,
-      606,
-      1678
-    ],
-    "bbox": {
-      "min": [
-        2.1288333333333336,
-        6.742,
-        0.8
-      ],
-      "max": [
-        2.137833333333334,
-        6.7540000000000004,
-        3.05
-      ]
-    },
-    "contact": "curtain rail",
-    "material_note": "paper; neutral blockout; Lace curtain vertical fold",
-    "confidence": 0.65,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            4060,
-            1300
-          ],
-          "extent_bottom_right": [
-            4666,
-            2978
-          ]
-        },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Context crop; individual fold correspondence uncertain."
-      },
-      "frame": {
-        "origin_xyz": [
-          2.1333333333333337,
-          6.748,
-          0.8
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.009,
-          0.012,
-          2.25
-        ]
-      },
-      "footprint_xy": [
-        [
-          2.137833333333334,
-          6.7540000000000004
-        ],
-        [
-          2.1288333333333336,
-          6.7540000000000004
-        ],
-        [
-          2.1288333333333336,
-          6.742
-        ],
-        [
-          2.137833333333334,
-          6.742
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              2.1288333333333336,
-              6.742,
-              0.8
-            ],
-            "max": [
-              2.137833333333334,
-              6.7540000000000004,
-              3.05
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "lace_fold_0_13",
-    "label": "Lace curtain vertical fold",
-    "crop_bbox": [
-      4060,
-      1300,
-      606,
-      1678
-    ],
-    "bbox": {
-      "min": [
-        2.2232777777777777,
-        6.742,
-        0.8
-      ],
-      "max": [
-        2.232277777777778,
-        6.7540000000000004,
-        3.05
-      ]
-    },
-    "contact": "curtain rail",
-    "material_note": "paper; neutral blockout; Lace curtain vertical fold",
-    "confidence": 0.65,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            4060,
-            1300
-          ],
-          "extent_bottom_right": [
-            4666,
-            2978
-          ]
-        },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Context crop; individual fold correspondence uncertain."
-      },
-      "frame": {
-        "origin_xyz": [
-          2.227777777777778,
-          6.748,
-          0.8
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.009,
-          0.012,
-          2.25
-        ]
-      },
-      "footprint_xy": [
-        [
-          2.232277777777778,
-          6.7540000000000004
-        ],
-        [
-          2.2232777777777777,
-          6.7540000000000004
-        ],
-        [
-          2.2232777777777777,
-          6.742
-        ],
-        [
-          2.232277777777778,
-          6.742
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              2.2232777777777777,
-              6.742,
-              0.8
-            ],
-            "max": [
-              2.232277777777778,
-              6.7540000000000004,
-              3.05
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "lace_fold_0_14",
-    "label": "Lace curtain vertical fold",
-    "crop_bbox": [
-      4060,
-      1300,
-      606,
-      1678
-    ],
-    "bbox": {
-      "min": [
-        2.3177222222222222,
-        6.742,
-        0.8
-      ],
-      "max": [
-        2.3267222222222226,
-        6.7540000000000004,
-        3.05
-      ]
-    },
-    "contact": "curtain rail",
-    "material_note": "paper; neutral blockout; Lace curtain vertical fold",
-    "confidence": 0.65,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            4060,
-            1300
-          ],
-          "extent_bottom_right": [
-            4666,
-            2978
-          ]
-        },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Context crop; individual fold correspondence uncertain."
-      },
-      "frame": {
-        "origin_xyz": [
-          2.3222222222222224,
-          6.748,
-          0.8
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.009,
-          0.012,
-          2.25
-        ]
-      },
-      "footprint_xy": [
-        [
-          2.3267222222222226,
-          6.7540000000000004
-        ],
-        [
-          2.3177222222222222,
-          6.7540000000000004
-        ],
-        [
-          2.3177222222222222,
-          6.742
-        ],
-        [
-          2.3267222222222226,
-          6.742
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              2.3177222222222222,
-              6.742,
-              0.8
-            ],
-            "max": [
-              2.3267222222222226,
-              6.7540000000000004,
-              3.05
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "lace_fold_0_15",
-    "label": "Lace curtain vertical fold",
-    "crop_bbox": [
-      4060,
-      1300,
-      606,
-      1678
-    ],
-    "bbox": {
-      "min": [
-        2.412166666666667,
-        6.742,
-        0.8
-      ],
-      "max": [
-        2.421166666666667,
-        6.7540000000000004,
-        3.05
-      ]
-    },
-    "contact": "curtain rail",
-    "material_note": "paper; neutral blockout; Lace curtain vertical fold",
-    "confidence": 0.65,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            4060,
-            1300
-          ],
-          "extent_bottom_right": [
-            4666,
-            2978
-          ]
-        },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Context crop; individual fold correspondence uncertain."
-      },
-      "frame": {
-        "origin_xyz": [
-          2.416666666666667,
-          6.748,
-          0.8
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.009,
-          0.012,
-          2.25
-        ]
-      },
-      "footprint_xy": [
-        [
-          2.421166666666667,
-          6.7540000000000004
-        ],
-        [
-          2.412166666666667,
-          6.7540000000000004
-        ],
-        [
-          2.412166666666667,
-          6.742
-        ],
-        [
-          2.421166666666667,
-          6.742
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              2.412166666666667,
-              6.742,
-              0.8
-            ],
-            "max": [
-              2.421166666666667,
-              6.7540000000000004,
-              3.05
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "lace_fold_0_16",
-    "label": "Lace curtain vertical fold",
-    "crop_bbox": [
-      4060,
-      1300,
-      606,
-      1678
-    ],
-    "bbox": {
-      "min": [
-        2.506611111111111,
-        6.742,
-        0.8
-      ],
-      "max": [
-        2.5156111111111112,
-        6.7540000000000004,
-        3.05
-      ]
-    },
-    "contact": "curtain rail",
-    "material_note": "paper; neutral blockout; Lace curtain vertical fold",
-    "confidence": 0.65,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            4060,
-            1300
-          ],
-          "extent_bottom_right": [
-            4666,
-            2978
-          ]
-        },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Context crop; individual fold correspondence uncertain."
-      },
-      "frame": {
-        "origin_xyz": [
-          2.511111111111111,
-          6.748,
-          0.8
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.009,
-          0.012,
-          2.25
-        ]
-      },
-      "footprint_xy": [
-        [
-          2.5156111111111112,
-          6.7540000000000004
-        ],
-        [
-          2.506611111111111,
-          6.7540000000000004
-        ],
-        [
-          2.506611111111111,
-          6.742
-        ],
-        [
-          2.5156111111111112,
-          6.742
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              2.506611111111111,
-              6.742,
-              0.8
-            ],
-            "max": [
-              2.5156111111111112,
-              6.7540000000000004,
-              3.05
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "lace_fold_0_17",
-    "label": "Lace curtain vertical fold",
-    "crop_bbox": [
-      4060,
-      1300,
-      606,
-      1678
-    ],
-    "bbox": {
-      "min": [
-        2.6010555555555555,
-        6.742,
-        0.8
-      ],
-      "max": [
-        2.610055555555556,
-        6.7540000000000004,
-        3.05
-      ]
-    },
-    "contact": "curtain rail",
-    "material_note": "paper; neutral blockout; Lace curtain vertical fold",
-    "confidence": 0.65,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            4060,
-            1300
-          ],
-          "extent_bottom_right": [
-            4666,
-            2978
-          ]
-        },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Context crop; individual fold correspondence uncertain."
-      },
-      "frame": {
-        "origin_xyz": [
-          2.6055555555555556,
-          6.748,
-          0.8
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.009,
-          0.012,
-          2.25
-        ]
-      },
-      "footprint_xy": [
-        [
-          2.610055555555556,
-          6.7540000000000004
-        ],
-        [
-          2.6010555555555555,
-          6.7540000000000004
-        ],
-        [
-          2.6010555555555555,
-          6.742
-        ],
-        [
-          2.610055555555556,
-          6.742
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              2.6010555555555555,
-              6.742,
-              0.8
-            ],
-            "max": [
-              2.610055555555556,
-              6.7540000000000004,
-              3.05
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
     "id": "sheer_1",
-    "label": "Luminous lace curtain field",
+    "label": "Right lace curtain field including folds",
     "crop_bbox": [
       4817,
       1152,
@@ -4591,7 +2705,7 @@
       ]
     },
     "contact": "curtain rail",
-    "material_note": "glass; neutral blockout; Luminous lace curtain field",
+    "material_note": "Translucent white patterned lace textile",
     "confidence": 0.65,
     "shape": "box",
     "spatial_contract": {
@@ -4613,7 +2727,8 @@
           ]
         },
         "interpretation": "Luminous lace curtain field visible in annotated source crop; depth inferred from floorplan.",
-        "blockout_revision": "Rail source endpoints approximately (1158,400) and (1777,285), inspection pixels, establish a lower head than S1. Opening head revised to 3.12 m; no resolved exterior objects."
+        "blockout_revision": "Rail source endpoints approximately (1158,400) and (1777,285), inspection pixels, establish a lower head than S1. Opening head revised to 3.12 m; no resolved exterior objects.",
+        "identify_note": "Repeated fold context crops consolidated into this visible textile field."
       },
       "frame": {
         "origin_xyz": [
@@ -4676,1899 +2791,12 @@
       ],
       "relationships": [],
       "ownership": {
-        "children": "external"
+        "children": "included"
       },
       "appearance": {
         "aperture_background": "source_visible",
         "minimum_luminance": 0.25,
         "interpretation": "Diffuse bright light through lace; exterior objects not resolved."
-      }
-    }
-  },
-  {
-    "id": "lace_fold_1_1",
-    "label": "Lace curtain vertical fold",
-    "crop_bbox": [
-      4817,
-      1152,
-      1297,
-      1847
-    ],
-    "bbox": {
-      "min": [
-        2.8732777777777776,
-        6.742,
-        0.8
-      ],
-      "max": [
-        2.882277777777778,
-        6.7540000000000004,
-        3.05
-      ]
-    },
-    "contact": "curtain rail",
-    "material_note": "paper; neutral blockout; Lace curtain vertical fold",
-    "confidence": 0.65,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            4817,
-            1152
-          ],
-          "extent_bottom_right": [
-            6114,
-            2999
-          ]
-        },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Context crop; individual fold correspondence uncertain."
-      },
-      "frame": {
-        "origin_xyz": [
-          2.8777777777777778,
-          6.748,
-          0.8
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.009,
-          0.012,
-          2.25
-        ]
-      },
-      "footprint_xy": [
-        [
-          2.882277777777778,
-          6.7540000000000004
-        ],
-        [
-          2.8732777777777776,
-          6.7540000000000004
-        ],
-        [
-          2.8732777777777776,
-          6.742
-        ],
-        [
-          2.882277777777778,
-          6.742
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              2.8732777777777776,
-              6.742,
-              0.8
-            ],
-            "max": [
-              2.882277777777778,
-              6.7540000000000004,
-              3.05
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "lace_fold_1_2",
-    "label": "Lace curtain vertical fold",
-    "crop_bbox": [
-      4817,
-      1152,
-      1297,
-      1847
-    ],
-    "bbox": {
-      "min": [
-        3.0510555555555556,
-        6.742,
-        0.8
-      ],
-      "max": [
-        3.060055555555556,
-        6.7540000000000004,
-        3.05
-      ]
-    },
-    "contact": "curtain rail",
-    "material_note": "paper; neutral blockout; Lace curtain vertical fold",
-    "confidence": 0.65,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            4817,
-            1152
-          ],
-          "extent_bottom_right": [
-            6114,
-            2999
-          ]
-        },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Context crop; individual fold correspondence uncertain."
-      },
-      "frame": {
-        "origin_xyz": [
-          3.055555555555556,
-          6.748,
-          0.8
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.009,
-          0.012,
-          2.25
-        ]
-      },
-      "footprint_xy": [
-        [
-          3.060055555555556,
-          6.7540000000000004
-        ],
-        [
-          3.0510555555555556,
-          6.7540000000000004
-        ],
-        [
-          3.0510555555555556,
-          6.742
-        ],
-        [
-          3.060055555555556,
-          6.742
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              3.0510555555555556,
-              6.742,
-              0.8
-            ],
-            "max": [
-              3.060055555555556,
-              6.7540000000000004,
-              3.05
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "lace_fold_1_3",
-    "label": "Lace curtain vertical fold",
-    "crop_bbox": [
-      4817,
-      1152,
-      1297,
-      1847
-    ],
-    "bbox": {
-      "min": [
-        3.228833333333333,
-        6.742,
-        0.8
-      ],
-      "max": [
-        3.2378333333333336,
-        6.7540000000000004,
-        3.05
-      ]
-    },
-    "contact": "curtain rail",
-    "material_note": "paper; neutral blockout; Lace curtain vertical fold",
-    "confidence": 0.65,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            4817,
-            1152
-          ],
-          "extent_bottom_right": [
-            6114,
-            2999
-          ]
-        },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Context crop; individual fold correspondence uncertain."
-      },
-      "frame": {
-        "origin_xyz": [
-          3.2333333333333334,
-          6.748,
-          0.8
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.009,
-          0.012,
-          2.25
-        ]
-      },
-      "footprint_xy": [
-        [
-          3.2378333333333336,
-          6.7540000000000004
-        ],
-        [
-          3.228833333333333,
-          6.7540000000000004
-        ],
-        [
-          3.228833333333333,
-          6.742
-        ],
-        [
-          3.2378333333333336,
-          6.742
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              3.228833333333333,
-              6.742,
-              0.8
-            ],
-            "max": [
-              3.2378333333333336,
-              6.7540000000000004,
-              3.05
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "lace_fold_1_4",
-    "label": "Lace curtain vertical fold",
-    "crop_bbox": [
-      4817,
-      1152,
-      1297,
-      1847
-    ],
-    "bbox": {
-      "min": [
-        3.4066111111111113,
-        6.742,
-        0.8
-      ],
-      "max": [
-        3.4156111111111116,
-        6.7540000000000004,
-        3.05
-      ]
-    },
-    "contact": "curtain rail",
-    "material_note": "paper; neutral blockout; Lace curtain vertical fold",
-    "confidence": 0.65,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            4817,
-            1152
-          ],
-          "extent_bottom_right": [
-            6114,
-            2999
-          ]
-        },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Context crop; individual fold correspondence uncertain."
-      },
-      "frame": {
-        "origin_xyz": [
-          3.4111111111111114,
-          6.748,
-          0.8
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.009,
-          0.012,
-          2.25
-        ]
-      },
-      "footprint_xy": [
-        [
-          3.4156111111111116,
-          6.7540000000000004
-        ],
-        [
-          3.4066111111111113,
-          6.7540000000000004
-        ],
-        [
-          3.4066111111111113,
-          6.742
-        ],
-        [
-          3.4156111111111116,
-          6.742
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              3.4066111111111113,
-              6.742,
-              0.8
-            ],
-            "max": [
-              3.4156111111111116,
-              6.7540000000000004,
-              3.05
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "lace_fold_1_5",
-    "label": "Lace curtain vertical fold",
-    "crop_bbox": [
-      4817,
-      1152,
-      1297,
-      1847
-    ],
-    "bbox": {
-      "min": [
-        3.584388888888889,
-        6.742,
-        0.8
-      ],
-      "max": [
-        3.593388888888889,
-        6.7540000000000004,
-        3.05
-      ]
-    },
-    "contact": "curtain rail",
-    "material_note": "paper; neutral blockout; Lace curtain vertical fold",
-    "confidence": 0.65,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            4817,
-            1152
-          ],
-          "extent_bottom_right": [
-            6114,
-            2999
-          ]
-        },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Context crop; individual fold correspondence uncertain."
-      },
-      "frame": {
-        "origin_xyz": [
-          3.588888888888889,
-          6.748,
-          0.8
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.009,
-          0.012,
-          2.25
-        ]
-      },
-      "footprint_xy": [
-        [
-          3.593388888888889,
-          6.7540000000000004
-        ],
-        [
-          3.584388888888889,
-          6.7540000000000004
-        ],
-        [
-          3.584388888888889,
-          6.742
-        ],
-        [
-          3.593388888888889,
-          6.742
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              3.584388888888889,
-              6.742,
-              0.8
-            ],
-            "max": [
-              3.593388888888889,
-              6.7540000000000004,
-              3.05
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "lace_fold_1_6",
-    "label": "Lace curtain vertical fold",
-    "crop_bbox": [
-      4817,
-      1152,
-      1297,
-      1847
-    ],
-    "bbox": {
-      "min": [
-        3.762166666666667,
-        6.742,
-        0.8
-      ],
-      "max": [
-        3.7711666666666672,
-        6.7540000000000004,
-        3.05
-      ]
-    },
-    "contact": "curtain rail",
-    "material_note": "paper; neutral blockout; Lace curtain vertical fold",
-    "confidence": 0.65,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            4817,
-            1152
-          ],
-          "extent_bottom_right": [
-            6114,
-            2999
-          ]
-        },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Context crop; individual fold correspondence uncertain."
-      },
-      "frame": {
-        "origin_xyz": [
-          3.766666666666667,
-          6.748,
-          0.8
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.009,
-          0.012,
-          2.25
-        ]
-      },
-      "footprint_xy": [
-        [
-          3.7711666666666672,
-          6.7540000000000004
-        ],
-        [
-          3.762166666666667,
-          6.7540000000000004
-        ],
-        [
-          3.762166666666667,
-          6.742
-        ],
-        [
-          3.7711666666666672,
-          6.742
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              3.762166666666667,
-              6.742,
-              0.8
-            ],
-            "max": [
-              3.7711666666666672,
-              6.7540000000000004,
-              3.05
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "lace_fold_1_7",
-    "label": "Lace curtain vertical fold",
-    "crop_bbox": [
-      4817,
-      1152,
-      1297,
-      1847
-    ],
-    "bbox": {
-      "min": [
-        3.9399444444444445,
-        6.742,
-        0.8
-      ],
-      "max": [
-        3.948944444444445,
-        6.7540000000000004,
-        3.05
-      ]
-    },
-    "contact": "curtain rail",
-    "material_note": "paper; neutral blockout; Lace curtain vertical fold",
-    "confidence": 0.65,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            4817,
-            1152
-          ],
-          "extent_bottom_right": [
-            6114,
-            2999
-          ]
-        },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Context crop; individual fold correspondence uncertain."
-      },
-      "frame": {
-        "origin_xyz": [
-          3.9444444444444446,
-          6.748,
-          0.8
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.009,
-          0.012,
-          2.25
-        ]
-      },
-      "footprint_xy": [
-        [
-          3.948944444444445,
-          6.7540000000000004
-        ],
-        [
-          3.9399444444444445,
-          6.7540000000000004
-        ],
-        [
-          3.9399444444444445,
-          6.742
-        ],
-        [
-          3.948944444444445,
-          6.742
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              3.9399444444444445,
-              6.742,
-              0.8
-            ],
-            "max": [
-              3.948944444444445,
-              6.7540000000000004,
-              3.05
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "lace_fold_1_8",
-    "label": "Lace curtain vertical fold",
-    "crop_bbox": [
-      4817,
-      1152,
-      1297,
-      1847
-    ],
-    "bbox": {
-      "min": [
-        4.1177222222222225,
-        6.742,
-        0.8
-      ],
-      "max": [
-        4.126722222222223,
-        6.7540000000000004,
-        3.05
-      ]
-    },
-    "contact": "curtain rail",
-    "material_note": "paper; neutral blockout; Lace curtain vertical fold",
-    "confidence": 0.65,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            4817,
-            1152
-          ],
-          "extent_bottom_right": [
-            6114,
-            2999
-          ]
-        },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Context crop; individual fold correspondence uncertain."
-      },
-      "frame": {
-        "origin_xyz": [
-          4.122222222222223,
-          6.748,
-          0.8
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.009,
-          0.012,
-          2.25
-        ]
-      },
-      "footprint_xy": [
-        [
-          4.126722222222223,
-          6.7540000000000004
-        ],
-        [
-          4.1177222222222225,
-          6.7540000000000004
-        ],
-        [
-          4.1177222222222225,
-          6.742
-        ],
-        [
-          4.126722222222223,
-          6.742
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              4.1177222222222225,
-              6.742,
-              0.8
-            ],
-            "max": [
-              4.126722222222223,
-              6.7540000000000004,
-              3.05
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "lace_fold_1_9",
-    "label": "Lace curtain vertical fold",
-    "crop_bbox": [
-      4817,
-      1152,
-      1297,
-      1847
-    ],
-    "bbox": {
-      "min": [
-        4.2955000000000005,
-        6.742,
-        0.8
-      ],
-      "max": [
-        4.304500000000001,
-        6.7540000000000004,
-        3.05
-      ]
-    },
-    "contact": "curtain rail",
-    "material_note": "paper; neutral blockout; Lace curtain vertical fold",
-    "confidence": 0.65,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            4817,
-            1152
-          ],
-          "extent_bottom_right": [
-            6114,
-            2999
-          ]
-        },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Context crop; individual fold correspondence uncertain."
-      },
-      "frame": {
-        "origin_xyz": [
-          4.300000000000001,
-          6.748,
-          0.8
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.009,
-          0.012,
-          2.25
-        ]
-      },
-      "footprint_xy": [
-        [
-          4.304500000000001,
-          6.7540000000000004
-        ],
-        [
-          4.2955000000000005,
-          6.7540000000000004
-        ],
-        [
-          4.2955000000000005,
-          6.742
-        ],
-        [
-          4.304500000000001,
-          6.742
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              4.2955000000000005,
-              6.742,
-              0.8
-            ],
-            "max": [
-              4.304500000000001,
-              6.7540000000000004,
-              3.05
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "lace_fold_1_10",
-    "label": "Lace curtain vertical fold",
-    "crop_bbox": [
-      4817,
-      1152,
-      1297,
-      1847
-    ],
-    "bbox": {
-      "min": [
-        4.473277777777778,
-        6.742,
-        0.8
-      ],
-      "max": [
-        4.482277777777778,
-        6.7540000000000004,
-        3.05
-      ]
-    },
-    "contact": "curtain rail",
-    "material_note": "paper; neutral blockout; Lace curtain vertical fold",
-    "confidence": 0.65,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            4817,
-            1152
-          ],
-          "extent_bottom_right": [
-            6114,
-            2999
-          ]
-        },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Context crop; individual fold correspondence uncertain."
-      },
-      "frame": {
-        "origin_xyz": [
-          4.477777777777778,
-          6.748,
-          0.8
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.009,
-          0.012,
-          2.25
-        ]
-      },
-      "footprint_xy": [
-        [
-          4.482277777777778,
-          6.7540000000000004
-        ],
-        [
-          4.473277777777778,
-          6.7540000000000004
-        ],
-        [
-          4.473277777777778,
-          6.742
-        ],
-        [
-          4.482277777777778,
-          6.742
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              4.473277777777778,
-              6.742,
-              0.8
-            ],
-            "max": [
-              4.482277777777778,
-              6.7540000000000004,
-              3.05
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "lace_fold_1_11",
-    "label": "Lace curtain vertical fold",
-    "crop_bbox": [
-      4817,
-      1152,
-      1297,
-      1847
-    ],
-    "bbox": {
-      "min": [
-        4.651055555555556,
-        6.742,
-        0.8
-      ],
-      "max": [
-        4.660055555555556,
-        6.7540000000000004,
-        3.05
-      ]
-    },
-    "contact": "curtain rail",
-    "material_note": "paper; neutral blockout; Lace curtain vertical fold",
-    "confidence": 0.65,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            4817,
-            1152
-          ],
-          "extent_bottom_right": [
-            6114,
-            2999
-          ]
-        },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Context crop; individual fold correspondence uncertain."
-      },
-      "frame": {
-        "origin_xyz": [
-          4.655555555555556,
-          6.748,
-          0.8
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.009,
-          0.012,
-          2.25
-        ]
-      },
-      "footprint_xy": [
-        [
-          4.660055555555556,
-          6.7540000000000004
-        ],
-        [
-          4.651055555555556,
-          6.7540000000000004
-        ],
-        [
-          4.651055555555556,
-          6.742
-        ],
-        [
-          4.660055555555556,
-          6.742
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              4.651055555555556,
-              6.742,
-              0.8
-            ],
-            "max": [
-              4.660055555555556,
-              6.7540000000000004,
-              3.05
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "lace_fold_1_12",
-    "label": "Lace curtain vertical fold",
-    "crop_bbox": [
-      4817,
-      1152,
-      1297,
-      1847
-    ],
-    "bbox": {
-      "min": [
-        4.828833333333334,
-        6.742,
-        0.8
-      ],
-      "max": [
-        4.837833333333334,
-        6.7540000000000004,
-        3.05
-      ]
-    },
-    "contact": "curtain rail",
-    "material_note": "paper; neutral blockout; Lace curtain vertical fold",
-    "confidence": 0.65,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            4817,
-            1152
-          ],
-          "extent_bottom_right": [
-            6114,
-            2999
-          ]
-        },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Context crop; individual fold correspondence uncertain."
-      },
-      "frame": {
-        "origin_xyz": [
-          4.833333333333334,
-          6.748,
-          0.8
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.009,
-          0.012,
-          2.25
-        ]
-      },
-      "footprint_xy": [
-        [
-          4.837833333333334,
-          6.7540000000000004
-        ],
-        [
-          4.828833333333334,
-          6.7540000000000004
-        ],
-        [
-          4.828833333333334,
-          6.742
-        ],
-        [
-          4.837833333333334,
-          6.742
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              4.828833333333334,
-              6.742,
-              0.8
-            ],
-            "max": [
-              4.837833333333334,
-              6.7540000000000004,
-              3.05
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "lace_fold_1_13",
-    "label": "Lace curtain vertical fold",
-    "crop_bbox": [
-      4817,
-      1152,
-      1297,
-      1847
-    ],
-    "bbox": {
-      "min": [
-        5.006611111111111,
-        6.742,
-        0.8
-      ],
-      "max": [
-        5.015611111111111,
-        6.7540000000000004,
-        3.05
-      ]
-    },
-    "contact": "curtain rail",
-    "material_note": "paper; neutral blockout; Lace curtain vertical fold",
-    "confidence": 0.65,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            4817,
-            1152
-          ],
-          "extent_bottom_right": [
-            6114,
-            2999
-          ]
-        },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Context crop; individual fold correspondence uncertain."
-      },
-      "frame": {
-        "origin_xyz": [
-          5.011111111111111,
-          6.748,
-          0.8
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.009,
-          0.012,
-          2.25
-        ]
-      },
-      "footprint_xy": [
-        [
-          5.015611111111111,
-          6.7540000000000004
-        ],
-        [
-          5.006611111111111,
-          6.7540000000000004
-        ],
-        [
-          5.006611111111111,
-          6.742
-        ],
-        [
-          5.015611111111111,
-          6.742
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              5.006611111111111,
-              6.742,
-              0.8
-            ],
-            "max": [
-              5.015611111111111,
-              6.7540000000000004,
-              3.05
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "lace_fold_1_14",
-    "label": "Lace curtain vertical fold",
-    "crop_bbox": [
-      4817,
-      1152,
-      1297,
-      1847
-    ],
-    "bbox": {
-      "min": [
-        5.184388888888889,
-        6.742,
-        0.8
-      ],
-      "max": [
-        5.193388888888889,
-        6.7540000000000004,
-        3.05
-      ]
-    },
-    "contact": "curtain rail",
-    "material_note": "paper; neutral blockout; Lace curtain vertical fold",
-    "confidence": 0.65,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            4817,
-            1152
-          ],
-          "extent_bottom_right": [
-            6114,
-            2999
-          ]
-        },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Context crop; individual fold correspondence uncertain."
-      },
-      "frame": {
-        "origin_xyz": [
-          5.188888888888889,
-          6.748,
-          0.8
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.009,
-          0.012,
-          2.25
-        ]
-      },
-      "footprint_xy": [
-        [
-          5.193388888888889,
-          6.7540000000000004
-        ],
-        [
-          5.184388888888889,
-          6.7540000000000004
-        ],
-        [
-          5.184388888888889,
-          6.742
-        ],
-        [
-          5.193388888888889,
-          6.742
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              5.184388888888889,
-              6.742,
-              0.8
-            ],
-            "max": [
-              5.193388888888889,
-              6.7540000000000004,
-              3.05
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "lace_fold_1_15",
-    "label": "Lace curtain vertical fold",
-    "crop_bbox": [
-      4817,
-      1152,
-      1297,
-      1847
-    ],
-    "bbox": {
-      "min": [
-        5.362166666666667,
-        6.742,
-        0.8
-      ],
-      "max": [
-        5.371166666666667,
-        6.7540000000000004,
-        3.05
-      ]
-    },
-    "contact": "curtain rail",
-    "material_note": "paper; neutral blockout; Lace curtain vertical fold",
-    "confidence": 0.65,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            4817,
-            1152
-          ],
-          "extent_bottom_right": [
-            6114,
-            2999
-          ]
-        },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Context crop; individual fold correspondence uncertain."
-      },
-      "frame": {
-        "origin_xyz": [
-          5.366666666666667,
-          6.748,
-          0.8
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.009,
-          0.012,
-          2.25
-        ]
-      },
-      "footprint_xy": [
-        [
-          5.371166666666667,
-          6.7540000000000004
-        ],
-        [
-          5.362166666666667,
-          6.7540000000000004
-        ],
-        [
-          5.362166666666667,
-          6.742
-        ],
-        [
-          5.371166666666667,
-          6.742
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              5.362166666666667,
-              6.742,
-              0.8
-            ],
-            "max": [
-              5.371166666666667,
-              6.7540000000000004,
-              3.05
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "lace_fold_1_16",
-    "label": "Lace curtain vertical fold",
-    "crop_bbox": [
-      4817,
-      1152,
-      1297,
-      1847
-    ],
-    "bbox": {
-      "min": [
-        5.539944444444444,
-        6.742,
-        0.8
-      ],
-      "max": [
-        5.5489444444444445,
-        6.7540000000000004,
-        3.05
-      ]
-    },
-    "contact": "curtain rail",
-    "material_note": "paper; neutral blockout; Lace curtain vertical fold",
-    "confidence": 0.65,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            4817,
-            1152
-          ],
-          "extent_bottom_right": [
-            6114,
-            2999
-          ]
-        },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Context crop; individual fold correspondence uncertain."
-      },
-      "frame": {
-        "origin_xyz": [
-          5.544444444444444,
-          6.748,
-          0.8
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.009,
-          0.012,
-          2.25
-        ]
-      },
-      "footprint_xy": [
-        [
-          5.5489444444444445,
-          6.7540000000000004
-        ],
-        [
-          5.539944444444444,
-          6.7540000000000004
-        ],
-        [
-          5.539944444444444,
-          6.742
-        ],
-        [
-          5.5489444444444445,
-          6.742
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              5.539944444444444,
-              6.742,
-              0.8
-            ],
-            "max": [
-              5.5489444444444445,
-              6.7540000000000004,
-              3.05
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "lace_fold_1_17",
-    "label": "Lace curtain vertical fold",
-    "crop_bbox": [
-      4817,
-      1152,
-      1297,
-      1847
-    ],
-    "bbox": {
-      "min": [
-        5.717722222222223,
-        6.742,
-        0.8
-      ],
-      "max": [
-        5.726722222222223,
-        6.7540000000000004,
-        3.05
-      ]
-    },
-    "contact": "curtain rail",
-    "material_note": "paper; neutral blockout; Lace curtain vertical fold",
-    "confidence": 0.65,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            4817,
-            1152
-          ],
-          "extent_bottom_right": [
-            6114,
-            2999
-          ]
-        },
-        "interpretation": "Lace curtain vertical fold visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Context crop; individual fold correspondence uncertain."
-      },
-      "frame": {
-        "origin_xyz": [
-          5.722222222222223,
-          6.748,
-          0.8
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.009,
-          0.012,
-          2.25
-        ]
-      },
-      "footprint_xy": [
-        [
-          5.726722222222223,
-          6.7540000000000004
-        ],
-        [
-          5.717722222222223,
-          6.7540000000000004
-        ],
-        [
-          5.717722222222223,
-          6.742
-        ],
-        [
-          5.726722222222223,
-          6.742
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              5.717722222222223,
-              6.742,
-              0.8
-            ],
-            "max": [
-              5.726722222222223,
-              6.7540000000000004,
-              3.05
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
       }
     }
   },
@@ -11893,7 +8121,7 @@
   },
   {
     "id": "book_0_0",
-    "label": "Standing book",
+    "label": "Visible book spines on bookcase",
     "crop_bbox": [
       2794,
       2799,
@@ -12004,7 +8232,7 @@
   },
   {
     "id": "book_0_1",
-    "label": "Standing book",
+    "label": "Visible book spines on bookcase",
     "crop_bbox": [
       2852,
       2799,
@@ -12115,7 +8343,7 @@
   },
   {
     "id": "book_0_2",
-    "label": "Standing book",
+    "label": "Visible book spines on bookcase",
     "crop_bbox": [
       2911,
       2799,
@@ -12226,7 +8454,7 @@
   },
   {
     "id": "book_0_3",
-    "label": "Standing book",
+    "label": "Visible book spines on bookcase",
     "crop_bbox": [
       2969,
       2799,
@@ -12337,12 +8565,12 @@
   },
   {
     "id": "book_0_4",
-    "label": "Standing book",
+    "label": "Visible book spines on bookcase",
     "crop_bbox": [
       3028,
       2799,
       55,
-      206
+      134
     ],
     "bbox": {
       "min": [
@@ -12375,7 +8603,7 @@
           ],
           "extent_bottom_right": [
             3083,
-            3005
+            2933
           ]
         },
         "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan.",
@@ -12448,12 +8676,12 @@
   },
   {
     "id": "book_0_5",
-    "label": "Standing book",
+    "label": "Visible book spines on bookcase",
     "crop_bbox": [
       3086,
       2799,
       55,
-      206
+      134
     ],
     "bbox": {
       "min": [
@@ -12486,7 +8714,7 @@
           ],
           "extent_bottom_right": [
             3141,
-            3005
+            2933
           ]
         },
         "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan.",
@@ -12559,12 +8787,12 @@
   },
   {
     "id": "book_0_6",
-    "label": "Standing book",
+    "label": "Visible book spines on bookcase",
     "crop_bbox": [
       3145,
       2799,
       55,
-      206
+      134
     ],
     "bbox": {
       "min": [
@@ -12597,7 +8825,7 @@
           ],
           "extent_bottom_right": [
             3200,
-            3005
+            2933
           ]
         },
         "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan.",
@@ -12670,7 +8898,7 @@
   },
   {
     "id": "book_1_0",
-    "label": "Standing book",
+    "label": "Visible book spines on bookcase",
     "crop_bbox": [
       2794,
       3012,
@@ -12781,7 +9009,7 @@
   },
   {
     "id": "book_1_1",
-    "label": "Standing book",
+    "label": "Visible book spines on bookcase",
     "crop_bbox": [
       2852,
       3012,
@@ -12892,7 +9120,7 @@
   },
   {
     "id": "book_1_2",
-    "label": "Standing book",
+    "label": "Visible book spines on bookcase",
     "crop_bbox": [
       2911,
       3012,
@@ -13003,7 +9231,7 @@
   },
   {
     "id": "book_1_3",
-    "label": "Standing book",
+    "label": "Visible book spines on bookcase",
     "crop_bbox": [
       2969,
       3012,
@@ -13113,341 +9341,8 @@
     }
   },
   {
-    "id": "book_1_4",
-    "label": "Inferred book (occluded by chair)",
-    "crop_bbox": [
-      3028,
-      3012,
-      55,
-      206
-    ],
-    "bbox": {
-      "min": [
-        0.31999999999999995,
-        5.6725,
-        0.41333333333333333
-      ],
-      "max": [
-        0.64,
-        5.7475,
-        0.6703333333333333
-      ]
-    },
-    "contact": "bookcase shelf",
-    "material_note": "paper; neutral blockout; Standing book",
-    "confidence": 0.2,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            3028,
-            3012
-          ],
-          "extent_bottom_right": [
-            3083,
-            3218
-          ]
-        },
-        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Approximate book slot; some slots are occluded by furniture."
-      },
-      "frame": {
-        "origin_xyz": [
-          0.48,
-          5.71,
-          0.41333333333333333
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.32,
-          0.075,
-          0.257
-        ]
-      },
-      "footprint_xy": [
-        [
-          0.64,
-          5.7475
-        ],
-        [
-          0.31999999999999995,
-          5.7475
-        ],
-        [
-          0.31999999999999995,
-          5.6725
-        ],
-        [
-          0.64,
-          5.6725
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              0.31999999999999995,
-              5.6725,
-              0.41333333333333333
-            ],
-            "max": [
-              0.64,
-              5.7475,
-              0.6703333333333333
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "book_1_5",
-    "label": "Inferred book (occluded by chair)",
-    "crop_bbox": [
-      3086,
-      3012,
-      55,
-      206
-    ],
-    "bbox": {
-      "min": [
-        0.31999999999999995,
-        5.7725,
-        0.41333333333333333
-      ],
-      "max": [
-        0.64,
-        5.847499999999999,
-        0.6873333333333334
-      ]
-    },
-    "contact": "bookcase shelf",
-    "material_note": "dark; neutral blockout; Standing book",
-    "confidence": 0.2,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            3086,
-            3012
-          ],
-          "extent_bottom_right": [
-            3141,
-            3218
-          ]
-        },
-        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Approximate book slot; some slots are occluded by furniture."
-      },
-      "frame": {
-        "origin_xyz": [
-          0.48,
-          5.81,
-          0.41333333333333333
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.32,
-          0.075,
-          0.274
-        ]
-      },
-      "footprint_xy": [
-        [
-          0.64,
-          5.847499999999999
-        ],
-        [
-          0.31999999999999995,
-          5.847499999999999
-        ],
-        [
-          0.31999999999999995,
-          5.7725
-        ],
-        [
-          0.64,
-          5.7725
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              0.31999999999999995,
-              5.7725,
-              0.41333333333333333
-            ],
-            "max": [
-              0.64,
-              5.847499999999999,
-              0.6873333333333334
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "book_1_6",
-    "label": "Inferred book (occluded by chair)",
-    "crop_bbox": [
-      3145,
-      3012,
-      55,
-      206
-    ],
-    "bbox": {
-      "min": [
-        0.31999999999999995,
-        5.8725000000000005,
-        0.41333333333333333
-      ],
-      "max": [
-        0.64,
-        5.9475,
-        0.6533333333333333
-      ]
-    },
-    "contact": "bookcase shelf",
-    "material_note": "dark; neutral blockout; Standing book",
-    "confidence": 0.2,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            3145,
-            3012
-          ],
-          "extent_bottom_right": [
-            3200,
-            3218
-          ]
-        },
-        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Approximate book slot; some slots are occluded by furniture."
-      },
-      "frame": {
-        "origin_xyz": [
-          0.48,
-          5.91,
-          0.41333333333333333
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.32,
-          0.075,
-          0.24
-        ]
-      },
-      "footprint_xy": [
-        [
-          0.64,
-          5.9475
-        ],
-        [
-          0.31999999999999995,
-          5.9475
-        ],
-        [
-          0.31999999999999995,
-          5.8725000000000005
-        ],
-        [
-          0.64,
-          5.8725000000000005
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              0.31999999999999995,
-              5.8725000000000005,
-              0.41333333333333333
-            ],
-            "max": [
-              0.64,
-              5.9475,
-              0.6533333333333333
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
     "id": "book_2_0",
-    "label": "Standing book",
+    "label": "Visible book spines on bookcase",
     "crop_bbox": [
       2794,
       3226,
@@ -13558,7 +9453,7 @@
   },
   {
     "id": "book_2_1",
-    "label": "Standing book",
+    "label": "Visible book spines on bookcase",
     "crop_bbox": [
       2852,
       3226,
@@ -13657,561 +9552,6 @@
               0.64,
               5.447499999999999,
               1.0386666666666668
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "book_2_2",
-    "label": "Inferred book (occluded by chair)",
-    "crop_bbox": [
-      2911,
-      3226,
-      55,
-      206
-    ],
-    "bbox": {
-      "min": [
-        0.31999999999999995,
-        5.4725,
-        0.7816666666666667
-      ],
-      "max": [
-        0.64,
-        5.547499999999999,
-        1.0556666666666668
-      ]
-    },
-    "contact": "bookcase shelf",
-    "material_note": "dark; neutral blockout; Standing book",
-    "confidence": 0.2,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            2911,
-            3226
-          ],
-          "extent_bottom_right": [
-            2966,
-            3432
-          ]
-        },
-        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Approximate book slot; some slots are occluded by furniture."
-      },
-      "frame": {
-        "origin_xyz": [
-          0.48,
-          5.51,
-          0.7816666666666667
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.32,
-          0.075,
-          0.274
-        ]
-      },
-      "footprint_xy": [
-        [
-          0.64,
-          5.547499999999999
-        ],
-        [
-          0.31999999999999995,
-          5.547499999999999
-        ],
-        [
-          0.31999999999999995,
-          5.4725
-        ],
-        [
-          0.64,
-          5.4725
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              0.31999999999999995,
-              5.4725,
-              0.7816666666666667
-            ],
-            "max": [
-              0.64,
-              5.547499999999999,
-              1.0556666666666668
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "book_2_3",
-    "label": "Inferred book (occluded by chair)",
-    "crop_bbox": [
-      2969,
-      3226,
-      55,
-      206
-    ],
-    "bbox": {
-      "min": [
-        0.31999999999999995,
-        5.5725,
-        0.7816666666666667
-      ],
-      "max": [
-        0.64,
-        5.647499999999999,
-        1.0216666666666667
-      ]
-    },
-    "contact": "bookcase shelf",
-    "material_note": "dark; neutral blockout; Standing book",
-    "confidence": 0.2,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            2969,
-            3226
-          ],
-          "extent_bottom_right": [
-            3024,
-            3432
-          ]
-        },
-        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Approximate book slot; some slots are occluded by furniture."
-      },
-      "frame": {
-        "origin_xyz": [
-          0.48,
-          5.609999999999999,
-          0.7816666666666667
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.32,
-          0.075,
-          0.24
-        ]
-      },
-      "footprint_xy": [
-        [
-          0.64,
-          5.647499999999999
-        ],
-        [
-          0.31999999999999995,
-          5.647499999999999
-        ],
-        [
-          0.31999999999999995,
-          5.5725
-        ],
-        [
-          0.64,
-          5.5725
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              0.31999999999999995,
-              5.5725,
-              0.7816666666666667
-            ],
-            "max": [
-              0.64,
-              5.647499999999999,
-              1.0216666666666667
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "book_2_4",
-    "label": "Inferred book (occluded by chair)",
-    "crop_bbox": [
-      3028,
-      3226,
-      55,
-      206
-    ],
-    "bbox": {
-      "min": [
-        0.31999999999999995,
-        5.6725,
-        0.7816666666666667
-      ],
-      "max": [
-        0.64,
-        5.7475,
-        1.0386666666666668
-      ]
-    },
-    "contact": "bookcase shelf",
-    "material_note": "paper; neutral blockout; Standing book",
-    "confidence": 0.2,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            3028,
-            3226
-          ],
-          "extent_bottom_right": [
-            3083,
-            3432
-          ]
-        },
-        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Approximate book slot; some slots are occluded by furniture."
-      },
-      "frame": {
-        "origin_xyz": [
-          0.48,
-          5.71,
-          0.7816666666666667
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.32,
-          0.075,
-          0.257
-        ]
-      },
-      "footprint_xy": [
-        [
-          0.64,
-          5.7475
-        ],
-        [
-          0.31999999999999995,
-          5.7475
-        ],
-        [
-          0.31999999999999995,
-          5.6725
-        ],
-        [
-          0.64,
-          5.6725
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              0.31999999999999995,
-              5.6725,
-              0.7816666666666667
-            ],
-            "max": [
-              0.64,
-              5.7475,
-              1.0386666666666668
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "book_2_5",
-    "label": "Inferred book (occluded by chair)",
-    "crop_bbox": [
-      3086,
-      3226,
-      55,
-      206
-    ],
-    "bbox": {
-      "min": [
-        0.31999999999999995,
-        5.7725,
-        0.7816666666666667
-      ],
-      "max": [
-        0.64,
-        5.847499999999999,
-        1.0556666666666668
-      ]
-    },
-    "contact": "bookcase shelf",
-    "material_note": "dark; neutral blockout; Standing book",
-    "confidence": 0.2,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            3086,
-            3226
-          ],
-          "extent_bottom_right": [
-            3141,
-            3432
-          ]
-        },
-        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Approximate book slot; some slots are occluded by furniture."
-      },
-      "frame": {
-        "origin_xyz": [
-          0.48,
-          5.81,
-          0.7816666666666667
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.32,
-          0.075,
-          0.274
-        ]
-      },
-      "footprint_xy": [
-        [
-          0.64,
-          5.847499999999999
-        ],
-        [
-          0.31999999999999995,
-          5.847499999999999
-        ],
-        [
-          0.31999999999999995,
-          5.7725
-        ],
-        [
-          0.64,
-          5.7725
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              0.31999999999999995,
-              5.7725,
-              0.7816666666666667
-            ],
-            "max": [
-              0.64,
-              5.847499999999999,
-              1.0556666666666668
-            ]
-          }
-        }
-      ],
-      "relationships": [],
-      "ownership": {
-        "children": "external"
-      }
-    }
-  },
-  {
-    "id": "book_2_6",
-    "label": "Inferred book (occluded by chair)",
-    "crop_bbox": [
-      3145,
-      3226,
-      55,
-      206
-    ],
-    "bbox": {
-      "min": [
-        0.31999999999999995,
-        5.8725000000000005,
-        0.7816666666666667
-      ],
-      "max": [
-        0.64,
-        5.9475,
-        1.0216666666666667
-      ]
-    },
-    "contact": "bookcase shelf",
-    "material_note": "dark; neutral blockout; Standing book",
-    "confidence": 0.2,
-    "shape": "box",
-    "spatial_contract": {
-      "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
-        "image_size_px": [
-          6114,
-          4842
-        ],
-        "visible_extent": "crop_bbox in original source pixels",
-        "landmarks": {
-          "extent_top_left": [
-            3145,
-            3226
-          ],
-          "extent_bottom_right": [
-            3200,
-            3432
-          ]
-        },
-        "interpretation": "Standing book visible in annotated source crop; depth inferred from floorplan.",
-        "identify_note": "Approximate book slot; some slots are occluded by furniture."
-      },
-      "frame": {
-        "origin_xyz": [
-          0.48,
-          5.91,
-          0.7816666666666667
-        ],
-        "x_axis_xy": [
-          -1.0,
-          -0.0
-        ],
-        "y_axis_xy": [
-          0.0,
-          -1.0
-        ],
-        "size_xyz": [
-          0.32,
-          0.075,
-          0.24
-        ]
-      },
-      "footprint_xy": [
-        [
-          0.64,
-          5.9475
-        ],
-        [
-          0.31999999999999995,
-          5.9475
-        ],
-        [
-          0.31999999999999995,
-          5.8725000000000005
-        ],
-        [
-          0.64,
-          5.8725000000000005
-        ]
-      ],
-      "front_xy": [
-        0.0,
-        -1.0
-      ],
-      "regions": [
-        {
-          "id": "body",
-          "bbox": {
-            "min": [
-              0.31999999999999995,
-              5.8725000000000005,
-              0.7816666666666667
-            ],
-            "max": [
-              0.64,
-              5.9475,
-              1.0216666666666667
             ]
           }
         }
@@ -18425,6 +13765,450 @@
           "tolerance_m": 0.03
         }
       ],
+      "ownership": {
+        "children": "external"
+      }
+    }
+  },
+  {
+    "id": "window_sill_left",
+    "label": "Exposed wooden sill beneath left lace curtain",
+    "crop_bbox": [
+      4129,
+      2909,
+      450,
+      128
+    ],
+    "bbox": {
+      "min": [
+        1.0,
+        6.6000000000000005,
+        0.76
+      ],
+      "max": [
+        2.7,
+        6.78,
+        0.84
+      ]
+    },
+    "contact": "window wall",
+    "material_note": "Warm brown stained wood",
+    "confidence": 0.8,
+    "shape": "box",
+    "spatial_contract": {
+      "source_evidence": {
+        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image_size_px": [
+          6114,
+          4842
+        ],
+        "visible_extent": "crop_bbox in original source pixels",
+        "landmarks": {
+          "extent_top_left": [
+            4129,
+            2909
+          ],
+          "extent_bottom_right": [
+            4579,
+            3037
+          ]
+        },
+        "interpretation": "Exposed wooden sill beneath left lace curtain. Only exposed wood is cropped; curtains and furniture hide the remaining frame. Room-space dimensions are approximate.",
+        "identify_note": "Only exposed wood is cropped; curtains and furniture hide the remaining frame. Room-space dimensions are approximate. Room-space placement is an approximate S3 inference; detail geometry is not built."
+      },
+      "frame": {
+        "origin_xyz": [
+          1.85,
+          6.69,
+          0.76
+        ],
+        "x_axis_xy": [
+          -1,
+          0
+        ],
+        "y_axis_xy": [
+          0,
+          -1
+        ],
+        "size_xyz": [
+          1.7,
+          0.18,
+          0.08
+        ]
+      },
+      "footprint_xy": [
+        [
+          2.7,
+          6.78
+        ],
+        [
+          1.0,
+          6.78
+        ],
+        [
+          1.0,
+          6.6000000000000005
+        ],
+        [
+          2.7,
+          6.6000000000000005
+        ]
+      ],
+      "front_xy": [
+        0,
+        -1
+      ],
+      "regions": [
+        {
+          "id": "body",
+          "bbox": {
+            "min": [
+              1.0,
+              6.6000000000000005,
+              0.76
+            ],
+            "max": [
+              2.7,
+              6.78,
+              0.84
+            ]
+          }
+        }
+      ],
+      "relationships": [],
+      "ownership": {
+        "children": "external"
+      }
+    }
+  },
+  {
+    "id": "window_sill_right",
+    "label": "Exposed wooden sill beneath right lace curtain",
+    "crop_bbox": [
+      4844,
+      2933,
+      819,
+      148
+    ],
+    "bbox": {
+      "min": [
+        2.775,
+        6.6000000000000005,
+        0.76
+      ],
+      "max": [
+        4.824999999999999,
+        6.78,
+        0.84
+      ]
+    },
+    "contact": "window wall",
+    "material_note": "Warm brown stained wood",
+    "confidence": 0.8,
+    "shape": "box",
+    "spatial_contract": {
+      "source_evidence": {
+        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image_size_px": [
+          6114,
+          4842
+        ],
+        "visible_extent": "crop_bbox in original source pixels",
+        "landmarks": {
+          "extent_top_left": [
+            4844,
+            2933
+          ],
+          "extent_bottom_right": [
+            5663,
+            3081
+          ]
+        },
+        "interpretation": "Exposed wooden sill beneath right lace curtain. Only exposed wood is cropped; curtains and furniture hide the remaining frame. Room-space dimensions are approximate.",
+        "identify_note": "Only exposed wood is cropped; curtains and furniture hide the remaining frame. Room-space dimensions are approximate. Room-space placement is an approximate S3 inference; detail geometry is not built."
+      },
+      "frame": {
+        "origin_xyz": [
+          3.8,
+          6.69,
+          0.76
+        ],
+        "x_axis_xy": [
+          -1,
+          0
+        ],
+        "y_axis_xy": [
+          0,
+          -1
+        ],
+        "size_xyz": [
+          2.05,
+          0.18,
+          0.08
+        ]
+      },
+      "footprint_xy": [
+        [
+          4.824999999999999,
+          6.78
+        ],
+        [
+          2.775,
+          6.78
+        ],
+        [
+          2.775,
+          6.6000000000000005
+        ],
+        [
+          4.824999999999999,
+          6.6000000000000005
+        ]
+      ],
+      "front_xy": [
+        0,
+        -1
+      ],
+      "regions": [
+        {
+          "id": "body",
+          "bbox": {
+            "min": [
+              2.775,
+              6.6000000000000005,
+              0.76
+            ],
+            "max": [
+              4.824999999999999,
+              6.78,
+              0.84
+            ]
+          }
+        }
+      ],
+      "relationships": [],
+      "ownership": {
+        "children": "external"
+      }
+    }
+  },
+  {
+    "id": "window_frame_left",
+    "label": "Exposed left wooden window jamb",
+    "crop_bbox": [
+      4094,
+      2039,
+      79,
+      867
+    ],
+    "bbox": {
+      "min": [
+        1.0075,
+        6.67,
+        0.84
+      ],
+      "max": [
+        1.0725,
+        6.77,
+        2.29
+      ]
+    },
+    "contact": "window wall",
+    "material_note": "Warm brown stained wood",
+    "confidence": 0.8,
+    "shape": "box",
+    "spatial_contract": {
+      "source_evidence": {
+        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image_size_px": [
+          6114,
+          4842
+        ],
+        "visible_extent": "crop_bbox in original source pixels",
+        "landmarks": {
+          "extent_top_left": [
+            4094,
+            2039
+          ],
+          "extent_bottom_right": [
+            4173,
+            2906
+          ]
+        },
+        "interpretation": "Exposed left wooden window jamb. Only exposed wood is cropped; curtains and furniture hide the remaining frame. Room-space dimensions are approximate.",
+        "identify_note": "Only exposed wood is cropped; curtains and furniture hide the remaining frame. Room-space dimensions are approximate. Room-space placement is an approximate S3 inference; detail geometry is not built."
+      },
+      "frame": {
+        "origin_xyz": [
+          1.04,
+          6.72,
+          0.84
+        ],
+        "x_axis_xy": [
+          -1,
+          0
+        ],
+        "y_axis_xy": [
+          0,
+          -1
+        ],
+        "size_xyz": [
+          0.065,
+          0.1,
+          1.45
+        ]
+      },
+      "footprint_xy": [
+        [
+          1.0725,
+          6.77
+        ],
+        [
+          1.0075,
+          6.77
+        ],
+        [
+          1.0075,
+          6.67
+        ],
+        [
+          1.0725,
+          6.67
+        ]
+      ],
+      "front_xy": [
+        0,
+        -1
+      ],
+      "regions": [
+        {
+          "id": "body",
+          "bbox": {
+            "min": [
+              1.0075,
+              6.67,
+              0.84
+            ],
+            "max": [
+              1.0725,
+              6.77,
+              2.29
+            ]
+          }
+        }
+      ],
+      "relationships": [],
+      "ownership": {
+        "children": "external"
+      }
+    }
+  },
+  {
+    "id": "window_frame_middle",
+    "label": "Exposed middle wooden window jamb",
+    "crop_bbox": [
+      4800,
+      2008,
+      82,
+      915
+    ],
+    "bbox": {
+      "min": [
+        2.695,
+        6.67,
+        0.84
+      ],
+      "max": [
+        2.765,
+        6.77,
+        2.29
+      ]
+    },
+    "contact": "window wall",
+    "material_note": "Warm brown stained wood",
+    "confidence": 0.8,
+    "shape": "box",
+    "spatial_contract": {
+      "source_evidence": {
+        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image_size_px": [
+          6114,
+          4842
+        ],
+        "visible_extent": "crop_bbox in original source pixels",
+        "landmarks": {
+          "extent_top_left": [
+            4800,
+            2008
+          ],
+          "extent_bottom_right": [
+            4882,
+            2923
+          ]
+        },
+        "interpretation": "Exposed middle wooden window jamb. Only exposed wood is cropped; curtains and furniture hide the remaining frame. Room-space dimensions are approximate.",
+        "identify_note": "Only exposed wood is cropped; curtains and furniture hide the remaining frame. Room-space dimensions are approximate. Room-space placement is an approximate S3 inference; detail geometry is not built."
+      },
+      "frame": {
+        "origin_xyz": [
+          2.73,
+          6.72,
+          0.84
+        ],
+        "x_axis_xy": [
+          -1,
+          0
+        ],
+        "y_axis_xy": [
+          0,
+          -1
+        ],
+        "size_xyz": [
+          0.07,
+          0.1,
+          1.45
+        ]
+      },
+      "footprint_xy": [
+        [
+          2.765,
+          6.77
+        ],
+        [
+          2.695,
+          6.77
+        ],
+        [
+          2.695,
+          6.67
+        ],
+        [
+          2.765,
+          6.67
+        ]
+      ],
+      "front_xy": [
+        0,
+        -1
+      ],
+      "regions": [
+        {
+          "id": "body",
+          "bbox": {
+            "min": [
+              2.695,
+              6.67,
+              0.84
+            ],
+            "max": [
+              2.765,
+              6.77,
+              2.29
+            ]
+          }
+        }
+      ],
+      "relationships": [],
       "ownership": {
         "children": "external"
       }

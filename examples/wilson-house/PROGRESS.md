@@ -8,13 +8,13 @@
 - First corrective blockout scores: 7/10, 7/10, 7/10; authoritative attempt 3
 - Ownership corrective blockout scores: 7/10, 7/10, 8/10; authoritative attempt 3
 - Initial identify score: 8/10 on attempt 1
-- Corrective identify score: 8/10 on attempt 1
-- Object contracts: 135 after consolidating seven west-wall components into `wall_w`; declaration gate passed
+- Corrective identify scores: 8/10, then 9/10 after ownership re-entry
+- Object contracts: 97 after consolidating west-wall components, repeated lace folds, and unsupported occluded-book entries; declaration and crop gates passed
 - Detail progress: `wall_w` requested a spatial correction; no asset completed
 - GOTO history: builder → `blockout` for the `wall_w` facing/frame conflict; builder → `blockout` to resolve west-wall component ownership
 - Defect found: [#16](https://github.com/bddap-bot/photo-to-scene/issues/16), invalid builder GOTO suppresses the first valid retry and consumes a detail attempt
 - Corrective geometry: west-wall architecture has explicit included ownership; ceiling/cornices, portrait, window treatment, sofa, rocker, and orange chair silhouettes revised
 - Identification corrections: fixed hearth and microphone labels/crops, clarified the writing table, and added hanging tieback and fire-tool-holder entries
-- Current stage: identify, after ownership re-entry
-- Next `PHOTO_TO_SCENE_STAGE`: `identify`
-- Resume command: `PHOTO_TO_SCENE_ROOT=/home/bot/scratch/photo-to-scene/example/work PHOTO_TO_SCENE_STAGE=identify ./pipeline.sh /home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg`
+- Current stage: detail, object `wall_w`
+- Next `PHOTO_TO_SCENE_STAGE`: `detail`
+- Resume command: `PHOTO_TO_SCENE_ROOT=/home/bot/scratch/photo-to-scene/example/work PHOTO_TO_SCENE_STAGE=detail ./pipeline.sh /home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg`
