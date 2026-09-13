@@ -2326,12 +2326,12 @@
   },
   {
     "id": "hearth",
-    "label": "Stone hearth",
+    "label": "Stone hearth (visible right edge)",
     "crop_bbox": [
-      705,
-      3525,
-      1583,
-      430
+      1889,
+      3783,
+      427,
+      130
     ],
     "bbox": {
       "min": [
@@ -2346,7 +2346,7 @@
       ]
     },
     "contact": "floor",
-    "material_note": "dark; neutral blockout; Stone hearth",
+    "material_note": "dark; Stone hearth (visible right edge)",
     "confidence": 0.5,
     "shape": "box",
     "spatial_contract": {
@@ -2359,15 +2359,16 @@
         "visible_extent": "crop_bbox in original source pixels",
         "landmarks": {
           "extent_top_left": [
-            705,
-            3525
+            1889,
+            3783
           ],
           "extent_bottom_right": [
-            2288,
-            3955
+            2316,
+            3913
           ]
         },
-        "interpretation": "Stone hearth visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Stone hearth (visible right edge); label reviewed at S3; existing room-space geometry retained.",
+        "identify_note": "Only the rightmost stone edge is exposed; sofa and fireplace fender obscure the rest."
       },
       "frame": {
         "origin_xyz": [
@@ -6866,12 +6867,12 @@
   },
   {
     "id": "tieback_0",
-    "label": "Curtain tieback",
+    "label": "Left curtain gold tieback cord",
     "crop_bbox": [
-      3967,
-      1885,
-      110,
-      107
+      3970,
+      1912,
+      148,
+      151
     ],
     "bbox": {
       "min": [
@@ -6886,7 +6887,7 @@
       ]
     },
     "contact": "drape_0",
-    "material_note": "metal; neutral blockout; Curtain tieback",
+    "material_note": "metal; Left curtain gold tieback cord",
     "confidence": 0.65,
     "shape": "box",
     "spatial_contract": {
@@ -6899,15 +6900,15 @@
         "visible_extent": "crop_bbox in original source pixels",
         "landmarks": {
           "extent_top_left": [
-            3967,
-            1885
+            3970,
+            1912
           ],
           "extent_bottom_right": [
-            4077,
-            1992
+            4118,
+            2063
           ]
         },
-        "interpretation": "Curtain tieback visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Left curtain gold tieback cord; label reviewed at S3; existing room-space geometry retained."
       },
       "frame": {
         "origin_xyz": [
@@ -7110,12 +7111,12 @@
   },
   {
     "id": "tieback_1",
-    "label": "Curtain tieback",
+    "label": "Middle curtain gold tieback cord",
     "crop_bbox": [
-      4662,
-      1885,
-      110,
-      107
+      4676,
+      1867,
+      148,
+      131
     ],
     "bbox": {
       "min": [
@@ -7130,7 +7131,7 @@
       ]
     },
     "contact": "drape_1",
-    "material_note": "metal; neutral blockout; Curtain tieback",
+    "material_note": "metal; Middle curtain gold tieback cord",
     "confidence": 0.65,
     "shape": "box",
     "spatial_contract": {
@@ -7143,15 +7144,15 @@
         "visible_extent": "crop_bbox in original source pixels",
         "landmarks": {
           "extent_top_left": [
-            4662,
-            1885
+            4676,
+            1867
           ],
           "extent_bottom_right": [
-            4772,
-            1992
+            4824,
+            1998
           ]
         },
-        "interpretation": "Curtain tieback visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Middle curtain gold tieback cord; label reviewed at S3; existing room-space geometry retained."
       },
       "frame": {
         "origin_xyz": [
@@ -9109,12 +9110,12 @@
   },
   {
     "id": "lamp_table",
-    "label": "Lamp / side table",
+    "label": "Writing table behind gold chair",
     "crop_bbox": [
-      3313,
-      2830,
-      595,
-      815
+      3310,
+      2768,
+      492,
+      829
     ],
     "bbox": {
       "min": [
@@ -9129,7 +9130,7 @@
       ]
     },
     "contact": "floor",
-    "material_note": "wood; neutral blockout; Lamp / side table",
+    "material_note": "wood; Writing table behind gold chair",
     "confidence": 0.5,
     "shape": "box",
     "spatial_contract": {
@@ -9142,15 +9143,16 @@
         "visible_extent": "crop_bbox in original source pixels",
         "landmarks": {
           "extent_top_left": [
-            3313,
-            2830
+            3310,
+            2768
           ],
           "extent_bottom_right": [
-            3908,
-            3645
+            3802,
+            3597
           ]
         },
-        "interpretation": "Small table and lamp behind gold chair; lamp top approximately 1.55 m. Position revised using projected image ordering and wall clearance; furniture envelopes are approximate, not recovered meshes. Position revised using projected image ordering and wall clearance; furniture envelopes are approximate, not recovered meshes."
+        "interpretation": "Writing table behind gold chair; label reviewed at S3; existing room-space geometry retained.",
+        "identify_note": "Rectangular writing table with open book, behind the gold chair; distinct from round_table and foreground desk."
       },
       "frame": {
         "origin_xyz": [
@@ -17515,6 +17517,348 @@
           "type": "supported_by",
           "with": "floor",
           "region": "shaft",
+          "support_region": "body",
+          "metres": 0,
+          "tolerance_m": 0.03
+        }
+      ],
+      "ownership": {
+        "children": "external"
+      }
+    }
+  },
+  {
+    "id": "tieback_hanging_0",
+    "label": "Left hanging tieback cord / tassel detail",
+    "crop_bbox": [
+      3936,
+      2001,
+      179,
+      365
+    ],
+    "bbox": {
+      "min": [
+        0.97,
+        6.432499999999999,
+        1.83
+      ],
+      "max": [
+        1.09,
+        6.467499999999999,
+        2.16
+      ]
+    },
+    "contact": "tieback_0",
+    "material_note": "gold braided textile cord; tassel end partly obscured by similarly colored drapery",
+    "confidence": 0.6,
+    "shape": "box",
+    "spatial_contract": {
+      "source_evidence": {
+        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image_size_px": [
+          6114,
+          4842
+        ],
+        "visible_extent": "crop_bbox in original source pixels",
+        "landmarks": {
+          "extent_top_left": [
+            3936,
+            2001
+          ],
+          "extent_bottom_right": [
+            4115,
+            2366
+          ]
+        },
+        "interpretation": "Left hanging tieback cord / tassel detail. Hanging cord is visible below the knot; an individual tassel end cannot be confidently isolated.",
+        "identify_note": "Hanging cord is visible below the knot; an individual tassel end cannot be confidently isolated. Room-space placement is an approximate S3 inference; detail geometry is not built."
+      },
+      "frame": {
+        "origin_xyz": [
+          1.03,
+          6.449999999999999,
+          1.83
+        ],
+        "x_axis_xy": [
+          -1,
+          0
+        ],
+        "y_axis_xy": [
+          0,
+          -1
+        ],
+        "size_xyz": [
+          0.12,
+          0.035,
+          0.33
+        ]
+      },
+      "footprint_xy": [
+        [
+          1.09,
+          6.467499999999999
+        ],
+        [
+          0.97,
+          6.467499999999999
+        ],
+        [
+          0.97,
+          6.432499999999999
+        ],
+        [
+          1.09,
+          6.432499999999999
+        ]
+      ],
+      "front_xy": [
+        0,
+        -1
+      ],
+      "regions": [
+        {
+          "id": "body",
+          "bbox": {
+            "min": [
+              0.97,
+              6.432499999999999,
+              1.83
+            ],
+            "max": [
+              1.09,
+              6.467499999999999,
+              2.16
+            ]
+          }
+        }
+      ],
+      "relationships": [],
+      "ownership": {
+        "children": "external"
+      }
+    }
+  },
+  {
+    "id": "tieback_hanging_1",
+    "label": "Middle hanging tieback cord / tassel detail",
+    "crop_bbox": [
+      4696,
+      1960,
+      124,
+      378
+    ],
+    "bbox": {
+      "min": [
+        2.66,
+        6.432499999999999,
+        1.83
+      ],
+      "max": [
+        2.7800000000000002,
+        6.467499999999999,
+        2.16
+      ]
+    },
+    "contact": "tieback_1",
+    "material_note": "gold braided textile cord; tassel end partly obscured by similarly colored drapery",
+    "confidence": 0.6,
+    "shape": "box",
+    "spatial_contract": {
+      "source_evidence": {
+        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image_size_px": [
+          6114,
+          4842
+        ],
+        "visible_extent": "crop_bbox in original source pixels",
+        "landmarks": {
+          "extent_top_left": [
+            4696,
+            1960
+          ],
+          "extent_bottom_right": [
+            4820,
+            2338
+          ]
+        },
+        "interpretation": "Middle hanging tieback cord / tassel detail. Hanging cord is visible below the knot; an individual tassel end cannot be confidently isolated.",
+        "identify_note": "Hanging cord is visible below the knot; an individual tassel end cannot be confidently isolated. Room-space placement is an approximate S3 inference; detail geometry is not built."
+      },
+      "frame": {
+        "origin_xyz": [
+          2.72,
+          6.449999999999999,
+          1.83
+        ],
+        "x_axis_xy": [
+          -1,
+          0
+        ],
+        "y_axis_xy": [
+          0,
+          -1
+        ],
+        "size_xyz": [
+          0.12,
+          0.035,
+          0.33
+        ]
+      },
+      "footprint_xy": [
+        [
+          2.7800000000000002,
+          6.467499999999999
+        ],
+        [
+          2.66,
+          6.467499999999999
+        ],
+        [
+          2.66,
+          6.432499999999999
+        ],
+        [
+          2.7800000000000002,
+          6.432499999999999
+        ]
+      ],
+      "front_xy": [
+        0,
+        -1
+      ],
+      "regions": [
+        {
+          "id": "body",
+          "bbox": {
+            "min": [
+              2.66,
+              6.432499999999999,
+              1.83
+            ],
+            "max": [
+              2.7800000000000002,
+              6.467499999999999,
+              2.16
+            ]
+          }
+        }
+      ],
+      "relationships": [],
+      "ownership": {
+        "children": "external"
+      }
+    }
+  },
+  {
+    "id": "fire_tool_stand",
+    "label": "Fireplace-tool holder (partly occluded)",
+    "crop_bbox": [
+      712,
+      3308,
+      238,
+      272
+    ],
+    "bbox": {
+      "min": [
+        0.605,
+        2.39,
+        0
+      ],
+      "max": [
+        0.7949999999999999,
+        2.5500000000000003,
+        0.52
+      ]
+    },
+    "contact": "floor",
+    "material_note": "dark wrought metal",
+    "confidence": 0.65,
+    "shape": "box",
+    "spatial_contract": {
+      "source_evidence": {
+        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image_size_px": [
+          6114,
+          4842
+        ],
+        "visible_extent": "crop_bbox in original source pixels",
+        "landmarks": {
+          "extent_top_left": [
+            712,
+            3308
+          ],
+          "extent_bottom_right": [
+            950,
+            3580
+          ]
+        },
+        "interpretation": "Fireplace-tool holder (partly occluded). Visible curved holder surrounding the loop-handled tools; lower shaft and base are hidden behind sofa.",
+        "identify_note": "Visible curved holder surrounding the loop-handled tools; lower shaft and base are hidden behind sofa. Room-space placement is an approximate S3 inference; detail geometry is not built."
+      },
+      "frame": {
+        "origin_xyz": [
+          0.7,
+          2.47,
+          0
+        ],
+        "x_axis_xy": [
+          -1,
+          0
+        ],
+        "y_axis_xy": [
+          0,
+          -1
+        ],
+        "size_xyz": [
+          0.19,
+          0.16,
+          0.52
+        ]
+      },
+      "footprint_xy": [
+        [
+          0.7949999999999999,
+          2.5500000000000003
+        ],
+        [
+          0.605,
+          2.5500000000000003
+        ],
+        [
+          0.605,
+          2.39
+        ],
+        [
+          0.7949999999999999,
+          2.39
+        ]
+      ],
+      "front_xy": [
+        0,
+        -1
+      ],
+      "regions": [
+        {
+          "id": "body",
+          "bbox": {
+            "min": [
+              0.605,
+              2.39,
+              0
+            ],
+            "max": [
+              0.7949999999999999,
+              2.5500000000000003,
+              0.52
+            ]
+          }
+        }
+      ],
+      "relationships": [
+        {
+          "type": "supported_by",
+          "with": "floor",
+          "region": "body",
           "support_region": "body",
           "metres": 0,
           "tolerance_m": 0.03
