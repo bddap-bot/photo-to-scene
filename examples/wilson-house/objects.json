@@ -29044,12 +29044,12 @@
   },
   {
     "id": "radiator",
-    "label": "Radiator beneath window",
+    "label": "Exposed radiator grille beneath windows",
     "crop_bbox": [
-      4146,
-      2978,
-      1968,
-      433
+      4215,
+      3040,
+      354,
+      96
     ],
     "bbox": {
       "min": [
@@ -29064,7 +29064,7 @@
       ]
     },
     "contact": "floor",
-    "material_note": "dark; neutral blockout; Radiator beneath window",
+    "material_note": "dark; Exposed radiator grille beneath windows",
     "confidence": 0.5,
     "shape": "box",
     "spatial_contract": {
@@ -29077,15 +29077,16 @@
         "visible_extent": "crop_bbox in original source pixels",
         "landmarks": {
           "extent_top_left": [
-            4146,
-            2978
+            4215,
+            3040
           ],
           "extent_bottom_right": [
-            6114,
-            3411
+            4569,
+            3136
           ]
         },
-        "interpretation": "Radiator beneath window visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Exposed radiator grille beneath windows; label reviewed at S3; existing room-space geometry retained.",
+        "identify_note": "Visible grille sample beneath the left window; furniture hides most of the radiator."
       },
       "frame": {
         "origin_xyz": [
@@ -64446,10 +64447,10 @@
     "id": "lamp_table",
     "label": "Writing table behind gold chair",
     "crop_bbox": [
-      3310,
-      2768,
-      492,
-      829
+      3441,
+      2837,
+      344,
+      502
     ],
     "bbox": {
       "min": [
@@ -64477,16 +64478,16 @@
         "visible_extent": "crop_bbox in original source pixels",
         "landmarks": {
           "extent_top_left": [
-            3310,
-            2768
+            3441,
+            2837
           ],
           "extent_bottom_right": [
-            3802,
-            3597
+            3785,
+            3339
           ]
         },
         "interpretation": "Writing table behind gold chair; label reviewed at S3; existing room-space geometry retained.",
-        "identify_note": "Rectangular writing table with open book, behind the gold chair; distinct from round_table and foreground desk."
+        "identify_note": "Visible writing-table top, apron and support between the gold and red chairs; furniture occludes its full extent."
       },
       "frame": {
         "origin_xyz": [
@@ -109011,7 +109012,7 @@
     }
   },
   {
-    "id": "bookcase_clock",
+    "id": "microphone",
     "label": "Vintage broadcast microphone on stand",
     "crop_bbox": [
       2931,
@@ -119382,10 +119383,10 @@
     "id": "tablecloth",
     "label": "Draped patterned tablecloth",
     "crop_bbox": [
-      4549,
-      3040,
-      1077,
-      681
+      5023,
+      3071,
+      413,
+      334
     ],
     "bbox": {
       "min": [
@@ -119413,15 +119414,16 @@
         "visible_extent": "crop_bbox in original source pixels",
         "landmarks": {
           "extent_top_left": [
-            4549,
-            3040
+            5023,
+            3071
           ],
           "extent_bottom_right": [
-            5626,
-            3721
+            5436,
+            3405
           ]
         },
-        "interpretation": "Draped patterned tablecloth visible in annotated source crop; depth inferred from floorplan."
+        "interpretation": "Draped patterned tablecloth visible in annotated source crop; depth inferred from floorplan.",
+        "identify_note": "Visible patterned fabric sample on the right-hand drape; the rocker occludes the left portion."
       },
       "frame": {
         "origin_xyz": [
@@ -121428,7 +121430,7 @@
     }
   },
   {
-    "id": "horse_figurine",
+    "id": "she_wolf_figurine",
     "label": "She-wolf and infants figurine",
     "crop_bbox": [
       268,
