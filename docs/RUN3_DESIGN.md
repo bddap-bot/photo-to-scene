@@ -19,3 +19,5 @@ Objects are sorted by contracted footprint area and split deterministically into
 ## Perceptual-leverage increment
 
 The selected run-analysis suggestion is asymmetric call allocation: settle the few large forms jointly in image space before spending calls on the long-tail detail sweep. The cumulative tier render makes this a workflow boundary rather than a prompt preference.
+
+A second selected suggestion records confidence on semantic regions. Critics weight observed boundaries above inferred boundaries behind occlusions, avoiding false precision where a single view cannot establish topology.

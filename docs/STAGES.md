@@ -8,7 +8,7 @@ All measurements use metres. The room coordinate origin is a floor corner, with 
 
 `floorplan.json` describes the room polygon, wall heights, openings, fixed architectural features, camera pose and optics, a scale anchor, and the derivation of inferred dimensions.
 
-`objects.json` is an exhaustive array of visible objects. Each entry carries a stable identifier, label, source-image crop rectangle, room-space bounding box, contact relationship, material observation, confidence, and a source-grounded spatial contract. The contract fixes one local-to-room frame, facing, footprint, semantic regions, relationships, ownership, and applicable aperture visibility.
+`objects.json` is an exhaustive array of visible objects. Each entry carries a stable identifier, proposed and object-reviewed labels, the reason for any confirmation or correction, a source-image crop rectangle, room-space bounding box, contact relationship, material observation, confidence, and a source-grounded spatial contract. The contract fixes one local-to-room frame, facing, footprint, confidence-aware semantic regions, relationships, ownership, and applicable aperture visibility.
 
 `assets/<id>.py` exposes `build(entry, collection=None)`. It creates recognisable geometry and material in one normalized local frame and returns the Blender objects it creates. Integration applies the contracted frame once and rejects any measured invariant that does not round-trip.
 
@@ -23,7 +23,7 @@ Prompts distinguish checked facts and hand-off invariants from encouraged method
 1. **Floorplan** estimates room geometry, fixed features, scale, and camera, then renders a top-down diagram.
 2. **Blockout** inventories every visible object and renders neutral primitives plus a 50% reference overlay. This stage evaluates projection and placement without material distractions.
 3. **Identify** produces an enlarged labelled crop for every object and a contact sheet, then corrects labels and omissions.
-4. **Detail** gives one crop and one object entry to a fresh builder. Each asset is rendered alone and reviewed for silhouette, proportions, components, and surface read.
+4. **Detail** sorts objects by contracted footprint into large, medium, and small tiers. Each fresh builder receives one crop, the whole photograph, and one object entry; it confirms or corrects the proposed label, then renders the asset alone. After each tier, a fresh critic reviews a cumulative composition before the next tier starts.
 5. **Integrate** assembles the shell and all asset builders, resolves contact relationships, and evaluates placement, intersections, floating geometry, gaps, and camera fit.
 6. **Materials** preserves asset materials while adding shell materials, lighting, colour management, and a final photographic render.
 
@@ -43,4 +43,4 @@ Before an isolated detail render reaches its critic, the driver checks that the 
 
 ## Resume behavior
 
-Contracts, verdicts, attempt copies, counters, records, and best results live on disk. `PHOTO_TO_SCENE_STAGE` selects the first stage for a resumed run. The detail loop reads prior scores and attempts, skips objects already scoring at least 8 or already at their attempt cap, and appends progress after every object. The best materials scene is retained whenever its score improves, so finalization does not depend on the last attempt being the best.
+Contracts, verdicts, attempt copies, counters, records, object tiers, and best results live on disk. `PHOTO_TO_SCENE_STAGE` selects the first stage for a resumed run. The detail loop reads prior scores and attempts, skips objects already scoring at least 8 or already at their attempt cap, appends progress after every object, and records the active tier with each result. The best materials scene is retained whenever its score improves, so finalization does not depend on the last attempt being the best.
