@@ -7,6 +7,20 @@ from pathlib import Path
 
 
 class PipelineControlTest(unittest.TestCase):
+    def test_detail_uses_crop_and_whole_photo_and_records_label_review(self):
+        pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
+        self.assertIn('-i "$STATE/crops/$id.png" -i "${INPUT:-$STATE/crops/$id.png}"', pipeline)
+        self.assertIn("proposed_label:$reviewed[0].proposed_label", pipeline)
+        self.assertIn("final_label:$reviewed[0].final_label", pipeline)
+        self.assertIn("label_reason:$reviewed[0].label_reason", pipeline)
+
+    def test_footprint_tiers_are_descending_and_each_is_criticized(self):
+        pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
+        self.assertIn("sort_by(-((.spatial_contract.frame.size_xyz[0]", pipeline)
+        self.assertIn("for tier in large medium small", pipeline)
+        self.assertIn('run_tier_critic "$tier"', pipeline)
+        self.assertIn('record "tier:$tier"', pipeline)
+
     def test_capped_builder_goto_retries_within_same_stage_attempt(self):
         pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
         builder = pipeline.split("builder() {", 1)[1].split("\n}\ncritic()", 1)[0]
@@ -53,6 +67,8 @@ codex() {{ local calls; cat >/dev/null; calls=$(( $(cat "$STATE/calls") + 1 )); 
 {detail_helpers}
 verify_detail() {{ DETAIL_FAILURE="asset check failed: no contract-valid asset"; return 1; }}
 {run_one_detail}
+write_tiers() {{ printf 'one\tlarge\n' > "$STATE/object_tiers.tsv"; }}
+run_tier_critic() {{ :; }}
 {run_detail}
 within_s56_budget() {{ return 0; }}
 integrate_calls=0
@@ -399,7 +415,7 @@ cat "$STATE/scores.md"
             result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=10)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn('{"score":7,"summary":"exact verdict"}', result.stdout)
-        self.assertIn("| integrate | 1 | 7/10 | 4 | Initial stage entry or forward rebuild from accepted contracts. |", result.stdout)
+        self.assertIn("| integrate | — | 1 | 7/10 | 4 | Initial stage entry or forward rebuild from accepted contracts. |", result.stdout)
         self.assertEqual(result.stdout.count(f"Verdict absent: `{missing}`"), 1)
         self.assertNotIn("verdict file unavailable", result.stdout)
 
@@ -432,6 +448,8 @@ printf 'changed=%s stable=%s best=%s\n' "$(detail_attempts changed new-hash)" "$
             objects.write_text('[{"id":"one","crop_bbox":[0,0,3,3]},{"id":"two","crop_bbox":[0,0,2,2]},{"id":"three","crop_bbox":[0,0,1,1]}]')
             script = f'''STATE={directory!s}
 run_one_detail() {{ printf '%s\n' "$1"; read -r ignored || true; }}
+write_tiers() {{ printf 'one\tlarge\ntwo\tmedium\nthree\tsmall\n' > "$STATE/object_tiers.tsv"; }}
+run_tier_critic() {{ :; }}
 {run_detail}
 run_detail
 '''
