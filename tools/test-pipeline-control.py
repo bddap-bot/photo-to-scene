@@ -20,6 +20,8 @@ class PipelineControlTest(unittest.TestCase):
         self.assertIn("for tier in large medium small", pipeline)
         self.assertIn('run_tier_critic "$tier"', pipeline)
         self.assertIn('record "tier:$tier"', pipeline)
+        self.assertIn('if [ "$score" -lt 8 ]', pipeline)
+        self.assertIn('return 43', pipeline)
 
     def test_capped_builder_goto_retries_within_same_stage_attempt(self):
         pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
