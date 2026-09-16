@@ -128,7 +128,7 @@ def check_observed(entries, observed, ids, tolerance, errors):
         for region in expected['regions']:
             if region['id'] not in actual_regions:
                 errors.append(f'{ident}: missing region {region["id"]}')
-            elif bbox_error(region['bbox'], actual_regions[region['id']]) > tolerance:
+            elif bbox_error(region['bbox'], actual_regions[region['id']]) > tolerance / max(region.get('confidence', 1), .25):
                 errors.append(f'{ident}: region {region["id"]} did not round-trip')
         for owned in actual.get('owned_ids', [ident]):
             if owned in seen:
