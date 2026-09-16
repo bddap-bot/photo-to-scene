@@ -23,13 +23,21 @@ class PipelineControlTest(unittest.TestCase):
         self.assertIn('if [ "$score" -lt 8 ]', pipeline)
         self.assertIn('return 43', pipeline)
 
+    def test_capped_tier_critic_descends_to_next_tier(self):
+        pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
+        run_detail = pipeline.split("run_detail() {", 1)[1].split("\n}\nrun_integrate()", 1)[0]
+        self.assertIn('[ "$tier_rc" -eq 43 ] && [ "$CRITIC_GOTOS" -ge 5 ]', run_detail)
+        self.assertIn('continue', run_detail)
+        mutated = run_detail.replace('[ "$CRITIC_GOTOS" -ge 5 ]', '[ "$CRITIC_GOTOS" -gt 5 ]')
+        self.assertNotIn('[ "$tier_rc" -eq 43 ] && [ "$CRITIC_GOTOS" -ge 5 ]', mutated)
+
     def test_capped_builder_goto_retries_within_same_stage_attempt(self):
         pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
         builder = pipeline.split("builder() {", 1)[1].split("\n}\ncritic()", 1)[0]
         builder = "builder() {" + builder + "\n}"
         run_one_detail = pipeline.split("run_one_detail() {", 1)[1].split("\n}\nrun_detail()", 1)[0]
         run_one_detail = "run_one_detail() {" + run_one_detail + "\n}"
-        run_detail = next(line for line in pipeline.splitlines() if line.startswith("run_detail()"))
+        run_detail = "run_detail() {" + pipeline.split("run_detail() {", 1)[1].split("\n}\nrun_integrate()", 1)[0] + "\n}"
         detail_helpers = "\n".join(
             line
             for line in pipeline.splitlines()
@@ -444,7 +452,7 @@ printf 'changed=%s stable=%s best=%s\n' "$(detail_attempts changed new-hash)" "$
 
     def test_detail_iteration_isolated_from_inbox_stdin(self):
         pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
-        run_detail = next(line for line in pipeline.splitlines() if line.startswith("run_detail()"))
+        run_detail = "run_detail() {" + pipeline.split("run_detail() {", 1)[1].split("\n}\nrun_integrate()", 1)[0] + "\n}"
         with tempfile.TemporaryDirectory() as directory:
             objects = Path(directory, "objects.json")
             objects.write_text('[{"id":"one","crop_bbox":[0,0,3,3]},{"id":"two","crop_bbox":[0,0,2,2]},{"id":"three","crop_bbox":[0,0,1,1]}]')

@@ -131,7 +131,23 @@ run_one_detail() {
   if [ -n "$bestseq" ] && [ -f "$STATE/attempts/object_${id}_${bestseq}.json" ]; then cp "$STATE/attempts/object_${id}_${bestseq}.json" "$entry"; jq --slurpfile reviewed "$entry" --arg id "$id" 'map(if .id == $id then . + {proposed_label:$reviewed[0].proposed_label,final_label:$reviewed[0].final_label,label:$reviewed[0].final_label,label_reason:$reviewed[0].label_reason} else . end)' "$STATE/objects.json" > "$STATE/objects.json.next" && mv "$STATE/objects.json.next" "$STATE/objects.json"; fi
   attempts=$(detail_attempts "$id" "$contract_hash"); best=$(detail_best "$id" "$contract_hash"); printf '%s best=%s attempts=%s contract=%s\n' "$id" "$best" "$attempts" "$contract_hash" >> "$STATE/progress.md"; inbox
 }
-run_detail() { local only=${1:-} id tier; local -a detail_ids=(); if [[ "$only" == object:* ]]; then run_one_detail "${only#object:}" "${2:-}" 1; return $?; fi; write_tiers; for tier in large medium small; do mapfile -t detail_ids < <(awk -F '\t' -v tier="$tier" '$2==tier {print $1}' "$STATE/object_tiers.tsv"); for id in "${detail_ids[@]}"; do ACTIVE_TIER=$tier run_one_detail "$id" || return $?; done; run_tier_critic "$tier" || return $?; done; }
+run_detail() {
+  local only=${1:-} id tier tier_rc
+  local -a detail_ids=()
+  if [[ "$only" == object:* ]]; then run_one_detail "${only#object:}" "${2:-}" 1; return $?; fi
+  write_tiers
+  for tier in large medium small; do
+    mapfile -t detail_ids < <(awk -F '\t' -v tier="$tier" '$2==tier {print $1}' "$STATE/object_tiers.tsv")
+    for id in "${detail_ids[@]}"; do ACTIVE_TIER=$tier run_one_detail "$id" || return $?; done
+    run_tier_critic "$tier"
+    tier_rc=$?
+    if [ "$tier_rc" -eq 43 ] && [ "$CRITIC_GOTOS" -ge 5 ]; then
+      log "GOTO cap request ignored within tier=$tier; descending to next footprint tier"
+      continue
+    fi
+    [ "$tier_rc" -eq 0 ] || return "$tier_rc"
+  done
+}
 run_integrate() {
   local feedback=${1:-} best bestseq start score a verdict validation completed
   [ -f "$STATE/integrate_start_epoch" ] || date +%s > "$STATE/integrate_start_epoch"
