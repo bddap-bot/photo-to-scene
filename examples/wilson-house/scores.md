@@ -1,6 +1,6 @@
 # Wilson House scores
 
-RESUMABLE: 30/99 detail objects finalized; active stage `object:radiator`. Final gate score is not yet measured; latest available visual critic: 6/10 (`object:radiator`).
+RESUMABLE: 35/99 detail objects finalized; active stage `object:lamp_table`. Final gate score is not yet measured; latest available visual critic: 7/10 (`object:window_sill_right`).
 
 A gate score of 10 means the applicable driver checks passed; 0 means they rejected the attempt. A dash means no scored machine gate or no visual critic ran. Gate success measures contract compliance, not photographic similarity. Final gate and visual scores remain separate.
 
@@ -96,6 +96,15 @@ A gate score of 10 means the applicable driver checks passed; 0 means they rejec
 | object:walking_cane | 1 | 10/10 | 8/10 | 162 | Initial entry or forward rebuild. |
 | object:desk_bowl | 1 | 10/10 | 8/10 | 139 | Initial entry or forward rebuild. |
 | object:radiator | 1 | 10/10 | 6/10 | 144 | Initial entry or forward rebuild. |
+| object:radiator | 2 | 10/10 | 8/10 | 102 | Enlarge and space out the dark openings to match the crop’s visible rows of holes.; Replace the alternating checkerboard with dark perforations separated by continuous brown horizontal and vertical webs.; Reduce the frame’s thick, projecting bevels and darken the finish toward the crop’s muted reddish brown. |
+| object:hearth | 1 | 10/10 | 7/10 | 108 | Initial entry or forward rebuild. |
+| object:hearth | 2 | 10/10 | 7/10 | 93 | Replace the directional wood-like streaks with subtle dark stone variation and a smoother surface.; Strengthen the near-black front edge and give the top a slightly warmer brown tone to match the crop. |
+| object:fireplace_fender | 1 | 10/10 | 4/10 | 272 | Initial entry or forward rebuild. |
+| object:fireplace_fender | 2 | 10/10 | 4/10 | 248 | Thicken the horizontal rails substantially and make the turned posts shorter and fuller, with prominent ball finials and bulbous lower bodies.; Add the visible low rectangular base frame with broad flat edging and substantial post feet.; Complete the side returns with rear upright supports; the rendered returns currently end as unsupported rods. |
+| object:tablecloth | 1 | 10/10 | 5/10 | 227 | Initial entry or forward rebuild. |
+| object:tablecloth | 2 | 10/10 | 6/10 | 180 | Add deeper, irregular vertical folds and a softer tabletop-to-hanging transition; break up the straight corners and uniform hem.; Replace the evenly spaced flowers and sinusoidal stripe with a broad, sweeping gold-edged border containing dense floral and leafy scrollwork.; Shift the fabric toward muted gray-taupe with burgundy, dusty lavender, and antique-gold ornament, reducing the broad blank areas. |
+| object:window_sill_right | 1 | 10/10 | 7/10 | 153 | Initial entry or forward rebuild. |
+| object:window_sill_right | 2 | 10/10 | 7/10 | 92 | Increase the fascia height beneath the top lip to match the broader flat wooden band in the crop.; Darken the wood to a muted walnut brown and reduce the bright, contrasting grain.; Strengthen the dark recessed line beneath the top lip and simplify the lower molding into the crop's narrow stepped bands. |
 
 ## Critic and gate findings
 
@@ -739,3 +748,73 @@ The long brown radiator grille is recognizable, but its dense checkerboard surfa
 - Enlarge and space out the dark openings to match the crop’s visible rows of holes.
 - Replace the alternating checkerboard with dark perforations separated by continuous brown horizontal and vertical webs.
 - Reduce the frame’s thick, projecting bevels and darken the finish toward the crop’s muted reddish brown.
+
+### object:radiator attempt 2
+
+The render recognisably matches the long brown perforated radiator cover. Its grid reads sharper and more mechanical than the softer, warmer grille in the crop.
+
+- Reduce the contrast between the perforations and surrounding grille so the holes read as dark brown recesses rather than pure black squares.
+- Warm the grille material toward the crop's reddish golden brown and add subtle tonal variation.
+- Soften the perforation edges and reduce the prominence of the thick, angular outer frame.
+
+### object:hearth attempt 1
+
+The render recognisably captures the low, dark rectangular hearth slab. Its material reads more like wood than the smooth dark stone visible in the crop; partial occlusion limits precise proportion judgments.
+
+- Replace the directional wood-like streaks with subtle dark stone variation and a smoother surface.
+- Strengthen the near-black front edge and give the top a slightly warmer brown tone to match the crop.
+
+### object:hearth attempt 2
+
+The render reads as a thin, dark rectangular hearth slab, matching the main visible geometry. Its surface looks too uniformly brown and its edges too sharp compared with the reference.
+
+- Shift the surface toward near-black charcoal with subtle stone mottling.
+- Soften the exposed rim slightly and give it a restrained polished highlight.
+- Reduce the apparent slab thickness slightly to match the crop’s low-profile front edge.
+
+### object:fireplace_fender attempt 1
+
+The render suggests a dark metal fireplace fender, but its extremely thin rails and elongated posts lack the crop’s stout, grounded construction.
+
+- Thicken the horizontal rails substantially and make the turned posts shorter and fuller, with prominent ball finials and bulbous lower bodies.
+- Add the visible low rectangular base frame with broad flat edging and substantial post feet.
+- Complete the side returns with rear upright supports; the rendered returns currently end as unsupported rods.
+
+### object:fireplace_fender attempt 2
+
+The dark metal rail suggests a fireplace fender, but the render is too skeletal: thin posts, absent ball finials, and missing lower framing lose the crop's substantial turned construction.
+
+- Thicken the upright posts and give them pronounced pear-shaped turned bodies, broad collars, and rounded ball finials above the rail.
+- Add the visible low rectangular base frame with substantial edge rails and supporting feet beneath the uprights.
+- Increase the upper rails' thickness and use block-like junctions at the posts to match the crop's sturdy connections.
+
+### object:tablecloth attempt 1
+
+Recognisable as a patterned tablecloth, but the rigid rectangular drape and sparse, regular motifs miss the reference’s soft folds and dense ornamental border.
+
+- Add deeper, irregular vertical folds and a softer tabletop-to-hanging transition; break up the straight corners and uniform hem.
+- Replace the evenly spaced flowers and sinusoidal stripe with a broad, sweeping gold-edged border containing dense floral and leafy scrollwork.
+- Shift the fabric toward muted gray-taupe with burgundy, dusty lavender, and antique-gold ornament, reducing the broad blank areas.
+
+### object:tablecloth attempt 2
+
+Recognisable as a patterned tablecloth, but the render has a rigid rectangular drape and much finer, denser ornament than the crop’s broad floral border and soft folds.
+
+- Enlarge and simplify the border into bold dark floral motifs outlined in ochre gold, with a wider plain taupe band below.
+- Replace the flat front panel and tight side pleats with broader, softer vertical folds and a less rigid tabletop transition.
+- Reduce the repeated scalloping along the hem; let broad folds create the uneven lower silhouette.
+
+### object:window_sill_right attempt 1
+
+Recognisable wooden window sill with a projecting top lip and layered trim. The render is too shallow and light compared with the broad, dark wooden fascia visible behind the framed photograph. Judge the sill alone; the foreground display objects are separate.
+
+- Increase the fascia height beneath the top lip to match the broader flat wooden band in the crop.
+- Darken the wood to a muted walnut brown and reduce the bright, contrasting grain.
+- Strengthen the dark recessed line beneath the top lip and simplify the lower molding into the crop's narrow stepped bands.
+
+### object:window_sill_right attempt 2
+
+Recognisable as the wooden sill beneath the right window. The long horizontal form fits, but the reference has warmer wood, stronger stepped moulding, and deeper shadow lines. The foreground fabric and framed objects belong to the table display.
+
+- Give the upper lip a more rounded, projecting profile and deepen the horizontal recess beneath it.
+- Use warmer golden-brown wood with subtle grain and darker shading in the moulding grooves.

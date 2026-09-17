@@ -1,6 +1,6 @@
 # Wilson House worked example
 
-RESUMABLE: 30/99 detail objects finalized; active stage `object:radiator`. Final gate score is not yet measured; latest available visual critic: 6/10 (`object:radiator`).
+RESUMABLE: 35/99 detail objects finalized; active stage `object:lamp_table`. Final gate score is not yet measured; latest available visual critic: 7/10 (`object:window_sill_right`).
 
 The Library of Congress photograph is the reconstruction reference; [ATTRIBUTION.md](ATTRIBUTION.md) gives the credit, rights statement, and full-resolution link. The pipeline received the 6114×4842 full-resolution JPEG. The repository source is the supplied 1529×1211 copy.
 
@@ -12,41 +12,41 @@ This continuation uses the published main tip `ed4bc7e691ec081840040e3acc7918af9
 
 ## Attempt measurements
 
-The complete per-attempt table below separates machine gates from visual judgments. A passing gate is represented as 10/10, a failure as 0/10, and an unavailable measurement as a dash. Seconds are the driver-recorded elapsed time for each completed attempt; interrupted attempts are not included.
+The complete per-attempt table below separates machine gates from visual judgments. A passing gate is represented as 10/10, a failure as 0/10, and an unavailable measurement as a dash. Seconds are the driver-recorded elapsed time for each completed attempt; interrupted attempts are not included. The change column summarizes the correction supplied to that attempt, not a claim that the correction succeeded. Full correction context and resulting findings are retained in [scores.md](scores.md).
 
 | Stage | Attempt | Gate score | Critic score | Seconds | What changed |
 |---|---:|---:|---:|---:|---|
 | floorplan | 1 | — | 5/10 | 272 | Initial entry or forward rebuild. |
-| floorplan | 2 | — | 7/10 | 314 | Reconcile camera framing with the window-wall furniture positions. The specified projection places the draped-table center beyond the right image edge and the orange chair farther outside, whereas both are visible in the photograph. Preserve the visible room corner while bringing these objects into frame.; Reduce the rocking chair's foreground displacement relative to the gold chair and rear seating. Its projected center falls near the bottom edge, whereas the photograph shows the complete rocker with substantial rug below it.; Refine camera height, tilt, and architectural elevations together. The modeled mantel shelf projects below its photographed position, while the ceiling corner is also too low; align both landmarks before accepting the proposed ceiling height and focal length. |
-| floorplan | 3 | — | 7/10 | 424 | Refine the draped table and orange chair elevations and depth. Their projected floor extents reach roughly y=1214 and y=1329, while the photograph places their visible bases around y=1080 and y=1160. Preserve the orange chair’s right-edge cropping.; Move the small round table toward the rocker, clearing the gold chair’s footprint. In the photograph its tabletop is distinctly right of the gold chair and directly in front of the red chair.; Reduce the rocker’s projected vertical extent: its envelope begins around y=839, whereas the photographed back begins near y=900; the runners should end near y=1230. Refine its height and footprint together. |
+| floorplan | 2 | — | 7/10 | 314 | Reconcile camera framing with the window-wall furniture positions. The specified projection places the draped-table center beyond the right image edge and the orange chair farther outside, whereas both are visible in the photograph.… |
+| floorplan | 3 | — | 7/10 | 424 | Refine the draped table and orange chair elevations and depth. Their projected floor extents reach roughly y=1214 and y=1329, while the photograph places their visible bases around y=1080 and y=1160. Preserve the orange chair’s… |
 | blockout | 1 | 10/10 | 6/10 | 570 | Initial entry or forward rebuild. |
-| blockout | 2 | 10/10 | 6/10 | 218 | Lower the rear ceiling corner by approximately 3% of image height to align the wall–ceiling junction with the photograph.; Recline the foreground rocking chair’s back and shift its upper edge right by approximately 3% of image width; its current upright rectangular silhouette misses the photographed angle.; Reshape the foreground sofa with a rounded back and large rolled right arm; the current straight slab and rectangular extension substantially change its outline. |
-| blockout | 3 | 10/10 | 7/10 | 258 | Replace the rectangular curtain blocks with long, gathered drapes and diagonal sweeps toward the tiebacks; the photograph shows fabric extending from the cornice to near the window sill.; Reduce the foreground sofa’s rightward extent: its rightmost outline reaches about 77% of image width, versus 66% in the photograph.; Move the rocking chair roughly 2–3% of image width left and lower its back top about 2% of image height. Slim its solid arms and seat framing, and give the runners pronounced curved silhouettes. |
+| blockout | 2 | 10/10 | 6/10 | 218 | Lower the rear ceiling corner by approximately 3% of image height to align the wall–ceiling junction with the photograph. |
+| blockout | 3 | 10/10 | 7/10 | 258 | Replace the rectangular curtain blocks with long, gathered drapes and diagonal sweeps toward the tiebacks |
 | identify | 1 | — | 8/10 | 522 | Initial entry or forward rebuild. |
 | object:wall_w | 1 | 0/10 | — | 56 | Initial entry or forward rebuild. |
 | blockout | 1 | 10/10 | 7/10 | 137 | Initial entry or forward rebuild. |
-| blockout | 2 | 10/10 | 7/10 | 258 | Raise the rear ceiling corner by approximately 25 pixels in the 1019×807 render, aligning the adjoining cornice edges with the photograph.; Narrow the central upholstered armchair by roughly 15%, keeping its center and backrest height fixed.; Move the right footstool upward in the image by approximately 40–50 pixels, placing it closer beneath the orange armchair as in the photograph. |
-| blockout | 3 | 10/10 | 7/10 | 270 | Reduce the foreground sofa’s oversized rounded back: its lower outline extends roughly 25–35 pixels too low in the 1019-pixel-wide overlay. Lower the crest of its right foreground arm by about 20 pixels.; Make the rocking chair’s back narrower and more upright, shifting its upper outline approximately 15 pixels right while keeping the runner footprint near its current position.; Give the far-right armchair the photograph’s broad upholstered arms and projecting seat. Its current thin, squared seat and exposed straight legs substantially underrepresent the dominant silhouette. |
+| blockout | 2 | 10/10 | 7/10 | 258 | Raise the rear ceiling corner by approximately 25 pixels in the 1019×807 render, aligning the adjoining cornice edges with the photograph. |
+| blockout | 3 | 10/10 | 7/10 | 270 | Reduce the foreground sofa’s oversized rounded back: its lower outline extends roughly 25–35 pixels too low in the 1019-pixel-wide overlay. Lower the crest of its right foreground arm by about 20 pixels. |
 | identify | 1 | — | 8/10 | 252 | Initial entry or forward rebuild. |
 | object:wall_w | 1 | 10/10 | 3/10 | 162 | Initial entry or forward rebuild. |
-| blockout | 1 | 10/10 | 7/10 | 245 | The appended correction requires a projecting chimney breast and raised architectural trim. The supplied plaster body is confined to world X=-0.25..0 and assigns children to external ownership. The visible room-side projection exceeds that body region and footprint; incorporating externally owned trim conflicts with ownership. The corrected facing is already consistent with the crop. |
-| blockout | 2 | 10/10 | 7/10 | 324 | Lower the rear ceiling corner approximately 25 pixels in the 1019×807 render to match the photograph, adjusting the adjoining cornice slopes.; Extend the portrait frame upward approximately 20 pixels while retaining its current bottom edge and width.; Refine the rocking chair’s dominant outline: narrow the straight, blocky armrests and reproduce the photograph’s curved supports and more articulated back. |
-| blockout | 3 | 10/10 | 8/10 | 246 | Lower the window cornice toward the right edge by approximately 4% of image height, and add the photograph’s outer-right tied-back curtain panel.; Increase the foreground sofa back’s height toward its right end by approximately 5% of image height; its current outline drops too quickly toward the central arm.; Lower the portrait frame’s top edge approximately 2% of image height while keeping its bottom edge nearly fixed. |
+| blockout | 1 | 10/10 | 7/10 | 245 | The appended correction requires a projecting chimney breast and raised architectural trim. The supplied plaster body is confined to world X=-0.25..0 and assigns children to external ownership. The visible room-side projection exceeds… |
+| blockout | 2 | 10/10 | 7/10 | 324 | Lower the rear ceiling corner approximately 25 pixels in the 1019×807 render to match the photograph, adjusting the adjoining cornice slopes. |
+| blockout | 3 | 10/10 | 8/10 | 246 | Lower the window cornice toward the right edge by approximately 4% of image height, and add the photograph’s outer-right tied-back curtain panel. |
 | identify | 1 | — | 9/10 | 195 | Initial entry or forward rebuild. |
 | object:wall_w | 1 | 10/10 | 6/10 | 224 | Initial entry or forward rebuild. |
 | blockout | 1 | 10/10 | 7/10 | 305 | The requested portrait-oriented chimney panel conflicts with its contracted 2.38 m width and 2.05 m height. Changing its proportions and widening rails requires revised spatial regions. |
-| blockout | 2 | 10/10 | 7/10 | 366 | Flatten the ceiling: remove the diagonal facet running from the upper-right area toward the back cornice; the photograph shows one continuous ceiling plane.; Reduce the far-right armchair’s bulky arms and lower base. At the supplied overlay scale, move its left outline roughly 25 pixels right and raise its bottom outline about 30 pixels.; Slim the foreground sofa’s rounded back bolster and lower its upper-left outline about 15 pixels to match the photograph. |
-| blockout | 3 | 10/10 | 8/10 | 206 | Raise the rear ceiling/cornice junction by approximately 20–25 pixels at the 1019-pixel overlay width; the blockout corner sits below the photographed junction.; Narrow the bookcase behind the central chair by approximately 25–30% and raise its top about 10 pixels; its current outline extends too far left and right.; Reduce the far-right armchair’s bulky cylindrical arms and raise its seat/front edge approximately 15–20 pixels to match the photograph’s slimmer, higher silhouette. |
+| blockout | 2 | 10/10 | 7/10 | 366 | Flatten the ceiling: remove the diagonal facet running from the upper-right area toward the back cornice |
+| blockout | 3 | 10/10 | 8/10 | 206 | Raise the rear ceiling/cornice junction by approximately 20–25 pixels at the 1019-pixel overlay width |
 | identify | 1 | — | 8/10 | 171 | Initial entry or forward rebuild. |
 | object:wall_w | 1 | 10/10 | 7/10 | 258 | Initial entry or forward rebuild. |
 | blockout | 1 | 10/10 | 7/10 | 236 | Requested panel layout changes conflict with declared spatial region envelopes. |
-| blockout | 2 | 10/10 | 7/10 | 244 | Move the foreground left table and its bowl rightward and downward in the image. The bowl should center near 17% image width and 85% image height; it is currently clipped against the left edge around 76% height.; Steepen the foreground sofa back’s downward slope toward the right. Lower its right-hand upper contour approximately 6% of image height while retaining the roughly aligned left end.; Adjust the curtain gathering points: move the left tie approximately 3% of image width right and 2% of image height up; move the middle tie approximately 3% of image width left. |
-| blockout | 3 | 10/10 | 8/10 | 264 | Raise the ceiling/cornice junction at the rear wall corner approximately 8–10 pixels in the 1019×807 comparison.; Raise the window sill approximately 15–20 pixels to match the photograph.; Lower the right orange armchair’s seat and armrests approximately 15–20 pixels while preserving its backrest height; the current seat silhouette is too high and bulky. |
+| blockout | 2 | 10/10 | 7/10 | 244 | Move the foreground left table and its bowl rightward and downward in the image. The bowl should center near 17% image width and 85% image height |
+| blockout | 3 | 10/10 | 8/10 | 264 | Raise the ceiling/cornice junction at the rear wall corner approximately 8–10 pixels in the 1019×807 comparison. |
 | identify | 1 | — | 10/10 | 187 | Initial entry or forward rebuild. |
 | object:wall_w | 1 | 10/10 | 7/10 | 111 | Initial entry or forward rebuild. |
 | blockout | 1 | 10/10 | 7/10 | 251 | The builder GOTO cap is reached. Continue and complete the current stage without another GOTO. |
-| blockout | 2 | 10/10 | 7/10 | 282 | Reduce the fireplace’s dark opening and lower its top: the photograph places it roughly at x=17–33%, y=63–79%, while the blockout opening extends higher and farther left. Preserve the surrounding masonry.; Narrow the central curtain’s upper spread: its right edge should meet the valance near 84% of image width, rather than approximately 93%. Keep its tieback near the current position.; Refine the foreground sofa’s back into the photograph’s continuous diagonal contour; reduce the oversized rounded bulge near the left-center of the rendered back. |
-| blockout | 3 | 10/10 | 7/10 | 213 | Lower the ceiling/cornice junction at the rear wall corner by approximately 2% of image height to match the photograph.; Raise the foreground sofa’s back along its center-right span by approximately 4–6% of image height; its current outline sits too low.; Raise the central armchair’s back top by approximately 2% of image height and introduce the photograph’s shaped wooden crest instead of the flat rectangular top. |
+| blockout | 2 | 10/10 | 7/10 | 282 | Reduce the fireplace’s dark opening and lower its top: the photograph places it roughly at x=17–33%, y=63–79%, while the blockout opening extends higher and farther left. Preserve the surrounding masonry. |
+| blockout | 3 | 10/10 | 7/10 | 213 | Lower the ceiling/cornice junction at the rear wall corner by approximately 2% of image height to match the photograph. |
 | identify | 1 | — | 10/10 | 135 | Initial entry or forward rebuild. |
 | object:wall_w | 1 | 10/10 | 7/10 | 159 | Initial entry or forward rebuild. |
 | object:wall_w | 2 | 10/10 | 7/10 | 67 | GOTO cap fallback: retained the fresh, contract-valid attempt-1 asset after the builder repeated the same spatial recourse. |
@@ -66,7 +66,7 @@ The complete per-attempt table below separates machine gates from visual judgmen
 | object:sheer_1 | 1 | 0/10 | — | 180 | Initial entry or forward rebuild. |
 | object:sheer_1 | 2 | 0/10 | — | 93 | asset check failed: texture reference /sheer_1_lace_density.png is outside ROOT/textures |
 | object:cornice_n | 1 | 10/10 | 7/10 | 148 | Initial entry or forward rebuild. |
-| object:cornice_n | 2 | 10/10 | 6/10 | 146 | Increase the height and relief of the ornamental band relative to the upper rails.; Replace the smooth, evenly rounded ornaments with more carved, vertically ridged forms and deeper shadowed recesses.; Darken the finish toward aged brown bronze, with irregular muted gold highlights and patina in the recesses. |
+| object:cornice_n | 2 | 10/10 | 6/10 | 146 | Increase the height and relief of the ornamental band relative to the upper rails. |
 | object:desk | 1 | 10/10 | 0/10 | 63 | GOTO cap fallback: no contract-valid detail asset exists because the visible desk apron has no owned spatial region. |
 | object:desk | 2 | 10/10 | 0/10 | 1 | GOTO cap fallback: no contract-valid detail asset exists because the visible desk apron has no owned spatial region. |
 | object:portrait | 1 | 0/10 | — | 269 | Initial entry or forward rebuild. |
@@ -78,23 +78,23 @@ The complete per-attempt table below separates machine gates from visual judgmen
 | object:baseboard_n | 1 | 0/10 | — | 70 | Initial entry or forward rebuild. |
 | object:baseboard_n | 2 | 0/10 | — | 60 | asset check failed: assets/baseboard_n.py does not exist |
 | object:drape_2 | 1 | 10/10 | 6/10 | 168 | Initial entry or forward rebuild. |
-| object:drape_2 | 2 | 0/10 | — | 74 | Make the upper drape fuller with broad, irregular folds and a deeper sagging sweep into the gather; reduce the uniform narrow pleats.; Widen the lower hanging panel and let it flare toward the floor with varied fold depths and a softer transition at the tie.; Add the visible gold tieback and give the fabric a darker, softer velvet finish instead of the smooth copper-like sheen. |
+| object:drape_2 | 2 | 0/10 | — | 74 | Make the upper drape fuller with broad, irregular folds and a deeper sagging sweep into the gather |
 | object:north_left | 1 | 10/10 | 5/10 | 88 | Initial entry or forward rebuild. |
-| object:north_left | 2 | 0/10 | — | 62 | Add the prominent narrow gold perimeter molding, including its beveled profile and darker inner border.; Recess the brown inset within surrounding dark brown wall framing instead of exposing standalone slab edges.; Darken the brown material and soften its cloudy mottling to match the crop’s aged, subtly textured surface. |
+| object:north_left | 2 | 0/10 | — | 62 | Add the prominent narrow gold perimeter molding, including its beveled profile and darker inner border. |
 | object:sheer_0 | 1 | 0/10 | — | 132 | Initial entry or forward rebuild. |
 | object:sheer_0 | 2 | 10/10 | 7/10 | 120 | asset check failed: texture reference /sheer_1_lace_density.png is outside ROOT/textures |
 | object:north_below | 1 | 10/10 | 8/10 | 185 | Initial entry or forward rebuild. |
 | object:curtain_rail | 1 | 10/10 | 6/10 | 156 | Initial entry or forward rebuild. |
-| object:curtain_rail | 2 | 0/10 | — | 47 | Replace the uniform braided pattern with broader, varied floral and scroll relief, giving the rail a less regular silhouette.; Reshape the three small upright crests into compact, dense leaf clusters rather than open fern shapes.; Add the large, partially visible upper ornament with oval medallions and a central vertical support; darken and mute the gold to match the aged finish. |
+| object:curtain_rail | 2 | 0/10 | — | 47 | Replace the uniform braided pattern with broader, varied floral and scroll relief, giving the rail a less regular silhouette. |
 | object:firebox | 1 | 0/10 | — | 74 | Initial entry or forward rebuild. |
 | object:firebox | 2 | 10/10 | 7/10 | 133 | asset check failed: assets/firebox.py does not exist |
 | object:gold_chair | 1 | 10/10 | 7/10 | 226 | Initial entry or forward rebuild. |
-| object:gold_chair | 2 | 10/10 | 7/10 | 200 | Restore the exposed turned wooden arm supports and thicker decorated front rail; shape the front feet with the crop’s forward sweep and lighter inlay.; Give the seat a fuller domed cushion and make the arm pads broader and more rolled, matching the crop’s substantial upholstery.; Darken the upholstery toward amber and russet, add velvet-like tonal variation, and replace the oversized wavy pattern with a finer dense damask motif. |
+| object:gold_chair | 2 | 10/10 | 7/10 | 200 | Restore the exposed turned wooden arm supports and thicker decorated front rail |
 | object:orange_chair | 1 | 0/10 | — | 71 | Initial entry or forward rebuild. |
 | object:orange_chair | 2 | 0/10 | — | 83 | asset check failed: assets/orange_chair.py does not exist |
 | object:fire_screen | 1 | 10/10 | 8/10 | 156 | Initial entry or forward rebuild. |
 | object:drape_1 | 1 | 10/10 | 5/10 | 116 | Initial entry or forward rebuild. |
-| object:drape_1 | 2 | 0/10 | — | 75 | Lower the gathering point to roughly 40% of the curtain height and deepen the upper panel’s curved, hanging sweep.; Add the visible ornate gold tieback and make the folds flow continuously through a narrow gathered waist into the lower panel.; Use darker burnt-orange velvet with softer highlights and broader, less uniform folds. |
+| object:drape_1 | 2 | 0/10 | — | 75 | Lower the gathering point to roughly 40% of the curtain height and deepen the upper panel’s curved, hanging sweep. |
 | object:display_table | 1 | 0/10 | — | 90 | Initial entry or forward rebuild. |
 | object:display_table | 2 | 0/10 | — | 88 | asset check failed: assets/display_table.py does not exist |
 | object:red_chair | 1 | 0/10 | — | 88 | Initial entry or forward rebuild. |
@@ -106,6 +106,15 @@ The complete per-attempt table below separates machine gates from visual judgmen
 | object:walking_cane | 1 | 10/10 | 8/10 | 162 | Initial entry or forward rebuild. |
 | object:desk_bowl | 1 | 10/10 | 8/10 | 139 | Initial entry or forward rebuild. |
 | object:radiator | 1 | 10/10 | 6/10 | 144 | Initial entry or forward rebuild. |
+| object:radiator | 2 | 10/10 | 8/10 | 102 | Enlarge and space out the dark openings to match the crop’s visible rows of holes. |
+| object:hearth | 1 | 10/10 | 7/10 | 108 | Initial entry or forward rebuild. |
+| object:hearth | 2 | 10/10 | 7/10 | 93 | Replace the directional wood-like streaks with subtle dark stone variation and a smoother surface. |
+| object:fireplace_fender | 1 | 10/10 | 4/10 | 272 | Initial entry or forward rebuild. |
+| object:fireplace_fender | 2 | 10/10 | 4/10 | 248 | Thicken the horizontal rails substantially and make the turned posts shorter and fuller, with prominent ball finials and bulbous lower bodies. |
+| object:tablecloth | 1 | 10/10 | 5/10 | 227 | Initial entry or forward rebuild. |
+| object:tablecloth | 2 | 10/10 | 6/10 | 180 | Add deeper, irregular vertical folds and a softer tabletop-to-hanging transition |
+| object:window_sill_right | 1 | 10/10 | 7/10 | 153 | Initial entry or forward rebuild. |
+| object:window_sill_right | 2 | 10/10 | 7/10 | 92 | Increase the fascia height beneath the top lip to match the broader flat wooden band in the crop. |
 
 ## GOTO history
 
@@ -169,23 +178,30 @@ The complete per-attempt table below separates machine gates from visual judgmen
 - cap request ignored origin=builder requested=blockout reason=The crop-visible curved splayed base requires table-owned geometry outside the narrow pedestal above the declared foot region. The foot region ends at z=0.07 m, while all geometry above that height is constrained to the pedestal's 0.10 x 0.10 m cross-section until the tabletop. This does not cover the raised curved legs visible beneath the turned shaft.
 - cap reached origin=builder requested=blockout reason=The raised curved splayed table base extends beyond the narrow pedestal above the declared foot ceiling of 0.07 m. Faithful geometry conflicts with current region coverage.
 - cap request ignored origin=builder requested=blockout reason=The crop shows a raised curved splayed base extending outside the narrow 0.10 x 0.10 m pedestal above the foot region ceiling at z=0.07 m. Integral base geometry conflicts with declared region coverage.
+- cap reached origin=builder requested=blockout reason=Declared rails reach the post tops, conflicting with raised ball finials in the crop; lower perimeter metalwork lacks region coverage.
+- cap reached origin=builder requested=blockout reason=The crop and appended corrections conflict with narrow post regions and missing base-frame and rear-support regions. Faithful detail repair requires coordinated spatial revision.
 
 ## Codex calls and elapsed cost
 
-The legacy checkpoint does not retain a complete call-level trace. Builder counts below are reconstructed lower bounds from stage entries and capped reentry logs; critic counts count saved non-gate verdicts. The continuation column counts Codex CLI startup records directly. It overlaps the other columns and must not be added to them. Calls inside a builder are not driver calls. Tier calls without ENTER markers are included in the currently active object stage in the trace count.
+The legacy checkpoint does not retain a complete call-level trace. Builder counts below are reconstructed lower bounds from stage entries and capped reentry logs; critic counts count saved non-gate verdicts. The continuation column counts Codex CLI startup records directly and classifies their stage from the published prompt. It overlaps the other columns and must not be added to them. Calls inside a builder are not driver calls.
 
 | Stage | Recorded builder starts/reentries (lower bound) | Saved critic calls | Counted continuation calls |
 |---|---:|---:|---:|
 | blockout | 21 | 18 | 0 |
 | floorplan | 3 | 3 | 0 |
 | identify | 6 | 6 | 0 |
-| object | 133 | 34 | 3 |
+| object | 144 | 43 | 23 |
 
-Total recorded attempt time: 14731 seconds. The elapsed time includes model calls, rendering, and checks; it excludes the pause between continuations. Currency cost is not available in the retained logs.
+Total recorded attempt time: 16206 seconds. The elapsed time includes model calls, rendering, and checks; it excludes the pause between continuations. Currency cost is not available in the retained logs.
 
 ## Defects
 
-- Existing run findings: [#16](https://github.com/bddap-bot/photo-to-scene/issues/16), [#17](https://github.com/bddap-bot/photo-to-scene/issues/17), [#18](https://github.com/bddap-bot/photo-to-scene/issues/18), and [#19](https://github.com/bddap-bot/photo-to-scene/issues/19).
+- [#16](https://github.com/bddap-bot/photo-to-scene/issues/16): invalid builder GOTO consumed an attempt; fixed by `694f71fce48367189899d6b9dd01d0d36598cfda`.
+- [#17](https://github.com/bddap-bot/photo-to-scene/issues/17): capped builder GOTO retried indefinitely; fixed by `2a85afd92f627a329f0b31f1c8094c8c1141399d`.
+- [#18](https://github.com/bddap-bot/photo-to-scene/issues/18): composed local texture paths failed the asset gate; fixed by `5e18e863f0fd67824bda9e92c27a653453fee59d`.
+- [#19](https://github.com/bddap-bot/photo-to-scene/issues/19): dense inline contracts exceeded the request limit; fixed by `24504f7b57edae4bfa540b37242744ecf0ce3661`.
+
+- [#20](https://github.com/bddap-bot/photo-to-scene/issues/20): the stage guide describes one five-GOTO allowance, while the published driver enforces separate builder and critic allowances of five each. The run follows the unchanged driver.
 
 ## Artifacts and continuation
 

@@ -25671,7 +25671,7 @@
             "min": [
               0.27,
               2.42,
-            1.45
+              1.45
             ],
             "max": [
               0.77,
@@ -25808,7 +25808,7 @@
   },
   {
     "id": "hearth",
-    "label": "Stone hearth (visible right edge)",
+    "label": "Dark stone hearth slab (visible right edge)",
     "crop_bbox": [
       1989,
       3783,
@@ -25924,7 +25924,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Stone hearth (visible right edge)",
+    "final_label": "Dark stone hearth slab (visible right edge)",
+    "label_reason": "The crop shows a low, flat dark brown-gray surface with a thin straight exposed edge beneath the black fireplace guard. The whole photograph locates it at floor level directly in front of the fireplace opening, with most of the slab obscured by the sofa and fender. This supports a stone hearth slab; the metal rails and feet are separate externally owned objects. The exact stone species is not resolved."
   },
   {
     "id": "portrait",
@@ -173208,7 +173211,7 @@
   },
   {
     "id": "radiator",
-    "label": "Exposed radiator grille beneath windows",
+    "label": "Brown perforated radiator-cover grille beneath the windows",
     "crop_bbox": [
       4215,
       3040,
@@ -173324,7 +173327,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Exposed radiator grille beneath windows",
+    "final_label": "Brown perforated radiator-cover grille beneath the windows",
+    "label_reason": "The crop shows aligned rows of dark square perforations separated by continuous muted reddish-brown horizontal and vertical webs, with a slim perimeter. The full photograph places this panel beneath the window sill, partly hidden by chairs and the draped display table, confirming a radiator-cover grille. No exposed radiator fins are visible. The curved dark form at lower right is foreground furniture and is not part of the grille."
   },
   {
     "id": "rug",
@@ -266685,7 +266691,7 @@
   },
   {
     "id": "tablecloth",
-    "label": "Draped patterned tablecloth",
+    "label": "Draped floral-patterned tablecloth",
     "crop_bbox": [
       5023,
       3071,
@@ -266837,7 +266843,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Draped patterned tablecloth",
+    "final_label": "Draped floral-patterned tablecloth",
+    "label_reason": "The crop shows gray-taupe woven fabric falling in irregular vertical folds, densely ornamented with burgundy floral rosettes, dusty lavender leafy scrollwork and broad antique-gold curving border bands above a pale hem. In the whole photograph this cloth covers the display table beneath framed photographs and a statuette, partly occluded by the rocker and orange chair. These soft folds and its continuous tabletop-to-hanging placement confirm the proposed tablecloth identification."
   },
   {
     "id": "photo_frame_0",
@@ -294559,7 +294568,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Exposed wooden sill beneath right lace curtain",
+    "final_label": "Exposed wooden sill beneath right lace curtain",
+    "label_reason": "The crop shows a long warm brown horizontal timber face with a narrow rounded upper lip and stepped lower molding immediately beneath white lace. The full photograph confirms this is the exposed right window sill behind the framed portraits and statue, above the radiator. The portraits, statue, tablecloth and lace overlap the sill but are separately owned objects."
   },
   {
     "id": "window_frame_left",
@@ -295019,7 +295031,7 @@
   },
   {
     "id": "fireplace_fender",
-    "label": "Low metal fireplace fender / guard rail",
+    "label": "Low dark-metal fireplace fender with turned posts and ball finials",
     "crop_bbox": [
       1947,
       3570,
@@ -295610,7 +295622,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Low metal fireplace fender / guard rail",
+    "final_label": "Low dark-metal fireplace fender with turned posts and ball finials",
+    "label_reason": "The crop shows dark round horizontal rails meeting vase-shaped turned posts with spherical finials, plus low metalwork at the hearth edge. In the whole photograph this low guard borders the fireplace hearth and is largely occluded by the sofa; the mesh screen, brass andirons and stone slab are separate objects. This confirms the proposed fender identification."
   },
   {
     "id": "window_frame_right",
