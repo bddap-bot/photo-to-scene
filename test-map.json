@@ -10,6 +10,16 @@
   "about": "Touched paths map to lightweight syntax checks. First matching rule wins and every tracked path must resolve.",
   "rules": [
     {
+      "paths": ["examples/wilson-house/**"],
+      "tests": [
+        "nix-shell -p imagemagick --run 'find examples/wilson-house -type f \\( -name \"*.png\" -o -name \"*.jpg\" \\) -print0 | xargs -0 magick identify'",
+        "jq -e 'type == \"object\"' examples/wilson-house/floorplan.json",
+        "jq -e 'type == \"array\" and length > 0 and (map(.id) | length == (unique | length))' examples/wilson-house/objects.json",
+        "test -s examples/wilson-house/ATTRIBUTION.md && test -s examples/wilson-house/PROGRESS.md && test -s examples/wilson-house/report.md && test -s examples/wilson-house/scores.md"
+      ],
+      "why": "The Wilson House checkpoint and final example require readable images, valid contracts with unique object IDs, attribution, measurements, and resume provenance."
+    },
+    {
       "paths": ["test-map.json"],
       "tests": ["jq empty test-map.json", "botq test-map --check"],
       "why": "The manifest is JSON and must continue to cover every tracked path."
@@ -33,11 +43,6 @@
       "paths": ["*.json", "**/*.json"],
       "tests": ["find . -type f -name '*.json' -not -path './.git/*' -exec jq empty {} +"],
       "why": "JSON contracts and schemas must parse."
-    },
-    {
-      "paths": ["examples/*.png", "examples/**/*.png", "examples/*.jpg", "examples/**/*.jpg"],
-      "tests": ["nix-shell -p imagemagick --run 'find examples -type f \\( -name \"*.png\" -o -name \"*.jpg\" \\) -print0 | xargs -0 magick identify >/dev/null'"],
-      "why": "Worked-example image artifacts must be readable."
     },
     {
       "paths": ["*.md", "**/*.md", ".gitignore", "LICENSE-*"],
