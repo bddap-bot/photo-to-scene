@@ -1,7 +1,7 @@
 [
   {
     "id": "floor",
-    "label": "Wood floor",
+    "label": "Aged reddish-brown wood plank floor",
     "crop_bbox": [
       2133,
       3576,
@@ -100,18 +100,22 @@
               6.8,
               0.0
             ]
-          }
+          },
+          "confidence": 0.5
         }
       ],
       "relationships": [],
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Wood floor",
+    "final_label": "Aged reddish-brown wood plank floor",
+    "label_reason": "Both photographs show narrow aged reddish-brown boards with parallel seams, staggered end joints, subtle grain and muted sheen around the room perimeter. A separately owned rectangular Persian-style rug covers most of the central floor, with a dense red, navy and cream field and layered floral borders. The exposed boards confirm the wood floor identification."
   },
   {
     "id": "ceiling",
-    "label": "Ceiling plane fitted to source cornice slopes",
+    "label": "Warm pink-brown plaster ceiling with paired pale perimeter lines",
     "crop_bbox": [
       1445,
       0,
@@ -320,7 +324,8 @@
               4,
               7
             ]
-          ]
+          ],
+          "confidence": 0.6
         }
       ],
       "relationships": [
@@ -346,7 +351,10 @@
         "slope_dz_dy": -0.23,
         "rear_height_m": 4.011836896896362
       }
-    }
+    },
+    "proposed_label": "Ceiling plane fitted to source cornice slopes",
+    "final_label": "Warm pink-brown plaster ceiling with paired pale perimeter lines",
+    "label_reason": "Both the crop and the full room photograph show a broad continuous matte pink-brown plaster ceiling with subtle mottling and two slender pale lines following the wall junction. The deep brown-gold carved cornice lies below this surface and is adjacent architectural context, not part of the contracted ceiling slab. The proposed slope describes the camera-fitted scene geometry rather than a visually established architectural pitch."
   },
   {
     "id": "wall_w",
@@ -1186,7 +1194,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "base_cap_far",
@@ -1809,7 +1818,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "base_cap_far_return",
@@ -2432,7 +2442,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "base_cap_near",
@@ -3055,7 +3066,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "base_cap_near_return",
@@ -3678,7 +3690,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "base_plinth_breast",
@@ -4301,7 +4314,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "base_plinth_far",
@@ -4924,7 +4938,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "base_plinth_far_return",
@@ -5547,7 +5562,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "base_plinth_near",
@@ -6170,7 +6186,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "base_plinth_near_return",
@@ -6793,7 +6810,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "body",
@@ -7416,7 +7434,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "chimney__body",
@@ -8039,7 +8058,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "cornice_cove_breast",
@@ -8134,7 +8154,8 @@
               4,
               7
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "cornice_cove_far",
@@ -8229,7 +8250,8 @@
               4,
               7
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "cornice_cove_far_return",
@@ -8324,7 +8346,8 @@
               4,
               7
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "cornice_cove_near",
@@ -8419,7 +8442,8 @@
               4,
               7
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "cornice_cove_near_return",
@@ -8514,7 +8538,8 @@
               4,
               7
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "cornice_crown_breast",
@@ -8609,7 +8634,8 @@
               4,
               7
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "cornice_crown_far",
@@ -8704,7 +8730,8 @@
               4,
               7
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "cornice_crown_far_return",
@@ -8799,7 +8826,8 @@
               4,
               7
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "cornice_crown_near",
@@ -8894,7 +8922,8 @@
               4,
               7
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "cornice_crown_near_return",
@@ -8989,7 +9018,8 @@
               4,
               7
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "cornice_lower_breast",
@@ -9084,7 +9114,8 @@
               4,
               7
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "cornice_lower_far",
@@ -9179,7 +9210,8 @@
               4,
               7
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "cornice_lower_far_return",
@@ -9274,7 +9306,8 @@
               4,
               7
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "cornice_lower_near",
@@ -9369,7 +9402,8 @@
               4,
               7
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "cornice_lower_near_return",
@@ -9464,7 +9498,8 @@
               4,
               7
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "dado_lower_breast",
@@ -10087,7 +10122,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "dado_lower_far",
@@ -10710,7 +10746,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "dado_lower_far_return",
@@ -11333,7 +11370,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "dado_lower_near",
@@ -11956,7 +11994,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "dado_lower_near_return",
@@ -12579,7 +12618,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "dado_rail_breast",
@@ -13202,7 +13242,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "dado_rail_far",
@@ -13825,7 +13866,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "dado_rail_far_return",
@@ -14448,7 +14490,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "dado_rail_near",
@@ -15071,7 +15114,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "dado_rail_near_return",
@@ -15694,7 +15738,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "wall_panel_0__bottom",
@@ -15789,7 +15834,8 @@
               7,
               5
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "wall_panel_0__left",
@@ -15884,7 +15930,8 @@
               7,
               5
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "wall_panel_0__right",
@@ -15979,7 +16026,8 @@
               7,
               5
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "wall_panel_0__top",
@@ -16074,7 +16122,8 @@
               7,
               5
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "wall_panel_1__bottom",
@@ -16169,7 +16218,8 @@
               7,
               5
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "wall_panel_1__left",
@@ -16264,7 +16314,8 @@
               7,
               5
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "wall_panel_1__right",
@@ -16359,7 +16410,8 @@
               7,
               5
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "wall_panel_1__top",
@@ -16454,7 +16506,8 @@
               7,
               5
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "wall_panel_2__bottom",
@@ -17077,7 +17130,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "wall_panel_2__left",
@@ -17700,7 +17754,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "wall_panel_2__right",
@@ -18323,7 +18378,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "wall_panel_2__top",
@@ -18946,7 +19002,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "wall_panel_3__bottom",
@@ -19569,7 +19626,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "wall_panel_3__left",
@@ -20192,7 +20250,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "wall_panel_3__right",
@@ -20815,7 +20874,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "wall_panel_3__top",
@@ -21438,7 +21498,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         }
       ],
       "relationships": [
@@ -21583,7 +21644,10 @@
         "max_projection_m": 0.24,
         "joint_gap_m": 0
       }
-    }
+    },
+    "proposed_label": "Fireplace wall with chimney breast and raised architectural trim",
+    "final_label": "Fireplace wall with chimney breast and raised architectural trim",
+    "label_reason": "Confirmed in the crop and whole-room photograph: the warm mottled brown-ochre plaster wall projects forward as a chimney breast behind the portrait and fireplace. Raised gold-ochre moldings outline a tall central panel and narrower adjoining wall panels; layered dado and base rails and a continuous carved leaf cornice wrap the projecting breast and its returns. This identifies the architectural wall assembly. The portrait, mantel, firebox, hearth and sconce are separately owned objects visible against it."
   },
   {
     "id": "north_left",
@@ -22324,7 +22388,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         }
       ],
       "relationships": [
@@ -22352,7 +22417,10 @@
         "slope_dz_dy": -0.23,
         "rear_height_m": 4.011836896896362
       }
-    }
+    },
+    "proposed_label": "Plaster left of windows",
+    "final_label": "Plaster left of windows",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "north_right",
@@ -23093,7 +23161,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         }
       ],
       "relationships": [
@@ -23122,9 +23191,9 @@
         "rear_height_m": 4.011836896896362
       }
     },
-    "proposed_label": "Plaster at right window edge",
+    "proposed_label": "Rust-orange velvet curtain at the right window edge",
     "final_label": "Rust-orange velvet curtain at the right window edge",
-    "label_reason": "The crop shows burnt-orange velvet with soft highlights and deep folds, an upper diagonal sweep gathered at a gold tieback about two-fifths down, and lower folds fanning outward. The whole photograph places this curtain at the far-right edge of the lace-covered window, beneath the decorative rail and behind the orange chair. These textile folds and gathering confirm a velvet curtain rather than plaster."
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "north_below",
@@ -23859,7 +23928,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         }
       ],
       "relationships": [
@@ -23887,7 +23957,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Wall below windows",
+    "final_label": "Wall below windows",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "north_above",
@@ -24628,7 +24701,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         }
       ],
       "relationships": [
@@ -24648,7 +24722,10 @@
         "slope_dz_dy": -0.23,
         "rear_height_m": 4.011836896896362
       }
-    }
+    },
+    "proposed_label": "Plaster above windows",
+    "final_label": "Plaster above windows",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "cornice_n",
@@ -25389,7 +25466,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         }
       ],
       "relationships": [
@@ -25414,7 +25492,10 @@
         "slope_dz_dy": -0.23,
         "rear_height_m": 4.011836896896362
       }
-    }
+    },
+    "proposed_label": "Window wall crown moulding",
+    "final_label": "Window wall crown moulding",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "baseboard_n",
@@ -25517,7 +25598,8 @@
               6.800000000000001,
               0.17
             ]
-          }
+          },
+          "confidence": 0.5
         }
       ],
       "relationships": [
@@ -25533,7 +25615,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Window wall baseboard",
+    "final_label": "Window wall baseboard",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "mantel",
@@ -25636,7 +25721,8 @@
               4.24,
               1.45
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "right_pier",
@@ -25651,7 +25737,8 @@
               2.71,
               1.45
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "carved_frieze",
@@ -25666,7 +25753,8 @@
               4.24,
               1.45
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "shelf",
@@ -25681,7 +25769,8 @@
               4.3,
               1.58
             ]
-          }
+          },
+          "confidence": 0.5
         }
       ],
       "relationships": [
@@ -25697,7 +25786,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Carved fireplace surround",
+    "final_label": "Carved fireplace surround",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "firebox",
@@ -25800,14 +25892,18 @@
               4.01,
               1.13
             ]
-          }
+          },
+          "confidence": 0.6
         }
       ],
       "relationships": [],
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Dark fireplace opening",
+    "final_label": "Dark fireplace opening",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "hearth",
@@ -25911,7 +26007,8 @@
               4.4,
               0.06
             ]
-          }
+          },
+          "confidence": 0.5
         }
       ],
       "relationships": [
@@ -25928,9 +26025,9 @@
         "children": "external"
       }
     },
-    "proposed_label": "Stone hearth (visible right edge)",
+    "proposed_label": "Dark stone hearth slab (visible right edge)",
     "final_label": "Dark stone hearth slab (visible right edge)",
-    "label_reason": "The crop shows a low, flat dark brown-gray surface with a thin straight exposed edge beneath the black fireplace guard. The whole photograph locates it at floor level directly in front of the fireplace opening, with most of the slab obscured by the sofa and fender. This supports a stone hearth slab; the metal rails and feet are separate externally owned objects. The exact stone species is not resolved."
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "portrait",
@@ -26677,7 +26774,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "left_frame",
@@ -27300,7 +27398,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "lower_frame",
@@ -27923,7 +28022,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "right_frame",
@@ -28546,7 +28646,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "upper_frame",
@@ -29169,7 +29270,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         }
       ],
       "relationships": [
@@ -29188,7 +29290,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Large framed portrait",
+    "final_label": "Large framed portrait",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "sheer_0",
@@ -29925,7 +30030,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "lace_fold_0_1",
@@ -30548,7 +30654,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "lace_fold_0_10",
@@ -31171,7 +31278,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "lace_fold_0_11",
@@ -31794,7 +31902,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "lace_fold_0_12",
@@ -32417,7 +32526,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "lace_fold_0_13",
@@ -33040,7 +33150,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "lace_fold_0_14",
@@ -33663,7 +33774,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "lace_fold_0_15",
@@ -34286,7 +34398,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "lace_fold_0_16",
@@ -34909,7 +35022,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "lace_fold_0_17",
@@ -35532,7 +35646,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "lace_fold_0_2",
@@ -36155,7 +36270,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "lace_fold_0_3",
@@ -36778,7 +36894,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "lace_fold_0_4",
@@ -37401,7 +37518,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "lace_fold_0_5",
@@ -38024,7 +38142,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "lace_fold_0_6",
@@ -38647,7 +38766,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "lace_fold_0_7",
@@ -39270,7 +39390,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "lace_fold_0_8",
@@ -39893,7 +40014,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "lace_fold_0_9",
@@ -40516,7 +40638,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         }
       ],
       "relationships": [
@@ -40541,7 +40664,10 @@
         "minimum_luminance": 0.25,
         "interpretation": "Diffuse bright light through lace; exterior objects not resolved."
       }
-    }
+    },
+    "proposed_label": "Left lace curtain field including folds",
+    "final_label": "Left lace curtain field including folds",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "sheer_1",
@@ -41278,7 +41404,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "lace_fold_1_1",
@@ -41901,7 +42028,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "lace_fold_1_10",
@@ -42524,7 +42652,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "lace_fold_1_11",
@@ -43147,7 +43276,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "lace_fold_1_12",
@@ -43770,7 +43900,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "lace_fold_1_13",
@@ -44393,7 +44524,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "lace_fold_1_14",
@@ -45016,7 +45148,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "lace_fold_1_15",
@@ -45639,7 +45772,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "lace_fold_1_16",
@@ -46262,7 +46396,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "lace_fold_1_17",
@@ -46885,7 +47020,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "lace_fold_1_2",
@@ -47508,7 +47644,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "lace_fold_1_3",
@@ -48131,7 +48268,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "lace_fold_1_4",
@@ -48754,7 +48892,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "lace_fold_1_5",
@@ -49377,7 +49516,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "lace_fold_1_6",
@@ -50000,7 +50140,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "lace_fold_1_7",
@@ -50623,7 +50764,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "lace_fold_1_8",
@@ -51246,7 +51388,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "lace_fold_1_9",
@@ -51869,7 +52012,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         }
       ],
       "relationships": [
@@ -51894,7 +52038,10 @@
         "minimum_luminance": 0.25,
         "interpretation": "Diffuse bright light through lace; exterior objects not resolved."
       }
-    }
+    },
+    "proposed_label": "Right lace curtain field including folds",
+    "final_label": "Right lace curtain field including folds",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "curtain_rail",
@@ -51999,7 +52146,8 @@
               6.680000305175781,
               3.159700393676758
             ]
-          }
+          },
+          "confidence": 0.6
         }
       ],
       "relationships": [
@@ -52013,7 +52161,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Ornamental curtain rail",
+    "final_label": "Ornamental curtain rail",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "drape_0",
@@ -81936,7 +82087,8 @@
               2705,
               2704
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "long_pleated_tail",
@@ -111709,7 +111861,8 @@
               2705,
               2704
             ]
-          ]
+          ],
+          "confidence": 0.6
         }
       ],
       "relationships": [
@@ -111729,7 +111882,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Long gathered curtain with diagonal sweep",
+    "final_label": "Long gathered curtain with diagonal sweep",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "tieback_0",
@@ -112468,7 +112624,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         }
       ],
       "relationships": [
@@ -112482,7 +112639,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Left curtain gold tieback cord",
+    "final_label": "Left curtain gold tieback cord",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "drape_1",
@@ -142405,7 +142565,8 @@
               2705,
               2704
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "long_pleated_tail",
@@ -172178,7 +172339,8 @@
               2705,
               2704
             ]
-          ]
+          ],
+          "confidence": 0.6
         }
       ],
       "relationships": [
@@ -172198,7 +172360,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Long gathered curtain with diagonal sweep",
+    "final_label": "Long gathered curtain with diagonal sweep",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "tieback_1",
@@ -172937,7 +173102,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         }
       ],
       "relationships": [
@@ -172951,7 +173117,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Middle curtain gold tieback cord",
+    "final_label": "Middle curtain gold tieback cord",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "drape_2",
@@ -173076,7 +173245,8 @@
               6.5460004806518555,
               2.9989986419677734
             ]
-          }
+          },
+          "confidence": 0.6
         },
         {
           "id": "long_pleated_tail",
@@ -173091,14 +173261,18 @@
               6.5460004806518555,
               2.217263698577881
             ]
-          }
+          },
+          "confidence": 0.6
         }
       ],
       "relationships": [],
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Long gathered curtain with diagonal sweep",
+    "final_label": "Long gathered curtain with diagonal sweep",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "rail_crest",
@@ -173203,14 +173377,18 @@
               6.630000114440918,
               3.404252529144287
             ]
-          }
+          },
+          "confidence": 0.6
         }
       ],
       "relationships": [],
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Leaf crest above curtain rail",
+    "final_label": "Leaf crest above curtain rail",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "radiator",
@@ -173314,7 +173492,8 @@
               6.75,
               0.7
             ]
-          }
+          },
+          "confidence": 0.5
         }
       ],
       "relationships": [
@@ -173331,13 +173510,13 @@
         "children": "external"
       }
     },
-    "proposed_label": "Exposed radiator grille beneath windows",
+    "proposed_label": "Brown perforated radiator-cover grille beneath the windows",
     "final_label": "Brown perforated radiator-cover grille beneath the windows",
-    "label_reason": "The crop shows aligned rows of dark square perforations separated by continuous muted reddish-brown horizontal and vertical webs, with a slim perimeter. The full photograph places this panel beneath the window sill, partly hidden by chairs and the draped display table, confirming a radiator-cover grille. No exposed radiator fins are visible. The curved dark form at lower right is foreground furniture and is not part of the grille."
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "rug",
-    "label": "Persian rug",
+    "label": "Persian-style patterned area rug",
     "crop_bbox": [
       1978,
       3642,
@@ -173436,7 +173615,8 @@
               6.4,
               0.015
             ]
-          }
+          },
+          "confidence": 0.5
         }
       ],
       "relationships": [
@@ -173452,11 +173632,14 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Persian rug",
+    "final_label": "Persian-style patterned area rug",
+    "label_reason": "The crop shows a thin woven carpet with a dense navy field of small interlocking red and ivory botanical motifs and multiple brick-red ornamental border bands. The full photograph confirms that it covers the central seating floor beneath the chairs and sofa. These features support a Persian-style area rug; its precise origin and fiber cannot be established from the photographs."
   },
   {
     "id": "sofa",
-    "label": "Foreground sofa",
+    "label": "Amber-and-rust striped upholstered sofa with a deep rounded back and low scrolling arms",
     "crop_bbox": [
       430,
       3473,
@@ -176841,7 +177024,8 @@
               187,
               149
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "arm_base_1",
@@ -180104,7 +180288,8 @@
               187,
               149
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "back_crest",
@@ -185479,7 +185664,8 @@
               307,
               245
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "foot_-1_-0.3045",
@@ -186102,7 +186288,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "foot_-1_0.3045",
@@ -186725,7 +186912,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "foot_1_-0.3045",
@@ -187348,7 +187536,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "foot_1_0.3045",
@@ -187971,7 +188160,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "rolled_arm_-1",
@@ -193408,7 +193598,8 @@
               472,
               481
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "rolled_arm_1",
@@ -198845,7 +199036,8 @@
               474,
               1
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "rounded_back",
@@ -202108,7 +202300,8 @@
               187,
               149
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "seat",
@@ -202731,7 +202924,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         }
       ],
       "relationships": [
@@ -202758,7 +202952,10 @@
       "ownership": {
         "children": "included"
       }
-    }
+    },
+    "proposed_label": "Foreground sofa",
+    "final_label": "Amber-and-rust striped upholstered sofa with a deep rounded back and low scrolling arms",
+    "label_reason": "Both photographs confirm the proposed Foreground sofa identification. The crop shows a long padded rear back with a deep rounded top and an upholstered right arm extending broadly forward in a low outward scroll. Amber, rust, gold and dark brown irregular stripes curve over the soft padding. In the whole photograph this sofa crosses the foreground in front of the fireplace, facing into the seating group. The adjacent desk, bowl and rug belong to separate objects."
   },
   {
     "id": "desk",
@@ -202772,12 +202969,12 @@
     "bbox": {
       "min": [
         3.0248775482177734,
-        1.453989028930664,
+        1.066622257232666,
         0.0
       ],
       "max": [
-        4.824877738952637,
-        2.3539891242980957,
+        4.46999979019165,
+        2.352433443069458,
         0.7999999523162842
       ]
     },
@@ -202831,13 +203028,31 @@
           },
           "reason": "User one-reentry correction: desk and contents right/down; back contour slopes farther down right; left tie right/up and middle tie left. Exact meshes revise inferred S2 envelopes; camera retained.",
           "facing": "Existing room-space local front retained; sofa back is camera-near, chair-facing seat is beyond it; curtain front faces into room."
+        },
+        "desk_extent_correction": {
+          "named_points_normalized": {
+            "table_right_top_corner": [
+              0.27,
+              0.88
+            ],
+            "table_right_bottom_edge": [
+              0.27,
+              1
+            ],
+            "bowl_center": [
+              0.17,
+              0.85
+            ]
+          },
+          "reason": "User correction: reduce rightward table extent from approximately 51% to 27%. Narrow and shear inferred table envelope while retaining tabletop objects and camera. Hidden table perimeter is uncertain.",
+          "facing": "Retained -Y room front; visible right table edge and bowl establish handedness."
         }
       },
       "frame": {
         "origin_xyz": [
-          3.924877643585205,
-          1.9039890766143799,
-          0.0
+          3.747438669204712,
+          1.709527850151062,
+          0
         ],
         "x_axis_xy": [
           -1.0,
@@ -202848,27 +203063,59 @@
           -1.0
         ],
         "size_xyz": [
-          1.8000001907348633,
-          0.9000000953674316,
+          1.445122241973877,
+          1.285811185836792,
           0.7999999523162842
         ]
       },
       "footprint_xy": [
         [
-          4.824877738952637,
-          2.3539891242980957
+          3.0248775482177734,
+          1.4611891508102417
+        ],
+        [
+          3.0265707969665527,
+          1.4556423425674438
+        ],
+        [
+          3.03065824508667,
+          1.4524333477020264
+        ],
+        [
+          4.464219093322754,
+          1.066622257232666
+        ],
+        [
+          4.468306541442871,
+          1.0676310062408447
+        ],
+        [
+          4.46999979019165,
+          1.0722664594650269
+        ],
+        [
+          4.46999979019165,
+          1.9578663110733032
+        ],
+        [
+          4.468306541442871,
+          1.9634132385253906
+        ],
+        [
+          4.464219093322754,
+          1.9666223526000977
+        ],
+        [
+          3.03065824508667,
+          2.352433443069458
+        ],
+        [
+          3.0265707969665527,
+          2.3514244556427
         ],
         [
           3.0248775482177734,
-          2.3539891242980957
-        ],
-        [
-          3.0248775482177734,
-          1.453989028930664
-        ],
-        [
-          4.824877738952637,
-          1.453989028930664
+          2.3467893600463867
         ]
       ],
       "front_xy": [
@@ -202880,295 +203127,296 @@
           "id": "leg_-1_-1",
           "bbox": {
             "min": [
-              4.749877452850342,
-              2.278988838195801,
+              4.409786224365234,
+              1.8967642784118652,
               0.0
             ],
             "max": [
-              4.799877643585205,
-              2.328989028930664,
+              4.4499287605285645,
+              1.9549752473831177,
               0.7400000095367432
             ]
           },
+          "confidence": 0.35,
           "mesh_vertices_xyz": [
             [
-              4.793877601623535,
-              2.322988986968994,
+              4.4451117515563965,
+              1.9407644271850586,
               0.0
             ],
             [
-              4.793877601623535,
-              2.328989028930664,
+              4.4451117515563965,
+              1.9467644691467285,
               0.006000012159347534
             ],
             [
-              4.799877643585205,
-              2.322988986968994,
+              4.4499287605285645,
+              1.9394680261611938,
               0.006000012159347534
             ],
             [
-              4.793877601623535,
-              2.3272318840026855,
+              4.4451117515563965,
+              1.94500732421875,
               0.0017573833465576172
             ],
             [
-              4.797341346740723,
-              2.32645320892334,
+              4.447892665863037,
+              1.9434802532196045,
               0.0025359392166137695
             ],
             [
-              4.798120498657227,
-              2.3272318840026855,
+              4.4485182762146,
+              1.9440906047821045,
               0.006000041961669922
             ],
             [
-              4.798120498657227,
-              2.322988986968994,
+              4.4485182762146,
+              1.939847707748413,
               0.0017573833465576172
             ],
             [
-              4.793877601623535,
-              2.328989028930664,
+              4.4451117515563965,
+              1.9467644691467285,
               0.7339999675750732
             ],
             [
-              4.793877601623535,
-              2.322988986968994,
+              4.4451117515563965,
+              1.9407644271850586,
               0.7400000095367432
             ],
             [
-              4.799877643585205,
-              2.322988986968994,
+              4.4499287605285645,
+              1.9394680261611938,
               0.7339999675750732
             ],
             [
-              4.793877601623535,
-              2.3272318840026855,
+              4.4451117515563965,
+              1.94500732421875,
               0.7382426261901855
             ],
             [
-              4.797341346740723,
-              2.32645320892334,
+              4.447892665863037,
+              1.9434802532196045,
               0.7374640703201294
             ],
             [
-              4.798120498657227,
-              2.322988986968994,
+              4.4485182762146,
+              1.939847707748413,
               0.7382426261901855
             ],
             [
-              4.798120498657227,
-              2.3272318840026855,
+              4.4485182762146,
+              1.9440906047821045,
               0.7339999675750732
             ],
             [
-              4.793877601623535,
-              2.2849888801574707,
+              4.4451117515563965,
+              1.9027643203735352,
               0.0
             ],
             [
-              4.799877643585205,
-              2.2849888801574707,
+              4.4499287605285645,
+              1.9014679193496704,
               0.006000012159347534
             ],
             [
-              4.793877601623535,
-              2.278988838195801,
+              4.4451117515563965,
+              1.8967642784118652,
               0.006000012159347534
             ],
             [
-              4.798120498657227,
-              2.2849888801574707,
+              4.4485182762146,
+              1.9018476009368896,
               0.0017573833465576172
             ],
             [
-              4.797341346740723,
-              2.281525135040283,
+              4.447892665863037,
+              1.8985521793365479,
               0.0025359392166137695
             ],
             [
-              4.798120498657227,
-              2.2807464599609375,
+              4.4485182762146,
+              1.8976051807403564,
               0.006000041961669922
             ],
             [
-              4.793877601623535,
-              2.2807464599609375,
+              4.4451117515563965,
+              1.898521900177002,
               0.0017573833465576172
             ],
             [
-              4.793877601623535,
-              2.2849888801574707,
+              4.4451117515563965,
+              1.9027643203735352,
               0.7400000095367432
             ],
             [
-              4.793877601623535,
-              2.278988838195801,
+              4.4451117515563965,
+              1.8967642784118652,
               0.7339999675750732
             ],
             [
-              4.799877643585205,
-              2.2849888801574707,
+              4.4499287605285645,
+              1.9014679193496704,
               0.7339999675750732
             ],
             [
-              4.793877601623535,
-              2.2807464599609375,
+              4.4451117515563965,
+              1.898521900177002,
               0.7382426261901855
             ],
             [
-              4.797341346740723,
-              2.281525135040283,
+              4.447892665863037,
+              1.8985521793365479,
               0.7374640703201294
             ],
             [
-              4.798120498657227,
-              2.2807464599609375,
+              4.4485182762146,
+              1.8976051807403564,
               0.7339999675750732
             ],
             [
-              4.798120498657227,
-              2.2849888801574707,
+              4.4485182762146,
+              1.9018476009368896,
               0.7382426261901855
             ],
             [
-              4.755877494812012,
-              2.322988986968994,
+              4.414603233337402,
+              1.9489752054214478,
               0.0
             ],
             [
-              4.749877452850342,
-              2.322988986968994,
+              4.409786224365234,
+              1.9502716064453125,
               0.006000012159347534
             ],
             [
-              4.755877494812012,
-              2.328989028930664,
+              4.414603233337402,
+              1.9549752473831177,
               0.006000012159347534
             ],
             [
-              4.75163459777832,
-              2.322988986968994,
+              4.411197185516357,
+              1.9498918056488037,
               0.0017573833465576172
             ],
             [
-              4.752413749694824,
-              2.32645320892334,
+              4.41182279586792,
+              1.9531877040863037,
               0.0025359392166137695
             ],
             [
-              4.75163459777832,
-              2.3272318840026855,
+              4.411197185516357,
+              1.9541347026824951,
               0.006000041961669922
             ],
             [
-              4.755877494812012,
-              2.3272318840026855,
+              4.414603233337402,
+              1.9532181024551392,
               0.0017573833465576172
             ],
             [
-              4.755877494812012,
-              2.322988986968994,
+              4.414603233337402,
+              1.9489752054214478,
               0.7400000095367432
             ],
             [
-              4.755877494812012,
-              2.328989028930664,
+              4.414603233337402,
+              1.9549752473831177,
               0.7339999675750732
             ],
             [
-              4.749877452850342,
-              2.322988986968994,
+              4.409786224365234,
+              1.9502716064453125,
               0.7339999675750732
             ],
             [
-              4.755877494812012,
-              2.3272318840026855,
+              4.414603233337402,
+              1.9532181024551392,
               0.7382426261901855
             ],
             [
-              4.752413749694824,
-              2.32645320892334,
+              4.41182279586792,
+              1.9531877040863037,
               0.7374640703201294
             ],
             [
-              4.75163459777832,
-              2.3272318840026855,
+              4.411197185516357,
+              1.9541347026824951,
               0.7339999675750732
             ],
             [
-              4.75163459777832,
-              2.322988986968994,
+              4.411197185516357,
+              1.9498918056488037,
               0.7382426261901855
             ],
             [
-              4.755877494812012,
-              2.2849888801574707,
+              4.414603233337402,
+              1.9109750986099243,
               0.0
             ],
             [
-              4.755877494812012,
-              2.278988838195801,
+              4.414603233337402,
+              1.9049750566482544,
               0.006000012159347534
             ],
             [
-              4.749877452850342,
-              2.2849888801574707,
+              4.409786224365234,
+              1.912271499633789,
               0.006000012159347534
             ],
             [
-              4.755877494812012,
-              2.2807464599609375,
+              4.414603233337402,
+              1.9067326784133911,
               0.0017573833465576172
             ],
             [
-              4.752413749694824,
-              2.281525135040283,
+              4.41182279586792,
+              1.908259630203247,
               0.0025359392166137695
             ],
             [
-              4.75163459777832,
-              2.2807464599609375,
+              4.411197185516357,
+              1.907649278640747,
               0.006000041961669922
             ],
             [
-              4.75163459777832,
-              2.2849888801574707,
+              4.411197185516357,
+              1.9118916988372803,
               0.0017573833465576172
             ],
             [
-              4.755877494812012,
-              2.2849888801574707,
+              4.414603233337402,
+              1.9109750986099243,
               0.7400000095367432
             ],
             [
-              4.749877452850342,
-              2.2849888801574707,
+              4.409786224365234,
+              1.912271499633789,
               0.7339999675750732
             ],
             [
-              4.755877494812012,
-              2.278988838195801,
+              4.414603233337402,
+              1.9049750566482544,
               0.7339999675750732
             ],
             [
-              4.75163459777832,
-              2.2849888801574707,
+              4.411197185516357,
+              1.9118916988372803,
               0.7382426261901855
             ],
             [
-              4.752413749694824,
-              2.281525135040283,
+              4.41182279586792,
+              1.908259630203247,
               0.7374640703201294
             ],
             [
-              4.75163459777832,
-              2.2807464599609375,
+              4.411197185516357,
+              1.907649278640747,
               0.7339999675750732
             ],
             [
-              4.755877494812012,
-              2.2807464599609375,
+              4.414603233337402,
+              1.9067326784133911,
               0.7382426261901855
             ]
           ],
@@ -203503,295 +203751,296 @@
           "id": "leg_-1_1",
           "bbox": {
             "min": [
-              4.749877452850342,
-              1.4789891242980957,
+              4.409786224365234,
+              1.0967645645141602,
               0.0
             ],
             "max": [
-              4.799877643585205,
-              1.5289890766143799,
+              4.4499287605285645,
+              1.1549752950668335,
               0.7400000095367432
             ]
           },
+          "confidence": 0.35,
           "mesh_vertices_xyz": [
             [
-              4.793877601623535,
-              1.5229891538619995,
+              4.4451117515563965,
+              1.140764594078064,
               0.0
             ],
             [
-              4.793877601623535,
-              1.5289890766143799,
+              4.4451117515563965,
+              1.1467645168304443,
               0.006000012159347534
             ],
             [
-              4.799877643585205,
-              1.5229891538619995,
+              4.4499287605285645,
+              1.1394681930541992,
               0.006000012159347534
             ],
             [
-              4.793877601623535,
-              1.5272316932678223,
+              4.4451117515563965,
+              1.1450071334838867,
               0.0017573833465576172
             ],
             [
-              4.797341346740723,
-              1.5264532566070557,
+              4.447892665863037,
+              1.1434803009033203,
               0.0025359392166137695
             ],
             [
-              4.798120498657227,
-              1.5272316932678223,
+              4.4485182762146,
+              1.1440904140472412,
               0.006000041961669922
             ],
             [
-              4.798120498657227,
-              1.5229891538619995,
+              4.4485182762146,
+              1.1398478746414185,
               0.0017573833465576172
             ],
             [
-              4.793877601623535,
-              1.5289890766143799,
+              4.4451117515563965,
+              1.1467645168304443,
               0.7339999675750732
             ],
             [
-              4.793877601623535,
-              1.5229891538619995,
+              4.4451117515563965,
+              1.140764594078064,
               0.7400000095367432
             ],
             [
-              4.799877643585205,
-              1.5229891538619995,
+              4.4499287605285645,
+              1.1394681930541992,
               0.7339999675750732
             ],
             [
-              4.793877601623535,
-              1.5272316932678223,
+              4.4451117515563965,
+              1.1450071334838867,
               0.7382426261901855
             ],
             [
-              4.797341346740723,
-              1.5264532566070557,
+              4.447892665863037,
+              1.1434803009033203,
               0.7374640703201294
             ],
             [
-              4.798120498657227,
-              1.5229891538619995,
+              4.4485182762146,
+              1.1398478746414185,
               0.7382426261901855
             ],
             [
-              4.798120498657227,
-              1.5272316932678223,
+              4.4485182762146,
+              1.1440904140472412,
               0.7339999675750732
             ],
             [
-              4.793877601623535,
-              1.484989047050476,
+              4.4451117515563965,
+              1.1027644872665405,
               0.0
             ],
             [
-              4.799877643585205,
-              1.484989047050476,
+              4.4499287605285645,
+              1.1014680862426758,
               0.006000012159347534
             ],
             [
-              4.793877601623535,
-              1.4789891242980957,
+              4.4451117515563965,
+              1.0967645645141602,
               0.006000012159347534
             ],
             [
-              4.798120498657227,
-              1.484989047050476,
+              4.4485182762146,
+              1.101847767829895,
               0.0017573833465576172
             ],
             [
-              4.797341346740723,
-              1.48152494430542,
+              4.447892665863037,
+              1.0985519886016846,
               0.0025359392166137695
             ],
             [
-              4.798120498657227,
-              1.4807465076446533,
+              4.4485182762146,
+              1.0976052284240723,
               0.006000041961669922
             ],
             [
-              4.793877601623535,
-              1.4807465076446533,
+              4.4451117515563965,
+              1.0985219478607178,
               0.0017573833465576172
             ],
             [
-              4.793877601623535,
-              1.484989047050476,
+              4.4451117515563965,
+              1.1027644872665405,
               0.7400000095367432
             ],
             [
-              4.793877601623535,
-              1.4789891242980957,
+              4.4451117515563965,
+              1.0967645645141602,
               0.7339999675750732
             ],
             [
-              4.799877643585205,
-              1.484989047050476,
+              4.4499287605285645,
+              1.1014680862426758,
               0.7339999675750732
             ],
             [
-              4.793877601623535,
-              1.4807465076446533,
+              4.4451117515563965,
+              1.0985219478607178,
               0.7382426261901855
             ],
             [
-              4.797341346740723,
-              1.48152494430542,
+              4.447892665863037,
+              1.0985519886016846,
               0.7374640703201294
             ],
             [
-              4.798120498657227,
-              1.4807465076446533,
+              4.4485182762146,
+              1.0976052284240723,
               0.7339999675750732
             ],
             [
-              4.798120498657227,
-              1.484989047050476,
+              4.4485182762146,
+              1.101847767829895,
               0.7382426261901855
             ],
             [
-              4.755877494812012,
-              1.5229891538619995,
+              4.414603233337402,
+              1.1489753723144531,
               0.0
             ],
             [
-              4.749877452850342,
-              1.5229891538619995,
+              4.409786224365234,
+              1.1502717733383179,
               0.006000012159347534
             ],
             [
-              4.755877494812012,
-              1.5289890766143799,
+              4.414603233337402,
+              1.1549752950668335,
               0.006000012159347534
             ],
             [
-              4.75163459777832,
-              1.5229891538619995,
+              4.411197185516357,
+              1.149891972541809,
               0.0017573833465576172
             ],
             [
-              4.752413749694824,
-              1.5264532566070557,
+              4.41182279586792,
+              1.1531877517700195,
               0.0025359392166137695
             ],
             [
-              4.75163459777832,
-              1.5272316932678223,
+              4.411197185516357,
+              1.1541345119476318,
               0.006000041961669922
             ],
             [
-              4.755877494812012,
-              1.5272316932678223,
+              4.414603233337402,
+              1.1532179117202759,
               0.0017573833465576172
             ],
             [
-              4.755877494812012,
-              1.5229891538619995,
+              4.414603233337402,
+              1.1489753723144531,
               0.7400000095367432
             ],
             [
-              4.755877494812012,
-              1.5289890766143799,
+              4.414603233337402,
+              1.1549752950668335,
               0.7339999675750732
             ],
             [
-              4.749877452850342,
-              1.5229891538619995,
+              4.409786224365234,
+              1.1502717733383179,
               0.7339999675750732
             ],
             [
-              4.755877494812012,
-              1.5272316932678223,
+              4.414603233337402,
+              1.1532179117202759,
               0.7382426261901855
             ],
             [
-              4.752413749694824,
-              1.5264532566070557,
+              4.41182279586792,
+              1.1531877517700195,
               0.7374640703201294
             ],
             [
-              4.75163459777832,
-              1.5272316932678223,
+              4.411197185516357,
+              1.1541345119476318,
               0.7339999675750732
             ],
             [
-              4.75163459777832,
-              1.5229891538619995,
+              4.411197185516357,
+              1.149891972541809,
               0.7382426261901855
             ],
             [
-              4.755877494812012,
-              1.484989047050476,
+              4.414603233337402,
+              1.1109752655029297,
               0.0
             ],
             [
-              4.755877494812012,
-              1.4789891242980957,
+              4.414603233337402,
+              1.1049753427505493,
               0.006000012159347534
             ],
             [
-              4.749877452850342,
-              1.484989047050476,
+              4.409786224365234,
+              1.1122716665267944,
               0.006000012159347534
             ],
             [
-              4.755877494812012,
-              1.4807465076446533,
+              4.414603233337402,
+              1.106732726097107,
               0.0017573833465576172
             ],
             [
-              4.752413749694824,
-              1.48152494430542,
+              4.41182279586792,
+              1.1082594394683838,
               0.0025359392166137695
             ],
             [
-              4.75163459777832,
-              1.4807465076446533,
+              4.411197185516357,
+              1.107649326324463,
               0.006000041961669922
             ],
             [
-              4.75163459777832,
-              1.484989047050476,
+              4.411197185516357,
+              1.1118918657302856,
               0.0017573833465576172
             ],
             [
-              4.755877494812012,
-              1.484989047050476,
+              4.414603233337402,
+              1.1109752655029297,
               0.7400000095367432
             ],
             [
-              4.749877452850342,
-              1.484989047050476,
+              4.409786224365234,
+              1.1122716665267944,
               0.7339999675750732
             ],
             [
-              4.755877494812012,
-              1.4789891242980957,
+              4.414603233337402,
+              1.1049753427505493,
               0.7339999675750732
             ],
             [
-              4.75163459777832,
-              1.484989047050476,
+              4.411197185516357,
+              1.1118918657302856,
               0.7382426261901855
             ],
             [
-              4.752413749694824,
-              1.48152494430542,
+              4.41182279586792,
+              1.1082594394683838,
               0.7374640703201294
             ],
             [
-              4.75163459777832,
-              1.4807465076446533,
+              4.411197185516357,
+              1.107649326324463,
               0.7339999675750732
             ],
             [
-              4.755877494812012,
-              1.4807465076446533,
+              4.414603233337402,
+              1.106732726097107,
               0.7382426261901855
             ]
           ],
@@ -204126,295 +204375,296 @@
           "id": "leg_1_-1",
           "bbox": {
             "min": [
-              3.049877643585205,
-              2.278988838195801,
+              3.0449488162994385,
+              2.264080047607422,
               0.0
             ],
             "max": [
-              3.09987735748291,
-              2.328989028930664,
+              3.0850908756256104,
+              2.3222908973693848,
               0.7400000095367432
             ]
           },
+          "confidence": 0.35,
           "mesh_vertices_xyz": [
             [
-              3.0938775539398193,
-              2.322988986968994,
+              3.0802738666534424,
+              2.3080801963806152,
               0.0
             ],
             [
-              3.0938775539398193,
-              2.328989028930664,
+              3.0802738666534424,
+              2.314080238342285,
               0.006000012159347534
             ],
             [
-              3.09987735748291,
-              2.322988986968994,
+              3.0850908756256104,
+              2.30678391456604,
               0.006000012159347534
             ],
             [
-              3.0938775539398193,
-              2.3272318840026855,
+              3.0802738666534424,
+              2.3123230934143066,
               0.0017573833465576172
             ],
             [
-              3.097341537475586,
-              2.32645320892334,
+              3.083055019378662,
+              2.310796022415161,
               0.0025359392166137695
             ],
             [
-              3.0981202125549316,
-              2.3272318840026855,
+              3.0836801528930664,
+              2.311406373977661,
               0.006000041961669922
             ],
             [
-              3.0981202125549316,
-              2.322988986968994,
+              3.0836801528930664,
+              2.3071634769439697,
               0.0017573833465576172
             ],
             [
-              3.0938775539398193,
-              2.328989028930664,
+              3.0802738666534424,
+              2.314080238342285,
               0.7339999675750732
             ],
             [
-              3.0938775539398193,
-              2.322988986968994,
+              3.0802738666534424,
+              2.3080801963806152,
               0.7400000095367432
             ],
             [
-              3.09987735748291,
-              2.322988986968994,
+              3.0850908756256104,
+              2.30678391456604,
               0.7339999675750732
             ],
             [
-              3.0938775539398193,
-              2.3272318840026855,
+              3.0802738666534424,
+              2.3123230934143066,
               0.7382426261901855
             ],
             [
-              3.097341537475586,
-              2.32645320892334,
+              3.083055019378662,
+              2.310796022415161,
               0.7374640703201294
             ],
             [
-              3.0981202125549316,
-              2.322988986968994,
+              3.0836801528930664,
+              2.3071634769439697,
               0.7382426261901855
             ],
             [
-              3.0981202125549316,
-              2.3272318840026855,
+              3.0836801528930664,
+              2.311406373977661,
               0.7339999675750732
             ],
             [
-              3.0938775539398193,
-              2.2849888801574707,
+              3.0802738666534424,
+              2.270080089569092,
               0.0
             ],
             [
-              3.09987735748291,
-              2.2849888801574707,
+              3.0850908756256104,
+              2.2687838077545166,
               0.006000012159347534
             ],
             [
-              3.0938775539398193,
-              2.278988838195801,
+              3.0802738666534424,
+              2.264080047607422,
               0.006000012159347534
             ],
             [
-              3.0981202125549316,
-              2.2849888801574707,
+              3.0836801528930664,
+              2.2691633701324463,
               0.0017573833465576172
             ],
             [
-              3.097341537475586,
-              2.281525135040283,
+              3.083055019378662,
+              2.2658679485321045,
               0.0025359392166137695
             ],
             [
-              3.0981202125549316,
-              2.2807464599609375,
+              3.0836801528930664,
+              2.264920949935913,
               0.006000041961669922
             ],
             [
-              3.0938775539398193,
-              2.2807464599609375,
+              3.0802738666534424,
+              2.2658376693725586,
               0.0017573833465576172
             ],
             [
-              3.0938775539398193,
-              2.2849888801574707,
+              3.0802738666534424,
+              2.270080089569092,
               0.7400000095367432
             ],
             [
-              3.0938775539398193,
-              2.278988838195801,
+              3.0802738666534424,
+              2.264080047607422,
               0.7339999675750732
             ],
             [
-              3.09987735748291,
-              2.2849888801574707,
+              3.0850908756256104,
+              2.2687838077545166,
               0.7339999675750732
             ],
             [
-              3.0938775539398193,
-              2.2807464599609375,
+              3.0802738666534424,
+              2.2658376693725586,
               0.7382426261901855
             ],
             [
-              3.097341537475586,
-              2.281525135040283,
+              3.083055019378662,
+              2.2658679485321045,
               0.7374640703201294
             ],
             [
-              3.0981202125549316,
-              2.2807464599609375,
+              3.0836801528930664,
+              2.264920949935913,
               0.7339999675750732
             ],
             [
-              3.0981202125549316,
-              2.2849888801574707,
+              3.0836801528930664,
+              2.2691633701324463,
               0.7382426261901855
             ],
             [
-              3.055877447128296,
-              2.322988986968994,
+              3.0497655868530273,
+              2.316290855407715,
               0.0
             ],
             [
-              3.049877643585205,
-              2.322988986968994,
+              3.0449488162994385,
+              2.31758713722229,
               0.006000012159347534
             ],
             [
-              3.055877447128296,
-              2.328989028930664,
+              3.0497655868530273,
+              2.3222908973693848,
               0.006000012159347534
             ],
             [
-              3.0516347885131836,
-              2.322988986968994,
+              3.0463595390319824,
+              2.3172075748443604,
               0.0017573833465576172
             ],
             [
-              3.0524134635925293,
-              2.32645320892334,
+              3.0469846725463867,
+              2.3205034732818604,
               0.0025359392166137695
             ],
             [
-              3.0516347885131836,
-              2.3272318840026855,
+              3.0463595390319824,
+              2.3214504718780518,
               0.006000041961669922
             ],
             [
-              3.055877447128296,
-              2.3272318840026855,
+              3.0497655868530273,
+              2.3205337524414062,
               0.0017573833465576172
             ],
             [
-              3.055877447128296,
-              2.322988986968994,
+              3.0497655868530273,
+              2.316290855407715,
               0.7400000095367432
             ],
             [
-              3.055877447128296,
-              2.328989028930664,
+              3.0497655868530273,
+              2.3222908973693848,
               0.7339999675750732
             ],
             [
-              3.049877643585205,
-              2.322988986968994,
+              3.0449488162994385,
+              2.31758713722229,
               0.7339999675750732
             ],
             [
-              3.055877447128296,
-              2.3272318840026855,
+              3.0497655868530273,
+              2.3205337524414062,
               0.7382426261901855
             ],
             [
-              3.0524134635925293,
-              2.32645320892334,
+              3.0469846725463867,
+              2.3205034732818604,
               0.7374640703201294
             ],
             [
-              3.0516347885131836,
-              2.3272318840026855,
+              3.0463595390319824,
+              2.3214504718780518,
               0.7339999675750732
             ],
             [
-              3.0516347885131836,
-              2.322988986968994,
+              3.0463595390319824,
+              2.3172075748443604,
               0.7382426261901855
             ],
             [
-              3.055877447128296,
-              2.2849888801574707,
+              3.0497655868530273,
+              2.2782907485961914,
               0.0
             ],
             [
-              3.055877447128296,
-              2.278988838195801,
+              3.0497655868530273,
+              2.2722907066345215,
               0.006000012159347534
             ],
             [
-              3.049877643585205,
-              2.2849888801574707,
+              3.0449488162994385,
+              2.2795870304107666,
               0.006000012159347534
             ],
             [
-              3.055877447128296,
-              2.2807464599609375,
+              3.0497655868530273,
+              2.274048328399658,
               0.0017573833465576172
             ],
             [
-              3.0524134635925293,
-              2.281525135040283,
+              3.0469846725463867,
+              2.2755753993988037,
               0.0025359392166137695
             ],
             [
-              3.0516347885131836,
-              2.2807464599609375,
+              3.0463595390319824,
+              2.2749650478363037,
               0.006000041961669922
             ],
             [
-              3.0516347885131836,
-              2.2849888801574707,
+              3.0463595390319824,
+              2.279207468032837,
               0.0017573833465576172
             ],
             [
-              3.055877447128296,
-              2.2849888801574707,
+              3.0497655868530273,
+              2.2782907485961914,
               0.7400000095367432
             ],
             [
-              3.049877643585205,
-              2.2849888801574707,
+              3.0449488162994385,
+              2.2795870304107666,
               0.7339999675750732
             ],
             [
-              3.055877447128296,
-              2.278988838195801,
+              3.0497655868530273,
+              2.2722907066345215,
               0.7339999675750732
             ],
             [
-              3.0516347885131836,
-              2.2849888801574707,
+              3.0463595390319824,
+              2.279207468032837,
               0.7382426261901855
             ],
             [
-              3.0524134635925293,
-              2.281525135040283,
+              3.0469846725463867,
+              2.2755753993988037,
               0.7374640703201294
             ],
             [
-              3.0516347885131836,
-              2.2807464599609375,
+              3.0463595390319824,
+              2.2749650478363037,
               0.7339999675750732
             ],
             [
-              3.055877447128296,
-              2.2807464599609375,
+              3.0497655868530273,
+              2.274048328399658,
               0.7382426261901855
             ]
           ],
@@ -204749,295 +204999,296 @@
           "id": "leg_1_1",
           "bbox": {
             "min": [
-              3.049877643585205,
-              1.4789891242980957,
+              3.0449488162994385,
+              1.4640804529190063,
               0.0
             ],
             "max": [
-              3.09987735748291,
-              1.5289890766143799,
+              3.0850908756256104,
+              1.5222910642623901,
               0.7400000095367432
             ]
           },
+          "confidence": 0.35,
           "mesh_vertices_xyz": [
             [
-              3.0938775539398193,
-              1.5229891538619995,
+              3.0802738666534424,
+              1.5080804824829102,
               0.0
             ],
             [
-              3.0938775539398193,
-              1.5289890766143799,
+              3.0802738666534424,
+              1.5140804052352905,
               0.006000012159347534
             ],
             [
-              3.09987735748291,
-              1.5229891538619995,
+              3.0850908756256104,
+              1.5067840814590454,
               0.006000012159347534
             ],
             [
-              3.0938775539398193,
-              1.5272316932678223,
+              3.0802738666534424,
+              1.512323021888733,
               0.0017573833465576172
             ],
             [
-              3.097341537475586,
-              1.5264532566070557,
+              3.083055019378662,
+              1.510796070098877,
               0.0025359392166137695
             ],
             [
-              3.0981202125549316,
-              1.5272316932678223,
+              3.0836801528930664,
+              1.5114063024520874,
               0.006000041961669922
             ],
             [
-              3.0981202125549316,
-              1.5229891538619995,
+              3.0836801528930664,
+              1.5071637630462646,
               0.0017573833465576172
             ],
             [
-              3.0938775539398193,
-              1.5289890766143799,
+              3.0802738666534424,
+              1.5140804052352905,
               0.7339999675750732
             ],
             [
-              3.0938775539398193,
-              1.5229891538619995,
+              3.0802738666534424,
+              1.5080804824829102,
               0.7400000095367432
             ],
             [
-              3.09987735748291,
-              1.5229891538619995,
+              3.0850908756256104,
+              1.5067840814590454,
               0.7339999675750732
             ],
             [
-              3.0938775539398193,
-              1.5272316932678223,
+              3.0802738666534424,
+              1.512323021888733,
               0.7382426261901855
             ],
             [
-              3.097341537475586,
-              1.5264532566070557,
+              3.083055019378662,
+              1.510796070098877,
               0.7374640703201294
             ],
             [
-              3.0981202125549316,
-              1.5229891538619995,
+              3.0836801528930664,
+              1.5071637630462646,
               0.7382426261901855
             ],
             [
-              3.0981202125549316,
-              1.5272316932678223,
+              3.0836801528930664,
+              1.5114063024520874,
               0.7339999675750732
             ],
             [
-              3.0938775539398193,
-              1.484989047050476,
+              3.0802738666534424,
+              1.4700803756713867,
               0.0
             ],
             [
-              3.09987735748291,
-              1.484989047050476,
+              3.0850908756256104,
+              1.468783974647522,
               0.006000012159347534
             ],
             [
-              3.0938775539398193,
-              1.4789891242980957,
+              3.0802738666534424,
+              1.4640804529190063,
               0.006000012159347534
             ],
             [
-              3.0981202125549316,
-              1.484989047050476,
+              3.0836801528930664,
+              1.4691636562347412,
               0.0017573833465576172
             ],
             [
-              3.097341537475586,
-              1.48152494430542,
+              3.083055019378662,
+              1.4658677577972412,
               0.0025359392166137695
             ],
             [
-              3.0981202125549316,
-              1.4807465076446533,
+              3.0836801528930664,
+              1.4649211168289185,
               0.006000041961669922
             ],
             [
-              3.0938775539398193,
-              1.4807465076446533,
+              3.0802738666534424,
+              1.465837836265564,
               0.0017573833465576172
             ],
             [
-              3.0938775539398193,
-              1.484989047050476,
+              3.0802738666534424,
+              1.4700803756713867,
               0.7400000095367432
             ],
             [
-              3.0938775539398193,
-              1.4789891242980957,
+              3.0802738666534424,
+              1.4640804529190063,
               0.7339999675750732
             ],
             [
-              3.09987735748291,
-              1.484989047050476,
+              3.0850908756256104,
+              1.468783974647522,
               0.7339999675750732
             ],
             [
-              3.0938775539398193,
-              1.4807465076446533,
+              3.0802738666534424,
+              1.465837836265564,
               0.7382426261901855
             ],
             [
-              3.097341537475586,
-              1.48152494430542,
+              3.083055019378662,
+              1.4658677577972412,
               0.7374640703201294
             ],
             [
-              3.0981202125549316,
-              1.4807465076446533,
+              3.0836801528930664,
+              1.4649211168289185,
               0.7339999675750732
             ],
             [
-              3.0981202125549316,
-              1.484989047050476,
+              3.0836801528930664,
+              1.4691636562347412,
               0.7382426261901855
             ],
             [
-              3.055877447128296,
-              1.5229891538619995,
+              3.0497655868530273,
+              1.5162911415100098,
               0.0
             ],
             [
-              3.049877643585205,
-              1.5229891538619995,
+              3.0449488162994385,
+              1.517587423324585,
               0.006000012159347534
             ],
             [
-              3.055877447128296,
-              1.5289890766143799,
+              3.0497655868530273,
+              1.5222910642623901,
               0.006000012159347534
             ],
             [
-              3.0516347885131836,
-              1.5229891538619995,
+              3.0463595390319824,
+              1.5172077417373657,
               0.0017573833465576172
             ],
             [
-              3.0524134635925293,
-              1.5264532566070557,
+              3.0469846725463867,
+              1.5205036401748657,
               0.0025359392166137695
             ],
             [
-              3.0516347885131836,
-              1.5272316932678223,
+              3.0463595390319824,
+              1.5214502811431885,
               0.006000041961669922
             ],
             [
-              3.055877447128296,
-              1.5272316932678223,
+              3.0497655868530273,
+              1.5205336809158325,
               0.0017573833465576172
             ],
             [
-              3.055877447128296,
-              1.5229891538619995,
+              3.0497655868530273,
+              1.5162911415100098,
               0.7400000095367432
             ],
             [
-              3.055877447128296,
-              1.5289890766143799,
+              3.0497655868530273,
+              1.5222910642623901,
               0.7339999675750732
             ],
             [
-              3.049877643585205,
-              1.5229891538619995,
+              3.0449488162994385,
+              1.517587423324585,
               0.7339999675750732
             ],
             [
-              3.055877447128296,
-              1.5272316932678223,
+              3.0497655868530273,
+              1.5205336809158325,
               0.7382426261901855
             ],
             [
-              3.0524134635925293,
-              1.5264532566070557,
+              3.0469846725463867,
+              1.5205036401748657,
               0.7374640703201294
             ],
             [
-              3.0516347885131836,
-              1.5272316932678223,
+              3.0463595390319824,
+              1.5214502811431885,
               0.7339999675750732
             ],
             [
-              3.0516347885131836,
-              1.5229891538619995,
+              3.0463595390319824,
+              1.5172077417373657,
               0.7382426261901855
             ],
             [
-              3.055877447128296,
-              1.484989047050476,
+              3.0497655868530273,
+              1.4782910346984863,
               0.0
             ],
             [
-              3.055877447128296,
-              1.4789891242980957,
+              3.0497655868530273,
+              1.472291111946106,
               0.006000012159347534
             ],
             [
-              3.049877643585205,
-              1.484989047050476,
+              3.0449488162994385,
+              1.4795873165130615,
               0.006000012159347534
             ],
             [
-              3.055877447128296,
-              1.4807465076446533,
+              3.0497655868530273,
+              1.4740484952926636,
               0.0017573833465576172
             ],
             [
-              3.0524134635925293,
-              1.48152494430542,
+              3.0469846725463867,
+              1.47557532787323,
               0.0025359392166137695
             ],
             [
-              3.0516347885131836,
-              1.4807465076446533,
+              3.0463595390319824,
+              1.4749650955200195,
               0.006000041961669922
             ],
             [
-              3.0516347885131836,
-              1.484989047050476,
+              3.0463595390319824,
+              1.4792076349258423,
               0.0017573833465576172
             ],
             [
-              3.055877447128296,
-              1.484989047050476,
+              3.0497655868530273,
+              1.4782910346984863,
               0.7400000095367432
             ],
             [
-              3.049877643585205,
-              1.484989047050476,
+              3.0449488162994385,
+              1.4795873165130615,
               0.7339999675750732
             ],
             [
-              3.055877447128296,
-              1.4789891242980957,
+              3.0497655868530273,
+              1.472291111946106,
               0.7339999675750732
             ],
             [
-              3.0516347885131836,
-              1.484989047050476,
+              3.0463595390319824,
+              1.4792076349258423,
               0.7382426261901855
             ],
             [
-              3.0524134635925293,
-              1.48152494430542,
+              3.0469846725463867,
+              1.47557532787323,
               0.7374640703201294
             ],
             [
-              3.0516347885131836,
-              1.4807465076446533,
+              3.0463595390319824,
+              1.4749650955200195,
               0.7339999675750732
             ],
             [
-              3.055877447128296,
-              1.4807465076446533,
+              3.0497655868530273,
+              1.4740484952926636,
               0.7382426261901855
             ]
           ],
@@ -205373,159 +205624,160 @@
           "bbox": {
             "min": [
               3.0248775482177734,
-              1.453989028930664,
+              1.066622257232666,
               0.7400000095367432
             ],
             "max": [
-              4.824877738952637,
-              2.3539891242980957,
+              4.46999979019165,
+              2.352433443069458,
               0.7999999523162842
             ]
           },
+          "confidence": 0.8,
           "mesh_vertices_xyz": [
             [
-              4.8176774978637695,
-              2.3467888832092285,
+              4.464219093322754,
+              1.9594221115112305,
               0.7400000095367432
             ],
             [
-              4.8176774978637695,
-              2.3539891242980957,
+              4.464219093322754,
+              1.9666223526000977,
               0.7471999526023865
             ],
             [
-              4.824877738952637,
-              2.3467888832092285,
+              4.46999979019165,
+              1.9578663110733032,
               0.7471999526023865
             ],
             [
-              4.8176774978637695,
-              2.3518800735473633,
+              4.464219093322754,
+              1.9645133018493652,
               0.7421088218688965
             ],
             [
-              4.821834564208984,
-              2.3509459495544434,
+              4.467556953430176,
+              1.9626808166503906,
               0.743043065071106
             ],
             [
-              4.822768688201904,
-              2.3518800735473633,
+              4.468306541442871,
+              1.9634132385253906,
               0.7472000122070312
             ],
             [
-              4.822768688201904,
-              2.3467888832092285,
+              4.468306541442871,
+              1.9583220481872559,
               0.7421088218688965
             ],
             [
-              4.8176774978637695,
-              2.3539891242980957,
+              4.464219093322754,
+              1.9666223526000977,
               0.7928000092506409
             ],
             [
-              4.8176774978637695,
-              2.3467888832092285,
+              4.464219093322754,
+              1.9594221115112305,
               0.7999999523162842
             ],
             [
-              4.824877738952637,
-              2.3467888832092285,
+              4.46999979019165,
+              1.9578663110733032,
               0.7928000092506409
             ],
             [
-              4.8176774978637695,
-              2.3518800735473633,
+              4.464219093322754,
+              1.9645133018493652,
               0.7978911399841309
             ],
             [
-              4.821834564208984,
-              2.3509459495544434,
+              4.467556953430176,
+              1.9626808166503906,
               0.7969568967819214
             ],
             [
-              4.822768688201904,
-              2.3467888832092285,
+              4.468306541442871,
+              1.9583220481872559,
               0.7978911399841309
             ],
             [
-              4.822768688201904,
-              2.3518800735473633,
+              4.468306541442871,
+              1.9634132385253906,
               0.7927999496459961
             ],
             [
-              4.8176774978637695,
-              1.4611890316009521,
+              4.464219093322754,
+              1.073822259902954,
               0.7400000095367432
             ],
             [
-              4.824877738952637,
-              1.4611890316009521,
+              4.46999979019165,
+              1.0722664594650269,
               0.7471999526023865
             ],
             [
-              4.8176774978637695,
-              1.453989028930664,
+              4.464219093322754,
+              1.066622257232666,
               0.7471999526023865
             ],
             [
-              4.822768688201904,
-              1.4611890316009521,
+              4.468306541442871,
+              1.0727221965789795,
               0.7421088218688965
             ],
             [
-              4.821834564208984,
-              1.4570320844650269,
+              4.467556953430176,
+              1.0687669515609741,
               0.743043065071106
             ],
             [
-              4.822768688201904,
-              1.4560978412628174,
+              4.468306541442871,
+              1.0676310062408447,
               0.7472000122070312
             ],
             [
-              4.8176774978637695,
-              1.4560978412628174,
+              4.464219093322754,
+              1.0687310695648193,
               0.7421088218688965
             ],
             [
-              4.8176774978637695,
-              1.4611890316009521,
+              4.464219093322754,
+              1.073822259902954,
               0.7999999523162842
             ],
             [
-              4.8176774978637695,
-              1.453989028930664,
+              4.464219093322754,
+              1.066622257232666,
               0.7928000092506409
             ],
             [
-              4.824877738952637,
-              1.4611890316009521,
+              4.46999979019165,
+              1.0722664594650269,
               0.7928000092506409
             ],
             [
-              4.8176774978637695,
-              1.4560978412628174,
+              4.464219093322754,
+              1.0687310695648193,
               0.7978911399841309
             ],
             [
-              4.821834564208984,
-              1.4570320844650269,
+              4.467556953430176,
+              1.0687669515609741,
               0.7969568967819214
             ],
             [
-              4.822768688201904,
-              1.4560978412628174,
+              4.468306541442871,
+              1.0676310062408447,
               0.7927999496459961
             ],
             [
-              4.822768688201904,
-              1.4611890316009521,
+              4.468306541442871,
+              1.0727221965789795,
               0.7978911399841309
             ],
             [
-              3.0320777893066406,
-              2.3467893600463867,
+              3.03065824508667,
+              2.345233678817749,
               0.7400000095367432
             ],
             [
@@ -205534,38 +205786,38 @@
               0.7471999526023865
             ],
             [
-              3.0320777893066406,
-              2.3539891242980957,
+              3.03065824508667,
+              2.352433443069458,
               0.7471999526023865
             ],
             [
-              3.026986598968506,
-              2.3467888832092285,
+              3.0265707969665527,
+              2.3463332653045654,
               0.7421088218688965
             ],
             [
-              3.027920722961426,
-              2.3509459495544434,
+              3.0273208618164062,
+              2.3502883911132812,
               0.743043065071106
             ],
             [
-              3.026986598968506,
-              2.3518800735473633,
+              3.0265707969665527,
+              2.3514244556427,
               0.7472000122070312
             ],
             [
-              3.0320777893066406,
-              2.3518800735473633,
+              3.03065824508667,
+              2.3503243923187256,
               0.7421088218688965
             ],
             [
-              3.0320777893066406,
-              2.3467893600463867,
+              3.03065824508667,
+              2.345233678817749,
               0.7999999523162842
             ],
             [
-              3.0320777893066406,
-              2.3539891242980957,
+              3.03065824508667,
+              2.352433443069458,
               0.7928000092506409
             ],
             [
@@ -205574,33 +205826,33 @@
               0.7928000092506409
             ],
             [
-              3.0320777893066406,
-              2.3518800735473633,
+              3.03065824508667,
+              2.3503243923187256,
               0.7978911399841309
             ],
             [
-              3.027920722961426,
-              2.3509459495544434,
+              3.0273208618164062,
+              2.3502883911132812,
               0.7969568967819214
             ],
             [
-              3.026986598968506,
-              2.3518800735473633,
+              3.0265707969665527,
+              2.3514244556427,
               0.7927999496459961
             ],
             [
-              3.026986598968506,
-              2.3467888832092285,
+              3.0265707969665527,
+              2.3463332653045654,
               0.7978911399841309
             ],
             [
-              3.0320777893066406,
-              1.4611891508102417,
+              3.03065824508667,
+              1.4596333503723145,
               0.7400000095367432
             ],
             [
-              3.0320777893066406,
-              1.4539891481399536,
+              3.03065824508667,
+              1.4524333477020264,
               0.7471999526023865
             ],
             [
@@ -205609,28 +205861,28 @@
               0.7471999526023865
             ],
             [
-              3.0320777893066406,
-              1.4560980796813965,
+              3.03065824508667,
+              1.4545422792434692,
               0.7421088218688965
             ],
             [
-              3.027920722961426,
-              1.457032322883606,
+              3.0273208618164062,
+              1.4563747644424438,
               0.743043065071106
             ],
             [
-              3.026986598968506,
-              1.4560980796813965,
+              3.0265707969665527,
+              1.4556423425674438,
               0.7472000122070312
             ],
             [
-              3.026986598968506,
-              1.4611891508102417,
+              3.0265707969665527,
+              1.460733413696289,
               0.7421088218688965
             ],
             [
-              3.0320777893066406,
-              1.4611891508102417,
+              3.03065824508667,
+              1.4596333503723145,
               0.7999999523162842
             ],
             [
@@ -205639,28 +205891,28 @@
               0.7928000092506409
             ],
             [
-              3.0320777893066406,
-              1.4539891481399536,
+              3.03065824508667,
+              1.4524333477020264,
               0.7928000092506409
             ],
             [
-              3.026986598968506,
-              1.4611891508102417,
+              3.0265707969665527,
+              1.460733413696289,
               0.7978911399841309
             ],
             [
-              3.027920722961426,
-              1.457032322883606,
+              3.0273208618164062,
+              1.4563747644424438,
               0.7969568967819214
             ],
             [
-              3.026986598968506,
-              1.4560980796813965,
+              3.0265707969665527,
+              1.4556423425674438,
               0.7927999496459961
             ],
             [
-              3.0320777893066406,
-              1.4560980796813965,
+              3.03065824508667,
+              1.4545422792434692,
               0.7978911399841309
             ]
           ],
@@ -206007,12 +206259,21 @@
           "dx_m": 1.200777530670166,
           "dy_m": 0.2539891004562378,
           "dz_m": 0
+        },
+        {
+          "type": "projected_right_extent",
+          "with": "desk",
+          "image_width_fraction": 0.27,
+          "tolerance_fraction": 0.015
         }
       ],
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Foreground desk",
+    "final_label": "Foreground desk",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "bookcase",
@@ -206724,7 +206985,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "post_-1_1",
@@ -207347,7 +207609,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "post_1_-1",
@@ -207970,7 +208233,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "post_1_1",
@@ -208593,7 +208857,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "shelf_0",
@@ -209216,7 +209481,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "shelf_1",
@@ -209839,7 +210105,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "shelf_2",
@@ -210462,7 +210729,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "shelf_3",
@@ -211085,7 +211353,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         }
       ],
       "relationships": [
@@ -211108,7 +211377,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Bookcase",
+    "final_label": "Bookcase",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "globe",
@@ -211211,7 +211483,8 @@
               5.0081,
               0.95
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "stem",
@@ -211226,7 +211499,8 @@
               4.8231,
               0.53
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "base",
@@ -211241,7 +211515,8 @@
               4.9981,
               0.1
             ]
-          }
+          },
+          "confidence": 0.5
         }
       ],
       "relationships": [
@@ -211258,9 +211533,9 @@
         "children": "external"
       }
     },
-    "proposed_label": "Globe",
+    "proposed_label": "Terrestrial globe on a turned wooden tripod pedestal",
     "final_label": "Terrestrial globe on a turned wooden tripod pedestal",
-    "label_reason": "The crop shows dark green oceans and ochre landmasses, with Africa and Europe visible on a sphere held in a tilted meridian ring. A polished reddish-brown turned column with bulbous, fluted sections and three swept legs forms the pedestal. The full photograph confirms this is a floor-standing globe beside the fireplace and bookcase; the adjacent fireplace, wall and floor are externally owned."
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "gold_chair",
@@ -211372,7 +211647,8 @@
               5.232928501992934,
               0.4935
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "back",
@@ -211387,7 +211663,8 @@
               5.270608502511601,
               1.05
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "arm_-1",
@@ -211402,7 +211679,8 @@
               5.19407546334236,
               0.6825000000000001
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "leg_-1_-1",
@@ -211417,7 +211695,8 @@
               5.171503778020036,
               0.378
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "leg_-1_1",
@@ -211432,7 +211711,8 @@
               4.837766630568978,
               0.378
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "arm_1",
@@ -211447,7 +211727,8 @@
               4.644095355361073,
               0.6825000000000001
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "leg_1_-1",
@@ -211462,7 +211743,8 @@
               4.62152367003875,
               0.378
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "leg_1_1",
@@ -211477,7 +211759,8 @@
               4.287786522587691,
               0.378
             ]
-          }
+          },
+          "confidence": 0.5
         }
       ],
       "relationships": [
@@ -211493,7 +211776,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Gold chair",
+    "final_label": "Gold chair",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "red_chair",
@@ -211605,7 +211891,8 @@
               6.129499999999999,
               0.4935
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "back",
@@ -211620,7 +211907,8 @@
               6.175,
               1.05
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "arm_-1",
@@ -211635,7 +211923,8 @@
               6.071,
               0.6825000000000001
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "leg_-1_-1",
@@ -211650,7 +211939,8 @@
               6.076499999999999,
               0.378
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "leg_-1_1",
@@ -211665,7 +211955,8 @@
               5.6735,
               0.378
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "arm_1",
@@ -211680,7 +211971,8 @@
               6.071,
               0.6825000000000001
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "leg_1_-1",
@@ -211695,7 +211987,8 @@
               6.076499999999999,
               0.378
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "leg_1_1",
@@ -211710,7 +212003,8 @@
               5.6735,
               0.378
             ]
-          }
+          },
+          "confidence": 0.5
         }
       ],
       "relationships": [
@@ -211726,7 +212020,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Red chair",
+    "final_label": "Red chair",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "lamp_table",
@@ -211830,7 +212127,8 @@
               6.175000000000001,
               0.75
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "leg_-1_-1",
@@ -211845,7 +212143,8 @@
               6.15,
               0.69
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "leg_-1_1",
@@ -211860,7 +212159,8 @@
               5.7,
               0.69
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "leg_1_-1",
@@ -211875,7 +212175,8 @@
               6.15,
               0.69
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "leg_1_1",
@@ -211890,7 +212191,8 @@
               5.7,
               0.69
             ]
-          }
+          },
+          "confidence": 0.5
         }
       ],
       "relationships": [
@@ -211909,7 +212211,7 @@
     },
     "proposed_label": "Writing table behind gold chair",
     "final_label": "Writing table behind gold chair",
-    "label_reason": "The crop shows a dark reddish wooden rectangular top beneath an open book, a recessed drawer/apron face with small rounded fittings, and partly occluded wooden supports. The full photograph places this small writing table behind the gold upholstered chair and beside the red chair. This distinguishes it from the round foreground lamp stand. The open book, lamp and surrounding chairs are external objects; the lower support design is uncertain because of occlusion."
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "round_table",
@@ -212013,7 +212315,8 @@
               5.5,
               0.72
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "pedestal",
@@ -212028,7 +212331,8 @@
               5.3,
               0.6749999999999999
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "foot",
@@ -212043,7 +212347,8 @@
               5.46,
               0.07
             ]
-          }
+          },
+          "confidence": 0.5
         }
       ],
       "relationships": [
@@ -212059,7 +212364,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Round table",
+    "final_label": "Round table",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "rocker",
@@ -212200,7 +212508,8 @@
               5.282289505004883,
               0.6818588376045227
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "arm_1",
@@ -212215,7 +212524,8 @@
               5.410945892333984,
               0.6818588376045227
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "back_bottom_rail",
@@ -212230,7 +212540,8 @@
               5.53201150894165,
               0.44932326674461365
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "back_center_stile",
@@ -212245,7 +212556,8 @@
               5.621565818786621,
               0.9249122738838196
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "back_crossrail",
@@ -212260,7 +212572,8 @@
               5.606043338775635,
               0.6852912306785583
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "cane_panel_0_0",
@@ -212275,7 +212588,8 @@
               5.525248050689697,
               0.642209529876709
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "cane_panel_0_1",
@@ -212290,7 +212604,8 @@
               5.6049017906188965,
               0.892926812171936
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "cane_panel_1_0",
@@ -212305,7 +212620,8 @@
               5.583025932312012,
               0.6421804428100586
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "cane_panel_1_1",
@@ -212320,7 +212636,8 @@
               5.661766052246094,
               0.8928977847099304
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "cane_rib_0_0_1",
@@ -212335,7 +212652,8 @@
               5.472594261169434,
               0.6405168175697327
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "cane_rib_0_0_2",
@@ -212350,7 +212668,8 @@
               5.479644775390625,
               0.6405158042907715
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "cane_rib_0_0_3",
@@ -212365,7 +212684,8 @@
               5.486695289611816,
               0.6405149102210999
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "cane_rib_0_0_4",
@@ -212380,7 +212700,8 @@
               5.493744850158691,
               0.6405138969421387
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "cane_rib_0_0_5",
@@ -212395,7 +212716,8 @@
               5.500795364379883,
               0.6405129432678223
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "cane_rib_0_0_6",
@@ -212410,7 +212732,8 @@
               5.507844924926758,
               0.6405119299888611
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "cane_rib_0_1_1",
@@ -212425,7 +212748,8 @@
               5.552917003631592,
               0.8912328481674194
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "cane_rib_0_1_2",
@@ -212440,7 +212764,8 @@
               5.559855937957764,
               0.891231894493103
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "cane_rib_0_1_3",
@@ -212455,7 +212780,8 @@
               5.5667948722839355,
               0.8912309408187866
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "cane_rib_0_1_4",
@@ -212470,7 +212796,8 @@
               5.573733329772949,
               0.8912299275398254
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "cane_rib_0_1_5",
@@ -212485,7 +212812,8 @@
               5.580672264099121,
               0.8912289142608643
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "cane_rib_0_1_6",
@@ -212500,7 +212828,8 @@
               5.587610244750977,
               0.8912279605865479
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "cane_rib_1_0_1",
@@ -212515,7 +212844,8 @@
               5.530371189117432,
               0.6405088305473328
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "cane_rib_1_0_2",
@@ -212530,7 +212860,8 @@
               5.537421703338623,
               0.6405078768730164
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "cane_rib_1_0_3",
@@ -212545,7 +212876,8 @@
               5.544471740722656,
               0.6405068635940552
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "cane_rib_1_0_4",
@@ -212560,7 +212892,8 @@
               5.551522254943848,
               0.6405059695243835
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "cane_rib_1_0_5",
@@ -212575,7 +212908,8 @@
               5.5585713386535645,
               0.6405048966407776
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "cane_rib_1_0_6",
@@ -212590,7 +212924,8 @@
               5.565621852874756,
               0.6405039429664612
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "cane_rib_1_1_1",
@@ -212605,7 +212940,8 @@
               5.6097798347473145,
               0.8912248611450195
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "cane_rib_1_1_2",
@@ -212620,7 +212956,8 @@
               5.6167192459106445,
               0.8912238478660583
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "cane_rib_1_1_3",
@@ -212635,7 +212972,8 @@
               5.623657703399658,
               0.8912228941917419
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "cane_rib_1_1_4",
@@ -212650,7 +212988,8 @@
               5.630596160888672,
               0.8912220001220703
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "cane_rib_1_1_5",
@@ -212665,7 +213004,8 @@
               5.6375346183776855,
               0.8912209272384644
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "cane_rib_1_1_6",
@@ -212680,7 +213020,8 @@
               5.644473075866699,
               0.891219973564148
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "curved_arm_support_-1",
@@ -212695,7 +213036,8 @@
               4.844081878662109,
               0.6366060376167297
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "curved_arm_support_1",
@@ -212710,7 +213052,8 @@
               4.972738265991211,
               0.6366060376167297
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "left_stile",
@@ -212725,7 +213068,8 @@
               5.5680460929870605,
               0.9267225861549377
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "leg_-1_-1",
@@ -212740,7 +213084,8 @@
               5.330564975738525,
               0.36719998717308044
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "leg_-1_1",
@@ -212755,7 +213100,8 @@
               4.834620475769043,
               0.36719998717308044
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "leg_1_-1",
@@ -212770,7 +213116,8 @@
               5.459220886230469,
               0.36719998717308044
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "leg_1_1",
@@ -212785,7 +213132,8 @@
               4.963276386260986,
               0.36719998717308044
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "rear_arm_support_-1",
@@ -212800,7 +213148,8 @@
               5.312501430511475,
               0.6521196961402893
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "rear_arm_support_1",
@@ -212815,7 +213164,8 @@
               5.441157817840576,
               0.6521196961402893
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "right_stile",
@@ -212830,7 +213180,8 @@
               5.68626070022583,
               0.926569402217865
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "runner_-1",
@@ -212845,7 +213196,8 @@
               5.656073570251465,
               0.42333823442459106
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "runner_1",
@@ -212860,7 +213212,8 @@
               5.784729480743408,
               0.4233380854129791
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "seat",
@@ -212875,7 +213228,8 @@
               5.532776355743408,
               0.4487999975681305
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "shaped_crest",
@@ -212890,7 +213244,8 @@
               5.680530548095703,
               0.9582644104957581
             ]
-          }
+          },
+          "confidence": 0.5
         }
       ],
       "relationships": [
@@ -212911,7 +213266,10 @@
       "ownership": {
         "children": "included"
       }
-    }
+    },
+    "proposed_label": "Rocking chair",
+    "final_label": "Rocking chair",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "display_table",
@@ -213015,7 +213373,8 @@
               6.364999999999999,
               0.87
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "leg_-1_-1",
@@ -213030,7 +213389,8 @@
               6.34,
               0.81
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "leg_-1_1",
@@ -213045,7 +213405,8 @@
               5.989999999999999,
               0.81
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "leg_1_-1",
@@ -213060,7 +213421,8 @@
               6.34,
               0.81
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "leg_1_1",
@@ -213075,7 +213437,8 @@
               5.989999999999999,
               0.81
             ]
-          }
+          },
+          "confidence": 0.5
         }
       ],
       "relationships": [
@@ -213096,7 +213459,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Draped table",
+    "final_label": "Draped table",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "orange_chair",
@@ -215625,7 +215991,8 @@
               137,
               109
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "arm_support_1",
@@ -218024,7 +218391,8 @@
               137,
               109
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "broad_arm_-1",
@@ -221287,7 +221655,8 @@
               187,
               149
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "broad_arm_1",
@@ -224550,7 +224919,8 @@
               187,
               149
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "padded_back",
@@ -227813,7 +228183,8 @@
               187,
               149
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "projecting_seat",
@@ -231076,7 +231447,8 @@
               187,
               149
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "short_foot_-1_-1",
@@ -236513,7 +236885,8 @@
               479,
               480
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "short_foot_-1_1",
@@ -241950,7 +242323,8 @@
               2,
               476
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "short_foot_1_-1",
@@ -247387,7 +247761,8 @@
               5,
               477
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "short_foot_1_1",
@@ -252824,7 +253199,8 @@
               4,
               5
             ]
-          ]
+          ],
+          "confidence": 0.5
         },
         {
           "id": "upholstered_base",
@@ -255223,7 +255599,8 @@
               137,
               109
             ]
-          ]
+          ],
+          "confidence": 0.5
         }
       ],
       "relationships": [
@@ -255259,7 +255636,10 @@
       "ownership": {
         "children": "included"
       }
-    }
+    },
+    "proposed_label": "Orange chair",
+    "final_label": "Orange chair",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "stool",
@@ -255363,7 +255743,8 @@
               5.905,
               0.25
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "leg_-1_-1",
@@ -255378,7 +255759,8 @@
               5.880000000000001,
               0.19
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "leg_-1_1",
@@ -255393,7 +255775,8 @@
               5.550000000000001,
               0.19
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "leg_1_-1",
@@ -255408,7 +255791,8 @@
               5.880000000000001,
               0.19
             ]
-          }
+          },
+          "confidence": 0.5
         },
         {
           "id": "leg_1_1",
@@ -255423,7 +255807,8 @@
               5.550000000000001,
               0.19
             ]
-          }
+          },
+          "confidence": 0.5
         }
       ],
       "relationships": [
@@ -255440,9 +255825,9 @@
         "children": "external"
       }
     },
-    "proposed_label": "Footstool",
+    "proposed_label": "Upholstered tapestry footstool",
     "final_label": "Upholstered tapestry footstool",
-    "label_reason": "The crop shows a low rectangular footstool with a flattened cream-and-gold botanical tapestry cushion on dark brown, a substantial dark wooden box-like apron with square corners, and short curved carved supports with broad feet. In the whole photograph it sits on the floor directly in front of the orange armchair, confirming the original Footstool proposal. The fixed narrow leg regions and shallow top region limit the detail model’s reproduction of the fuller photographed base."
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "candlestick_0",
@@ -255549,7 +255934,8 @@
               2.7575000000000003,
               1.86
             ]
-          }
+          },
+          "confidence": 0.6
         }
       ],
       "relationships": [
@@ -255565,7 +255951,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Mantel brass candlestick",
+    "final_label": "Mantel brass candlestick",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "candle_0",
@@ -255672,7 +256061,8 @@
               2.729,
               2.24
             ]
-          }
+          },
+          "confidence": 0.6
         }
       ],
       "relationships": [
@@ -255688,7 +256078,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Tall white taper candle",
+    "final_label": "Tall white taper candle",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "candlestick_1",
@@ -255795,7 +256188,8 @@
               4.0775,
               1.86
             ]
-          }
+          },
+          "confidence": 0.6
         }
       ],
       "relationships": [
@@ -255811,7 +256205,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Mantel brass candlestick",
+    "final_label": "Mantel brass candlestick",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "candle_1",
@@ -255918,7 +256315,8 @@
               4.049,
               2.24
             ]
-          }
+          },
+          "confidence": 0.6
         }
       ],
       "relationships": [
@@ -255934,7 +256332,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Tall white taper candle",
+    "final_label": "Tall white taper candle",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "mantel_clock",
@@ -256041,7 +256442,8 @@
               3.605,
               1.76
             ]
-          }
+          },
+          "confidence": 0.5
         }
       ],
       "relationships": [
@@ -256057,7 +256459,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Small mantel clock",
+    "final_label": "Small mantel clock",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "mantel_clock_face",
@@ -256160,7 +256565,8 @@
               3.4825000000000004,
               1.745
             ]
-          }
+          },
+          "confidence": 0.5
         }
       ],
       "relationships": [
@@ -256176,7 +256582,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Pale clock dial",
+    "final_label": "Pale clock dial",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "sconce",
@@ -256279,7 +256688,8 @@
               5.485,
               2.12
             ]
-          }
+          },
+          "confidence": 0.6
         },
         {
           "id": "arms",
@@ -256294,7 +256704,8 @@
               5.58,
               2.04
             ]
-          }
+          },
+          "confidence": 0.6
         },
         {
           "id": "shade_-1",
@@ -256309,7 +256720,8 @@
               5.59,
               2.3
             ]
-          }
+          },
+          "confidence": 0.6
         },
         {
           "id": "shade_1",
@@ -256324,14 +256736,18 @@
               5.390000000000001,
               2.3
             ]
-          }
+          },
+          "confidence": 0.6
         }
       ],
       "relationships": [],
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Two-arm wall sconce",
+    "final_label": "Two-arm wall sconce",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "microphone",
@@ -257047,7 +257463,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         }
       ],
       "relationships": [
@@ -257063,7 +257480,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Vintage broadcast microphone on stand",
+    "final_label": "Vintage broadcast microphone on stand",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "book_0_0",
@@ -257776,14 +258196,18 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         }
       ],
       "relationships": [],
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Visible book spines on bookcase",
+    "final_label": "Visible book spines on bookcase",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "book_0_1",
@@ -258496,14 +258920,18 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         }
       ],
       "relationships": [],
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Visible book spines on bookcase",
+    "final_label": "Visible book spines on bookcase",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "book_0_2",
@@ -259216,14 +259644,18 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         }
       ],
       "relationships": [],
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Visible book spines on bookcase",
+    "final_label": "Visible book spines on bookcase",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "book_0_3",
@@ -259936,14 +260368,18 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         }
       ],
       "relationships": [],
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Visible book spines on bookcase",
+    "final_label": "Visible book spines on bookcase",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "book_0_4",
@@ -260656,14 +261092,18 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         }
       ],
       "relationships": [],
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Visible book spines on bookcase",
+    "final_label": "Visible book spines on bookcase",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "book_0_5",
@@ -261376,14 +261816,18 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         }
       ],
       "relationships": [],
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Visible book spines on bookcase",
+    "final_label": "Visible book spines on bookcase",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "book_0_6",
@@ -262096,14 +262540,18 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         }
       ],
       "relationships": [],
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Visible book spines on bookcase",
+    "final_label": "Visible book spines on bookcase",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "book_1_0",
@@ -262816,14 +263264,18 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         }
       ],
       "relationships": [],
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Visible book spines on bookcase",
+    "final_label": "Visible book spines on bookcase",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "book_1_1",
@@ -263536,14 +263988,18 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         }
       ],
       "relationships": [],
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Visible book spines on bookcase",
+    "final_label": "Visible book spines on bookcase",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "book_1_2",
@@ -264256,14 +264712,18 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         }
       ],
       "relationships": [],
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Visible book spines on bookcase",
+    "final_label": "Visible book spines on bookcase",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "book_1_3",
@@ -264976,14 +265436,18 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         }
       ],
       "relationships": [],
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Visible book spines on bookcase",
+    "final_label": "Visible book spines on bookcase",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "book_2_0",
@@ -265696,14 +266160,18 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         }
       ],
       "relationships": [],
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Visible book spines on bookcase",
+    "final_label": "Visible book spines on bookcase",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "book_2_1",
@@ -266416,14 +266884,18 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         }
       ],
       "relationships": [],
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Visible book spines on bookcase",
+    "final_label": "Visible book spines on bookcase",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "table_lamp",
@@ -266530,7 +267002,8 @@
               6.0200000000000005,
               0.79
             ]
-          }
+          },
+          "confidence": 0.6
         },
         {
           "id": "stem",
@@ -266545,7 +267018,8 @@
               5.9270000000000005,
               1.1400000000000001
             ]
-          }
+          },
+          "confidence": 0.6
         },
         {
           "id": "shade",
@@ -266560,7 +267034,8 @@
               6.0600000000000005,
               1.38
             ]
-          }
+          },
+          "confidence": 0.6
         }
       ],
       "relationships": [
@@ -266576,7 +267051,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Table lamp with white shade",
+    "final_label": "Table lamp with white shade",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "open_book",
@@ -266683,7 +267161,8 @@
               5.88,
               0.775
             ]
-          }
+          },
+          "confidence": 0.5
         }
       ],
       "relationships": [
@@ -266699,7 +267178,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Open book on side table",
+    "final_label": "Open book on side table",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "tablecloth",
@@ -266803,7 +267285,8 @@
               6.375,
               0.8899999999999999
             ]
-          }
+          },
+          "confidence": 0.6
         },
         {
           "id": "front_drape",
@@ -266818,7 +267301,8 @@
               5.925,
               0.87
             ]
-          }
+          },
+          "confidence": 0.6
         },
         {
           "id": "left_drape",
@@ -266833,7 +267317,8 @@
               6.375,
               0.87
             ]
-          }
+          },
+          "confidence": 0.6
         },
         {
           "id": "right_drape",
@@ -266848,7 +267333,8 @@
               6.375,
               0.87
             ]
-          }
+          },
+          "confidence": 0.6
         }
       ],
       "relationships": [],
@@ -266856,9 +267342,9 @@
         "children": "external"
       }
     },
-    "proposed_label": "Draped patterned tablecloth",
+    "proposed_label": "Draped floral-patterned tablecloth",
     "final_label": "Draped floral-patterned tablecloth",
-    "label_reason": "The crop shows gray-taupe woven fabric falling in irregular vertical folds, densely ornamented with burgundy floral rosettes, dusty lavender leafy scrollwork and broad antique-gold curving border bands above a pale hem. In the whole photograph this cloth covers the display table beneath framed photographs and a statuette, partly occluded by the rocker and orange chair. These soft folds and its continuous tabletop-to-hanging placement confirm the proposed tablecloth identification."
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "photo_frame_0",
@@ -266961,14 +267447,18 @@
               6.1525,
               1.21
             ]
-          }
+          },
+          "confidence": 0.6
         }
       ],
       "relationships": [],
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Framed photograph on display table",
+    "final_label": "Framed photograph on display table",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "photo_image_0",
@@ -267071,14 +267561,18 @@
               6.087999999999999,
               1.175
             ]
-          }
+          },
+          "confidence": 0.6
         }
       ],
       "relationships": [],
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Dark photograph insert",
+    "final_label": "Dark photograph insert",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "photo_frame_1",
@@ -267181,14 +267675,18 @@
               6.1525,
               1.21
             ]
-          }
+          },
+          "confidence": 0.6
         }
       ],
       "relationships": [],
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Framed photograph on display table",
+    "final_label": "Framed photograph on display table",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "photo_image_1",
@@ -267291,14 +267789,18 @@
               6.087999999999999,
               1.175
             ]
-          }
+          },
+          "confidence": 0.6
         }
       ],
       "relationships": [],
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Dark photograph insert",
+    "final_label": "Dark photograph insert",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "statue",
@@ -267401,7 +267903,8 @@
               6.279999999999999,
               0.9400000000000001
             ]
-          }
+          },
+          "confidence": 0.6
         },
         {
           "id": "robe",
@@ -267416,7 +267919,8 @@
               6.255,
               1.35
             ]
-          }
+          },
+          "confidence": 0.6
         },
         {
           "id": "head",
@@ -267431,14 +267935,18 @@
               6.234999999999999,
               1.47
             ]
-          }
+          },
+          "confidence": 0.6
         }
       ],
       "relationships": [],
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Standing bronze figurine",
+    "final_label": "Standing bronze figurine",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "stationery_box",
@@ -267545,7 +268053,8 @@
               5.315,
               0.82
             ]
-          }
+          },
+          "confidence": 0.5
         }
       ],
       "relationships": [
@@ -267561,7 +268070,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Stationery holder on round table",
+    "final_label": "Stationery holder on round table",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "stationery_0",
@@ -267664,14 +268176,18 @@
               5.257,
               0.86
             ]
-          }
+          },
+          "confidence": 0.6
         }
       ],
       "relationships": [],
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Papers in stationery holder",
+    "final_label": "Papers in stationery holder",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "stationery_1",
@@ -267774,14 +268290,18 @@
               5.257,
               0.86
             ]
-          }
+          },
+          "confidence": 0.6
         }
       ],
       "relationships": [],
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Papers in stationery holder",
+    "final_label": "Papers in stationery holder",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "stationery_2",
@@ -267884,14 +268404,18 @@
               5.257,
               0.86
             ]
-          }
+          },
+          "confidence": 0.6
         }
       ],
       "relationships": [],
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Papers in stationery holder",
+    "final_label": "Papers in stationery holder",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "small_cup",
@@ -267998,7 +268522,8 @@
               5.2775,
               0.79
             ]
-          }
+          },
+          "confidence": 0.5
         }
       ],
       "relationships": [
@@ -268014,7 +268539,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Small table cup",
+    "final_label": "Small table cup",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "table_tray",
@@ -268121,7 +268649,8 @@
               5.305,
               0.732
             ]
-          }
+          },
+          "confidence": 0.5
         }
       ],
       "relationships": [
@@ -268137,7 +268666,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Small lidded box on round table",
+    "final_label": "Small lidded box on round table",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "desk_bowl",
@@ -273694,7 +274226,8 @@
               474,
               1
             ]
-          ]
+          ],
+          "confidence": 0.5
         }
       ],
       "relationships": [
@@ -273717,7 +274250,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Wide shallow bowl",
+    "final_label": "Wide shallow bowl",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "desk_papers",
@@ -274460,7 +274996,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         }
       ],
       "relationships": [
@@ -274484,9 +275021,9 @@
         "children": "external"
       }
     },
-    "proposed_label": "Large desktop paper sheet",
+    "proposed_label": "Stack of aged printed papers",
     "final_label": "Stack of aged printed papers",
-    "label_reason": "The crop shows multiple offset cream paper edges along the front and right, slight curling, faded print blocks, a larger heading near the right end and a small central oval graphic. The whole photograph places this low stack flat on the foreground desktop to the left of the green bowl. These visible layers support a stack of aged printed papers; the publication and wording cannot be identified."
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "desk_book",
@@ -275229,7 +275766,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         }
       ],
       "relationships": [
@@ -275252,7 +275790,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Closed book on desktop",
+    "final_label": "Closed book on desktop",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "desk_tray",
@@ -275995,7 +276536,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         }
       ],
       "relationships": [
@@ -276018,7 +276560,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Rectangular desk tray",
+    "final_label": "Rectangular desk tray",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "horse_pedestal",
@@ -276761,7 +277306,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.5
         }
       ],
       "relationships": [
@@ -276784,7 +277330,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Stone plinth beneath wolf figurine",
+    "final_label": "Stone plinth beneath wolf figurine",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "she_wolf_figurine",
@@ -282337,7 +282886,8 @@
               3,
               4
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "head",
@@ -287774,7 +288324,8 @@
               475,
               2
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "leg_-1_-1",
@@ -288397,7 +288948,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "leg_-1_1",
@@ -289020,7 +289572,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "leg_1_-1",
@@ -289643,7 +290196,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "leg_1_1",
@@ -290266,7 +290820,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         }
       ],
       "relationships": [
@@ -290281,7 +290836,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "She-wolf and infants figurine",
+    "final_label": "She-wolf and infants figurine",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "desk_photo_0",
@@ -291020,7 +291578,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         }
       ],
       "relationships": [
@@ -291035,7 +291594,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Small framed desktop print",
+    "final_label": "Small framed desktop print",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "desk_photo_1",
@@ -291774,7 +292336,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         }
       ],
       "relationships": [
@@ -291789,7 +292352,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Upright framed desktop portrait",
+    "final_label": "Upright framed desktop portrait",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "desk_photo_2",
@@ -292528,7 +293094,8 @@
               37,
               29
             ]
-          ]
+          ],
+          "confidence": 0.6
         }
       ],
       "relationships": [
@@ -292543,7 +293110,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Printed card in desktop holder",
+    "final_label": "Printed card in desktop holder",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "fire_screen",
@@ -292646,14 +293216,18 @@
               3.9499999999999997,
               0.95
             ]
-          }
+          },
+          "confidence": 0.6
         }
       ],
       "relationships": [],
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Fireplace mesh screen",
+    "final_label": "Fireplace mesh screen",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "andiron_0",
@@ -292756,14 +293330,18 @@
               2.95,
               0.38
             ]
-          }
+          },
+          "confidence": 0.6
         }
       ],
       "relationships": [],
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Brass andiron",
+    "final_label": "Brass andiron",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "andiron_ball_0",
@@ -292866,14 +293444,18 @@
               2.955,
               0.47
             ]
-          }
+          },
+          "confidence": 0.6
         }
       ],
       "relationships": [],
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Andiron spherical finial",
+    "final_label": "Andiron spherical finial",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "andiron_1",
@@ -292976,14 +293558,18 @@
               3.98,
               0.38
             ]
-          }
+          },
+          "confidence": 0.6
         }
       ],
       "relationships": [],
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Brass andiron",
+    "final_label": "Brass andiron",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "andiron_ball_1",
@@ -293086,14 +293672,18 @@
               3.985,
               0.47
             ]
-          }
+          },
+          "confidence": 0.6
         }
       ],
       "relationships": [],
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Andiron spherical finial",
+    "final_label": "Andiron spherical finial",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "fire_tool_0",
@@ -293196,7 +293786,8 @@
               2.4025000000000003,
               0.98
             ]
-          }
+          },
+          "confidence": 0.5
         }
       ],
       "relationships": [
@@ -293212,7 +293803,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Upright fireplace tool",
+    "final_label": "Upright fireplace tool",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "fire_tool_1",
@@ -293315,7 +293909,8 @@
               2.4475000000000002,
               0.98
             ]
-          }
+          },
+          "confidence": 0.5
         }
       ],
       "relationships": [
@@ -293331,7 +293926,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Upright fireplace tool",
+    "final_label": "Upright fireplace tool",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "fire_tool_2",
@@ -293434,7 +294032,8 @@
               2.4925,
               0.98
             ]
-          }
+          },
+          "confidence": 0.5
         }
       ],
       "relationships": [
@@ -293450,7 +294049,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Upright fireplace tool",
+    "final_label": "Upright fireplace tool",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "walking_cane",
@@ -293553,7 +294155,8 @@
               4.88,
               0.83
             ]
-          }
+          },
+          "confidence": 0.5
         }
       ],
       "relationships": [
@@ -293569,7 +294172,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Walking cane leaning by gold chair",
+    "final_label": "Walking cane leaning by gold chair",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "tieback_hanging_0",
@@ -293781,14 +294387,18 @@
               6,
               7
             ]
-          ]
+          ],
+          "confidence": 0.6
         }
       ],
       "relationships": [],
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Left hanging tieback cord / tassel detail",
+    "final_label": "Left hanging tieback cord / tassel detail",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "tieback_hanging_1",
@@ -294000,14 +294610,18 @@
               6,
               7
             ]
-          ]
+          ],
+          "confidence": 0.6
         }
       ],
       "relationships": [],
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Middle hanging tieback cord / tassel detail",
+    "final_label": "Middle hanging tieback cord / tassel detail",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "fire_tool_stand",
@@ -294111,7 +294725,8 @@
               2.5500000000000003,
               0.52
             ]
-          }
+          },
+          "confidence": 0.6
         }
       ],
       "relationships": [
@@ -294127,7 +294742,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Fireplace-tool holder (partly occluded)",
+    "final_label": "Fireplace-tool holder (partly occluded)",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "window_sill_left",
@@ -294335,7 +294953,8 @@
               6,
               7
             ]
-          ]
+          ],
+          "confidence": 0.6
         }
       ],
       "relationships": [
@@ -294358,7 +294977,7 @@
     },
     "proposed_label": "Exposed wooden sill beneath left lace curtain",
     "final_label": "Exposed wooden sill beneath left lace curtain",
-    "label_reason": "The crop shows warm brown timber with a projecting rounded upper lip, a broad flat fascia and parallel recessed horizontal molding below. The whole photograph locates this exposed wood directly beneath the left lace window curtain, between rust-colored drapes and above the radiator. The curtains and radiator are separate objects; their edge fragments are not part of the sill."
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "window_sill_right",
@@ -294566,7 +295185,8 @@
               6,
               7
             ]
-          ]
+          ],
+          "confidence": 0.6
         }
       ],
       "relationships": [
@@ -294589,7 +295209,7 @@
     },
     "proposed_label": "Exposed wooden sill beneath right lace curtain",
     "final_label": "Exposed wooden sill beneath right lace curtain",
-    "label_reason": "The crop shows a long warm brown horizontal timber face with a narrow rounded upper lip and stepped lower molding immediately beneath white lace. The full photograph confirms this is the exposed right window sill behind the framed portraits and statue, above the radiator. The portraits, statue, tablecloth and lace overlap the sill but are separately owned objects."
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "window_frame_left",
@@ -294797,7 +295417,8 @@
               6,
               7
             ]
-          ]
+          ],
+          "confidence": 0.6
         }
       ],
       "relationships": [
@@ -294817,7 +295438,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Exposed left wooden window jamb",
+    "final_label": "Exposed left wooden window jamb",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "window_frame_middle",
@@ -295025,7 +295649,8 @@
               6,
               7
             ]
-          ]
+          ],
+          "confidence": 0.6
         }
       ],
       "relationships": [
@@ -295045,7 +295670,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Exposed middle wooden window jamb",
+    "final_label": "Exposed middle wooden window jamb",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "fireplace_fender",
@@ -295247,7 +295875,8 @@
               1,
               5
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "far_return",
@@ -295342,7 +295971,8 @@
               1,
               5
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "front_rail",
@@ -295437,7 +296067,8 @@
               1,
               5
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "near_post",
@@ -295532,7 +296163,8 @@
               1,
               5
             ]
-          ]
+          ],
+          "confidence": 0.6
         },
         {
           "id": "near_return",
@@ -295627,7 +296259,8 @@
               1,
               5
             ]
-          ]
+          ],
+          "confidence": 0.6
         }
       ],
       "relationships": [
@@ -295641,9 +296274,9 @@
         "children": "external"
       }
     },
-    "proposed_label": "Low metal fireplace fender / guard rail",
+    "proposed_label": "Low dark-metal fireplace fender with turned posts and ball finials",
     "final_label": "Low dark-metal fireplace fender with turned posts and ball finials",
-    "label_reason": "The crop shows dark round horizontal rails meeting vase-shaped turned posts with spherical finials, plus low metalwork at the hearth edge. In the whole photograph this low guard borders the fireplace hearth and is largely occluded by the sofa; the mesh screen, brass andirons and stone slab are separate objects. This confirms the proposed fender identification."
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "window_frame_right",
@@ -295845,7 +296478,8 @@
               1,
               5
             ]
-          ]
+          ],
+          "confidence": 0.6
         }
       ],
       "relationships": [
@@ -295858,7 +296492,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Exposed far-right wooden window jamb",
+    "final_label": "Exposed far-right wooden window jamb",
+    "label_reason": "Root proposal awaiting object review."
   },
   {
     "id": "book_rest_gallery",
@@ -296060,7 +296697,8 @@
               1,
               5
             ]
-          ]
+          ],
+          "confidence": 0.6
         }
       ],
       "relationships": [
@@ -296073,6 +296711,9 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Carved wooden book-rest / gallery behind open book",
+    "final_label": "Carved wooden book-rest / gallery behind open book",
+    "label_reason": "Root proposal awaiting object review."
   }
 ]

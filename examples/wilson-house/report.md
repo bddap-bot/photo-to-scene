@@ -1,6 +1,6 @@
 # Wilson House worked example
 
-RESUMABLE: 41/99 detail objects finalized; active stage `object:desk_papers`, attempt 2, sequence 159. Final scene gate and critic scores are not yet measured; latest available visual critic: 7/10 (`object:desk_papers`).
+RESUMABLE: 5/99 detail objects finalized; active stage `object:desk`, attempt 1, sequence 171. Final scene gate and critic scores are not yet measured; latest available visual critic: 7/10 (`object:sofa`).
 
 The Library of Congress photograph is the reconstruction reference; [ATTRIBUTION.md](ATTRIBUTION.md) gives the credit, rights statement, and full-resolution link. The pipeline received the 6114×4842 full-resolution JPEG. The repository source is the supplied 1529×1211 copy.
 
@@ -127,6 +127,18 @@ The complete per-attempt table below separates machine gates from visual judgmen
 | object:globe | 2 | 10/10 | 7/10 | 306 | Reshape the pedestal into a smooth upper pear-shaped turning above one rounded, fluted lower bulb |
 | object:desk_papers | 1 | 10/10 | 6/10 | 191 | Initial entry or forward rebuild. |
 | object:desk_papers | 2 | 10/10 | 7/10 | 184 | Add visibly offset sheets with irregular, slightly curled edges and a thicker layered profile along the front and right sides. |
+| tier:large | 1 | — | 0/10 | 145 | Integrated footprint tier before descending. |
+| blockout | 1 | 10/10 | 8/10 | 234 | blockout: Reduce the foreground table’s rightward extent. Its visible edge reaches roughly 51% of image width at the bottom, versus 27% in the reference, obscuring too much of the sofa. |
+| identify | 1 | — | 9/10 | 143 | Initial entry or forward rebuild. |
+| object:ceiling | 1 | 10/10 | 7/10 | 110 | Initial entry or forward rebuild. |
+| object:ceiling | 2 | 10/10 | 7/10 | 268 | Add the deep, layered cornice with a repeating carved gold-brown band beneath the ceiling edge. |
+| object:floor | 1 | 10/10 | 6/10 | 110 | Initial entry or forward rebuild. |
+| object:floor | 2 | 10/10 | 8/10 | 400 | Add the large rectangular rug covering most of the visible floor, with a dense red, navy, and cream field and layered floral borders. |
+| object:rug | 1 | 10/10 | 8/10 | 114 | Initial entry or forward rebuild. |
+| object:wall_w | 1 | 10/10 | 7/10 | 127 | Initial entry or forward rebuild. |
+| object:wall_w | 2 | 10/10 | 6/10 | 266 | Extend the chimney-breast panel downward toward mantel height |
+| object:sofa | 1 | 10/10 | 6/10 | 198 | Initial entry or forward rebuild. |
+| object:sofa | 2 | 10/10 | 7/10 | 247 | Thicken the back’s top roll substantially and blend it into the padded back |
 
 ## GOTO history
 
@@ -201,6 +213,14 @@ The complete per-attempt table below separates machine gates from visual judgmen
 - cap reached origin=builder requested=blockout reason=The requested deeper continuous apron and broader feet conflict with the supplied spatial regions. Top coverage is restricted to z=0.19..0.25 m, with no continuous apron region below it. Each leg is restricted to a 0.05 by 0.05 m footprint and extends to z=0.19 m.
 - cap reached origin=builder requested=blockout reason=The base region is confined to z=0..0.10 m, with only a 0.05 m square stem above it until z=0.53 m. The broad curved tripod legs in the crop rise roughly a quarter to a third of the object height and cannot fit these region envelopes.
 - cap reached origin=builder requested=blockout reason=The base region z=0..0.10 m permits only 10.5 percent of total object height, conflicting with the requested high leg shoulders. Crop shoulders near y=540..565 of 763 pixels lie approximately 26–29 percent above the lowest foot. The 0.05 m stem width also needs review for the rounded bulb.
+- count=1 origin=critic stage=blockout reason=blockout: Reduce the foreground table’s rightward extent. Its visible edge reaches roughly 51% of image width at the bottom, versus 27% in the reference, obscuring too much of the sofa.
+- cap reached origin=builder requested=blockout reason=The reference and requested corrections require a stepped ceiling perimeter around the projecting left chimney wall, but the ceiling contract supplies only a rectangular eight-vertex slab. The deep cornice descends below the ceiling body envelope at the rear junction and overlaps the separately declared cornice_n object. Faithful detail requires coordinated footprint, region and ownership repair.
+- rejected origin=builder requested= reason=target is not in canonical stage set
+- cap reached origin=builder requested=blockout reason=Rug is separately owned and supported by floor. Its z=0..0.015 m envelope lies above floor body z=-0.08..0 m, whose children are external. Adding it to floor would conflict with ownership and bounds.
+- cap reached origin=builder requested=blockout reason=The supplied corrections conflict with fixed wall panel region extents and the cornice projection envelope. Revise spatial regions and related metadata before S4 refinement; do not silently alter the contracted frame in the detail builder.
+- cap reached origin=builder requested=blockout reason=Spatial region silhouettes conflict with the supplied crop: back_crest is a separate narrow bolster over a slab-like rounded_back, and rolled_arm regions produce tall narrow oval ends instead of broad, low, softly outward-rolled padding. Existing isolated render confirms this mismatch. Revise authoritative padding meshes before detail rebuilding.
+- cap reached origin=builder requested=blockout reason=The authoritative padding regions conflict with the crop and explicit silhouette corrections. Detail currently reproduces a separate narrow crest above a flat back and narrow upright oval arms. Revise spatial padding meshes before detail can satisfy the reference.
+- cap reached origin=builder requested=blockout reason=The visible continuous carved desk panel beneath the studded tabletop edge has no assigned spatial region. The complete desk entry declares only a top at world z=0.7400000095..0.7999999523 and four narrow corner legs below it. Filling the broad space between legs would conflict with those regions; children are externally owned. Repair the structural regions before building the detail asset.
 
 ## Codex calls and elapsed cost
 
@@ -208,13 +228,13 @@ The legacy checkpoint does not retain a complete call-level trace. Builder count
 
 | Stage | Recorded builder starts/reentries (lower bound) | Saved critic calls | Counted continuation calls |
 |---|---:|---:|---:|
-| blockout | 21 | 18 | 0 |
+| blockout | 22 | 19 | 2 |
 | floorplan | 3 | 3 | 0 |
-| identify | 6 | 6 | 0 |
-| object | 167 | 55 | 58 |
-| tier | 0 | 0 | 3 |
+| identify | 7 | 7 | 2 |
+| object | 183 | 64 | 84 |
+| tier | 0 | 1 | 4 |
 
-Total recorded attempt time: 19154 seconds. The elapsed time includes model calls, rendering, and checks; it excludes the pause between continuations. Currency cost is not available in the retained logs.
+Total recorded attempt time: 21516 seconds. The elapsed time includes model calls, rendering, and checks; it excludes the pause between continuations. Currency cost is not available in the retained logs.
 
 ## Defects
 
@@ -222,6 +242,8 @@ Total recorded attempt time: 19154 seconds. The elapsed time includes model call
 - [#17](https://github.com/bddap-bot/photo-to-scene/issues/17): capped builder GOTO retried indefinitely; fixed by `2a85afd92f627a329f0b31f1c8094c8c1141399d`.
 - [#18](https://github.com/bddap-bot/photo-to-scene/issues/18): composed local texture paths failed the asset gate; fixed by `5e18e863f0fd67824bda9e92c27a653453fee59d`.
 - [#19](https://github.com/bddap-bot/photo-to-scene/issues/19): dense inline contracts exceeded the request limit; fixed by `24504f7b57edae4bfa540b37242744ecf0ce3661`.
+
+- [#21](https://github.com/bddap-bot/photo-to-scene/issues/21): a blockout GOTO that only added region confidence changed every contract hash and discarded 41 finalized objects; the detail stage restarted at 0/99.
 
 ## Artifacts and continuation
 

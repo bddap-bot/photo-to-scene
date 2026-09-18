@@ -1,6 +1,6 @@
 # Wilson House scores
 
-RESUMABLE: 41/99 detail objects finalized; active stage `object:desk_papers`, attempt 2, sequence 159. Final scene gate and critic scores are not yet measured; latest available visual critic: 7/10 (`object:desk_papers`).
+RESUMABLE: 5/99 detail objects finalized; active stage `object:desk`, attempt 1, sequence 171. Final scene gate and critic scores are not yet measured; latest available visual critic: 7/10 (`object:sofa`).
 
 A gate score of 10 means the applicable driver checks passed; 0 means they rejected the attempt. A dash means no scored machine gate or no visual critic ran. Gate success measures contract compliance, not photographic similarity. Final gate and visual scores remain separate.
 
@@ -117,6 +117,18 @@ A gate score of 10 means the applicable driver checks passed; 0 means they rejec
 | object:globe | 2 | 10/10 | 7/10 | 306 | Reshape the pedestal into a smooth upper pear-shaped turning above one rounded, fluted lower bulb; remove the repeated narrow, angular swellings.; Make the legs taller with higher curved shoulders and a longer downward sweep, especially the right leg; the rendered base is too low and flat.; Add finer geographic borders and mottled, aged coloration to the globe; the current land masses look overly uniform. |
 | object:desk_papers | 1 | 10/10 | 6/10 | 191 | Initial entry or forward rebuild. |
 | object:desk_papers | 2 | 10/10 | 7/10 | 184 | Add visibly offset sheets with irregular, slightly curled edges and a thicker layered profile along the front and right sides.; Replace the uniform text columns and repeated edge symbols with varied print blocks, a larger heading near the right end, and a small central oval graphic.; Use lighter, mottled cream paper with subtle stains and faded printing; reduce the orange tone and remove the conspicuous uniform border. |
+| tier:large | 1 | — | 0/10 | 145 | Integrated footprint tier before descending. |
+| blockout | 1 | 10/10 | 8/10 | 234 | blockout: Reduce the foreground table’s rightward extent. Its visible edge reaches roughly 51% of image width at the bottom, versus 27% in the reference, obscuring too much of the sofa. |
+| identify | 1 | — | 9/10 | 143 | Initial entry or forward rebuild. |
+| object:ceiling | 1 | 10/10 | 7/10 | 110 | Initial entry or forward rebuild. |
+| object:ceiling | 2 | 10/10 | 7/10 | 268 | Add the deep, layered cornice with a repeating carved gold-brown band beneath the ceiling edge.; Introduce the stepped perimeter around the projecting left wall section and carry the border moldings around it.; Give the pale border strips shallow relief and add subtle plaster mottling to the ceiling surface. |
+| object:floor | 1 | 10/10 | 6/10 | 110 | Initial entry or forward rebuild. |
+| object:floor | 2 | 10/10 | 8/10 | 400 | Add the large rectangular rug covering most of the visible floor, with a dense red, navy, and cream field and layered floral borders.; Darken and mute the exposed boards toward aged reddish brown, with subtler variation between planks.; Reduce the uniform polished sheen and add restrained wood grain and surface wear. |
+| object:rug | 1 | 10/10 | 8/10 | 114 | Initial entry or forward rebuild. |
+| object:wall_w | 1 | 10/10 | 7/10 | 127 | Initial entry or forward rebuild. |
+| object:wall_w | 2 | 10/10 | 6/10 | 266 | Extend the chimney-breast panel downward toward mantel height; its lower border currently sits too high.; Raise the top of the narrow left panel to near the cornice and end it above the lower horizontal trim instead of crossing through it.; Increase the cornice projection and deepen its carved relief and shadows to match the substantial layered molding in the crop. |
+| object:sofa | 1 | 10/10 | 6/10 | 198 | Initial entry or forward rebuild. |
+| object:sofa | 2 | 10/10 | 7/10 | 247 | Thicken the back’s top roll substantially and blend it into the padded back; the crop shows a deep, rounded upholstered mass rather than a narrow cylinder above a flat panel.; Reshape the arms into thick, low, outward-scrolling rolls. The visible right arm should extend broadly forward with a rounded crest rather than rise as a thin upright oval.; Use richer amber, rust, and dark brown upholstery with broader irregular stripes and soft surface folds; the current fine, uniform striping and muted tan finish look too rigid. |
 
 ## Critic and gate findings
 
@@ -926,3 +938,99 @@ Recognisable as a thin stack of printed papers, with broadly matching proportion
 - Warm the paper to aged ochre-tan and increase the brown print contrast, especially the large heading and central oval graphic.
 - Replace the repetitive wavy edges with a few uneven, offset sheets and subtle corner curling.
 - Strengthen the layered thickness and shadow separation along the near edge to match the crop's distinct paper layers.
+
+### tier:large attempt 1
+
+Major room landmarks and chair footprints align reasonably well, but the foreground table and sofa silhouettes need correction before smaller work proceeds.
+
+- blockout: Reduce the foreground table’s rightward extent. Its visible edge reaches roughly 51% of image width at the bottom, versus 27% in the reference, obscuring too much of the sofa.
+- blockout: Rebuild the foreground sofa’s continuous diagonal back and broad rounded right arm, matching the reference’s visible contour and overlap with the table.
+- blockout: Lower the rear ceiling corner from roughly 18% to 23% of image height while preserving the relatively well-aligned fireplace and portrait.
+- detail: Refine the rocking chair’s tall, dark-frame silhouette and distinct curved runners; the current back and supporting frame appear too light and simplified.
+
+### blockout attempt 1
+
+Strong overall alignment of the room, fireplace, portrait, and furniture arrangement. The main discrepancies are the foreground sofa silhouette, window’s left boundary, and ceiling junction.
+
+- Reshape the foreground sofa back: its right end is roughly 30–40 pixels too high in the 1019-pixel-wide overlay. Lower that end while largely preserving the left end to match the photograph’s steeper descending outline.
+- Move the left boundary of the window treatment approximately 20–30 pixels right in the overlay; the blockout extends too far into the adjacent wall panel.
+- Raise the rear ceiling/wall junction approximately 10 pixels at the room corner to align with the photographed cornice.
+
+### identify attempt 1
+
+The sheet identifies nearly all major furnishings, architectural features, and small accessories. Remaining gaps are minor; no definite wrong labels are apparent.
+
+- Add a crop for the patterned seat cushion on the rocking chair.
+- Add a crop identifying the book-like rectangular items beneath the bronze statuette on the display table; distinguish them from the statue's base.
+
+### object:ceiling attempt 1
+
+The muted pink ceiling and paired pale border lines are recognizable, but the render omits the substantial ornamental perimeter and stepped outline visible in the crop.
+
+- Add the deep, layered cornice with a repeating carved gold-brown band beneath the ceiling edge.
+- Introduce the stepped perimeter around the projecting left wall section and carry the border moldings around it.
+- Give the pale border strips shallow relief and add subtle plaster mottling to the ceiling surface.
+
+### object:ceiling attempt 2
+
+The muted pink ceiling and double perimeter lines are recognizable, but the ornate cornice is incomplete and too shallow compared with the crop.
+
+- Extend the ornate cornice along both adjoining visible ceiling edges; the render leaves most edges plain.
+- Increase the cornice depth and strengthen its layered ledges, repeating carved ornament, and dark recessed band.
+- Give the cornice a warmer aged gold-brown finish with stronger recess shading while preserving the pink plaster ceiling.
+
+### object:floor attempt 1
+
+The render reads as a warm wood plank floor, but the reference floor area is dominated by a large patterned rug. The exposed wood is darker and less uniformly orange.
+
+- Add the large rectangular rug covering most of the visible floor, with a dense red, navy, and cream field and layered floral borders.
+- Darken and mute the exposed boards toward aged reddish brown, with subtler variation between planks.
+- Reduce the uniform polished sheen and add restrained wood grain and surface wear.
+
+### object:floor attempt 2
+
+The large patterned rug over plank flooring is clearly recognizable. The render captures the dense blue field and red borders, but its pale, uniform finish misses the reference's darker, warmer, worn appearance.
+
+- Deepen the rug's navy and burgundy tones and reduce the bright cream contrast to match the crop's muted pattern.
+- Make the exposed floor warmer amber-brown with richer wood grain and subtle sheen; it currently reads as flat, dusty brown.
+- Add slight irregularity and wear to the rug edges and pattern to soften the perfectly crisp, uniform finish.
+
+### object:rug attempt 1
+
+The rug is readily recognizable: a thin rectangular carpet with a dark, densely patterned field and broad red ornamental border. The render looks cleaner, lighter, and more uniformly flat than the reference.
+
+- Deepen the red border toward muted burgundy and reduce the bright peach tones in the field motifs.
+- Make the field pattern finer and denser, with less conspicuous repeating floral columns.
+- Add subtle woven surface variation and slight edge irregularity to soften the perfectly flat, crisp outline.
+
+### object:wall_w attempt 1
+
+The render recognisably captures the warm paneled wall, projecting chimney breast, and ornate cornice. Panel proportions and molding depth differ from the crop; separately furnished objects are excluded from this wall assessment.
+
+- Extend the chimney-breast panel downward toward mantel height; its lower border currently sits too high.
+- Raise the top of the narrow left panel to near the cornice and end it above the lower horizontal trim instead of crossing through it.
+- Increase the cornice projection and deepen its carved relief and shadows to match the substantial layered molding in the crop.
+
+### object:wall_w attempt 2
+
+Recognisable as the paneled fireplace wall, with a projecting central bay and ornate cornice. Panel proportions and molding placement differ visibly, and the finish reads flatter and lighter than the reference.
+
+- Make the central panel taller and narrower, extending its lower molding farther down the projecting bay.
+- Extend the left narrow panel toward the cornice and terminate it above the horizontal lower-wall trim; it currently crosses that trim.
+- Give the cornice deeper, leaf-like carved relief and darken the wall finish toward the reference’s aged brown-gold tones.
+
+### object:sofa attempt 1
+
+Recognisable as the sofa, with striped brown upholstery and a rolled back, but the render looks much thinner, flatter, and less plush than the reference.
+
+- Thicken the back’s top roll substantially and blend it into the padded back; the crop shows a deep, rounded upholstered mass rather than a narrow cylinder above a flat panel.
+- Reshape the arms into thick, low, outward-scrolling rolls. The visible right arm should extend broadly forward with a rounded crest rather than rise as a thin upright oval.
+- Use richer amber, rust, and dark brown upholstery with broader irregular stripes and soft surface folds; the current fine, uniform striping and muted tan finish look too rigid.
+
+### object:sofa attempt 2
+
+Recognisable rolled-arm sofa with a matching rear view, but the render has a thin, separate back roll and overly regular upholstery stripes compared with the plush golden-brown reference.
+
+- Thicken the rolled back substantially and blend it into the rear upholstery; the crop shows a broad padded crest with a large curled end rather than a narrow bolster above a flat panel.
+- Make the near arm fuller and less uniformly cylindrical, adding the soft depressions and irregular bulges visible along its top.
+- Replace the crisp, evenly spaced orange stripes with finer, irregular brown-and-gold striations and a softer velvet-like sheen.

@@ -1,14 +1,14 @@
 # Wilson House example progress
 
-RESUMABLE: 41/99 detail objects finalized; active stage `object:desk_papers`, attempt 2, sequence 159. Final scene gate and critic scores are not yet measured; latest available visual critic: 7/10 (`object:desk_papers`).
+RESUMABLE: 5/99 detail objects finalized; active stage `object:desk`, attempt 1, sequence 171. Final scene gate and critic scores are not yet measured; latest available visual critic: 7/10 (`object:sofa`).
 
 - Initial workflow: `05b4bad57d40f982c0ca4209af511e90c8f2454c`
 - Detail prompt driver fix: `ce3c95c9ca51d8a5663cbbe170d00781220e9714`
 - Resumed published workflow: `ed4bc7e691ec081840040e3acc7918af97c712b5`
 - Pipeline input: `highsm-17640-full.jpg` (6114×4842); no input downscaling.
 - Published source: `source.jpg` (1529×1211).
-- Completed detail objects under current contracts: 41/99.
-- Recorded attempts: 111; latest sequence: 159.
+- Completed detail objects under current contracts: 5/99.
+- Recorded attempts: 123; latest sequence: 171.
 - Next `PHOTO_TO_SCENE_STAGE`: `detail`.
 - Resume command (from the repository root): `BOTQ_ARTIFACTS_DIR=/home/bot/.local/state/botq/artifacts/4243 PHOTO_TO_SCENE_ROOT=/home/bot/scratch/photo-to-scene/example/work PHOTO_TO_SCENE_STAGE=detail ./pipeline.sh /home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg`
 
@@ -16,46 +16,10 @@ RESUMABLE: 41/99 detail objects finalized; active stage `object:desk_papers`, at
 
 | Object | Best recorded score | Attempts |
 |---|---:|---:|
-| floor | 6/10 | 2 |
+| floor | 8/10 | 2 |
 | ceiling | 7/10 | 2 |
 | wall_w | 7/10 | 2 |
-| north_left | 5/10 | 2 |
-| north_right | 5/10 | 2 |
-| north_below | 8/10 | 1 |
-| north_above | 2/10 | 2 |
-| cornice_n | 7/10 | 2 |
-| baseboard_n | 0/10 | 2 |
-| mantel | 6/10 | 2 |
-| firebox | 7/10 | 2 |
-| hearth | 7/10 | 2 |
-| portrait | 0/10 | 2 |
-| sheer_0 | 7/10 | 2 |
-| sheer_1 | 0/10 | 2 |
-| curtain_rail | 6/10 | 2 |
-| drape_0 | 0/10 | 2 |
-| drape_1 | 5/10 | 2 |
-| drape_2 | 6/10 | 2 |
-| radiator | 8/10 | 2 |
-| rug | 8/10 | 2 |
-| sofa | 6/10 | 2 |
-| desk | 0/10 | 2 |
-| bookcase | 0/10 | 2 |
-| globe | 7/10 | 2 |
-| gold_chair | 7/10 | 2 |
-| red_chair | 0/10 | 2 |
-| lamp_table | 4/10 | 2 |
-| round_table | 0/10 | 2 |
-| rocker | 0/10 | 2 |
-| display_table | 0/10 | 2 |
-| orange_chair | 0/10 | 2 |
-| stool | 7/10 | 2 |
-| tablecloth | 6/10 | 2 |
-| desk_bowl | 8/10 | 1 |
-| desk_papers | 7/10 | 2 |
-| fire_screen | 8/10 | 1 |
-| walking_cane | 8/10 | 1 |
-| window_sill_left | 7/10 | 2 |
-| window_sill_right | 7/10 | 2 |
-| fireplace_fender | 4/10 | 2 |
+| rug | 8/10 | 1 |
+| sofa | 7/10 | 2 |
 
 The full attempt history and score definitions are in [report.md](report.md) and [scores.md](scores.md).
