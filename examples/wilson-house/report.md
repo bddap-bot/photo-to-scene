@@ -1,6 +1,6 @@
 # Wilson House worked example
 
-RESUMABLE: 5/99 detail objects finalized; active stage `object:desk`, attempt 1, sequence 171. Final scene gate and critic scores are not yet measured; latest available visual critic: 7/10 (`object:sofa`).
+RESUMABLE: 11/99 detail objects finalized; active stage `object:curtain_rail`, attempt 1, sequence 184. Final scene gate and critic scores are not yet measured; latest available visual critic: 7/10 (`object:hearth`).
 
 The Library of Congress photograph is the reconstruction reference; [ATTRIBUTION.md](ATTRIBUTION.md) gives the credit, rights statement, and full-resolution link. The pipeline received the 6114×4842 full-resolution JPEG. The repository source is the supplied 1529×1211 copy.
 
@@ -9,6 +9,8 @@ The Library of Congress photograph is the reconstruction reference; [ATTRIBUTION
 The run began with an empty work directory on `05b4bad57d40f982c0ca4209af511e90c8f2454c`. The generic asset builder was seeded by the driver. The scene-agnostic detail prompt fix `ce3c95c9ca51d8a5663cbbe170d00781220e9714` preceded the saved detail checkpoint.
 
 This continuation uses the published main tip `ed4bc7e691ec081840040e3acc7918af97c712b5`, including the footprint tiers, whole-photo detail context, identification review, and separate builder/critic GOTO allowances. The existing contracts, completed attempts, and artifacts were retained. This is a continuation across workflow revisions, not a fresh measurement of one revision. The published prompts, driver, contracts, and budgets were not tuned for the photograph.
+
+After 41 objects were finalized, the large-tier composition critic scored 0/10 and returned the run to `blockout`. The blockout builder corrected the foreground table and sofa and added the schema `confidence` field to every region, which changed every contract hash; the detail stage restarted at 0/99 under the new contracts ([#21](https://github.com/bddap-bot/photo-to-scene/issues/21)). The earlier attempts remain in the tables below under their old contract hashes.
 
 ## Attempt measurements
 
@@ -139,6 +141,17 @@ The complete per-attempt table below separates machine gates from visual judgmen
 | object:wall_w | 2 | 10/10 | 6/10 | 266 | Extend the chimney-breast panel downward toward mantel height |
 | object:sofa | 1 | 10/10 | 6/10 | 198 | Initial entry or forward rebuild. |
 | object:sofa | 2 | 10/10 | 7/10 | 247 | Thicken the back’s top roll substantially and blend it into the padded back |
+| object:desk | 1 | 10/10 | 3/10 | 179 | Initial entry or forward rebuild. |
+| object:desk | 2 | 10/10 | 3/10 | 219 | Replace the exposed thin legs with the broad, solid paneled wooden front visible beneath the tabletop, including its inset decorative detailing. |
+| object:cornice_n | 1 | 10/10 | 7/10 | 131 | Initial entry or forward rebuild. |
+| object:cornice_n | 2 | 10/10 | 7/10 | 127 | Increase the ornamental band's height relative to the upper mouldings and stretch its rounded motifs into taller, fluted leaf-like relief. |
+| object:north_below | 1 | 10/10 | 8/10 | 135 | Initial entry or forward rebuild. |
+| object:north_above | 1 | 10/10 | 2/10 | 125 | Initial entry or forward rebuild. |
+| object:north_above | 2 | 10/10 | 4/10 | 415 | Add the projecting, stepped upper cornice with its continuous band of closely repeated carved ornaments. |
+| object:radiator | 1 | 10/10 | 7/10 | 111 | Initial entry or forward rebuild. |
+| object:radiator | 2 | 10/10 | 7/10 | 173 | Reduce hole size relative to the surrounding lattice and soften the stark black interiors. |
+| object:hearth | 1 | 10/10 | 6/10 | 118 | Initial entry or forward rebuild. |
+| object:hearth | 2 | 10/10 | 7/10 | 114 | Darken the surface toward charcoal-black and replace directional wood-like streaking with subtle stone mottling. |
 
 ## GOTO history
 
@@ -221,6 +234,10 @@ The complete per-attempt table below separates machine gates from visual judgmen
 - cap reached origin=builder requested=blockout reason=Spatial region silhouettes conflict with the supplied crop: back_crest is a separate narrow bolster over a slab-like rounded_back, and rolled_arm regions produce tall narrow oval ends instead of broad, low, softly outward-rolled padding. Existing isolated render confirms this mismatch. Revise authoritative padding meshes before detail rebuilding.
 - cap reached origin=builder requested=blockout reason=The authoritative padding regions conflict with the crop and explicit silhouette corrections. Detail currently reproduces a separate narrow crest above a flat back and narrow upright oval arms. Revise spatial padding meshes before detail can satisfy the reference.
 - cap reached origin=builder requested=blockout reason=The visible continuous carved desk panel beneath the studded tabletop edge has no assigned spatial region. The complete desk entry declares only a top at world z=0.7400000095..0.7999999523 and four narrow corner legs below it. Filling the broad space between legs would conflict with those regions; children are externally owned. Repair the structural regions before building the detail asset.
+- cap reached origin=builder requested=blockout reason=The photographed continuous carved desk panel below the studded tabletop has no owned spatial region. Existing regions contain only a top at z=0.74..0.80 m and four narrow corner legs, so adding the visible panel would violate region containment.
+- cap reached origin=builder requested=blockout reason=The photograph and explicit correction require a broad solid paneled front, but the spatial contract declares only top and four narrow leg regions. Tabletop accessories are externally owned and require coordinated ownership/support regions rather than duplicate desk child meshes.
+- rejected origin=builder requested= reason=target is not in canonical stage set
+- cap reached origin=builder requested=blockout reason=north_above correction requires ownership and region reconciliation: its contract assigns children externally, while requested cornice_n and curtain_rail are separate assets outside its body envelope.
 
 ## Codex calls and elapsed cost
 
@@ -231,10 +248,10 @@ The legacy checkpoint does not retain a complete call-level trace. Builder count
 | blockout | 22 | 19 | 2 |
 | floorplan | 3 | 3 | 0 |
 | identify | 7 | 7 | 2 |
-| object | 183 | 64 | 84 |
+| object | 199 | 75 | 112 |
 | tier | 0 | 1 | 4 |
 
-Total recorded attempt time: 21516 seconds. The elapsed time includes model calls, rendering, and checks; it excludes the pause between continuations. Currency cost is not available in the retained logs.
+Total recorded attempt time: 23363 seconds. The elapsed time includes model calls, rendering, and checks; it excludes the pause between continuations. Currency cost is not available in the retained logs.
 
 ## Defects
 

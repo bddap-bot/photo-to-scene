@@ -1,6 +1,6 @@
 # Wilson House scores
 
-RESUMABLE: 5/99 detail objects finalized; active stage `object:desk`, attempt 1, sequence 171. Final scene gate and critic scores are not yet measured; latest available visual critic: 7/10 (`object:sofa`).
+RESUMABLE: 11/99 detail objects finalized; active stage `object:curtain_rail`, attempt 1, sequence 184. Final scene gate and critic scores are not yet measured; latest available visual critic: 7/10 (`object:hearth`).
 
 A gate score of 10 means the applicable driver checks passed; 0 means they rejected the attempt. A dash means no scored machine gate or no visual critic ran. Gate success measures contract compliance, not photographic similarity. Final gate and visual scores remain separate.
 
@@ -129,6 +129,17 @@ A gate score of 10 means the applicable driver checks passed; 0 means they rejec
 | object:wall_w | 2 | 10/10 | 6/10 | 266 | Extend the chimney-breast panel downward toward mantel height; its lower border currently sits too high.; Raise the top of the narrow left panel to near the cornice and end it above the lower horizontal trim instead of crossing through it.; Increase the cornice projection and deepen its carved relief and shadows to match the substantial layered molding in the crop. |
 | object:sofa | 1 | 10/10 | 6/10 | 198 | Initial entry or forward rebuild. |
 | object:sofa | 2 | 10/10 | 7/10 | 247 | Thicken the back’s top roll substantially and blend it into the padded back; the crop shows a deep, rounded upholstered mass rather than a narrow cylinder above a flat panel.; Reshape the arms into thick, low, outward-scrolling rolls. The visible right arm should extend broadly forward with a rounded crest rather than rise as a thin upright oval.; Use richer amber, rust, and dark brown upholstery with broader irregular stripes and soft surface folds; the current fine, uniform striping and muted tan finish look too rigid. |
+| object:desk | 1 | 10/10 | 3/10 | 179 | Initial entry or forward rebuild. |
+| object:desk | 2 | 10/10 | 3/10 | 219 | Replace the exposed thin legs with the broad, solid paneled wooden front visible beneath the tabletop, including its inset decorative detailing.; Enlarge the front-edge studs and give them pronounced faceted heads with wider spacing.; Add the prominent tabletop objects: the squat green decorative bowl, papers and writing pad, shallow rectangular tray, letter holder, and gold animal statuette on its tall square pedestal. |
+| object:cornice_n | 1 | 10/10 | 7/10 | 131 | Initial entry or forward rebuild. |
+| object:cornice_n | 2 | 10/10 | 7/10 | 127 | Increase the ornamental band's height relative to the upper mouldings and stretch its rounded motifs into taller, fluted leaf-like relief.; Deepen the recesses between motifs and use darker brown patina with restrained gold highlights instead of evenly pale gold.; Give the upper mouldings a broader stepped profile and stronger projection over the ornamental band. |
+| object:north_below | 1 | 10/10 | 8/10 | 135 | Initial entry or forward rebuild. |
+| object:north_above | 1 | 10/10 | 2/10 | 125 | Initial entry or forward rebuild. |
+| object:north_above | 2 | 10/10 | 4/10 | 415 | Add the projecting, stepped upper cornice with its continuous band of closely repeated carved ornaments.; Recreate the long inset wall panels with narrow raised gold borders instead of an uninterrupted flat face.; Add the ornate gilded curtain rail along the lower edge, including small finials and the prominent central fan-shaped crest with oval medallions. |
+| object:radiator | 1 | 10/10 | 7/10 | 111 | Initial entry or forward rebuild. |
+| object:radiator | 2 | 10/10 | 7/10 | 173 | Reduce hole size relative to the surrounding lattice and soften the stark black interiors.; Use a warmer ochre-brown finish with subtle uneven shading and surface wear.; Soften the frame edges and reduce the prominence of the thick projecting top border. |
+| object:hearth | 1 | 10/10 | 6/10 | 118 | Initial entry or forward rebuild. |
+| object:hearth | 2 | 10/10 | 7/10 | 114 | Darken the surface toward charcoal-black and replace directional wood-like streaking with subtle stone mottling.; Give the exposed front edge a more distinct dark lip with a restrained highlight along its upper rim. |
 
 ## Critic and gate findings
 
@@ -1034,3 +1045,89 @@ Recognisable rolled-arm sofa with a matching rear view, but the render has a thi
 - Thicken the rolled back substantially and blend it into the rear upholstery; the crop shows a broad padded crest with a large curled end rather than a narrow bolster above a flat panel.
 - Make the near arm fuller and less uniformly cylindrical, adding the soft depressions and irregular bulges visible along its top.
 - Replace the crisp, evenly spaced orange stripes with finer, irregular brown-and-gold striations and a softer velvet-like sheen.
+
+### object:desk attempt 1
+
+The dark wood top and studded edge are recognizable, but the render reads as a plain four-legged table. The crop shows substantial paneled woodwork beneath the top, larger faceted studs, and a tabletop covered with distinctive accessories.
+
+- Replace the exposed thin legs with the broad, solid paneled wooden front visible beneath the tabletop, including its inset decorative detailing.
+- Enlarge the front-edge studs and give them pronounced faceted heads with wider spacing.
+- Add the prominent tabletop objects: the squat green decorative bowl, papers and writing pad, shallow rectangular tray, letter holder, and gold animal statuette on its tall square pedestal.
+
+### object:desk attempt 2
+
+The dark wood top and studded edge are recognizable, but the render reads as a plain four-legged table. The reference shows a substantial paneled wooden body beneath the top, with larger projecting studs and numerous tabletop accessories.
+
+- Replace the exposed slender legs with the visible solid wooden body, including recessed panels and angular decorative woodwork.
+- Enlarge the front-edge studs and give them a pronounced faceted, domed profile with aged metallic highlights.
+- Add the prominent tabletop pieces: the wide green patterned bowl, rectangular tray, papers and writing pad, and animal sculpture on its tall square pedestal.
+
+### object:cornice_n attempt 1
+
+Recognisable cornice with layered upper mouldings, repeating relief and lower rope trim. The render is too slender and uniformly bright; the crop shows a deeper, darker ornamental band with more elongated relief.
+
+- Increase the ornamental band's height relative to the upper mouldings and stretch its rounded motifs into taller, fluted leaf-like relief.
+- Deepen the recesses between motifs and use darker brown patina with restrained gold highlights instead of evenly pale gold.
+- Give the upper mouldings a broader stepped profile and stronger projection over the ornamental band.
+
+### object:cornice_n attempt 2
+
+Recognisable cornice with a repeated ornamental frieze and rope-like lower border. The render is too thin and mechanically regular, with insufficient depth in the upper moulding and overly smooth ornament.
+
+- Increase the height and projection of the stepped upper moulding; the crop shows a substantial layered profile above the ornamental band.
+- Make the repeating ornaments broader and more sculpted, with irregular leaf-like ridges and deeper recesses instead of smooth, uniform vertical capsules.
+- Add mottled bronze-gold wear and darker recessed patina to match the crop’s aged, varied surface.
+
+### object:north_below attempt 1
+
+The render convincingly reads as the long radiator grille beneath the windows. Its rectangular proportions, perforated face, and layered upper trim match the visible reference, though the finish is too uniform and the grille appears overly fine.
+
+- Increase the grille opening size slightly and deepen the dark recesses to match the crop’s more distinct perforations.
+- Darken the wood framing and add subtle tonal wear; the reference reads as aged brown wood rather than uniform golden trim.
+- Strengthen the shadow beneath the upper molding to reproduce the reference’s more pronounced horizontal separation.
+
+### object:north_above attempt 1
+
+The render captures the elongated brown backing but reads as a plain slab. The crop’s defining features are layered cornice molding, gold panel trim, and an ornate gilded curtain crest.
+
+- Add the projecting, stepped upper cornice with its continuous band of closely repeated carved ornaments.
+- Recreate the long inset wall panels with narrow raised gold borders instead of an uninterrupted flat face.
+- Add the ornate gilded curtain rail along the lower edge, including small finials and the prominent central fan-shaped crest with oval medallions.
+
+### object:north_above attempt 2
+
+The render captures the long framed wall panel, but omits the ornate cornice and gilded curtain crest that dominate the crop. Its flat, subdued surface also lacks the reference's layered relief.
+
+- Add the upper cornice with stepped moldings and a continuous band of closely spaced carved ornaments.
+- Add the gilded curtain-header rail, small finials, and prominent central fan-shaped crest with oval medallions.
+- Deepen and layer the panel moldings, using warmer aged-gold trim against a richer mottled brown wall surface.
+
+### object:radiator attempt 1
+
+Recognisable as the brown perforated radiator cover. The regular grille matches, but the render reads flatter, darker, and more sharply perforated than the crop.
+
+- Reduce hole size relative to the surrounding lattice and soften the stark black interiors.
+- Use a warmer ochre-brown finish with subtle uneven shading and surface wear.
+- Soften the frame edges and reduce the prominence of the thick projecting top border.
+
+### object:radiator attempt 2
+
+The render reads as a perforated radiator cover, but its light, uniform finish and tiny, widely separated holes differ from the crop’s darker, denser grille.
+
+- Darken the finish toward the crop’s reddish walnut brown.
+- Increase hole size relative to the intervening lattice to match the crop’s more open grille.
+- Add subtle surface variation and deeper shading within the perforations to reduce the flat, uniform appearance.
+
+### object:hearth attempt 1
+
+The thin rectangular slab reads as a hearth, but the render's brown, wood-like surface differs from the nearly black stone appearance in the crop. Occlusion limits precise proportion judgments.
+
+- Darken the surface toward charcoal-black and replace directional wood-like streaking with subtle stone mottling.
+- Give the exposed front edge a more distinct dark lip with a restrained highlight along its upper rim.
+
+### object:hearth attempt 2
+
+The thin, dark rectangular slab reads as a hearth, with broadly appropriate proportions. The crop is partly obscured, but its visible edge appears more rounded and its surface warmer and smoother than the render.
+
+- Soften the exposed front edge with a small rounded bevel.
+- Shift the surface toward warm brown-black and reduce the cloudy mottling.

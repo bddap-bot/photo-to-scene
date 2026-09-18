@@ -23197,7 +23197,7 @@
   },
   {
     "id": "north_below",
-    "label": "Wall below windows",
+    "label": "Wooden radiator enclosure beneath the windows with perforated grille",
     "crop_bbox": [
       3957,
       2957,
@@ -23959,12 +23959,12 @@
       }
     },
     "proposed_label": "Wall below windows",
-    "final_label": "Wall below windows",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Wooden radiator enclosure beneath the windows with perforated grille",
+    "label_reason": "The crop shows a continuous aged brown wooden enclosure below the window sill: several horizontal moulded bands with dark recesses sit above a dense regular grid of small dark square grille openings. The whole photograph confirms its low wall-mounted position behind the chairs and cloth-covered display table. This refines the broad wall proposal to the visible radiator-cover finish; the foreground furniture, tablecloth, framed pictures and window sill are separately owned objects."
   },
   {
     "id": "north_above",
-    "label": "Plaster above windows",
+    "label": "Paneled brown over-window wall with narrow gilt borders",
     "crop_bbox": [
       3527,
       275,
@@ -24724,8 +24724,8 @@
       }
     },
     "proposed_label": "Plaster above windows",
-    "final_label": "Plaster above windows",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Paneled brown over-window wall with narrow gilt borders",
+    "label_reason": "The crop shows a mottled brown wall field divided by long recessed rectangular panels with thin raised gold borders. The whole photograph locates this field above the north windows. A projecting stepped cornice with repeated carved ornaments bounds it above; a gilded curtain rail with small finials and a fan-shaped oval-medallion crest overlaps it below. These adjoining ornaments are distinct from the wall substrate and are externally owned under the existing contract. The original proposal describes the apparent substrate, but the material cannot be established conclusively from the photograph."
   },
   {
     "id": "cornice_n",
@@ -25495,7 +25495,7 @@
     },
     "proposed_label": "Window wall crown moulding",
     "final_label": "Window wall crown moulding",
-    "label_reason": "Root proposal awaiting object review."
+    "label_reason": "Both photographs show a continuous architectural cornice at the window-wall and ceiling junction: projecting stepped upper ledges, a dark recessed band of repeated upright brown-gold carved leaves, and a twisted rope bead along its lower edge. The full photograph confirms the run above the window wall. The gilded fan-shaped curtain crest and panel rails below are separate elements, not part of this crown moulding."
   },
   {
     "id": "baseboard_n",
@@ -26027,7 +26027,7 @@
     },
     "proposed_label": "Dark stone hearth slab (visible right edge)",
     "final_label": "Dark stone hearth slab (visible right edge)",
-    "label_reason": "Root proposal awaiting object review."
+    "label_reason": "The crop shows a low charcoal-dark flat slab with a straight nearly black exposed lip and a faint upper-edge highlight. In the whole photograph it sits at floor level beneath the fireplace opening and behind the separate metal fender. The flat surface and thin continuous edge confirm a stone hearth slab, mostly obscured by the sofa and ironwork. The exact stone variety cannot be determined visually."
   },
   {
     "id": "portrait",
@@ -173512,7 +173512,7 @@
     },
     "proposed_label": "Brown perforated radiator-cover grille beneath the windows",
     "final_label": "Brown perforated radiator-cover grille beneath the windows",
-    "label_reason": "Root proposal awaiting object review."
+    "label_reason": "The close crop shows a brown face pierced by closely spaced, regular rows and columns of dark square openings. In the whole-room photograph this grille lies below the window sill and behind the chairs and draped table, consistent with a radiator enclosure rather than chair caning. The curved chair edge at the lower right is an occluding external object. The concealed heating element and exact cover substrate cannot be established from these views."
   },
   {
     "id": "rug",
@@ -202959,7 +202959,7 @@
   },
   {
     "id": "desk",
-    "label": "Foreground desk",
+    "label": "Dark wooden desk with studded edge and carved panel",
     "crop_bbox": [
       0,
       3456,
@@ -206272,8 +206272,8 @@
       }
     },
     "proposed_label": "Foreground desk",
-    "final_label": "Foreground desk",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Dark wooden desk with studded edge and carved panel",
+    "label_reason": "The crop shows a broad dark reddish-brown wooden top, regularly spaced faceted metal studs along the near edge, and carved wooden panels underneath. In the full photograph this furniture stands in the lower-left foreground behind the striped sofa and supports papers, a green bowl and ornaments. These features support the proposed desk identification; the accessories are separately owned. The carved panel is visible evidence for the label but is absent from the capped five-region spatial contract."
   },
   {
     "id": "bookcase",
