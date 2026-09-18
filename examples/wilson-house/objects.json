@@ -211112,7 +211112,7 @@
   },
   {
     "id": "globe",
-    "label": "Globe",
+    "label": "Terrestrial globe on a turned wooden tripod pedestal",
     "crop_bbox": [
       2391,
       2933,
@@ -211257,7 +211257,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Globe",
+    "final_label": "Terrestrial globe on a turned wooden tripod pedestal",
+    "label_reason": "The crop shows dark green oceans and ochre landmasses, with Africa and Europe visible on a sphere held in a tilted meridian ring. A polished reddish-brown turned column with bulbous, fluted sections and three swept legs forms the pedestal. The full photograph confirms this is a floor-standing globe beside the fireplace and bookcase; the adjacent fireplace, wall and floor are externally owned."
   },
   {
     "id": "gold_chair",
@@ -255260,7 +255263,7 @@
   },
   {
     "id": "stool",
-    "label": "Footstool",
+    "label": "Upholstered tapestry footstool",
     "crop_bbox": [
       5133,
       3611,
@@ -255436,7 +255439,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Footstool",
+    "final_label": "Upholstered tapestry footstool",
+    "label_reason": "The crop shows a low rectangular footstool with a flattened cream-and-gold botanical tapestry cushion on dark brown, a substantial dark wooden box-like apron with square corners, and short curved carved supports with broad feet. In the whole photograph it sits on the floor directly in front of the orange armchair, confirming the original Footstool proposal. The fixed narrow leg regions and shallow top region limit the detail model’s reproduction of the fuller photographed base."
   },
   {
     "id": "candlestick_0",
@@ -273715,7 +273721,7 @@
   },
   {
     "id": "desk_papers",
-    "label": "Large desktop paper sheet",
+    "label": "Stack of aged printed papers",
     "crop_bbox": [
       0,
       4299,
@@ -274477,7 +274483,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Large desktop paper sheet",
+    "final_label": "Stack of aged printed papers",
+    "label_reason": "The crop shows multiple offset cream paper edges along the front and right, slight curling, faded print blocks, a larger heading near the right end and a small central oval graphic. The whole photograph places this low stack flat on the foreground desktop to the left of the green bowl. These visible layers support a stack of aged printed papers; the publication and wording cannot be identified."
   },
   {
     "id": "desk_book",
@@ -294346,7 +294355,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Exposed wooden sill beneath left lace curtain",
+    "final_label": "Exposed wooden sill beneath left lace curtain",
+    "label_reason": "The crop shows warm brown timber with a projecting rounded upper lip, a broad flat fascia and parallel recessed horizontal molding below. The whole photograph locates this exposed wood directly beneath the left lace window curtain, between rust-colored drapes and above the radiator. The curtains and radiator are separate objects; their edge fragments are not part of the sill."
   },
   {
     "id": "window_sill_right",

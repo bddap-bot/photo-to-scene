@@ -1,6 +1,6 @@
 # Wilson House scores
 
-RESUMABLE: 37/99 detail objects finalized; interrupted stage `object:window_sill_left`, attempt 2, sequence 150. Final scene gate and critic scores are not yet measured; latest available visual critic: 7/10 (`object:window_sill_left`).
+RESUMABLE: 41/99 detail objects finalized; active stage `object:desk_papers`, attempt 2, sequence 159. Final scene gate and critic scores are not yet measured; latest available visual critic: 7/10 (`object:desk_papers`).
 
 A gate score of 10 means the applicable driver checks passed; 0 means they rejected the attempt. A dash means no scored machine gate or no visual critic ran. Gate success measures contract compliance, not photographic similarity. Final gate and visual scores remain separate.
 
@@ -110,6 +110,13 @@ A gate score of 10 means the applicable driver checks passed; 0 means they rejec
 | object:north_right | 1 | 10/10 | 3/10 | 265 | Initial entry or forward rebuild. |
 | object:north_right | 2 | 10/10 | 5/10 | 253 | Shape the upper fabric into a diagonal sweep gathered at a tieback around two-fifths of the visible height, then let the lower folds fan outward.; Replace evenly spaced straight ribs with fewer, deeper, irregular folds that converge at the gathering point and broaden toward the bottom.; Add the visible gold tieback and give the fabric a darker burnt-orange velvet finish with soft highlights and deep fold shadows. |
 | object:window_sill_left | 1 | 10/10 | 7/10 | 121 | Initial entry or forward rebuild. |
+| object:window_sill_left | 2 | 10/10 | 6/10 | 227 | Increase the fascia height relative to its length, retaining a broad, mostly flat central face.; Deepen and darken the horizontal recess beneath the fascia and make the lower trim a distinct wider band.; Darken the wood to a warmer aged brown with subtle surface variation. |
+| object:stool | 1 | 10/10 | 6/10 | 191 | Initial entry or forward rebuild. |
+| object:stool | 2 | 10/10 | 7/10 | 316 | Shorten and thicken the legs, with fuller curved knees and broader carved feet.; Deepen the wooden apron beneath the seat and square up the frame corners; the reference has a substantial box-like base.; Flatten the cushion and reduce its rounded edges. Replace the sparse floral motifs with denser cream-and-gold tapestry ornament on a dark brown ground. |
+| object:globe | 1 | 10/10 | 7/10 | 385 | Initial entry or forward rebuild. |
+| object:globe | 2 | 10/10 | 7/10 | 306 | Reshape the pedestal into a smooth upper pear-shaped turning above one rounded, fluted lower bulb; remove the repeated narrow, angular swellings.; Make the legs taller with higher curved shoulders and a longer downward sweep, especially the right leg; the rendered base is too low and flat.; Add finer geographic borders and mottled, aged coloration to the globe; the current land masses look overly uniform. |
+| object:desk_papers | 1 | 10/10 | 6/10 | 191 | Initial entry or forward rebuild. |
+| object:desk_papers | 2 | 10/10 | 7/10 | 184 | Add visibly offset sheets with irregular, slightly curled edges and a thicker layered profile along the front and right sides.; Replace the uniform text columns and repeated edge symbols with varied print blocks, a larger heading near the right end, and a small central oval graphic.; Use lighter, mottled cream paper with subtle stains and faded printing; reduce the orange tone and remove the conspicuous uniform border. |
 
 ## Critic and gate findings
 
@@ -863,3 +870,59 @@ Recognisable as the left window sill and apron, with appropriate brown material 
 - Increase the fascia height relative to its length, retaining a broad, mostly flat central face.
 - Deepen and darken the horizontal recess beneath the fascia and make the lower trim a distinct wider band.
 - Darken the wood to a warmer aged brown with subtle surface variation.
+
+### object:window_sill_left attempt 2
+
+The layered brown sill is recognizable, but the render looks too long and thin. The crop emphasizes a deeper front fascia and more substantial lower trim.
+
+- Increase the fascia and overall vertical thickness relative to the visible span.
+- Thicken the lower molding beneath the dark horizontal recess.
+- Soften the sharp upper lip into a slightly rounded edge matching the crop.
+
+### object:stool attempt 1
+
+Recognisable as the upholstered wooden footstool, but the render looks taller, lighter-framed, and more rounded than the squat, substantial reference.
+
+- Shorten and thicken the legs, with fuller curved knees and broader carved feet.
+- Deepen the wooden apron beneath the seat and square up the frame corners; the reference has a substantial box-like base.
+- Flatten the cushion and reduce its rounded edges. Replace the sparse floral motifs with denser cream-and-gold tapestry ornament on a dark brown ground.
+
+### object:stool attempt 2
+
+Recognisable upholstered footstool with dark wood framing and curved legs, but the render looks taller and lighter-framed than the squat, substantial reference.
+
+- Shorten the exposed legs and deepen the wooden apron to match the crop's low, heavy silhouette.
+- Give the legs fuller curved knees and broader, more pronounced carved feet; the current legs look narrow and angular.
+- Replace the dense repeating floral upholstery with a dark ground and fewer, larger cream-and-gold motifs, and soften the cushion's edges.
+
+### object:globe attempt 1
+
+Clearly recognizable as the standing globe, with convincing dark oceans and warm wooden material. The pedestal profile and leg proportions differ noticeably from the crop.
+
+- Reshape the pedestal into a smooth upper pear-shaped turning above one rounded, fluted lower bulb; remove the repeated narrow, angular swellings.
+- Make the legs taller with higher curved shoulders and a longer downward sweep, especially the right leg; the rendered base is too low and flat.
+- Add finer geographic borders and mottled, aged coloration to the globe; the current land masses look overly uniform.
+
+### object:globe attempt 2
+
+Recognisable antique floor globe with convincing dark wood and aged map colors. The pedestal proportions and meridian mounting differ visibly from the crop.
+
+- Lengthen the curved legs and raise their junction so the base occupies more of the total height; add the visible carved fluting and defined feet.
+- Shorten the slender upper spindle and strengthen the stacked collars beneath the globe to match the crop's more compact turned pedestal.
+- Tilt the meridian ring and leave clearer separation around the sphere, especially beneath its lower-left edge.
+
+### object:desk_papers attempt 1
+
+Recognisable as aged printed papers, but the render looks like a flat, neatly bordered panel rather than the uneven, layered stack in the crop.
+
+- Add visibly offset sheets with irregular, slightly curled edges and a thicker layered profile along the front and right sides.
+- Replace the uniform text columns and repeated edge symbols with varied print blocks, a larger heading near the right end, and a small central oval graphic.
+- Use lighter, mottled cream paper with subtle stains and faded printing; reduce the orange tone and remove the conspicuous uniform border.
+
+### object:desk_papers attempt 2
+
+Recognisable as a thin stack of printed papers, with broadly matching proportions. The render looks too pale, uniformly flat, and regularly rippled compared with the warm, worn newspaper stack in the crop.
+
+- Warm the paper to aged ochre-tan and increase the brown print contrast, especially the large heading and central oval graphic.
+- Replace the repetitive wavy edges with a few uneven, offset sheets and subtle corner curling.
+- Strengthen the layered thickness and shadow separation along the near edge to match the crop's distinct paper layers.
