@@ -68,7 +68,10 @@ CPU rendering and per-object review also make a complete run expensive. Visual c
 
 ## Example
 
-A complete example from a public-domain photograph follows in a later commit.
+The [Wilson House worked example](examples/wilson-house/report.md) reconstructs a public-domain Library of Congress photograph and currently preserves 37 of 99 completed detail objects.
+The latest completed detail attempt passed its asset gate (10/10) and scored 7/10 visually; final scene scores and the photo/final comparison remain pending.
+
+![Wilson House detail checkpoint](examples/wilson-house/renders/detail-progress.png)
 
 ## License
 

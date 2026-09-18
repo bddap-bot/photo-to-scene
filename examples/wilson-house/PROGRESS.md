@@ -1,14 +1,15 @@
 # Wilson House example progress
 
-RESUMABLE: 35/99 detail objects finalized; active stage `object:lamp_table`. Final gate score is not yet measured; latest available visual critic: 7/10 (`object:window_sill_right`).
+RESUMABLE: 37/99 detail objects finalized; interrupted stage `object:window_sill_left`, attempt 2, sequence 150. Final scene gate and critic scores are not yet measured; latest available visual critic: 7/10 (`object:window_sill_left`).
 
 - Initial workflow: `05b4bad57d40f982c0ca4209af511e90c8f2454c`
 - Detail prompt driver fix: `ce3c95c9ca51d8a5663cbbe170d00781220e9714`
 - Resumed published workflow: `ed4bc7e691ec081840040e3acc7918af97c712b5`
 - Pipeline input: `highsm-17640-full.jpg` (6114×4842); no input downscaling.
 - Published source: `source.jpg` (1529×1211).
-- Completed detail objects under current contracts: 35/99.
-- Recorded attempts: 99; latest sequence: 145.
+- Completed detail objects under current contracts: 37/99.
+- Recorded attempts: 104; latest sequence: 150.
+- The pipeline process ended during the final listed attempt without a completion record. Resume uses the recorded attempt counts; the interrupted attempt has no score.
 - Next `PHOTO_TO_SCENE_STAGE`: `detail`.
 - Resume command (from the repository root): `BOTQ_ARTIFACTS_DIR=/home/bot/.local/state/botq/artifacts/3761 PHOTO_TO_SCENE_ROOT=/home/bot/scratch/photo-to-scene/example/work PHOTO_TO_SCENE_STAGE=detail ./pipeline.sh /home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg`
 
@@ -20,6 +21,7 @@ RESUMABLE: 35/99 detail objects finalized; active stage `object:lamp_table`. Fin
 | ceiling | 7/10 | 2 |
 | wall_w | 7/10 | 2 |
 | north_left | 5/10 | 2 |
+| north_right | 5/10 | 2 |
 | north_below | 8/10 | 1 |
 | north_above | 2/10 | 2 |
 | cornice_n | 7/10 | 2 |
@@ -41,6 +43,7 @@ RESUMABLE: 35/99 detail objects finalized; active stage `object:lamp_table`. Fin
 | bookcase | 0/10 | 2 |
 | gold_chair | 7/10 | 2 |
 | red_chair | 0/10 | 2 |
+| lamp_table | 4/10 | 2 |
 | round_table | 0/10 | 2 |
 | rocker | 0/10 | 2 |
 | display_table | 0/10 | 2 |

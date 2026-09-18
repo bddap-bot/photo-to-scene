@@ -22356,7 +22356,7 @@
   },
   {
     "id": "north_right",
-    "label": "Plaster at right window edge",
+    "label": "Rust-orange velvet curtain at the right window edge",
     "crop_bbox": [
       5987,
       997,
@@ -23121,7 +23121,10 @@
         "slope_dz_dy": -0.23,
         "rear_height_m": 4.011836896896362
       }
-    }
+    },
+    "proposed_label": "Plaster at right window edge",
+    "final_label": "Rust-orange velvet curtain at the right window edge",
+    "label_reason": "The crop shows burnt-orange velvet with soft highlights and deep folds, an upper diagonal sweep gathered at a gold tieback about two-fifths down, and lower folds fanning outward. The whole photograph places this curtain at the far-right edge of the lace-covered window, beneath the decorative rail and behind the orange chair. These textile folds and gathering confirm a velvet curtain rather than plaster."
   },
   {
     "id": "north_below",
@@ -211900,7 +211903,10 @@
       "ownership": {
         "children": "external"
       }
-    }
+    },
+    "proposed_label": "Writing table behind gold chair",
+    "final_label": "Writing table behind gold chair",
+    "label_reason": "The crop shows a dark reddish wooden rectangular top beneath an open book, a recessed drawer/apron face with small rounded fittings, and partly occluded wooden supports. The full photograph places this small writing table behind the gold upholstered chair and beside the red chair. This distinguishes it from the round foreground lamp stand. The open book, lamp and surrounding chairs are external objects; the lower support design is uncertain because of occlusion."
   },
   {
     "id": "round_table",

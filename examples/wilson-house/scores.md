@@ -1,6 +1,6 @@
 # Wilson House scores
 
-RESUMABLE: 35/99 detail objects finalized; active stage `object:lamp_table`. Final gate score is not yet measured; latest available visual critic: 7/10 (`object:window_sill_right`).
+RESUMABLE: 37/99 detail objects finalized; interrupted stage `object:window_sill_left`, attempt 2, sequence 150. Final scene gate and critic scores are not yet measured; latest available visual critic: 7/10 (`object:window_sill_left`).
 
 A gate score of 10 means the applicable driver checks passed; 0 means they rejected the attempt. A dash means no scored machine gate or no visual critic ran. Gate success measures contract compliance, not photographic similarity. Final gate and visual scores remain separate.
 
@@ -105,6 +105,11 @@ A gate score of 10 means the applicable driver checks passed; 0 means they rejec
 | object:tablecloth | 2 | 10/10 | 6/10 | 180 | Add deeper, irregular vertical folds and a softer tabletop-to-hanging transition; break up the straight corners and uniform hem.; Replace the evenly spaced flowers and sinusoidal stripe with a broad, sweeping gold-edged border containing dense floral and leafy scrollwork.; Shift the fabric toward muted gray-taupe with burgundy, dusty lavender, and antique-gold ornament, reducing the broad blank areas. |
 | object:window_sill_right | 1 | 10/10 | 7/10 | 153 | Initial entry or forward rebuild. |
 | object:window_sill_right | 2 | 10/10 | 7/10 | 92 | Increase the fascia height beneath the top lip to match the broader flat wooden band in the crop.; Darken the wood to a muted walnut brown and reduce the bright, contrasting grain.; Strengthen the dark recessed line beneath the top lip and simplify the lower molding into the crop's narrow stepped bands. |
+| object:lamp_table | 1 | 10/10 | 4/10 | 265 | Initial entry or forward rebuild. |
+| object:lamp_table | 2 | 10/10 | 4/10 | 244 | Increase the depth of the apron/drawer section beneath the tabletop and make its small round hardware more prominent.; Replace the exaggerated repeated leg bulges with heavier, less conspicuously segmented supports; match the visible lower horizontal framing.; Darken the wood to the reference’s deep reddish brown and reduce the bright polished edge highlights. |
+| object:north_right | 1 | 10/10 | 3/10 | 265 | Initial entry or forward rebuild. |
+| object:north_right | 2 | 10/10 | 5/10 | 253 | Shape the upper fabric into a diagonal sweep gathered at a tieback around two-fifths of the visible height, then let the lower folds fan outward.; Replace evenly spaced straight ribs with fewer, deeper, irregular folds that converge at the gathering point and broaden toward the bottom.; Add the visible gold tieback and give the fabric a darker burnt-orange velvet finish with soft highlights and deep fold shadows. |
+| object:window_sill_left | 1 | 10/10 | 7/10 | 121 | Initial entry or forward rebuild. |
 
 ## Critic and gate findings
 
@@ -818,3 +823,43 @@ Recognisable as the wooden sill beneath the right window. The long horizontal fo
 
 - Give the upper lip a more rounded, projecting profile and deepen the horizontal recess beneath it.
 - Use warmer golden-brown wood with subtle grain and darker shading in the moulding grooves.
+
+### object:lamp_table attempt 1
+
+The dark wooden table reads broadly correctly, but the render’s exposed, slender four-leg design differs from the crop’s heavier, mostly occluded table beneath an open book.
+
+- Increase the depth of the apron/drawer section beneath the tabletop and make its small round hardware more prominent.
+- Replace the exaggerated repeated leg bulges with heavier, less conspicuously segmented supports; match the visible lower horizontal framing.
+- Darken the wood to the reference’s deep reddish brown and reduce the bright polished edge highlights.
+
+### object:lamp_table attempt 2
+
+The dark wood and shallow drawer suggest the reference table, but the render reads as a generic spindly table. The crop shows a heavier apron and a more substantial, partly obscured lower structure; hidden geometry cannot be judged confidently.
+
+- Deepen the drawer/apron beneath the tabletop and give its lower edge a more pronounced molded profile.
+- Replace the uniformly slender legs with heavier shaped supports and add the visible low horizontal framing.
+- Add the open book visible across the tabletop to match the reference silhouette.
+
+### object:north_right attempt 1
+
+The render reads as rust-colored pleated fabric, but its rigid rectangular silhouette and uniform corrugations miss the crop's gathered, asymmetrical velvet curtain.
+
+- Shape the upper fabric into a diagonal sweep gathered at a tieback around two-fifths of the visible height, then let the lower folds fan outward.
+- Replace evenly spaced straight ribs with fewer, deeper, irregular folds that converge at the gathering point and broaden toward the bottom.
+- Add the visible gold tieback and give the fabric a darker burnt-orange velvet finish with soft highlights and deep fold shadows.
+
+### object:north_right attempt 2
+
+The rust velvet material is recognizable, but the render has a broad hourglass silhouette while the crop shows a narrow, mostly vertical curtain with a substantial straight outer fall.
+
+- Narrow the overall silhouette and keep the right outer fall nearly vertical from top to bottom, with the gathered section confined toward the left.
+- Move the gathering point lower, to roughly 42% of the curtain height, and replace the conspicuous horizontal gold band with a small, partly concealed decorative tieback.
+- Reduce the lower panel's leftward flare and use longer, straighter folds with deeper shadowed channels and softer velvet highlights.
+
+### object:window_sill_left attempt 1
+
+Recognisable as the left window sill and apron, with appropriate brown material and horizontal molding. The render is too slender and uniformly layered compared with the crop's broad flat fascia and stronger lower recess.
+
+- Increase the fascia height relative to its length, retaining a broad, mostly flat central face.
+- Deepen and darken the horizontal recess beneath the fascia and make the lower trim a distinct wider band.
+- Darken the wood to a warmer aged brown with subtle surface variation.

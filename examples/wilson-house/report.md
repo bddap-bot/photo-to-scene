@@ -1,6 +1,6 @@
 # Wilson House worked example
 
-RESUMABLE: 35/99 detail objects finalized; active stage `object:lamp_table`. Final gate score is not yet measured; latest available visual critic: 7/10 (`object:window_sill_right`).
+RESUMABLE: 37/99 detail objects finalized; interrupted stage `object:window_sill_left`, attempt 2, sequence 150. Final scene gate and critic scores are not yet measured; latest available visual critic: 7/10 (`object:window_sill_left`).
 
 The Library of Congress photograph is the reconstruction reference; [ATTRIBUTION.md](ATTRIBUTION.md) gives the credit, rights statement, and full-resolution link. The pipeline received the 6114×4842 full-resolution JPEG. The repository source is the supplied 1529×1211 copy.
 
@@ -9,6 +9,8 @@ The Library of Congress photograph is the reconstruction reference; [ATTRIBUTION
 The run began with an empty work directory on `05b4bad57d40f982c0ca4209af511e90c8f2454c`. The generic asset builder was seeded by the driver. The scene-agnostic detail prompt fix `ce3c95c9ca51d8a5663cbbe170d00781220e9714` preceded the saved detail checkpoint.
 
 This continuation uses the published main tip `ed4bc7e691ec081840040e3acc7918af97c712b5`, including the footprint tiers, whole-photo detail context, identification review, and separate builder/critic GOTO allowances. The existing contracts, completed attempts, and artifacts were retained. This is a continuation across workflow revisions, not a fresh measurement of one revision. The published prompts, driver, contracts, and budgets were not tuned for the photograph.
+
+The execution window ended before the detail stage completed. Integration, materials, final rendering, and the final comparison remain pending. No final scene score or final render is claimed; the partial example is preserved for continuation. The interrupted attempt has no completed record and resumes under the driver’s existing attempt accounting.
 
 ## Attempt measurements
 
@@ -115,6 +117,11 @@ The complete per-attempt table below separates machine gates from visual judgmen
 | object:tablecloth | 2 | 10/10 | 6/10 | 180 | Add deeper, irregular vertical folds and a softer tabletop-to-hanging transition |
 | object:window_sill_right | 1 | 10/10 | 7/10 | 153 | Initial entry or forward rebuild. |
 | object:window_sill_right | 2 | 10/10 | 7/10 | 92 | Increase the fascia height beneath the top lip to match the broader flat wooden band in the crop. |
+| object:lamp_table | 1 | 10/10 | 4/10 | 265 | Initial entry or forward rebuild. |
+| object:lamp_table | 2 | 10/10 | 4/10 | 244 | Increase the depth of the apron/drawer section beneath the tabletop and make its small round hardware more prominent. |
+| object:north_right | 1 | 10/10 | 3/10 | 265 | Initial entry or forward rebuild. |
+| object:north_right | 2 | 10/10 | 5/10 | 253 | Shape the upper fabric into a diagonal sweep gathered at a tieback around two-fifths of the visible height, then let the lower folds fan outward. |
+| object:window_sill_left | 1 | 10/10 | 7/10 | 121 | Initial entry or forward rebuild. |
 
 ## GOTO history
 
@@ -180,6 +187,11 @@ The complete per-attempt table below separates machine gates from visual judgmen
 - cap request ignored origin=builder requested=blockout reason=The crop shows a raised curved splayed base extending outside the narrow 0.10 x 0.10 m pedestal above the foot region ceiling at z=0.07 m. Integral base geometry conflicts with declared region coverage.
 - cap reached origin=builder requested=blockout reason=Declared rails reach the post tops, conflicting with raised ball finials in the crop; lower perimeter metalwork lacks region coverage.
 - cap reached origin=builder requested=blockout reason=The crop and appended corrections conflict with narrow post regions and missing base-frame and rear-support regions. Faithful detail repair requires coordinated spatial revision.
+- cap reached origin=builder requested=blockout reason=The visible deep drawer/apron below the tabletop has no spatial region. The top is restricted to world z=0.69..0.75 m; the remaining four regions are isolated narrow legs. A spanning apron below the top cannot fit those regions.
+- cap reached origin=builder requested=blockout reason=The deeper drawer/apron and lower horizontal framing requested from the reference conflict with the supplied regions. The top occupies only world z=0.69..0.75 m; all other regions are isolated 0.05 m square leg boxes. These force an implausibly shallow drawer and cannot contain spanning lower framing.
+- cap reached origin=builder requested=blockout reason=The crop depicts a hanging rust-orange curtain, but the contract assigns a floor-supported plaster wall slab. Resolve identity, regions and ownership before detail.
+- cap reached origin=builder requested=blockout reason=Confirmed gathered velvet curtain is assigned a floor-supported plaster-wall slab. Its crop overlaps drape_2, which already identifies the same right-window gathered curtain. Correcting the silhouette and adding the gold tieback requires spatial and ownership reconciliation.
+- cap reached origin=builder requested=blockout reason=The contracted 1.70 m length and 0.08 m height make the sill/apron too slender to reproduce the photographed broad fascia and wide lower trim or satisfy the requested fascia height increase.
 
 ## Codex calls and elapsed cost
 
@@ -190,9 +202,9 @@ The legacy checkpoint does not retain a complete call-level trace. Builder count
 | blockout | 21 | 18 | 0 |
 | floorplan | 3 | 3 | 0 |
 | identify | 6 | 6 | 0 |
-| object | 144 | 43 | 23 |
+| object | 154 | 48 | 38 |
 
-Total recorded attempt time: 16206 seconds. The elapsed time includes model calls, rendering, and checks; it excludes the pause between continuations. Currency cost is not available in the retained logs.
+Total recorded attempt time: 17354 seconds. The elapsed time includes model calls, rendering, and checks; it excludes the pause between continuations. Currency cost is not available in the retained logs.
 
 ## Defects
 
