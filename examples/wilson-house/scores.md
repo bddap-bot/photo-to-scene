@@ -1,6 +1,6 @@
 # Wilson House scores
 
-RESUMABLE: 33/99 detail objects finalized; active stage `object:sheer_1`, attempt 2, sequence 306. Final scene gate and critic scores are not yet measured; latest available visual critic: 6/10 (`object:sheer_1`).
+RESUMABLE: 33/99 detail objects finalized; interrupted stage `object:drape_0`, attempt 1, sequence 307. Final scene gate and critic scores are not yet measured; latest available visual critic: 0/10 (`tier:large`).
 
 A gate score of 10 means the applicable driver checks passed; 0 means they rejected the attempt. A dash means no scored machine gate or no visual critic ran. Gate success measures contract compliance, not photographic similarity. Final gate and visual scores remain separate.
 
@@ -268,6 +268,7 @@ A gate score of 10 means the applicable driver checks passed; 0 means they rejec
 | object:north_left | 2 | 10/10 | 7/10 | 173 | Broaden and simplify the moulding profile, especially the prominent flat left strip; reduce the repeated fine gold ridges.; Mute the gold toward aged ochre and brown, with irregular pale wear along the left edge and darker upper and right edges.; Give the inset surface finer mottling and scattered darker stains; the current texture reads as broad, soft clouds. |
 | object:sheer_1 | 1 | 10/10 | 7/10 | 214 | Initial entry or forward rebuild. |
 | object:sheer_1 | 2 | 10/10 | 6/10 | 228 | Match the tall, near floor-length proportions of the visible sheer rather than a wide, shallow rectangle.; Make the floral lace finer and less visibly repetitive, with softer contrast and a warmer ivory tone.; Vary the vertical folds and reproduce the stronger translucency in the lower section, including the subtle horizontal transition visible in the crop. |
+| tier:large | 1 | — | 0/10 | 11307 | Integrated footprint tier before descending. |
 
 ## Critic and gate findings
 
@@ -1080,14 +1081,9 @@ Recognisable as a thin stack of printed papers, with broadly matching proportion
 
 ### tier:large attempt 1
 
-The major objects are recognizable and several anchors are close, but the largest architectural and furniture boundaries still need blockout correction before smaller detail proceeds.
 
-- blockout: Lower the ceiling corner and curtain header in image space. The render's corner is near 19% image height versus roughly 23% in the reference; the curtain header is also too high.
-- Restore the foreground sofa's continuous, substantial back and rolled-arm silhouette. The render reads as separated rounded tubes and exposes too much space around the foreground furniture.
-- Correct the fireplace opening and surround: the render introduces a shallow horizontal slot and broad solid infill where the reference has a tall recessed opening behind a screen.
-- Increase the rocking chair's frame weight and match its broad, reclined back, seat, and curved runners while retaining its overlap in front of the rear chair and window table.
-- Reduce the oversized diagonal rod beside the central chair to the reference's thin walking-stick silhouette; it currently creates a strong false occlusion.
-- Establish the rug's visible floor footprint and restore the low footstool beneath the right armchair. Prioritize their exposed boundaries over inferred edges behind furniture.
+
+- 
 
 ### blockout attempt 1
 
@@ -1605,14 +1601,9 @@ Recognizable as a pleated floral lace sheer, but the rendered panel is too wide 
 
 ### tier:large attempt 1
 
-The major objects are recognizable and several anchors are close, but the largest architectural and furniture boundaries still need blockout correction before smaller detail proceeds.
 
-- blockout: Lower the ceiling corner and curtain header in image space. The render's corner is near 19% image height versus roughly 23% in the reference; the curtain header is also too high.
-- Restore the foreground sofa's continuous, substantial back and rolled-arm silhouette. The render reads as separated rounded tubes and exposes too much space around the foreground furniture.
-- Correct the fireplace opening and surround: the render introduces a shallow horizontal slot and broad solid infill where the reference has a tall recessed opening behind a screen.
-- Increase the rocking chair's frame weight and match its broad, reclined back, seat, and curved runners while retaining its overlap in front of the rear chair and window table.
-- Reduce the oversized diagonal rod beside the central chair to the reference's thin walking-stick silhouette; it currently creates a strong false occlusion.
-- Establish the rug's visible floor footprint and restore the low footstool beneath the right armchair. Prioritize their exposed boundaries over inferred edges behind furniture.
+
+- 
 
 ### blockout attempt 1
 
@@ -1848,14 +1839,9 @@ The floral lace reads as a sheer curtain, but the wide, flat panel misses the cr
 
 ### tier:large attempt 1
 
-The major objects are recognizable and several anchors are close, but the largest architectural and furniture boundaries still need blockout correction before smaller detail proceeds.
 
-- blockout: Lower the ceiling corner and curtain header in image space. The render's corner is near 19% image height versus roughly 23% in the reference; the curtain header is also too high.
-- Restore the foreground sofa's continuous, substantial back and rolled-arm silhouette. The render reads as separated rounded tubes and exposes too much space around the foreground furniture.
-- Correct the fireplace opening and surround: the render introduces a shallow horizontal slot and broad solid infill where the reference has a tall recessed opening behind a screen.
-- Increase the rocking chair's frame weight and match its broad, reclined back, seat, and curved runners while retaining its overlap in front of the rear chair and window table.
-- Reduce the oversized diagonal rod beside the central chair to the reference's thin walking-stick silhouette; it currently creates a strong false occlusion.
-- Establish the rug's visible floor footprint and restore the low footstool beneath the right armchair. Prioritize their exposed boundaries over inferred edges behind furniture.
+
+- 
 
 ### blockout attempt 1
 
@@ -2027,25 +2013,15 @@ The tall, recessed brown wall panel is recognizable, with broadly correct propor
 
 ### tier:large attempt 1
 
-The major objects are recognizable and several anchors are close, but the largest architectural and furniture boundaries still need blockout correction before smaller detail proceeds.
 
-- blockout: Lower the ceiling corner and curtain header in image space. The render's corner is near 19% image height versus roughly 23% in the reference; the curtain header is also too high.
-- Restore the foreground sofa's continuous, substantial back and rolled-arm silhouette. The render reads as separated rounded tubes and exposes too much space around the foreground furniture.
-- Correct the fireplace opening and surround: the render introduces a shallow horizontal slot and broad solid infill where the reference has a tall recessed opening behind a screen.
-- Increase the rocking chair's frame weight and match its broad, reclined back, seat, and curved runners while retaining its overlap in front of the rear chair and window table.
-- Reduce the oversized diagonal rod beside the central chair to the reference's thin walking-stick silhouette; it currently creates a strong false occlusion.
-- Establish the rug's visible floor footprint and restore the low footstool beneath the right armchair. Prioritize their exposed boundaries over inferred edges behind furniture.
+
+- 
 
 ### tier:large attempt 1
 
-The major objects are recognizable and several anchors are close, but the largest architectural and furniture boundaries still need blockout correction before smaller detail proceeds.
 
-- blockout: Lower the ceiling corner and curtain header in image space. The render's corner is near 19% image height versus roughly 23% in the reference; the curtain header is also too high.
-- Restore the foreground sofa's continuous, substantial back and rolled-arm silhouette. The render reads as separated rounded tubes and exposes too much space around the foreground furniture.
-- Correct the fireplace opening and surround: the render introduces a shallow horizontal slot and broad solid infill where the reference has a tall recessed opening behind a screen.
-- Increase the rocking chair's frame weight and match its broad, reclined back, seat, and curved runners while retaining its overlap in front of the rear chair and window table.
-- Reduce the oversized diagonal rod beside the central chair to the reference's thin walking-stick silhouette; it currently creates a strong false occlusion.
-- Establish the rug's visible floor footprint and restore the low footstool beneath the right armchair. Prioritize their exposed boundaries over inferred edges behind furniture.
+
+- 
 
 ### blockout attempt 1
 
@@ -2111,14 +2087,9 @@ Recognisable as a fringed floral tablecloth, but the render is too pale, sparsel
 
 ### tier:large attempt 1
 
-The major objects are recognizable and several anchors are close, but the largest architectural and furniture boundaries still need blockout correction before smaller detail proceeds.
 
-- blockout: Lower the ceiling corner and curtain header in image space. The render's corner is near 19% image height versus roughly 23% in the reference; the curtain header is also too high.
-- Restore the foreground sofa's continuous, substantial back and rolled-arm silhouette. The render reads as separated rounded tubes and exposes too much space around the foreground furniture.
-- Correct the fireplace opening and surround: the render introduces a shallow horizontal slot and broad solid infill where the reference has a tall recessed opening behind a screen.
-- Increase the rocking chair's frame weight and match its broad, reclined back, seat, and curved runners while retaining its overlap in front of the rear chair and window table.
-- Reduce the oversized diagonal rod beside the central chair to the reference's thin walking-stick silhouette; it currently creates a strong false occlusion.
-- Establish the rug's visible floor footprint and restore the low footstool beneath the right armchair. Prioritize their exposed boundaries over inferred edges behind furniture.
+
+- 
 
 ### blockout attempt 1
 
@@ -2294,3 +2265,9 @@ Recognisable as a pale floral lace sheer, but the render is too wide and short, 
 - Match the tall window proportions visible in the crop instead of a broad, shallow rectangle.
 - Use softer, less evenly spaced vertical gathers and reduce the conspicuous straight white stripes.
 - Increase the lace pattern's definition and reproduce the more opaque warm upper area above the brighter, more transparent lower section.
+
+### tier:large attempt 1
+
+
+
+- 

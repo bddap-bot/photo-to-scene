@@ -1,6 +1,6 @@
 # Wilson House worked example
 
-RESUMABLE: 33/99 detail objects finalized; active stage `object:sheer_1`, attempt 2, sequence 306. Final scene gate and critic scores are not yet measured; latest available visual critic: 6/10 (`object:sheer_1`).
+RESUMABLE: 33/99 detail objects finalized; interrupted stage `object:drape_0`, attempt 1, sequence 307. Final scene gate and critic scores are not yet measured; latest available visual critic: 0/10 (`tier:large`).
 
 The Library of Congress photograph is the reconstruction reference; [ATTRIBUTION.md](ATTRIBUTION.md) gives the credit, rights statement, and full-resolution link. The pipeline received the 6114×4842 full-resolution JPEG. The repository source is the supplied 1529×1211 copy.
 
@@ -11,6 +11,8 @@ The run began with an empty work directory on `05b4bad57d40f982c0ca4209af511e90c
 This continuation uses the published main tip `ed4bc7e691ec081840040e3acc7918af97c712b5`, including the footprint tiers, whole-photo detail context, identification review, and separate builder/critic GOTO allowances. The existing contracts, completed attempts, and artifacts were retained. This is a continuation across workflow revisions, not a fresh measurement of one revision. The published prompts, driver, contracts, and budgets were not tuned for the photograph.
 
 After 41 objects were finalized, the large-tier composition critic scored 0/10 and returned the run to `blockout`. The blockout builder corrected the foreground table and sofa and added the schema `confidence` field to every region, which changed every contract hash; the detail stage restarted at 0/99 under the new contracts ([#21](https://github.com/bddap-bot/photo-to-scene/issues/21)). The earlier attempts remain in the tables below under their old contract hashes.
+
+The run is paused: the model provider closed its usage window before the detail stage completed. Integration, materials, final rendering, and the final comparison remain pending. No final scene score or final render is claimed; the partial example is preserved for continuation. The interrupted attempt has no completed record and resumes under the driver’s existing attempt accounting.
 
 ## Attempt measurements
 
@@ -280,6 +282,7 @@ The complete per-attempt table below separates machine gates from visual judgmen
 | object:north_left | 2 | 10/10 | 7/10 | 173 | Broaden and simplify the moulding profile, especially the prominent flat left strip |
 | object:sheer_1 | 1 | 10/10 | 7/10 | 214 | Initial entry or forward rebuild. |
 | object:sheer_1 | 2 | 10/10 | 6/10 | 228 | Match the tall, near floor-length proportions of the visible sheer rather than a wide, shallow rectangle. |
+| tier:large | 1 | — | 0/10 | 11307 | Integrated footprint tier before descending. |
 
 ## GOTO history
 
@@ -448,6 +451,7 @@ The complete per-attempt table below separates machine gates from visual judgmen
 - cap reached origin=builder requested=blockout reason=The confirmed hanging curtain retains a plaster-derived 1.30 m wide floor-supported body and overlaps drape_2. The previous request parsed an empty stage; this request uses the canonical stage key.
 - cap reached origin=builder requested=blockout reason=The supplied frame and regions conflict with the tall right-window lace field. Repair spatial evidence before detail scoring.
 - cap reached origin=builder requested=blockout reason=The contracted 3.20 m width and 1.92397 m height produce a landscape sheer, conflicting with the tall visible right-window panel and explicit proportion correction. The 17 thin fold regions are separated from the body in depth, constraining continuous varied folds.
+- cap request ignored within tier=large; descending to next footprint tier
 
 ## Codex calls and elapsed cost
 
@@ -458,10 +462,10 @@ The legacy checkpoint does not retain a complete call-level trace. Builder count
 | blockout | 33 | 30 | 24 |
 | floorplan | 3 | 3 | 0 |
 | identify | 11 | 11 | 10 |
-| object | 370 | 182 | 401 |
-| tier | 0 | 6 | 17 |
+| object | 371 | 182 | 402 |
+| tier | 0 | 7 | 20 |
 
-Total recorded attempt time: 78009 seconds. The elapsed time includes model calls, rendering, and checks; it excludes the pause between continuations. Currency cost is not available in the retained logs.
+Total recorded attempt time: 89316 seconds. The elapsed time includes model calls, rendering, and checks; it excludes the pause between continuations. Currency cost is not available in the retained logs.
 
 ## Defects
 
@@ -471,6 +475,8 @@ Total recorded attempt time: 78009 seconds. The elapsed time includes model call
 - [#19](https://github.com/bddap-bot/photo-to-scene/issues/19): dense inline contracts exceeded the request limit; fixed by `24504f7b57edae4bfa540b37242744ecf0ce3661`.
 
 - [#21](https://github.com/bddap-bot/photo-to-scene/issues/21): a blockout GOTO that only added region confidence changed every contract hash and discarded 41 finalized objects; the detail stage restarted at 0/99.
+- [#22](https://github.com/bddap-bot/photo-to-scene/issues/22): model calls have no time cap; the large-tier builder stream degenerated into whitespace for 5.5 hours, hit `max_output_tokens`, and aborted the run.
+- [#23](https://github.com/bddap-bot/photo-to-scene/issues/23): tier-critic non-verdicts ("rerun the comparison", a bare stage name) consumed critic GOTOs and triggered full blockout re-entry five times, about 20 hours, before the medium and small tiers ran.
 
 ## Artifacts and continuation
 
