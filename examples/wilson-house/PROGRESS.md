@@ -1,14 +1,14 @@
 # Wilson House example progress
 
-RESUMABLE: 11/99 detail objects finalized; active stage `object:curtain_rail`, attempt 1, sequence 184. Final scene gate and critic scores are not yet measured; latest available visual critic: 7/10 (`object:hearth`).
+RESUMABLE: 33/99 detail objects finalized; active stage `object:sheer_1`, attempt 2, sequence 306. Final scene gate and critic scores are not yet measured; latest available visual critic: 6/10 (`object:sheer_1`).
 
 - Initial workflow: `05b4bad57d40f982c0ca4209af511e90c8f2454c`
 - Detail prompt driver fix: `ce3c95c9ca51d8a5663cbbe170d00781220e9714`
 - Resumed published workflow: `ed4bc7e691ec081840040e3acc7918af97c712b5`
 - Pipeline input: `highsm-17640-full.jpg` (6114×4842); no input downscaling.
 - Published source: `source.jpg` (1529×1211).
-- Completed detail objects under current contracts: 11/99.
-- Recorded attempts: 134; latest sequence: 184.
+- Completed detail objects under current contracts: 33/99.
+- Recorded attempts: 262; latest sequence: 306.
 - Next `PHOTO_TO_SCENE_STAGE`: `detail`.
 - Resume command (from the repository root): `BOTQ_ARTIFACTS_DIR=/home/bot/.local/state/botq/artifacts/4243 PHOTO_TO_SCENE_ROOT=/home/bot/scratch/photo-to-scene/example/work PHOTO_TO_SCENE_STAGE=detail ./pipeline.sh /home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg`
 
@@ -19,13 +19,35 @@ RESUMABLE: 11/99 detail objects finalized; active stage `object:curtain_rail`, a
 | floor | 8/10 | 2 |
 | ceiling | 7/10 | 2 |
 | wall_w | 7/10 | 2 |
+| north_left | 7/10 | 2 |
+| north_right | 7/10 | 2 |
 | north_below | 8/10 | 1 |
-| north_above | 4/10 | 2 |
-| cornice_n | 7/10 | 2 |
+| north_above | 6/10 | 2 |
+| cornice_n | 8/10 | 1 |
+| baseboard_n | 6/10 | 2 |
+| mantel | 6/10 | 2 |
 | hearth | 7/10 | 2 |
+| sheer_1 | 7/10 | 2 |
+| curtain_rail | 5/10 | 2 |
 | radiator | 7/10 | 2 |
 | rug | 8/10 | 1 |
 | sofa | 7/10 | 2 |
 | desk | 3/10 | 2 |
+| bookcase | 5/10 | 2 |
+| globe | 7/10 | 2 |
+| gold_chair | 7/10 | 2 |
+| red_chair | 6/10 | 2 |
+| lamp_table | 4/10 | 2 |
+| round_table | 7/10 | 2 |
+| rocker | 5/10 | 2 |
+| display_table | 3/10 | 2 |
+| orange_chair | 5/10 | 2 |
+| stool | 7/10 | 2 |
+| tablecloth | 6/10 | 2 |
+| desk_bowl | 8/10 | 1 |
+| desk_papers | 7/10 | 2 |
+| window_sill_left | 8/10 | 2 |
+| window_sill_right | 7/10 | 2 |
+| fireplace_fender | 4/10 | 2 |
 
 The full attempt history and score definitions are in [report.md](report.md) and [scores.md](scores.md).
