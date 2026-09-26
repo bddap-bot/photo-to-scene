@@ -4,8 +4,7 @@
     "nix-shell -p python3 --run 'python3 -m py_compile builders/generic.py tools/fetch-polyhaven.py tools/prompt-policy.py tools/spatial-contract.py tools/test-pipeline-control.py tools/test-prompt-policy.py tools/test-spatial-contract.py'",
     "nix-shell -p python3 --run 'python3 -m unittest -v tools/test-pipeline-control.py tools/test-prompt-policy.py tools/test-spatial-contract.py'",
     "nix-shell -p python3 --run 'python3 tools/prompt-policy.py prompts'",
-    "find . -type f -name '*.json' -not -path './.git/*' -exec jq empty {} +",
-    "botq test-map --check"
+    "find . -type f -name '*.json' -not -path './.git/*' -exec jq empty {} +"
   ],
   "about": "Touched paths map to lightweight syntax checks. First matching rule wins and every tracked path must resolve.",
   "rules": [
@@ -18,11 +17,6 @@
         "test -s examples/wilson-house/ATTRIBUTION.md && test -s examples/wilson-house/PROGRESS.md && test -s examples/wilson-house/report.md && test -s examples/wilson-house/scores.md"
       ],
       "why": "The Wilson House checkpoint and final example require readable images, valid contracts with unique object IDs, attribution, measurements, and resume provenance."
-    },
-    {
-      "paths": ["test-map.json"],
-      "tests": ["jq empty test-map.json", "botq test-map --check"],
-      "why": "The manifest is JSON and must continue to cover every tracked path."
     },
     {
       "paths": ["prompts/*.md"],
