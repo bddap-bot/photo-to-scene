@@ -43,7 +43,24 @@ Before an isolated detail render reaches its critic, the driver checks that the 
 
 ## Model call bounds
 
-The driver stops any builder or critic call that runs longer than `MODEL_SECONDS` (1800 s, set in `pipeline.sh`) or that goes half that long without printing a non-whitespace character. The slowest completed attempt in the [Wilson House example](../examples/wilson-house/scores.md) took 570 s for builder and critic together, so neither bound stops a call that behaves like those. A stopped call, or one that exits non-zero, produces a 0/10 verdict whose correction names the failure. That verdict counts as an attempt of the current stage under its usual limits, but its files are never restored as the stage's best result; a failed tier review call names `detail` as the stage to revisit. Floorplan, blockout, identify, or integrate stops the run when none of its attempts completed, and a failed final render call stops the run. When two consecutive calls exit non-zero, the driver exits without recording the second, so an unreachable model service costs one attempt rather than every remaining one. `state/model_failed` carries the first of those failures across a resume until a call completes or is stopped.
+Every builder and critic call is stopped after `MODEL_SECONDS` (2100 s, set in `pipeline.sh`); the final render call gets 4800 s. A call is also stopped after 1500 s in which it prints no non-whitespace character while its descendant processes, not the Codex process itself, together use less than 0.1 CPU-seconds between one-second polls. A silent Blender render therefore keeps its call alive, while a whitespace stream or a hang does not. A stop signals the Codex process and every descendant.
+
+Each bound is three times the slowest traced attempt, rounded up to five minutes. An attempt covers its builder call, its critic call, and its gates, so it bounds each call from above. The traces are the attempt records of five runs, including the [Wilson House example](../examples/wilson-house/scores.md); the final render is timed from the end of materials to completion in the three runs that finished.
+
+| Stage | Slowest traced attempt | Bound |
+|---|---:|---:|
+| floorplan | 506 s | 2100 s |
+| blockout | 570 s | 2100 s |
+| identify | 522 s | 2100 s |
+| detail, per object | 614 s | 2100 s |
+| tier review | 369 s | 2100 s |
+| integrate | 644 s | 2100 s |
+| materials | 298 s | 2100 s |
+| final render | 1548 s | 4800 s |
+
+The tier row excludes six Wilson House tier reviews that ran 66 to 188 minutes; none changed a file in the work directory after its first three minutes. The 1500 s idle bound is about 2.4 times the longest silence, 621 s, observed between events in recorded Codex CLI sessions.
+
+A stopped call, or one that exits non-zero, produces a 0/10 verdict whose correction names the failure. That verdict counts as an attempt of the current stage under its usual limits, but its files are never restored as the stage's best result. When an object's detail attempts end, including on a GOTO, the driver replaces `assets/<id>.py` and its render with the best completed attempt's copies, or removes them when no attempt completed. A tier review whose call fails is retried once with the failure as its correction; after a second failure the run continues as though the tier passed. Floorplan, blockout, identify, or integrate stops the run when none of its attempts completed, and a failed final render call stops the run. When two consecutive calls exit non-zero, the driver exits without recording the second, so an unreachable model service costs one attempt rather than every remaining one. `state/model_failed` carries the first of those failures across a resume until a call completes or is stopped.
 
 ## Resume behavior
 

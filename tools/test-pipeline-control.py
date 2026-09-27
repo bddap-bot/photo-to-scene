@@ -1,4 +1,5 @@
 import json
+import re
 import os
 import shlex
 import subprocess
@@ -7,6 +8,7 @@ import unittest
 from pathlib import Path
 
 PIPELINE = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
+BUSY_CPU_TICKS = re.search(r"^MODEL_BUSY_CPU_TICKS=(\d+)$", PIPELINE, re.M).group(1)
 
 
 def function(name):
@@ -18,11 +20,15 @@ def function(name):
 
 
 def main_loop():
-    return PIPELINE.split("feedback=\n", 1)[1].split("done\nif [ ! -f", 1)[0]
+    return "current=" + PIPELINE.split("\nfeedback=\ncurrent=", 1)[1].split("done\nif [ ! -f", 1)[0]
 
 
 def model_function(seconds=60, idle=2):
-    return f"MODEL_SECONDS={seconds}; MODEL_IDLE_SECONDS={idle}; MODEL_FAILURE=; SCHEMA=schema.json\n" + function("model")
+    return f"MODEL_SECONDS={seconds}; MODEL_IDLE_SECONDS={idle}; MODEL_BUSY_CPU_TICKS={BUSY_CPU_TICKS}; MODEL_FAILURE=; SCHEMA=schema.json\n" + function("descendants") + "\n" + function("model")
+
+
+def idle_failure(seconds):
+    return f"model call had no non-whitespace output and no busy child process for {seconds} s"
 
 
 class PipelineControlTest(unittest.TestCase):
@@ -49,7 +55,7 @@ class PipelineControlTest(unittest.TestCase):
 
     def test_capped_builder_goto_retries_within_same_stage_attempt(self):
         builder = function("builder")
-        run_one_detail = function("run_one_detail")
+        run_one_detail = function("restore_detail") + "\n" + function("run_one_detail")
         run_detail = function("run_detail")
         detail_helpers = "\n".join(function(name) for name in ("detail_attempts", "detail_best", "write_stage_check_verdict"))
         loop = main_loop()
@@ -179,7 +185,7 @@ printf 'rc=%s calls=%s\n' "$rc" "$(cat "$calls")"
 
     def test_dense_detail_contract_does_not_expand_builder_request(self):
         builder = function("builder")
-        run_one_detail = function("run_one_detail")
+        run_one_detail = function("restore_detail") + "\n" + function("run_one_detail")
         detail_helpers = "\n".join(function(name) for name in ("detail_attempts", "detail_best", "write_stage_check_verdict"))
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -504,6 +510,11 @@ codex() {{ trap 'exit 0' TERM; cat >/dev/null; while :; do sleep 0.1; done; }}
 call graceful
 codex() {{ trap '' TERM; cat >/dev/null; while :; do sleep 0.1; done; }}
 call stubborn
+codex() {{ cat >/dev/null; timeout 6 bash -c 'while :; do :; done'; printf 'rendered\\n'; }}
+call busy
+codex() {{ cat >/dev/null; bash -c 'trap "" TERM; while :; do sleep 0.1; done' & printf '%s' "$!" > "$STATE/orphan"; trap 'exit 0' TERM; while :; do sleep 0.1; done; }}
+call orphaned
+printf 'orphan_alive=%s\\n' "$(kill -0 "$(cat "$STATE/orphan")" 2>/dev/null && printf yes || printf no)"
 MODEL_SECONDS=4
 codex() {{ cat >/dev/null; while :; do printf 'token '; sleep 0.1; done; }}
 call endless
@@ -522,12 +533,16 @@ printf 'unreachable\\n'
 """
             result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=120)
         calls = {line.split(" ", 1)[0]: line for line in result.stdout.splitlines() if " rc=" in line}
-        idle = r"rc=1 seconds=[3-6] failure=model call emitted no non-whitespace output for 3 s marker=clear"
+        idle = rf"rc=1 seconds=[3-6] failure={idle_failure(3)} marker=clear"
         self.assertEqual(result.returncode, 1, result.stderr)
         self.assertRegex(calls["whitespace"], idle)
         self.assertRegex(calls["silent"], idle)
         self.assertRegex(calls["graceful"], idle)
-        self.assertRegex(calls["stubborn"], r"rc=1 seconds=1[2-7] failure=model call emitted no non-whitespace output for 3 s")
+        self.assertRegex(calls["stubborn"], rf"rc=1 seconds=1[2-7] failure={idle_failure(3)}")
+        self.assertRegex(calls["busy"], r"rc=0 seconds=[6-8] failure= marker=clear")
+        self.assertIn("rendered\n", result.stdout)
+        self.assertRegex(calls["orphaned"], rf"rc=1 seconds=1[2-7] failure={idle_failure(3)}")
+        self.assertIn("orphan_alive=no\n", result.stdout)
         self.assertRegex(calls["endless"], r"rc=1 seconds=[4-6] failure=model call exceeded its 4 s wallclock bound marker=clear")
         self.assertRegex(calls["exited"], r"rc=1 seconds=\d+ failure=model call exited with status 3 marker=set")
         self.assertRegex(calls["recovered"], r"rc=0 seconds=\d+ failure= marker=clear")
@@ -595,7 +610,7 @@ done
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("blockout reached after 5 calls", result.stdout)
         self.assertEqual([(row[0], row[1], row[2]) for row in records], [("floorplan", "1", "0"), ("floorplan", "2", "0"), ("floorplan", "3", "9")])
-        idle = "model call emitted no non-whitespace output for 2 s"
+        idle = idle_failure(2)
         self.assertEqual(first_verdict["corrections"], [idle])
         self.assertEqual(first_verdict["top_stage"], "floorplan")
         self.assertEqual(second_verdict["corrections"], [idle])
@@ -645,6 +660,7 @@ codex() {{
 {function("write_stage_check_verdict")}
 {function("detail_attempts")}
 {function("detail_best")}
+{function("restore_detail")}
 {function("run_one_detail")}
 run_one_detail one
 """
@@ -654,7 +670,7 @@ run_one_detail one
             critic_prompt = (state / "prompt_4").read_text()
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual([(row[0], row[1], row[2]) for row in records], [("object:one", "1", "0"), ("object:one", "2", "9")])
-        self.assertEqual(first_verdict["corrections"], ["model call emitted no non-whitespace output for 2 s"])
+        self.assertEqual(first_verdict["corrections"], [idle_failure(2)])
         self.assertEqual(first_verdict["top_stage"], "object:one")
         self.assertEqual(critic_prompt, "criticize object\nThe supplied object stage tag is object:one.\n")
 
@@ -663,9 +679,8 @@ run_one_detail one
         cases = {
             "blockout": ("run_blockout", "blockout_1.json", "blockout", ""),
             "integrate": ("run_integrate", "integrate_1.json", "integrate", "\n".join(function(name) for name in ("integrate_attempts", "integrate_best"))),
-            "object": ('run_one_detail one', "object_one_1.json", "object:one", "\n".join(function(name) for name in ("detail_attempts", "detail_best", "run_one_detail"))),
+            "object": ('run_one_detail one', "object_one_1.json", "object:one", "\n".join(function(name) for name in ("detail_attempts", "detail_best", "restore_detail", "run_one_detail"))),
             "materials": ("run_materials", "materials_1.json", "materials", function("run_materials")),
-            "tier": ("run_tier_critic large", "tier_large.json", "detail", function("run_tier_critic")),
         }
         for stage, (command, verdict_name, top_stage, helpers) in cases.items():
             with self.subTest(stage=stage), tempfile.TemporaryDirectory() as directory:
@@ -675,7 +690,7 @@ run_one_detail one
                 (state / "attempts").mkdir(parents=True)
                 (state / "verdicts").mkdir()
                 prompts.mkdir()
-                for name in ("blockout", "integrate", "detail", "materials", "tier"):
+                for name in ("blockout", "integrate", "detail", "materials"):
                     (prompts / f"{name}_builder.md").write_text("build")
                     (prompts / f"{name}_critic.md").write_text("criticize")
                 (state / "objects.json").write_text('[{"id":"one","spatial_contract":{}}]')
@@ -689,7 +704,7 @@ log() {{ printf '%s\\n' "$*"; }}
 inbox() {{ :; }}
 next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
 score_of() {{ jq -r '.score // 0' "$1"; }}
-record() {{ printf '%s\\t%s\\t%s\\n' "$1" "$2" "$3" >> "$STATE/records.tsv"; [ "$1" = materials ] || [ "$1" = tier:large ] || exit 0; }}
+record() {{ printf '%s\\t%s\\t%s\\n' "$1" "$2" "$3" >> "$STATE/records.tsv"; [ "$1" = materials ] || exit 0; }}
 valid_stage() {{ return 1; }}
 spatial_validate() {{ printf 'gate ran\\n'; return 1; }}
 verify_detail() {{ printf 'gate ran\\n'; DETAIL_FAILURE="asset gate failed"; return 1; }}
@@ -711,8 +726,6 @@ printf 'rc=%s request=%s best_s6=%s\\n' "$?" "$REQUEST_STAGE" "$BEST_S6"
                 self.assertEqual(verdict["corrections"], [failure])
                 self.assertEqual(verdict["top_stage"], top_stage)
                 self.assertFalse(best_saved)
-                if stage == "tier":
-                    self.assertIn("rc=43 request=detail", result.stdout)
                 if stage == "materials":
                     self.assertIn("rc=0 request=materials best_s6=-1", result.stdout)
 
@@ -764,7 +777,7 @@ ROOT={root}; STATE={root}; PROMPTS={root}/prompts; REQUEST_STAGE=; REQUEST_REASO
 log() {{ printf '%s\\n' "$*"; }}
 valid_stage() {{ return 1; }}
 write_report() {{ printf 'report written\\n'; }}
-codex() {{ cat >/dev/null; return 3; }}
+codex() {{ cat >/dev/null; printf 'bound=%s\\n' "$MODEL_SECONDS"; return 3; }}
 {model_function()}
 {function("builder")}
 {final}
@@ -772,6 +785,7 @@ codex() {{ cat >/dev/null; return 3; }}
             result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=30)
         self.assertEqual(result.returncode, 1, result.stderr)
         self.assertIn("FAIL final model call exited with status 3", result.stdout)
+        self.assertIn("bound=4800\n", result.stdout)
         self.assertNotIn("report written", result.stdout)
     def test_failed_attempt_output_is_never_restored_as_best(self):
         cases = {
@@ -905,6 +919,7 @@ codex() {{ cat >/dev/null; printf 'new' > "$ASSETS/one.py"; }}
 {function("integrate_best")}
 {function("detail_attempts")}
 {function("detail_best")}
+{function("restore_detail")}
 {function("run_one_detail")}
 printf 'integrate_best=%s\\n' "$(integrate_best)"
 run_one_detail one "" 1
@@ -914,6 +929,118 @@ printf 'asset=%s\\n' "$(cat "$ASSETS/one.py")"
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("integrate_best=0 5\n", result.stdout)
         self.assertIn("asset=completed\n", result.stdout)
+
+    def test_failed_tier_call_is_retried_with_its_failure_text(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            state = root / "state"
+            prompts = root / "prompts"
+            (state / "verdicts").mkdir(parents=True)
+            prompts.mkdir()
+            (prompts / "tier_builder.md").write_text("compose tier")
+            (prompts / "tier_critic.md").write_text("criticize tier")
+            (state / "object_tiers.tsv").write_text("one\tlarge\n")
+            script = f"""set -uo pipefail
+ROOT={root}; STATE={state}; PROMPTS={prompts}; INPUT=photo.jpg; ATTEMPT_SEQ=0; REQUEST_STAGE=; REQUEST_REASON=; BUILDER_GOTOS=0
+log() {{ printf '%s\\n' "$*"; }}
+inbox() {{ :; }}
+next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
+score_of() {{ jq -r '.score // 0' "$1"; }}
+record() {{ printf '%s\\t%s\\t%s\\t%s\\t%s\\t%s\\n' "$MODE" "$1" "$2" "$3" "$5" "$6" >> "$STATE/records.tsv"; }}
+valid_stage() {{ return 1; }}
+codex() {{
+  local call output= previous=
+  for arg in "$@"; do [ "$previous" = -o ] && output=$arg; previous=$arg; done
+  call=$(( $(cat "$STATE/calls") + 1 )); printf '%s' "$call" > "$STATE/calls"
+  cat > "$STATE/prompt_${{MODE}}_$call"
+  case "$MODE:$call" in
+    retry:2) printf png > "$STATE/tier_large.png" ;;
+    retry:3) printf '%s\\n' '{{"score":6,"summary":"off","corrections":["move the sofa"],"top_stage":"blockout","wrong_labels":[],"missing_objects":[]}}' > "$output" ;;
+    *) while :; do sleep 0.1; done ;;
+  esac
+}}
+{model_function()}
+{function("builder")}
+{function("critic")}
+{function("write_stage_check_verdict")}
+{function("run_tier_critic")}
+for MODE in retry fail; do
+  printf 0 > "$STATE/calls"; REQUEST_STAGE=; REQUEST_REASON=
+  run_tier_critic large; printf '%s rc=%s request=%s reason=%s calls=%s\\n' "$MODE" "$?" "$REQUEST_STAGE" "$REQUEST_REASON" "$(cat "$STATE/calls")"
+done
+"""
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=60)
+            records = [line.split("\t") for line in (state / "records.tsv").read_text().splitlines()]
+            retried_prompt = (state / "prompt_retry_2").read_text()
+            verdicts = [json.loads(Path(row[5]).read_text()) for row in records]
+        idle = idle_failure(2)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual([row[:4] for row in records], [["retry", "tier:large", "1", "0"], ["retry", "tier:large", "2", "6"], ["fail", "tier:large", "1", "0"], ["fail", "tier:large", "2", "0"]])
+        self.assertEqual(records[1][4], idle)
+        self.assertEqual([Path(row[5]).name for row in records], [f"tier_large_{sequence}.json" for sequence in range(1, 5)])
+        self.assertEqual([verdict["score"] for verdict in verdicts], [0, 6, 0, 0])
+        self.assertTrue(retried_prompt.endswith(f"\nOne-reentry correction context follows:\nTier: large. Object ids: one \n{idle}\n"))
+        self.assertIn("retry rc=43 request=blockout reason=move the sofa calls=3\n", result.stdout)
+        self.assertIn("tier:large review calls failed; continuing as though the tier passed\nfail rc=0 request= reason= calls=2\n", result.stdout)
+        self.assertEqual([verdict["corrections"] for verdict in verdicts[2:]], [[idle], [idle]])
+
+    def test_detail_object_without_a_completed_attempt_keeps_no_asset(self):
+        for mode, expected_rc in (("stopped", "0"), ("goto", "42")):
+            with self.subTest(mode=mode), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                state = root / "state"
+                prompts = root / "prompts"
+                assets = root / "assets"
+                (state / "attempts").mkdir(parents=True)
+                (state / "verdicts").mkdir()
+                (state / "crops").mkdir()
+                prompts.mkdir()
+                assets.mkdir()
+                (prompts / "detail_builder.md").write_text("build object")
+                (assets / "one.py").write_text("earlier contract")
+                (state / "detail_one.png").write_text("earlier render")
+                (state / "objects.json").write_text('[{"id":"one","spatial_contract":{}}]')
+                (state / "records.tsv").write_text("")
+                (state / "progress.md").write_text("")
+                script = f"""set -uo pipefail
+ROOT={root}; STATE={state}; PROMPTS={prompts}; ASSETS={assets}; INPUT=photo.jpg; ATTEMPT_SEQ=0; REQUEST_STAGE=; REQUEST_REASON=; BUILDER_GOTOS=0; MODE={mode}
+printf 0 > "$STATE/calls"
+log() {{ printf '%s\\n' "$*"; }}
+inbox() {{ :; }}
+next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
+score_of() {{ jq -r '.score // 0' "$1"; }}
+record() {{ printf '%s\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\n' "$1" "$2" "$3" "$4" "$5" "$6" "${{7:-}}" >> "$STATE/records.tsv"; }}
+valid_stage() {{ [ "$1" = blockout ]; }}
+verify_detail() {{ return 0; }}
+codex() {{
+  local call
+  cat >/dev/null
+  call=$(( $(cat "$STATE/calls") + 1 )); printf '%s' "$call" > "$STATE/calls"
+  printf 'partial %s' "$call" > "$ASSETS/one.py"; printf 'partial' > "$STATE/detail_one.png"
+  if [ "$MODE:$call" = goto:2 ]; then printf '%s\\n' '{{"stage":"blockout","reason":"contract conflict"}}' > "$STATE/goto.json"; return 0; fi
+  while :; do sleep 0.1; done
+}}
+{model_function()}
+{function("builder")}
+{function("critic")}
+{function("write_stage_check_verdict")}
+{function("detail_attempts")}
+{function("detail_best")}
+{function("restore_detail")}
+{function("run_one_detail")}
+run_one_detail one
+printf 'rc=%s request=%s\\n' "$?" "$REQUEST_STAGE"
+"""
+                result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=60)
+                records = [line.split("\t")[:3] for line in (state / "records.tsv").read_text().splitlines()]
+                asset_left = (assets / "one.py").exists()
+                render_left = (state / "detail_one.png").exists()
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertIn(f"rc={expected_rc} request={'blockout' if mode == 'goto' else ''}\n", result.stdout)
+                self.assertEqual(records[0], ["object:one", "1", "0"])
+                self.assertEqual(len(records), 2 if mode == "stopped" else 1)
+                self.assertFalse(asset_left)
+                self.assertFalse(render_left)
 
 if __name__ == "__main__":
     unittest.main()
