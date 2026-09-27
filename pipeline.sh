@@ -23,6 +23,9 @@ BEST_S6=$(cat "$STATE/best_s6_score" 2>/dev/null || printf '%s' -1)
 [ -n "$BEST_S6" ] || BEST_S6=-1
 ATTEMPT_SEQ=$(cat "$STATE/attempt_seq" 2>/dev/null || printf 0)
 declare -A INVALID_RETRIES=()
+MODEL_SECONDS=1800
+MODEL_IDLE_SECONDS=$((MODEL_SECONDS / 2))
+MODEL_FAILURE=
 log() { printf '%s %s\n' "$(date -Is)" "$*" | tee -a "$ROOT/log.md"; }
 inbox() { command -v botq >/dev/null 2>&1 && botq inbox | tee -a "$ROOT/log.md" || true; }
 next_attempt() { ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); printf '%s' "$ATTEMPT_SEQ" > "$STATE/attempt_seq"; }
@@ -30,14 +33,42 @@ score_of() { jq -r '.score // 0' "$1"; }
 record() { printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$1" "$2" "$3" "$4" "$5" "$6" "${7:-}" "${8:-}" >> "$STATE/records.tsv"; }
 valid_stage() { local candidate=$1 known id; for known in "${STAGES[@]}"; do [ "$candidate" = "$known" ] && return 0; done; case "$candidate" in object:*) id=${candidate#object:}; [ -f "$STATE/objects.json" ] && jq -e --arg id "$id" 'any(.id == $id)' "$STATE/objects.json" >/dev/null ;; *) return 1 ;; esac; }
 spatial_validate() { local output_arg=; [ -z "${3:-}" ] || output_arg="--output '$3'"; nix-shell -p python3 --run "python3 '$PIPELINE_DIR/tools/spatial-contract.py' '$STATE/objects.json' --ids '$1' ${2:-} $output_arg"; }
+model() {
+  local log="$STATE/model.log" pid rc start=$SECONDS last=$SECONDS scanned=0 size stopped=
+  MODEL_FAILURE=
+  rm -f "$log"
+  codex exec --ephemeral --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -C "$ROOT" "$@" <&0 > >(tee "$log") 2>&1 &
+  pid=$!
+  while sleep 1; kill -0 "$pid" 2>/dev/null; do
+    size=$(stat -c %s "$log" 2>/dev/null || printf 0)
+    [ "$size" -gt "$scanned" ] && [ "$(tail -c "+$((scanned + 1))" "$log" | tr -d '[:space:]' | wc -c)" -gt 0 ] && last=$SECONDS
+    scanned=$size
+    if [ -n "$stopped" ]; then [ $((SECONDS - stopped)) -lt 10 ] || kill -KILL "$pid" 2>/dev/null; continue; fi
+    if [ $((SECONDS - start)) -ge "$MODEL_SECONDS" ]; then MODEL_FAILURE="model call exceeded its $MODEL_SECONDS s wallclock bound"
+    elif [ $((SECONDS - last)) -ge "$MODEL_IDLE_SECONDS" ]; then MODEL_FAILURE="model call emitted no non-whitespace output for $MODEL_IDLE_SECONDS s"
+    else continue; fi
+    stopped=$SECONDS
+    kill -TERM "$pid" 2>/dev/null
+  done
+  wait "$pid"
+  rc=$?
+  if [ -z "$stopped" ] && [ "$rc" -ne 0 ]; then
+    MODEL_FAILURE="model call exited with status $rc"
+    if [ -f "$STATE/model_failed" ]; then log "FAIL consecutive model calls exited non-zero; last: $MODEL_FAILURE"; exit 1; fi
+    printf '%s\n' "$MODEL_FAILURE" > "$STATE/model_failed"
+  else
+    rm -f "$STATE/model_failed"
+    [ -n "$stopped" ] || return 0
+  fi
+  log "MODEL CALL FAILED $MODEL_FAILURE"
+  return 1
+}
 builder() {
-  local prompt=$1 feedback=${2:-} command_rc invalid_retry=0 cap_retry=0
+  local prompt=$1 feedback=${2:-} invalid_retry=0 cap_retry=0
   shift 2
   while :; do
     rm -f "$STATE/goto.json"
-    { cat "$PROMPTS/$prompt"; if [ -n "$feedback" ]; then printf '\nOne-reentry correction context follows:\n%s\n' "$feedback"; fi; } | codex exec --ephemeral --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -C "$ROOT" "$@" -
-    command_rc=$?
-    [ "$command_rc" -eq 0 ] || return "$command_rc"
+    model "$@" - < <(cat "$PROMPTS/$prompt"; if [ -n "$feedback" ]; then printf '\nOne-reentry correction context follows:\n%s\n' "$feedback"; fi) || return 0
     if [ -f "$STATE/goto.json" ]; then
       REQUEST_STAGE=$(jq -r '.stage // ""' "$STATE/goto.json")
       REQUEST_REASON=$(jq -r '.reason // ""' "$STATE/goto.json")
@@ -62,11 +93,11 @@ builder() {
     return 0
   done
 }
-critic() { local prompt=$1 output=$2; shift 2; codex exec --ephemeral --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -C "$ROOT" --output-schema "$SCHEMA" -o "$output" "$@" - < "$PROMPTS/$prompt"; }
+critic() { local output=$1 stage=$2; shift 2; [ -n "$MODEL_FAILURE" ] || model --output-schema "$SCHEMA" -o "$output" "$@" -; [ -z "$MODEL_FAILURE" ] || write_stage_check_verdict "$output" "$stage" "$MODEL_FAILURE"; }
 detail_attempts() { awk -F '\t' -v stage="object:$1" -v contract="$2" '$1==stage && $7==contract {n++} END {print n+0}' "$STATE/records.tsv"; }
 detail_best() { awk -F '\t' -v stage="object:$1" -v contract="$2" '$1==stage && $7==contract && $3+0>best {best=$3+0} END {print best+0}' "$STATE/records.tsv"; }
 integrate_attempts() { awk -F '\t' '$1=="integrate" {n++} END {print n+0}' "$STATE/records.tsv"; }
-integrate_best() { awk -F '\t' '$1=="integrate" && (!seen || $3+0>=best) {seen=1; best=$3+0; path=$6} END {if (seen) {sub(/^.*_/,"",path); sub(/\.json$/,"",path); print best " " path} else print "-1 "}' "$STATE/records.tsv"; }
+integrate_best() { awk -F '\t' -v prefix="$STATE/attempts/integrate_" '$1=="integrate" {seq=$6; sub(/^.*_/,"",seq); sub(/\.json$/,"",seq); if ((!seen || $3+0>=best) && system("test -d \"" prefix seq "\"") == 0) {seen=1; best=$3+0; path=seq}} END {if (seen) print best " " path; else print "-1 "}' "$STATE/records.tsv"; }
 parse_record() { local row=$1; stage=${row%%$'\t'*}; row=${row#*$'\t'}; attempt=${row%%$'\t'*}; row=${row#*$'\t'}; score=${row%%$'\t'*}; row=${row#*$'\t'}; seconds=${row%%$'\t'*}; row=${row#*$'\t'}; changed=${row%%$'\t'*}; row=${row#*$'\t'}; verdict=${row%%$'\t'*}; contract_hash=${row#*$'\t'}; }
 verify_detail() {
   local id=$1 marker=$2 asset="$ASSETS/$1.py" other ref
@@ -79,26 +110,25 @@ verify_detail() {
   while IFS= read -r ref; do case "$ref" in "$TEXTURES"/*) ;; *) DETAIL_FAILURE="asset check failed: texture reference $ref is outside ROOT/textures"; return 1 ;; esac; done < <(grep -Eo '["'"'"']/[^"'"'"'[:space:]]+\.(jpg|jpeg|png|exr|hdr|tif|tiff)' "$asset" | cut -c 2- || true)
   if [ ! -f "$STATE/detail_$id.png" ] || [ ! "$STATE/detail_$id.png" -nt "$marker" ]; then DETAIL_FAILURE="asset check failed: state/detail_$id.png is not a fresh render from this builder attempt"; return 1; fi
 }
-write_check_verdict() { local path=$1 id=$2 failure=$3; jq -n --arg summary "$failure" --arg stage "object:$id" '{score:0,summary:$summary,corrections:[$summary],top_stage:$stage,wrong_labels:[],missing_objects:[]}' > "$path"; }
 write_stage_check_verdict() { local path=$1 stage=$2 failure=$3; jq -n --arg summary "$failure" --arg stage "$stage" '{score:0,summary:$summary,corrections:[$summary],top_stage:$stage,wrong_labels:[],missing_objects:[]}' > "$path"; }
 write_spatial_check_verdict() { local path=$1 stage=$2 validation=$3 failure="$2 spatial contract gate failed"; if jq -e '.errors | type == "array" and length > 0' "$validation" >/dev/null 2>&1; then jq --arg stage "$stage" '{score:0,summary:($stage + " spatial contract gate failed: " + ((.errors | length) | tostring) + " validation error(s)"),corrections:.errors,top_stage:$stage,wrong_labels:[],missing_objects:[]}' "$validation" > "$path"; else write_stage_check_verdict "$path" "$stage" "$failure"; fi; }
 run_floorplan() {
   local feedback=${1:-} best=-1 bestdir='' start score a verdict
-  for a in 1 2 3; do next_attempt; start=$(date +%s); log "ENTER floorplan attempt=$a sequence=$ATTEMPT_SEQ"; builder floorplan_builder.md "$feedback" -i "$INPUT" || return $?; verdict="$STATE/verdicts/floorplan_${ATTEMPT_SEQ}.json"; critic floorplan_critic.md "$verdict" -i "$INPUT" "$STATE/floorplan.png" || return $?; score=$(score_of "$verdict"); record floorplan "$a" "$score" "$(( $(date +%s)-start ))" "$feedback" "$verdict"; log "SCORE floorplan attempt=$a score=$score"; cp "$STATE/floorplan.json" "$STATE/attempts/floorplan_${ATTEMPT_SEQ}.json"; cp "$STATE/floorplan.png" "$STATE/attempts/floorplan_${ATTEMPT_SEQ}.png"; if [ "$score" -gt "$best" ]; then best=$score; bestdir=$ATTEMPT_SEQ; fi; [ "$score" -ge 8 ] && break; feedback=$(jq -r '.corrections | join("; ")' "$verdict"); done
-  cp "$STATE/attempts/floorplan_${bestdir}.json" "$STATE/floorplan.json"; cp "$STATE/attempts/floorplan_${bestdir}.png" "$STATE/floorplan.png"; inbox
+  for a in 1 2 3; do next_attempt; start=$(date +%s); log "ENTER floorplan attempt=$a sequence=$ATTEMPT_SEQ"; builder floorplan_builder.md "$feedback" -i "$INPUT" || return $?; verdict="$STATE/verdicts/floorplan_${ATTEMPT_SEQ}.json"; critic "$verdict" floorplan -i "$INPUT" "$STATE/floorplan.png" < "$PROMPTS/floorplan_critic.md"; score=$(score_of "$verdict"); record floorplan "$a" "$score" "$(( $(date +%s)-start ))" "$feedback" "$verdict"; log "SCORE floorplan attempt=$a score=$score"; cp "$STATE/floorplan.json" "$STATE/attempts/floorplan_${ATTEMPT_SEQ}.json"; cp "$STATE/floorplan.png" "$STATE/attempts/floorplan_${ATTEMPT_SEQ}.png"; if [ -z "$MODEL_FAILURE" ] && [ "$score" -gt "$best" ]; then best=$score; bestdir=$ATTEMPT_SEQ; fi; [ "$score" -ge 8 ] && break; feedback=$(jq -r '.corrections | join("; ")' "$verdict"); done
+  [ -n "$bestdir" ] || { log "FAIL floorplan no attempt completed its model calls"; return 1; }; cp "$STATE/attempts/floorplan_${bestdir}.json" "$STATE/floorplan.json"; cp "$STATE/attempts/floorplan_${bestdir}.png" "$STATE/floorplan.png"; inbox
 }
 run_blockout() {
   local feedback=${1:-} best=-1 bestdir='' start score a verdict
-  for a in 1 2 3; do next_attempt; start=$(date +%s); log "ENTER blockout attempt=$a sequence=$ATTEMPT_SEQ"; builder blockout_builder.md "$feedback" -i "$INPUT" || return $?; spatial_validate "$(jq -r 'map(.id)|join(",")' "$STATE/objects.json")" || { log "FAIL blockout spatial contract declaration invalid"; return 44; }; verdict="$STATE/verdicts/blockout_${ATTEMPT_SEQ}.json"; critic blockout_critic.md "$verdict" -i "$INPUT" "$STATE/blockout.png" "$STATE/blockout_overlay.png" || return $?; score=$(score_of "$verdict"); record blockout "$a" "$score" "$(( $(date +%s)-start ))" "$feedback" "$verdict"; log "SCORE blockout attempt=$a score=$score"; mkdir -p "$STATE/attempts/blockout_${ATTEMPT_SEQ}"; cp "$STATE/objects.json" "$STATE/blockout.py" "$STATE/blockout.png" "$STATE/blockout_overlay.png" "$STATE/attempts/blockout_${ATTEMPT_SEQ}/"; if [ "$score" -gt "$best" ]; then best=$score; bestdir=$ATTEMPT_SEQ; fi; [ "$score" -ge 8 ] && break; feedback=$(jq -r '.corrections | join("; ")' "$verdict"); done
-  cp "$STATE/attempts/blockout_${bestdir}/"* "$STATE/"; inbox
+  for a in 1 2 3; do next_attempt; start=$(date +%s); log "ENTER blockout attempt=$a sequence=$ATTEMPT_SEQ"; builder blockout_builder.md "$feedback" -i "$INPUT" || return $?; [ -n "$MODEL_FAILURE" ] || spatial_validate "$(jq -r 'map(.id)|join(",")' "$STATE/objects.json")" || { log "FAIL blockout spatial contract declaration invalid"; return 44; }; verdict="$STATE/verdicts/blockout_${ATTEMPT_SEQ}.json"; critic "$verdict" blockout -i "$INPUT" "$STATE/blockout.png" "$STATE/blockout_overlay.png" < "$PROMPTS/blockout_critic.md"; score=$(score_of "$verdict"); record blockout "$a" "$score" "$(( $(date +%s)-start ))" "$feedback" "$verdict"; log "SCORE blockout attempt=$a score=$score"; mkdir -p "$STATE/attempts/blockout_${ATTEMPT_SEQ}"; cp "$STATE/objects.json" "$STATE/blockout.py" "$STATE/blockout.png" "$STATE/blockout_overlay.png" "$STATE/attempts/blockout_${ATTEMPT_SEQ}/"; if [ -z "$MODEL_FAILURE" ] && [ "$score" -gt "$best" ]; then best=$score; bestdir=$ATTEMPT_SEQ; fi; [ "$score" -ge 8 ] && break; feedback=$(jq -r '.corrections | join("; ")' "$verdict"); done
+  [ -n "$bestdir" ] || { log "FAIL blockout no attempt completed its model calls"; return 1; }; cp "$STATE/attempts/blockout_${bestdir}/"* "$STATE/"; inbox
 }
 run_identify() {
   local feedback=${1:-} best=-1 bestdir='' start score a verdict
-  for a in 1 2; do next_attempt; start=$(date +%s); log "ENTER identify attempt=$a sequence=$ATTEMPT_SEQ"; builder identify_builder.md "$feedback" -i "$INPUT" || return $?; verdict="$STATE/verdicts/identify_${ATTEMPT_SEQ}.json"; critic identify_critic.md "$verdict" -i "$INPUT" "$STATE/objects_sheet.png" || return $?; score=$(score_of "$verdict"); record identify "$a" "$score" "$(( $(date +%s)-start ))" "$feedback" "$verdict"; log "SCORE identify attempt=$a score=$score"; mkdir -p "$STATE/attempts/identify_${ATTEMPT_SEQ}"; cp "$STATE/objects.json" "$STATE/objects_sheet.png" "$STATE/attempts/identify_${ATTEMPT_SEQ}/"; if [ "$score" -gt "$best" ]; then best=$score; bestdir=$ATTEMPT_SEQ; fi; [ "$score" -ge 8 ] && break; feedback=$(jq -r '((.corrections + .wrong_labels + .missing_objects) | join("; "))' "$verdict"); done
-  cp "$STATE/attempts/identify_${bestdir}/objects.json" "$STATE/objects.json"; jq 'map(. + {proposed_label: .label, final_label: .label, label_reason: "Root proposal awaiting object review."})' "$STATE/objects.json" > "$STATE/objects.json.next"; mv "$STATE/objects.json.next" "$STATE/objects.json"; cp "$STATE/attempts/identify_${bestdir}/objects_sheet.png" "$STATE/objects_sheet.png"; command -v botq >/dev/null 2>&1 && botq notify-hub "photo-to-scene: objects sheet ready $STATE/objects_sheet.png" || true; inbox
+  for a in 1 2; do next_attempt; start=$(date +%s); log "ENTER identify attempt=$a sequence=$ATTEMPT_SEQ"; builder identify_builder.md "$feedback" -i "$INPUT" || return $?; verdict="$STATE/verdicts/identify_${ATTEMPT_SEQ}.json"; critic "$verdict" identify -i "$INPUT" "$STATE/objects_sheet.png" < "$PROMPTS/identify_critic.md"; score=$(score_of "$verdict"); record identify "$a" "$score" "$(( $(date +%s)-start ))" "$feedback" "$verdict"; log "SCORE identify attempt=$a score=$score"; mkdir -p "$STATE/attempts/identify_${ATTEMPT_SEQ}"; cp "$STATE/objects.json" "$STATE/objects_sheet.png" "$STATE/attempts/identify_${ATTEMPT_SEQ}/"; if [ -z "$MODEL_FAILURE" ] && [ "$score" -gt "$best" ]; then best=$score; bestdir=$ATTEMPT_SEQ; fi; [ "$score" -ge 8 ] && break; feedback=$(jq -r '((.corrections + .wrong_labels + .missing_objects) | join("; "))' "$verdict"); done
+  [ -n "$bestdir" ] || { log "FAIL identify no attempt completed its model calls"; return 1; }; cp "$STATE/attempts/identify_${bestdir}/objects.json" "$STATE/objects.json"; jq 'map(. + {proposed_label: .label, final_label: .label, label_reason: "Root proposal awaiting object review."})' "$STATE/objects.json" > "$STATE/objects.json.next"; mv "$STATE/objects.json.next" "$STATE/objects.json"; cp "$STATE/attempts/identify_${bestdir}/objects_sheet.png" "$STATE/objects_sheet.png"; command -v botq >/dev/null 2>&1 && botq notify-hub "photo-to-scene: objects sheet ready $STATE/objects_sheet.png" || true; inbox
 }
 write_tiers() { jq -r 'sort_by(-((.spatial_contract.frame.size_xyz[0] // 0) * (.spatial_contract.frame.size_xyz[1] // 0))) | length as $n | to_entries[] | [.value.id, (if .key < (($n + 2) / 3 | floor) then "large" elif .key < ((2 * $n + 2) / 3 | floor) then "medium" else "small" end)] | @tsv' "$STATE/objects.json" > "$STATE/object_tiers.tsv"; }
-run_tier_critic() { local tier=$1 verdict start score; verdict="$STATE/verdicts/tier_${tier}.json"; start=$(date +%s); builder tier_builder.md "Tier: $tier. Object ids: $(awk -F '\t' -v tier="$tier" '$2==tier {printf "%s ",$1}' "$STATE/object_tiers.tsv")" -i "$INPUT" || return $?; critic tier_critic.md "$verdict" -i "$INPUT" "$STATE/tier_${tier}.png" || return $?; score=$(score_of "$verdict"); record "tier:$tier" 1 "$score" "$(( $(date +%s)-start ))" "Integrated footprint tier before descending." "$verdict" "" "$tier"; log "SCORE tier:$tier score=$score"; inbox; if [ "$score" -lt 8 ]; then REQUEST_STAGE=$(jq -r '.top_stage // "detail"' "$verdict"); REQUEST_REASON=$(jq -r '.corrections[0] // "tier composition did not pass"' "$verdict"); return 43; fi; }
+run_tier_critic() { local tier=$1 verdict start score; verdict="$STATE/verdicts/tier_${tier}.json"; start=$(date +%s); builder tier_builder.md "Tier: $tier. Object ids: $(awk -F '\t' -v tier="$tier" '$2==tier {printf "%s ",$1}' "$STATE/object_tiers.tsv")" -i "$INPUT" || return $?; critic "$verdict" detail -i "$INPUT" "$STATE/tier_${tier}.png" < "$PROMPTS/tier_critic.md"; score=$(score_of "$verdict"); record "tier:$tier" 1 "$score" "$(( $(date +%s)-start ))" "Integrated footprint tier before descending." "$verdict" "" "$tier"; log "SCORE tier:$tier score=$score"; inbox; if [ "$score" -lt 8 ]; then REQUEST_STAGE=$(jq -r '.top_stage // "detail"' "$verdict"); REQUEST_REASON=$(jq -r '.corrections[0] // "tier composition did not pass"' "$verdict"); return 43; fi; }
 run_one_detail() {
   local id=$1 feedback=${2:-} force=${3:-0} entry="$STATE/entry_$1.json" best bestseq start score a verdict attempts marker limit contract_hash detail_context
   jq --arg id "$id" '.[] | select(.id==$id)' "$STATE/objects.json" > "$entry"
@@ -110,7 +140,7 @@ run_one_detail() {
     latest_verdict=$(awk -F '\t' -v stage="object:$id" -v contract="$contract_hash" '$1==stage && $7==contract {path=$6} END {print path}' "$STATE/records.tsv")
     [ -f "$latest_verdict" ] && feedback=$(jq -r '.corrections | join("; ")' "$latest_verdict")
   fi
-  bestseq=$(awk -F '\t' -v stage="object:$id" -v contract="$contract_hash" '$1==stage && $7==contract && $3+0>=best {best=$3+0; path=$6} END {if(path!="") {sub(/^.*_/,"",path); sub(/\.json$/,"",path); print path}}' "$STATE/records.tsv")
+  bestseq=$(awk -F '\t' -v stage="object:$id" -v contract="$contract_hash" -v prefix="$STATE/attempts/object_${id}_" '$1==stage && $7==contract && $3+0>=best {seq=$6; sub(/^.*_/,"",seq); sub(/\.json$/,"",seq); if (system("test -e \"" prefix seq ".py\" -o -e \"" prefix seq ".png\" -o -e \"" prefix seq ".json\"") == 0) {best=$3+0; path=seq}} END {print path}' "$STATE/records.tsv")
   limit=2; [ "$force" -eq 1 ] && limit=$((attempts+2))
   for ((a=attempts+1; a<=limit; a++)); do
     ACTIVE_STAGE="object:$id"
@@ -120,10 +150,10 @@ run_one_detail() {
     builder detail_builder.md "$detail_context" -i "$STATE/crops/$id.png" -i "${INPUT:-$STATE/crops/$id.png}" || return $?
     ID_FAILURE=; if ! jq -e '.proposed_label | type == "string" and length > 0' "$entry" >/dev/null || ! jq -e '.final_label | type == "string" and length > 0' "$entry" >/dev/null || ! jq -e '.label_reason | type == "string" and length > 0' "$entry" >/dev/null; then ID_FAILURE="identification check failed: proposed_label, final_label, and label_reason are required"; fi
     verdict="$STATE/verdicts/object_${id}_${ATTEMPT_SEQ}.json"
-    if [ -n "$ID_FAILURE" ]; then write_check_verdict "$verdict" "$id" "$ID_FAILURE"; elif verify_detail "$id" "$marker"; then { cat "$PROMPTS/detail_critic.md"; printf '\nThe supplied object stage tag is object:%s.\n' "$id"; } | codex exec --ephemeral --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -C "$ROOT" --output-schema "$SCHEMA" -o "$verdict" -i "$STATE/crops/$id.png" "$STATE/detail_$id.png" "$INPUT" - || return $?; else write_check_verdict "$verdict" "$id" "$DETAIL_FAILURE"; fi
+    if [ -n "$MODEL_FAILURE" ] || { [ -z "$ID_FAILURE" ] && verify_detail "$id" "$marker"; }; then critic "$verdict" "object:$id" -i "$STATE/crops/$id.png" "$STATE/detail_$id.png" "$INPUT" < <(cat "$PROMPTS/detail_critic.md"; printf '\nThe supplied object stage tag is object:%s.\n' "$id"); else write_stage_check_verdict "$verdict" "object:$id" "${ID_FAILURE:-$DETAIL_FAILURE}"; fi
     score=$(score_of "$verdict"); record "object:$id" "$a" "$score" "$(( $(date +%s)-start ))" "$feedback" "$verdict" "$contract_hash" "${ACTIVE_TIER:-}"; log "SCORE object:$id attempt=$a score=$score contract=$contract_hash tier=${ACTIVE_TIER:-none}"
-    [ -f "$ASSETS/$id.py" ] && cp "$ASSETS/$id.py" "$STATE/attempts/object_${id}_${ATTEMPT_SEQ}.py"; [ -f "$STATE/detail_$id.png" ] && cp "$STATE/detail_$id.png" "$STATE/attempts/object_${id}_${ATTEMPT_SEQ}.png"; [ -z "$ID_FAILURE" ] && cp "$entry" "$STATE/attempts/object_${id}_${ATTEMPT_SEQ}.json"
-    if [ "$score" -gt "$best" ] || [ -z "$bestseq" ]; then best=$score; bestseq=$ATTEMPT_SEQ; fi
+    [ -n "$MODEL_FAILURE" ] || { [ -f "$ASSETS/$id.py" ] && cp "$ASSETS/$id.py" "$STATE/attempts/object_${id}_${ATTEMPT_SEQ}.py"; [ -f "$STATE/detail_$id.png" ] && cp "$STATE/detail_$id.png" "$STATE/attempts/object_${id}_${ATTEMPT_SEQ}.png"; [ -z "$ID_FAILURE" ] && cp "$entry" "$STATE/attempts/object_${id}_${ATTEMPT_SEQ}.json"; }
+    if [ -z "$MODEL_FAILURE" ] && { [ "$score" -gt "$best" ] || [ -z "$bestseq" ]; }; then best=$score; bestseq=$ATTEMPT_SEQ; fi
     [ "$score" -ge 8 ] && break; feedback=$(jq -r '.corrections | join("; ")' "$verdict")
   done
   [ -n "$bestseq" ] && [ -f "$STATE/attempts/object_${id}_${bestseq}.py" ] && cp "$STATE/attempts/object_${id}_${bestseq}.py" "$ASSETS/$id.py"
@@ -152,13 +182,13 @@ run_integrate() {
   local feedback=${1:-} best bestseq start score a verdict validation completed
   [ -f "$STATE/integrate_start_epoch" ] || date +%s > "$STATE/integrate_start_epoch"
   completed=$(integrate_attempts); read -r best bestseq <<< "$(integrate_best)"
-  for ((a=completed+1; a<=3; a++)); do next_attempt; start=$(date +%s); log "ENTER integrate attempt=$a sequence=$ATTEMPT_SEQ"; builder integrate_builder.md "$feedback" -i "$INPUT" || return $?; verdict="$STATE/verdicts/integrate_${ATTEMPT_SEQ}.json"; validation="$STATE/verdicts/integrate_${ATTEMPT_SEQ}_validation.json"; if spatial_validate "$(jq -r 'map(.id)|join(",")' "$STATE/objects.json")" "--observed '$STATE/spatial_observed.json'" "$validation"; then critic integrate_critic.md "$verdict" -i "$INPUT" "$STATE/integrate.png" "$STATE/integrate_overlay.png" || return $?; else log "FAIL integrate spatial contract did not round-trip attempt=$a"; write_spatial_check_verdict "$verdict" integrate "$validation"; fi; score=$(score_of "$verdict"); record integrate "$a" "$score" "$(( $(date +%s)-start ))" "$feedback" "$verdict"; log "SCORE integrate attempt=$a score=$score"; mkdir -p "$STATE/attempts/integrate_${ATTEMPT_SEQ}"; cp "$STATE/assemble.py" "$STATE/integrate.png" "$STATE/integrate_overlay.png" "$STATE/spatial_observed.json" "$STATE/attempts/integrate_${ATTEMPT_SEQ}/"; if [ "$score" -gt "$best" ]; then best=$score; bestseq=$ATTEMPT_SEQ; fi; [ "$score" -ge 8 ] && break; REQUEST_STAGE=$(jq -r '.top_stage // "integrate"' "$verdict"); REQUEST_REASON=$(jq -r '.corrections[0] // ""' "$verdict"); [ "$REQUEST_STAGE" != integrate ] && return 43; feedback=$(jq -r '.corrections | join("; ")' "$verdict"); done
-  cp "$STATE/attempts/integrate_${bestseq}/"* "$STATE/"; inbox
+  for ((a=completed+1; a<=3; a++)); do next_attempt; start=$(date +%s); log "ENTER integrate attempt=$a sequence=$ATTEMPT_SEQ"; builder integrate_builder.md "$feedback" -i "$INPUT" || return $?; verdict="$STATE/verdicts/integrate_${ATTEMPT_SEQ}.json"; validation="$STATE/verdicts/integrate_${ATTEMPT_SEQ}_validation.json"; if [ -n "$MODEL_FAILURE" ] || spatial_validate "$(jq -r 'map(.id)|join(",")' "$STATE/objects.json")" "--observed '$STATE/spatial_observed.json'" "$validation"; then critic "$verdict" integrate -i "$INPUT" "$STATE/integrate.png" "$STATE/integrate_overlay.png" < "$PROMPTS/integrate_critic.md"; else log "FAIL integrate spatial contract did not round-trip attempt=$a"; write_spatial_check_verdict "$verdict" integrate "$validation"; fi; score=$(score_of "$verdict"); record integrate "$a" "$score" "$(( $(date +%s)-start ))" "$feedback" "$verdict"; log "SCORE integrate attempt=$a score=$score"; [ -n "$MODEL_FAILURE" ] || { mkdir -p "$STATE/attempts/integrate_${ATTEMPT_SEQ}"; cp "$STATE/assemble.py" "$STATE/integrate.png" "$STATE/integrate_overlay.png" "$STATE/spatial_observed.json" "$STATE/attempts/integrate_${ATTEMPT_SEQ}/"; }; if [ -z "$MODEL_FAILURE" ] && [ "$score" -gt "$best" ]; then best=$score; bestseq=$ATTEMPT_SEQ; fi; [ "$score" -ge 8 ] && break; REQUEST_STAGE=$(jq -r '.top_stage // "integrate"' "$verdict"); REQUEST_REASON=$(jq -r '.corrections[0] // ""' "$verdict"); [ "$REQUEST_STAGE" != integrate ] && return 43; feedback=$(jq -r '.corrections | join("; ")' "$verdict"); done
+  [ -n "$bestseq" ] || { log "FAIL integrate no attempt completed its model calls"; return 1; }; cp "$STATE/attempts/integrate_${bestseq}/"* "$STATE/"; inbox
 }
 run_materials() {
   local feedback=${1:-} start score verdict validation
-  next_attempt; start=$(date +%s); log "ENTER materials attempt=1 sequence=$ATTEMPT_SEQ"; builder materials_builder.md "$feedback" -i "$INPUT" || return $?; verdict="$STATE/verdicts/materials_${ATTEMPT_SEQ}.json"; validation="$STATE/verdicts/materials_${ATTEMPT_SEQ}_validation.json"; if spatial_validate "$(jq -r 'map(.id)|join(",")' "$STATE/objects.json")" "--observed '$STATE/spatial_observed.json'" "$validation"; then critic materials_critic.md "$verdict" -i "$INPUT" "$STATE/materials.png" || return $?; else log "FAIL materials invalidated spatial contract"; write_spatial_check_verdict "$verdict" materials "$validation"; fi; score=$(score_of "$verdict"); record materials 1 "$score" "$(( $(date +%s)-start ))" "$feedback" "$verdict"; log "SCORE materials score=$score"
-  if [ "$score" -gt "$BEST_S6" ]; then BEST_S6=$score; printf '%s' "$score" > "$STATE/best_s6_score"; cp "$STATE/materials.png" "$STATE/best_materials.png"; cp "$STATE/materials.blend" "$STATE/best_materials.blend"; cp "$verdict" "$STATE/best_materials_verdict.json"; fi
+  next_attempt; start=$(date +%s); log "ENTER materials attempt=1 sequence=$ATTEMPT_SEQ"; builder materials_builder.md "$feedback" -i "$INPUT" || return $?; verdict="$STATE/verdicts/materials_${ATTEMPT_SEQ}.json"; validation="$STATE/verdicts/materials_${ATTEMPT_SEQ}_validation.json"; if [ -n "$MODEL_FAILURE" ] || spatial_validate "$(jq -r 'map(.id)|join(",")' "$STATE/objects.json")" "--observed '$STATE/spatial_observed.json'" "$validation"; then critic "$verdict" materials -i "$INPUT" "$STATE/materials.png" < "$PROMPTS/materials_critic.md"; else log "FAIL materials invalidated spatial contract"; write_spatial_check_verdict "$verdict" materials "$validation"; fi; score=$(score_of "$verdict"); record materials 1 "$score" "$(( $(date +%s)-start ))" "$feedback" "$verdict"; log "SCORE materials score=$score"
+  if [ -z "$MODEL_FAILURE" ] && [ "$score" -gt "$BEST_S6" ]; then BEST_S6=$score; printf '%s' "$score" > "$STATE/best_s6_score"; cp "$STATE/materials.png" "$STATE/best_materials.png"; cp "$STATE/materials.blend" "$STATE/best_materials.blend"; cp "$verdict" "$STATE/best_materials_verdict.json"; fi
   if [ "$score" -lt 8 ]; then REQUEST_STAGE=$(jq -r '.top_stage // "materials"' "$verdict"); REQUEST_REASON=$(jq -r '.corrections[0] // ""' "$verdict"); [ "$REQUEST_STAGE" != materials ] && return 43; fi; inbox
 }
 within_s56_budget() { [ ! -f "$STATE/integrate_start_epoch" ] && return 0; [ "$(( $(date +%s) - $(cat "$STATE/integrate_start_epoch") ))" -lt 12600 ]; }
@@ -193,6 +223,7 @@ while :; do
 done
 if [ ! -f "$STATE/best_materials.blend" ]; then log 'FAIL no S6 scene exists'; exit 1; fi
 builder final_builder.md "" || exit $?
+[ -z "$MODEL_FAILURE" ] || { log "FAIL final $MODEL_FAILURE"; exit 1; }
 write_report
 cp "$STATE/best_render.png" "$STATE/side_by_side.png" "$STATE/objects_sheet.png" "$STATE/scores.md" "$STATE/floorplan.json" "$STATE/objects.json" "$PIPELINE_DIR/pipeline.sh" "$ARTIFACTS/"
 cp "$STATE/floorplan.json" "$ROOT/floorplan.json"

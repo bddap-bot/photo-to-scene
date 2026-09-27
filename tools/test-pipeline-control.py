@@ -1,3 +1,4 @@
+import json
 import os
 import shlex
 import subprocess
@@ -5,47 +6,53 @@ import tempfile
 import unittest
 from pathlib import Path
 
+PIPELINE = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
+
+
+def function(name):
+    definition = PIPELINE.split(f"\n{name}() {{", 1)[1]
+    first_line = definition.split("\n", 1)[0]
+    if first_line.endswith("}"):
+        return f"{name}() {{{first_line}"
+    return f"{name}() {{" + definition.split("\n}\n", 1)[0] + "\n}"
+
+
+def main_loop():
+    return PIPELINE.split("feedback=\n", 1)[1].split("done\nif [ ! -f", 1)[0]
+
+
+def model_function(seconds=60, idle=2):
+    return f"MODEL_SECONDS={seconds}; MODEL_IDLE_SECONDS={idle}; MODEL_FAILURE=; SCHEMA=schema.json\n" + function("model")
+
 
 class PipelineControlTest(unittest.TestCase):
     def test_detail_uses_crop_and_whole_photo_and_records_label_review(self):
-        pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
-        self.assertIn('-i "$STATE/crops/$id.png" -i "${INPUT:-$STATE/crops/$id.png}"', pipeline)
-        self.assertIn("proposed_label:$reviewed[0].proposed_label", pipeline)
-        self.assertIn("final_label:$reviewed[0].final_label", pipeline)
-        self.assertIn("label_reason:$reviewed[0].label_reason", pipeline)
+        self.assertIn('-i "$STATE/crops/$id.png" -i "${INPUT:-$STATE/crops/$id.png}"', PIPELINE)
+        self.assertIn("proposed_label:$reviewed[0].proposed_label", PIPELINE)
+        self.assertIn("final_label:$reviewed[0].final_label", PIPELINE)
+        self.assertIn("label_reason:$reviewed[0].label_reason", PIPELINE)
 
     def test_footprint_tiers_are_descending_and_each_is_criticized(self):
-        pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
-        self.assertIn("sort_by(-((.spatial_contract.frame.size_xyz[0]", pipeline)
-        self.assertIn("for tier in large medium small", pipeline)
-        self.assertIn('run_tier_critic "$tier"', pipeline)
-        self.assertIn('record "tier:$tier"', pipeline)
-        self.assertIn('if [ "$score" -lt 8 ]', pipeline)
-        self.assertIn('return 43', pipeline)
+        self.assertIn("sort_by(-((.spatial_contract.frame.size_xyz[0]", PIPELINE)
+        self.assertIn("for tier in large medium small", PIPELINE)
+        self.assertIn('run_tier_critic "$tier"', PIPELINE)
+        self.assertIn('record "tier:$tier"', PIPELINE)
+        self.assertIn('if [ "$score" -lt 8 ]', PIPELINE)
+        self.assertIn('return 43', PIPELINE)
 
     def test_capped_tier_critic_descends_to_next_tier(self):
-        pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
-        run_detail = pipeline.split("run_detail() {", 1)[1].split("\n}\nrun_integrate()", 1)[0]
+        run_detail = function("run_detail")
         self.assertIn('[ "$tier_rc" -eq 43 ] && [ "$CRITIC_GOTOS" -ge 5 ]', run_detail)
         self.assertIn('continue', run_detail)
         mutated = run_detail.replace('[ "$CRITIC_GOTOS" -ge 5 ]', '[ "$CRITIC_GOTOS" -gt 5 ]')
         self.assertNotIn('[ "$tier_rc" -eq 43 ] && [ "$CRITIC_GOTOS" -ge 5 ]', mutated)
 
     def test_capped_builder_goto_retries_within_same_stage_attempt(self):
-        pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
-        builder = pipeline.split("builder() {", 1)[1].split("\n}\ncritic()", 1)[0]
-        builder = "builder() {" + builder + "\n}"
-        run_one_detail = pipeline.split("run_one_detail() {", 1)[1].split("\n}\nrun_detail()", 1)[0]
-        run_one_detail = "run_one_detail() {" + run_one_detail + "\n}"
-        run_detail = "run_detail() {" + pipeline.split("run_detail() {", 1)[1].split("\n}\nrun_integrate()", 1)[0] + "\n}"
-        detail_helpers = "\n".join(
-            line
-            for line in pipeline.splitlines()
-            if line.startswith("detail_attempts()")
-            or line.startswith("detail_best()")
-            or line.startswith("write_check_verdict()")
-        )
-        loop = pipeline.split("feedback=\n", 1)[1].split("done\nif [ ! -f", 1)[0]
+        builder = function("builder")
+        run_one_detail = function("run_one_detail")
+        run_detail = function("run_detail")
+        detail_helpers = "\n".join(function(name) for name in ("detail_attempts", "detail_best", "write_stage_check_verdict"))
+        loop = main_loop()
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             state = root / "state"
@@ -73,6 +80,7 @@ score_of() {{ jq -r '.score // 0' "$1"; }}
 record() {{ printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$1" "$2" "$3" "$4" "$5" "$6" "${{7:-}}" >> "$STATE/records.tsv"; }}
 valid_stage() {{ local candidate=$1 known; for known in "${{STAGES[@]}}"; do [ "$candidate" = "$known" ] && return 0; done; return 1; }}
 codex() {{ local calls; cat >/dev/null; calls=$(( $(cat "$STATE/calls") + 1 )); printf '%s' "$calls" > "$STATE/calls"; case "$calls" in 4) printf '%s\n' '{{"target":"blockout","reason":"malformed fallback"}}' > "$STATE/goto.json" ;; *) printf '%s\n' '{{"stage":"blockout","reason":"fixed-region conflict"}}' > "$STATE/goto.json" ;; esac; }}
+{model_function()}
 {builder}
 {detail_helpers}
 verify_detail() {{ DETAIL_FAILURE="asset check failed: no contract-valid asset"; return 1; }}
@@ -93,7 +101,7 @@ feedback=
 done
 printf 'attempt_seq=%s calls=%s records=%s integrate=%s\n' "$ATTEMPT_SEQ" "$(cat "$STATE/calls")" "$(cut -f1,2 "$STATE/records.tsv" | paste -sd, -)" "$integrate_calls"
 '''
-            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=10)
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=30)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("attempt_seq=2 calls=4 records=object:one\t1,object:one\t2 integrate=1", result.stdout)
         self.assertEqual(result.stdout.count("ENTER object:"), 2)
@@ -102,10 +110,8 @@ printf 'attempt_seq=%s calls=%s records=%s integrate=%s\n' "$ATTEMPT_SEQ" "$(cat
         self.assertIn("GOTO rejected origin=builder requested= reason=cap fallback target is not in canonical stage set", result.stdout)
 
     def test_valid_builder_goto_survives_invalid_target_correction(self):
-        pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
-        builder = pipeline.split("builder() {", 1)[1].split("\n}\ncritic()", 1)[0]
-        builder = "builder() {" + builder + "\n}"
-        loop = pipeline.split("feedback=\n", 1)[1].split("done\nif [ ! -f", 1)[0]
+        builder = function("builder")
+        loop = main_loop()
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             state = root / "state"
@@ -124,6 +130,7 @@ printf 0 > "$STATE/detail_records"
 log() {{ :; }}
 valid_stage() {{ local candidate=$1 known; for known in "${{STAGES[@]}}"; do [ "$candidate" = "$known" ] && return 0; done; return 1; }}
 codex() {{ local call; cat >/dev/null; call=$(( $(cat "$calls") + 1 )); printf '%s' "$call" > "$calls"; if [ "$call" -eq 1 ]; then printf '%s\n' '{{"target":"blockout","reason":"invalid field"}}' > "$STATE/goto.json"; else printf '%s\n' '{{"stage":"blockout","reason":"valid retry"}}' > "$STATE/goto.json"; fi; }}
+{model_function()}
 {builder}
 within_s56_budget() {{ return 0; }}
 run_floorplan() {{ return 0; }}
@@ -137,14 +144,12 @@ feedback=
 {loop}
 done
 '''
-            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=10)
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=30)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("blockout=1 detail_records=0 builder_gotos=5 calls=2", result.stdout)
 
     def test_second_invalid_builder_goto_is_ignored(self):
-        pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
-        builder = pipeline.split("builder() {", 1)[1].split("\n}\ncritic()", 1)[0]
-        builder = "builder() {" + builder + "\n}"
+        builder = function("builder")
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             state = root / "state"
@@ -161,29 +166,21 @@ printf 0 > "$calls"
 log() {{ printf '%s\n' "$*"; }}
 valid_stage() {{ local candidate=$1 known; for known in "${{STAGES[@]}}"; do [ "$candidate" = "$known" ] && return 0; done; return 1; }}
 codex() {{ local call; cat >/dev/null; call=$(( $(cat "$calls") + 1 )); printf '%s' "$call" > "$calls"; printf '%s\n' '{{"target":"blockout","reason":"invalid field"}}' > "$STATE/goto.json"; }}
+{model_function()}
 {builder}
 rc=0
 builder builder.md '' || rc=$?
 printf 'rc=%s calls=%s\n' "$rc" "$(cat "$calls")"
 '''
-            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=10)
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=30)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("rc=0 calls=2", result.stdout)
         self.assertIn("second invalid target from same stage ignored", result.stdout)
 
     def test_dense_detail_contract_does_not_expand_builder_request(self):
-        pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
-        builder = pipeline.split("builder() {", 1)[1].split("\n}\ncritic()", 1)[0]
-        builder = "builder() {" + builder + "\n}"
-        run_one_detail = pipeline.split("run_one_detail() {", 1)[1].split("\n}\nrun_detail()", 1)[0]
-        run_one_detail = "run_one_detail() {" + run_one_detail + "\n}"
-        detail_helpers = "\n".join(
-            line
-            for line in pipeline.splitlines()
-            if line.startswith("detail_attempts()")
-            or line.startswith("detail_best()")
-            or line.startswith("write_check_verdict()")
-        )
+        builder = function("builder")
+        run_one_detail = function("run_one_detail")
+        detail_helpers = "\n".join(function(name) for name in ("detail_attempts", "detail_best", "write_stage_check_verdict"))
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             state = root / "state"
@@ -222,6 +219,7 @@ codex() {{
   [ -s "$workdir/state/entry_dense.json" ] || return 92
   tee "$STATE/request" | wc -m > "$STATE/request_chars"
 }}
+{model_function()}
 {builder}
 {detail_helpers}
 verify_detail() {{ DETAIL_FAILURE="asset check failed: expected in request-size test"; return 1; }}
@@ -229,7 +227,7 @@ verify_detail() {{ DETAIL_FAILURE="asset check failed: expected in request-size 
 run_one_detail dense
 printf '%s %s\n' "$(wc -m < "$STATE/entry_dense.json")" "$(cat "$STATE/request_chars")"
 '''
-            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=10)
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=30)
             request = (state / "request").read_text()
         self.assertEqual(result.returncode, 0, result.stderr)
         entry_chars, request_chars = map(int, result.stdout.split())
@@ -244,9 +242,7 @@ printf '%s %s\n' "$(wc -m < "$STATE/entry_dense.json")" "$(cat "$STATE/request_c
         self.assertNotIn(dense_contract, request)
 
     def test_detail_gate_accepts_composed_workspace_texture_path(self):
-        pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
-        verify_detail = pipeline.split("verify_detail() {", 1)[1].split("\n}\nwrite_check_verdict()", 1)[0]
-        verify_detail = "verify_detail() {" + verify_detail + "\n}"
+        verify_detail = function("verify_detail")
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             assets = root / "assets"
@@ -285,10 +281,8 @@ fi
         self.assertEqual(result.stdout, "PASS\n")
 
     def test_materials_gate_failure_is_scored_and_saved(self):
-        pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
-        run_materials = pipeline.split("run_materials() {", 1)[1].split("\n}\nwithin_s56_budget()", 1)[0]
-        run_materials = "run_materials() {" + run_materials + "\n}"
-        stage_verdict = "\n".join(line for line in pipeline.splitlines() if line.startswith("write_stage_check_verdict()") or line.startswith("write_spatial_check_verdict()"))
+        run_materials = function("run_materials")
+        stage_verdict = "\n".join(function(name) for name in ("write_stage_check_verdict", "write_spatial_check_verdict"))
         with tempfile.TemporaryDirectory() as directory:
             state = Path(directory, "state")
             (state / "verdicts").mkdir(parents=True)
@@ -298,7 +292,7 @@ fi
             (state / "materials.blend").write_text("scene")
             (state / "records.tsv").write_text("")
             script = f'''set -uo pipefail
-STATE={state!s}; INPUT=input.jpg; ATTEMPT_SEQ=0; BEST_S6=-1; REQUEST_STAGE=; REQUEST_REASON=
+STATE={state!s}; INPUT=input.jpg; ATTEMPT_SEQ=0; BEST_S6=-1; REQUEST_STAGE=; REQUEST_REASON=; MODEL_FAILURE=
 next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
 log() {{ printf '%s\n' "$*"; }}
 builder() {{ return 0; }}
@@ -319,11 +313,9 @@ printf 'score=%s best=%s png=%s blend=%s error=%s\n' "$(cut -f3 "$STATE/records.
         self.assertIn("error=one: material footprint mismatch", result.stdout)
 
     def test_integration_gate_failure_is_scored_and_retried(self):
-        pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
-        run_integrate = pipeline.split("run_integrate() {", 1)[1].split("\n}\nrun_materials()", 1)[0]
-        run_integrate = "run_integrate() {" + run_integrate + "\n}"
-        stage_verdict = "\n".join(line for line in pipeline.splitlines() if line.startswith("write_stage_check_verdict()") or line.startswith("write_spatial_check_verdict()"))
-        integrate_helpers = "\n".join(line for line in pipeline.splitlines() if line.startswith("integrate_attempts()") or line.startswith("integrate_best()"))
+        run_integrate = function("run_integrate")
+        stage_verdict = "\n".join(function(name) for name in ("write_stage_check_verdict", "write_spatial_check_verdict"))
+        integrate_helpers = "\n".join(function(name) for name in ("integrate_attempts", "integrate_best"))
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             state = root / "state"
@@ -339,6 +331,7 @@ printf 'score=%s best=%s png=%s blend=%s error=%s\n' "$(cut -f3 "$STATE/records.
 STATE={state!s}
 INPUT=input.jpg
 ATTEMPT_SEQ=0
+MODEL_FAILURE=
 REQUEST_STAGE=
 REQUEST_REASON=
 next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
@@ -362,10 +355,8 @@ printf 'attempts=%s scores=%s error=%s\n' "$ATTEMPT_SEQ" "$(cut -f3 "$STATE/reco
         self.assertIn("error=one: footprint did not round-trip", result.stdout)
 
     def test_integration_attempt_budget_resumes_from_records(self):
-        pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
-        run_integrate = pipeline.split("run_integrate() {", 1)[1].split("\n}\nrun_materials()", 1)[0]
-        run_integrate = "run_integrate() {" + run_integrate + "\n}"
-        functions = "\n".join(line for line in pipeline.splitlines() if line.startswith("write_stage_check_verdict()") or line.startswith("write_spatial_check_verdict()") or line.startswith("integrate_attempts()") or line.startswith("integrate_best()"))
+        run_integrate = function("run_integrate")
+        functions = "\n".join(function(name) for name in ("write_stage_check_verdict", "write_spatial_check_verdict", "integrate_attempts", "integrate_best"))
         with tempfile.TemporaryDirectory() as directory:
             state = Path(directory, "state")
             (state / "verdicts").mkdir(parents=True)
@@ -377,7 +368,7 @@ printf 'attempts=%s scores=%s error=%s\n' "$ATTEMPT_SEQ" "$(cut -f3 "$STATE/reco
             (state / "verdicts" / "integrate_9.json").write_text('{"score":0}')
             (state / "records.tsv").write_text(f"integrate\t1\t0\t1\t\t{state}/verdicts/integrate_9.json\t\n")
             script = f'''set -uo pipefail
-STATE={state!s}; INPUT=input.jpg; ATTEMPT_SEQ=9; REQUEST_STAGE=; REQUEST_REASON=
+STATE={state!s}; INPUT=input.jpg; ATTEMPT_SEQ=9; REQUEST_STAGE=; REQUEST_REASON=; MODEL_FAILURE=
 next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
 log() {{ :; }}
 builder() {{ return 0; }}
@@ -396,10 +387,8 @@ printf 'new_attempts=%s records=%s\n' "$((ATTEMPT_SEQ-9))" "$(awk -F '\t' '$1==\
         self.assertIn("new_attempts=2 records=3", result.stdout)
 
     def test_report_preserves_empty_fields_and_reports_missing_verdict(self):
-        pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
-        parse_record = next(line for line in pipeline.splitlines() if line.startswith("parse_record()"))
-        write_report = pipeline.split("write_report() {", 1)[1].split("\n}\nfeedback=", 1)[0]
-        write_report = "write_report() {" + write_report + "\n}"
+        parse_record = function("parse_record")
+        write_report = function("write_report")
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             state = root / "state"
@@ -430,10 +419,7 @@ cat "$STATE/scores.md"
         self.assertNotIn("verdict file unavailable", result.stdout)
 
     def test_detail_budget_is_keyed_to_contract(self):
-        pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
-        functions = "\n".join(
-            line for line in pipeline.splitlines() if line.startswith("detail_attempts()") or line.startswith("detail_best()")
-        )
+        functions = "\n".join(function(name) for name in ("detail_attempts", "detail_best"))
         with tempfile.TemporaryDirectory() as directory:
             records = Path(directory, "records.tsv")
             records.write_text(
@@ -451,8 +437,7 @@ printf 'changed=%s stable=%s best=%s\n' "$(detail_attempts changed new-hash)" "$
         self.assertEqual(result.stdout, "changed=0 stable=2 best=8\n")
 
     def test_detail_iteration_isolated_from_inbox_stdin(self):
-        pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
-        run_detail = "run_detail() {" + pipeline.split("run_detail() {", 1)[1].split("\n}\nrun_integrate()", 1)[0] + "\n}"
+        run_detail = function("run_detail")
         with tempfile.TemporaryDirectory() as directory:
             objects = Path(directory, "objects.json")
             objects.write_text('[{"id":"one","crop_bbox":[0,0,3,3]},{"id":"two","crop_bbox":[0,0,2,2]},{"id":"three","crop_bbox":[0,0,1,1]}]')
@@ -463,13 +448,12 @@ run_tier_critic() {{ :; }}
 {run_detail}
 run_detail
 '''
-            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=10)
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, stdin=subprocess.DEVNULL, timeout=10)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stdout, "one\ntwo\nthree\n")
 
     def test_critic_budget_is_independent(self):
-        pipeline = Path(__file__).parents[1].joinpath("pipeline.sh").read_text()
-        loop = pipeline.split("feedback=\n", 1)[1].split("done\nif [ ! -f", 1)[0]
+        loop = main_loop()
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             script = f'''set -uo pipefail
@@ -504,6 +488,432 @@ cat "$STATE/log"
         self.assertIn("builder=5 critic=1 calls=7", result.stdout)
         self.assertIn("GOTO count=1 origin=critic stage=detail reason=late critic", result.stdout)
 
+
+    def test_model_call_bounds(self):
+        with tempfile.TemporaryDirectory() as directory:
+            script = f"""set -uo pipefail
+ROOT={directory}; STATE={directory}
+log() {{ printf '%s\\n' "$*"; }}
+{model_function(60, 3)}
+call() {{ local start=$SECONDS rc; model - <<< prompt; rc=$?; printf '%s rc=%s seconds=%s failure=%s marker=%s\\n' "$1" "$rc" "$((SECONDS - start))" "$MODEL_FAILURE" "$([ -f "$STATE/model_failed" ] && printf set || printf clear)"; }}
+codex() {{ cat >/dev/null; printf 'model started\\n'; while :; do printf '\\t \\n'; sleep 0.1; done; }}
+call whitespace
+codex() {{ cat >/dev/null; while :; do sleep 0.1; done; }}
+call silent
+codex() {{ trap 'exit 0' TERM; cat >/dev/null; while :; do sleep 0.1; done; }}
+call graceful
+codex() {{ trap '' TERM; cat >/dev/null; while :; do sleep 0.1; done; }}
+call stubborn
+MODEL_SECONDS=4
+codex() {{ cat >/dev/null; while :; do printf 'token '; sleep 0.1; done; }}
+call endless
+codex() {{ cat >/dev/null; return 3; }}
+call exited
+codex() {{ cat >/dev/null; printf 'done\\n'; }}
+call recovered
+codex() {{ cat >/dev/null; return 3; }}
+call again
+codex() {{ cat >/dev/null; while :; do sleep 0.1; done; }}
+call cut
+codex() {{ cat >/dev/null; return 3; }}
+call first
+call second
+printf 'unreachable\\n'
+"""
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=120)
+        calls = {line.split(" ", 1)[0]: line for line in result.stdout.splitlines() if " rc=" in line}
+        idle = r"rc=1 seconds=[3-6] failure=model call emitted no non-whitespace output for 3 s marker=clear"
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertRegex(calls["whitespace"], idle)
+        self.assertRegex(calls["silent"], idle)
+        self.assertRegex(calls["graceful"], idle)
+        self.assertRegex(calls["stubborn"], r"rc=1 seconds=1[2-7] failure=model call emitted no non-whitespace output for 3 s")
+        self.assertRegex(calls["endless"], r"rc=1 seconds=[4-6] failure=model call exceeded its 4 s wallclock bound marker=clear")
+        self.assertRegex(calls["exited"], r"rc=1 seconds=\d+ failure=model call exited with status 3 marker=set")
+        self.assertRegex(calls["recovered"], r"rc=0 seconds=\d+ failure= marker=clear")
+        self.assertRegex(calls["again"], r"rc=1 seconds=\d+ failure=model call exited with status 3 marker=set")
+        self.assertRegex(calls["cut"], idle)
+        self.assertRegex(calls["first"], r"rc=1 seconds=\d+ failure=model call exited with status 3 marker=set")
+        self.assertNotIn("second", calls)
+        self.assertIn("FAIL consecutive model calls exited non-zero; last: model call exited with status 3", result.stdout)
+        self.assertNotIn("unreachable", result.stdout)
+
+    def test_cut_builder_and_critic_calls_are_scored_attempts_and_the_run_continues(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            state = root / "state"
+            prompts = root / "prompts"
+            (state / "attempts").mkdir(parents=True)
+            (state / "verdicts").mkdir()
+            prompts.mkdir()
+            (prompts / "floorplan_builder.md").write_text("build floorplan")
+            (prompts / "floorplan_critic.md").write_text("criticize floorplan")
+            (state / "records.tsv").write_text("")
+            script = f"""set -uo pipefail
+ROOT={root}; STATE={state}; PROMPTS={prompts}; INPUT=photo.jpg; ATTEMPT_SEQ=0; REQUEST_STAGE=; REQUEST_REASON=; BUILDER_GOTOS=0; CRITIC_GOTOS=0
+STAGES=(floorplan blockout identify detail integrate materials)
+VALID_STAGE_TEXT="floorplan blockout identify detail integrate materials"
+declare -A INVALID_RETRIES=()
+printf 0 > "$STATE/calls"
+log() {{ printf '%s\\n' "$*"; }}
+inbox() {{ :; }}
+next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
+score_of() {{ jq -r '.score // 0' "$1"; }}
+record() {{ printf '%s\\t%s\\t%s\\t%s\\t%s\\t%s\\n' "$1" "$2" "$3" "$4" "$5" "$6" >> "$STATE/records.tsv"; }}
+valid_stage() {{ return 1; }}
+codex() {{
+  local call output= previous=
+  for arg in "$@"; do [ "$previous" = -o ] && output=$arg; previous=$arg; done
+  call=$(( $(cat "$STATE/calls") + 1 )); printf '%s' "$call" > "$STATE/calls"
+  cat > "$STATE/prompt_$call"
+  printf 'call %s\\n' "$call"
+  case "$call" in
+    1) while :; do printf '\\t'; sleep 0.1; done ;;
+    3) while :; do sleep 0.1; done ;;
+    2|4) printf 'plan %s' "$call" > "$STATE/floorplan.json"; printf png > "$STATE/floorplan.png" ;;
+    5) printf '%s\\n' '{{"score":9,"summary":"ok","corrections":[],"top_stage":"floorplan","wrong_labels":[],"missing_objects":[]}}' > "$output" ;;
+  esac
+}}
+{model_function()}
+{function("builder")}
+{function("critic")}
+{function("write_stage_check_verdict")}
+{function("run_floorplan")}
+within_s56_budget() {{ return 0; }}
+run_blockout() {{ printf 'blockout reached after %s calls\\n' "$(cat "$STATE/calls")"; exit 0; }}
+PHOTO_TO_SCENE_STAGE=floorplan
+feedback=
+{main_loop()}
+done
+"""
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=60)
+            records = [line.split("\t") for line in (state / "records.tsv").read_text().splitlines()]
+            first_verdict = json.loads((state / "verdicts" / "floorplan_1.json").read_text())
+            second_verdict = json.loads((state / "verdicts" / "floorplan_2.json").read_text())
+            second_prompt = (state / "prompt_2").read_text()
+            final_plan = (state / "floorplan.json").read_text()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("blockout reached after 5 calls", result.stdout)
+        self.assertEqual([(row[0], row[1], row[2]) for row in records], [("floorplan", "1", "0"), ("floorplan", "2", "0"), ("floorplan", "3", "9")])
+        idle = "model call emitted no non-whitespace output for 2 s"
+        self.assertEqual(first_verdict["corrections"], [idle])
+        self.assertEqual(first_verdict["top_stage"], "floorplan")
+        self.assertEqual(second_verdict["corrections"], [idle])
+        self.assertEqual(records[1][4], idle)
+        self.assertTrue(second_prompt.endswith(f"\nOne-reentry correction context follows:\n{idle}\n"))
+        self.assertEqual(final_plan, "plan 4")
+
+    def test_cut_detail_critic_is_scored_and_the_object_retries(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            state = root / "state"
+            prompts = root / "prompts"
+            (state / "attempts").mkdir(parents=True)
+            (state / "verdicts").mkdir()
+            (state / "crops").mkdir()
+            prompts.mkdir()
+            (prompts / "detail_builder.md").write_text("build object")
+            (prompts / "detail_critic.md").write_text("criticize object")
+            (state / "objects.json").write_text('[{"id":"one","spatial_contract":{}}]')
+            (state / "records.tsv").write_text("")
+            (state / "progress.md").write_text("")
+            script = f"""set -uo pipefail
+ROOT={root}; STATE={state}; PROMPTS={prompts}; ASSETS={root}; INPUT=photo.jpg; ATTEMPT_SEQ=0; REQUEST_STAGE=; REQUEST_REASON=; BUILDER_GOTOS=0
+printf 0 > "$STATE/calls"
+log() {{ printf '%s\\n' "$*"; }}
+inbox() {{ :; }}
+next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
+score_of() {{ jq -r '.score // 0' "$1"; }}
+record() {{ printf '%s\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\n' "$1" "$2" "$3" "$4" "$5" "$6" "${{7:-}}" >> "$STATE/records.tsv"; }}
+valid_stage() {{ return 1; }}
+verify_detail() {{ return 0; }}
+codex() {{
+  local call output= previous=
+  for arg in "$@"; do [ "$previous" = -o ] && output=$arg; previous=$arg; done
+  call=$(( $(cat "$STATE/calls") + 1 )); printf '%s' "$call" > "$STATE/calls"
+  cat > "$STATE/prompt_$call"
+  printf 'call %s\\n' "$call"
+  case "$call" in
+    1|3) jq '. + {{proposed_label:"chair",final_label:"chair",label_reason:"crop"}}' "$STATE/entry_one.json" > "$STATE/entry.next" && mv "$STATE/entry.next" "$STATE/entry_one.json" ;;
+    2) while :; do sleep 0.1; done ;;
+    4) printf '%s\\n' '{{"score":9,"summary":"ok","corrections":[],"top_stage":"object:one","wrong_labels":[],"missing_objects":[]}}' > "$output" ;;
+  esac
+}}
+{model_function()}
+{function("builder")}
+{function("critic")}
+{function("write_stage_check_verdict")}
+{function("detail_attempts")}
+{function("detail_best")}
+{function("run_one_detail")}
+run_one_detail one
+"""
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=60)
+            records = [line.split("\t") for line in (state / "records.tsv").read_text().splitlines()]
+            first_verdict = json.loads((state / "verdicts" / "object_one_1.json").read_text())
+            critic_prompt = (state / "prompt_4").read_text()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual([(row[0], row[1], row[2]) for row in records], [("object:one", "1", "0"), ("object:one", "2", "9")])
+        self.assertEqual(first_verdict["corrections"], ["model call emitted no non-whitespace output for 2 s"])
+        self.assertEqual(first_verdict["top_stage"], "object:one")
+        self.assertEqual(critic_prompt, "criticize object\nThe supplied object stage tag is object:one.\n")
+
+    def test_failed_build_skips_the_stage_gate_and_is_never_best(self):
+        failure = "model call exited with status 1"
+        cases = {
+            "blockout": ("run_blockout", "blockout_1.json", "blockout", ""),
+            "integrate": ("run_integrate", "integrate_1.json", "integrate", "\n".join(function(name) for name in ("integrate_attempts", "integrate_best"))),
+            "object": ('run_one_detail one', "object_one_1.json", "object:one", "\n".join(function(name) for name in ("detail_attempts", "detail_best", "run_one_detail"))),
+            "materials": ("run_materials", "materials_1.json", "materials", function("run_materials")),
+            "tier": ("run_tier_critic large", "tier_large.json", "detail", function("run_tier_critic")),
+        }
+        for stage, (command, verdict_name, top_stage, helpers) in cases.items():
+            with self.subTest(stage=stage), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                state = root / "state"
+                prompts = root / "prompts"
+                (state / "attempts").mkdir(parents=True)
+                (state / "verdicts").mkdir()
+                prompts.mkdir()
+                for name in ("blockout", "integrate", "detail", "materials", "tier"):
+                    (prompts / f"{name}_builder.md").write_text("build")
+                    (prompts / f"{name}_critic.md").write_text("criticize")
+                (state / "objects.json").write_text('[{"id":"one","spatial_contract":{}}]')
+                (state / "object_tiers.tsv").write_text("one\tlarge\n")
+                (state / "records.tsv").write_text("")
+                (state / "progress.md").write_text("")
+                function_name = command.split()[0]
+                script = f"""set -uo pipefail
+ROOT={root}; STATE={state}; PROMPTS={prompts}; ASSETS={root}; INPUT=photo.jpg; ATTEMPT_SEQ=0; BEST_S6=-1; REQUEST_STAGE=; REQUEST_REASON=; BUILDER_GOTOS=0
+log() {{ printf '%s\\n' "$*"; }}
+inbox() {{ :; }}
+next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
+score_of() {{ jq -r '.score // 0' "$1"; }}
+record() {{ printf '%s\\t%s\\t%s\\n' "$1" "$2" "$3" >> "$STATE/records.tsv"; [ "$1" = materials ] || [ "$1" = tier:large ] || exit 0; }}
+valid_stage() {{ return 1; }}
+spatial_validate() {{ printf 'gate ran\\n'; return 1; }}
+verify_detail() {{ printf 'gate ran\\n'; DETAIL_FAILURE="asset gate failed"; return 1; }}
+codex() {{ cat >/dev/null; return 1; }}
+{model_function()}
+{function("builder")}
+{function("critic")}
+{function("write_stage_check_verdict")}
+{function("write_spatial_check_verdict")}
+{helpers if function_name not in ("run_blockout", "run_integrate") else function(function_name) + chr(10) + helpers}
+{command}
+printf 'rc=%s request=%s best_s6=%s\\n' "$?" "$REQUEST_STAGE" "$BEST_S6"
+"""
+                result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=30)
+                verdict = json.loads((state / "verdicts" / verdict_name).read_text())
+                best_saved = (state / "best_s6_score").exists()
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertNotIn("gate ran", result.stdout)
+                self.assertEqual(verdict["corrections"], [failure])
+                self.assertEqual(verdict["top_stage"], top_stage)
+                self.assertFalse(best_saved)
+                if stage == "tier":
+                    self.assertIn("rc=43 request=detail", result.stdout)
+                if stage == "materials":
+                    self.assertIn("rc=0 request=materials best_s6=-1", result.stdout)
+
+    def test_consecutive_model_failures_stop_the_run_without_recording_the_second(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            state = root / "state"
+            prompts = root / "prompts"
+            (state / "attempts").mkdir(parents=True)
+            (state / "verdicts").mkdir()
+            prompts.mkdir()
+            (prompts / "floorplan_builder.md").write_text("build floorplan")
+            (prompts / "floorplan_critic.md").write_text("criticize floorplan")
+            (state / "records.tsv").write_text("")
+            script = f"""set -uo pipefail
+ROOT={root}; STATE={state}; PROMPTS={prompts}; INPUT=photo.jpg; ATTEMPT_SEQ=0; REQUEST_STAGE=; REQUEST_REASON=; BUILDER_GOTOS=0
+log() {{ printf '%s\\n' "$*"; }}
+inbox() {{ :; }}
+next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
+score_of() {{ jq -r '.score // 0' "$1"; }}
+record() {{ printf '%s\\t%s\\t%s\\n' "$1" "$2" "$3" >> "$STATE/records.tsv"; }}
+valid_stage() {{ return 1; }}
+codex() {{ cat >/dev/null; printf 'usage limit reached\\n'; return 1; }}
+{model_function()}
+{function("builder")}
+{function("critic")}
+{function("write_stage_check_verdict")}
+{function("run_floorplan")}
+run_floorplan
+printf 'unreachable\\n'
+"""
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=30)
+            records = (state / "records.tsv").read_text()
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertEqual(records, "floorplan\t1\t0\n")
+        self.assertEqual(result.stdout.count("ENTER floorplan"), 2)
+        self.assertIn("FAIL consecutive model calls exited non-zero", result.stdout)
+        self.assertNotIn("unreachable", result.stdout)
+
+    def test_failed_final_build_stops_before_the_report(self):
+        final = "if [ ! -f" + PIPELINE.split("done\nif [ ! -f", 1)[1]
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "prompts").mkdir()
+            (root / "prompts" / "final_builder.md").write_text("finalize")
+            (root / "best_materials.blend").write_text("scene")
+            script = f"""set -uo pipefail
+ROOT={root}; STATE={root}; PROMPTS={root}/prompts; REQUEST_STAGE=; REQUEST_REASON=
+log() {{ printf '%s\\n' "$*"; }}
+valid_stage() {{ return 1; }}
+write_report() {{ printf 'report written\\n'; }}
+codex() {{ cat >/dev/null; return 3; }}
+{model_function()}
+{function("builder")}
+{final}
+"""
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=30)
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn("FAIL final model call exited with status 3", result.stdout)
+        self.assertNotIn("report written", result.stdout)
+    def test_failed_attempt_output_is_never_restored_as_best(self):
+        cases = {
+            "floorplan": ("run_floorplan", "floorplan.json", ""),
+            "blockout": ("run_blockout", "blockout.py", ""),
+            "integrate": ("run_integrate", "assemble.py", "\n".join(function(name) for name in ("integrate_attempts", "integrate_best"))),
+        }
+        for stage, (command, restored, helpers) in cases.items():
+            with self.subTest(stage=stage), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                state = root / "state"
+                prompts = root / "prompts"
+                (state / "attempts").mkdir(parents=True)
+                (state / "verdicts").mkdir()
+                prompts.mkdir()
+                (prompts / f"{stage}_builder.md").write_text("build")
+                (prompts / f"{stage}_critic.md").write_text("criticize")
+                (state / "records.tsv").write_text("")
+                (state / "builds").write_text("0")
+                script = f"""set -uo pipefail
+ROOT={root}; STATE={state}; PROMPTS={prompts}; INPUT=photo.jpg; ATTEMPT_SEQ=0; REQUEST_STAGE=; REQUEST_REASON=; BUILDER_GOTOS=0
+log() {{ printf '%s\\n' "$*"; }}
+inbox() {{ :; }}
+next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
+score_of() {{ jq -r '.score // 0' "$1"; }}
+record() {{ printf '%s\\t%s\\t%s\\t%s\\t%s\\t%s\\n' "$1" "$2" "$3" "$4" "$5" "$6" >> "$STATE/records.tsv"; }}
+valid_stage() {{ return 1; }}
+spatial_validate() {{ return 0; }}
+codex() {{
+  local output= previous= build file
+  for arg in "$@"; do [ "$previous" = -o ] && output=$arg; previous=$arg; done
+  cat >/dev/null
+  if [ -n "$output" ]; then printf '%s\\n' '{{"score":0,"summary":"weak","corrections":["weak"],"top_stage":"{stage}","wrong_labels":[],"missing_objects":[]}}' > "$output"; return 0; fi
+  build=$(( $(cat "$STATE/builds") + 1 )); printf '%s' "$build" > "$STATE/builds"
+  for file in floorplan.json floorplan.png objects.json blockout.py blockout.png blockout_overlay.png objects_sheet.png assemble.py integrate.png integrate_overlay.png spatial_observed.json; do printf 'build %s' "$build" > "$STATE/$file"; done
+  [ "$build" -ne 1 ]
+}}
+{model_function()}
+{function("builder")}
+{function("critic")}
+{function("write_stage_check_verdict")}
+{function("write_spatial_check_verdict")}
+{helpers}
+{function(command)}
+{command}
+printf 'rc=%s\\n' "$?"
+"""
+                result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=30)
+                restored_text = (state / restored).read_text()
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertIn("rc=0", result.stdout)
+                self.assertEqual(restored_text, "build 2")
+
+    def test_stage_without_a_completed_attempt_stops_the_run(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            state = root / "state"
+            prompts = root / "prompts"
+            (state / "attempts").mkdir(parents=True)
+            (state / "verdicts").mkdir()
+            prompts.mkdir()
+            (prompts / "floorplan_builder.md").write_text("build floorplan")
+            (prompts / "floorplan_critic.md").write_text("criticize floorplan")
+            (state / "records.tsv").write_text("")
+            script = f"""set -uo pipefail
+ROOT={root}; STATE={state}; PROMPTS={prompts}; INPUT=photo.jpg; ATTEMPT_SEQ=0; REQUEST_STAGE=; REQUEST_REASON=; BUILDER_GOTOS=0; CRITIC_GOTOS=0
+STAGES=(floorplan blockout identify detail integrate materials)
+VALID_STAGE_TEXT="floorplan blockout identify detail integrate materials"
+declare -A INVALID_RETRIES=()
+log() {{ printf '%s\\n' "$*"; }}
+inbox() {{ :; }}
+next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
+score_of() {{ jq -r '.score // 0' "$1"; }}
+record() {{ printf '%s\\t%s\\t%s\\n' "$1" "$2" "$3" >> "$STATE/records.tsv"; }}
+valid_stage() {{ return 1; }}
+codex() {{
+  local previous= critic=0
+  for arg in "$@"; do [ "$previous" = -o ] && critic=1; previous=$arg; done
+  cat >/dev/null
+  printf plan > "$STATE/floorplan.json"; printf png > "$STATE/floorplan.png"
+  [ "$critic" -eq 0 ]
+}}
+{model_function()}
+{function("builder")}
+{function("critic")}
+{function("write_stage_check_verdict")}
+{function("run_floorplan")}
+within_s56_budget() {{ return 0; }}
+run_blockout() {{ printf 'blockout reached\\n'; exit 0; }}
+PHOTO_TO_SCENE_STAGE=floorplan
+feedback=
+{main_loop()}
+done
+"""
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=30)
+            records = (state / "records.tsv").read_text()
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertEqual(records, "floorplan\t1\t0\nfloorplan\t2\t0\nfloorplan\t3\t0\n")
+        self.assertIn("FAIL floorplan no attempt completed its model calls", result.stdout)
+        self.assertIn("FAIL stage=floorplan rc=1", result.stdout)
+        self.assertNotIn("blockout reached", result.stdout)
+    def test_reentry_best_ignores_attempts_without_a_snapshot(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            state = root / "state"
+            prompts = root / "prompts"
+            (state / "attempts" / "integrate_5").mkdir(parents=True)
+            (state / "verdicts").mkdir()
+            (state / "crops").mkdir()
+            prompts.mkdir()
+            (prompts / "detail_builder.md").write_text("build object")
+            (state / "attempts" / "object_one_3.py").write_text("completed")
+            (state / "objects.json").write_text('[{"id":"one","spatial_contract":{}}]')
+            (state / "progress.md").write_text("")
+            script = f"""set -uo pipefail
+ROOT={root}; STATE={state}; PROMPTS={prompts}; ASSETS={root}; INPUT=photo.jpg; ATTEMPT_SEQ=6; REQUEST_STAGE=; REQUEST_REASON=; BUILDER_GOTOS=0
+hash=$(printf '{{}}\\n' | sha256sum | cut -d ' ' -f1)
+printf 'integrate\\t1\\t0\\t1\\t\\t%s\\t\\nintegrate\\t2\\t0\\t1\\t\\t%s\\t\\n' "$STATE/verdicts/integrate_5.json" "$STATE/verdicts/integrate_6.json" > "$STATE/records.tsv"
+printf 'object:one\\t1\\t5\\t1\\t\\t%s\\t%s\\nobject:one\\t2\\t5\\t1\\t\\t%s\\t%s\\n' "$STATE/verdicts/object_one_3.json" "$hash" "$STATE/verdicts/object_one_4.json" "$hash" >> "$STATE/records.tsv"
+log() {{ printf '%s\\n' "$*"; }}
+inbox() {{ :; }}
+next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
+score_of() {{ jq -r '.score // 0' "$1"; }}
+record() {{ printf '%s\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\n' "$1" "$2" "$3" "$4" "$5" "$6" "${{7:-}}" >> "$STATE/records.tsv"; }}
+valid_stage() {{ return 1; }}
+codex() {{ cat >/dev/null; printf 'new' > "$ASSETS/one.py"; }}
+{model_function()}
+{function("builder")}
+{function("critic")}
+{function("write_stage_check_verdict")}
+{function("integrate_best")}
+{function("detail_attempts")}
+{function("detail_best")}
+{function("run_one_detail")}
+printf 'integrate_best=%s\\n' "$(integrate_best)"
+run_one_detail one "" 1
+printf 'asset=%s\\n' "$(cat "$ASSETS/one.py")"
+"""
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=30)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("integrate_best=0 5\n", result.stdout)
+        self.assertIn("asset=completed\n", result.stdout)
 
 if __name__ == "__main__":
     unittest.main()
