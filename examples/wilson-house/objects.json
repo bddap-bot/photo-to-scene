@@ -26,7 +26,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -140,7 +140,7 @@
     "shape": "sloped_slab",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -164,7 +164,7 @@
         "blockout_revision": "Rear ceiling/cornice raised 22.5 overlay pixels; bookcase 27.5 percent narrower and top 10 pixels higher; right chair slimmer arms and seat 17.5 pixels higher. Revised room-space meshes supersede provisional floorplan envelopes.",
         "facing_note": "Axes retained from floorplan; visible west chimney return and north window field establish handedness.",
         "height_revision": {
-          "source_image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+          "source_image": "highsm-17640-full.jpg",
           "coordinate_system": "1019 x 807 comparison pixels; origin top left",
           "named_points": {
             "rear_ceiling_corner": [
@@ -484,7 +484,7 @@
     "shape": "architectural_assembly",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -569,7 +569,7 @@
         "facing_note": "Image-left panel rail is smaller world Y; image-right rail is larger world Y. Projecting chimney front faces +X. Local X=(0,-1), local Y=(1,0).",
         "panel_layout_revision": {
           "reason": "S4 requested central molding closer to bay edges and a narrow left side-wall treatment. S2 revises those region envelopes explicitly.",
-          "source_image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+          "source_image": "highsm-17640-full.jpg",
           "landmark_coordinate_system": "native source pixels (6114 x 4842), scaled from supplied 1777 x 1408 preview",
           "named_points": {
             "central_outer_left_rail_mid": [
@@ -589,7 +589,7 @@
           "scope": "Explicit S2 region meshes supersede earlier panel width and stale scalar head metadata; shell and camera retained."
         },
         "height_revision": {
-          "source_image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+          "source_image": "highsm-17640-full.jpg",
           "coordinate_system": "1019 x 807 comparison pixels; origin top left",
           "named_points": {
             "rear_ceiling_corner": [
@@ -21902,7 +21902,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -21926,7 +21926,7 @@
         "blockout_revision": "Rear ceiling/cornice raised 22.5 overlay pixels; bookcase 27.5 percent narrower and top 10 pixels higher; right chair slimmer arms and seat 17.5 pixels higher. Revised room-space meshes supersede provisional floorplan envelopes.",
         "facing_note": "Axes retained from floorplan; visible west chimney return and north window field establish handedness.",
         "height_revision": {
-          "source_image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+          "source_image": "highsm-17640-full.jpg",
           "coordinate_system": "1019 x 807 comparison pixels; origin top left",
           "named_points": {
             "rear_ceiling_corner": [
@@ -22808,7 +22808,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -22832,7 +22832,7 @@
         "blockout_revision": "Rear ceiling/cornice raised 22.5 overlay pixels; bookcase 27.5 percent narrower and top 10 pixels higher; right chair slimmer arms and seat 17.5 pixels higher. Revised room-space meshes supersede provisional floorplan envelopes.",
         "facing_note": "Axes retained from floorplan; visible west chimney return and north window field establish handedness.",
         "height_revision": {
-          "source_image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+          "source_image": "highsm-17640-full.jpg",
           "coordinate_system": "1019 x 807 comparison pixels; origin top left",
           "named_points": {
             "rear_ceiling_corner": [
@@ -23714,7 +23714,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -23732,7 +23732,7 @@
         },
         "interpretation": "Wall below windows; label reviewed at S3; existing room-space geometry retained.",
         "height_revision": {
-          "source_image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+          "source_image": "highsm-17640-full.jpg",
           "coordinate_system": "1019 x 807 comparison pixels; origin top left",
           "named_points": {
             "rear_ceiling_corner": [
@@ -24550,7 +24550,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -24574,7 +24574,7 @@
         "blockout_revision": "Rear ceiling/cornice raised 22.5 overlay pixels; bookcase 27.5 percent narrower and top 10 pixels higher; right chair slimmer arms and seat 17.5 pixels higher. Revised room-space meshes supersede provisional floorplan envelopes.",
         "facing_note": "Axes retained from floorplan; visible west chimney return and north window field establish handedness.",
         "height_revision": {
-          "source_image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+          "source_image": "highsm-17640-full.jpg",
           "coordinate_system": "1019 x 807 comparison pixels; origin top left",
           "named_points": {
             "rear_ceiling_corner": [
@@ -25448,7 +25448,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -25472,7 +25472,7 @@
         "blockout_revision": "Rear ceiling/cornice raised 22.5 overlay pixels; bookcase 27.5 percent narrower and top 10 pixels higher; right chair slimmer arms and seat 17.5 pixels higher. Revised room-space meshes supersede provisional floorplan envelopes.",
         "facing_note": "Axes retained from floorplan; visible west chimney return and north window field establish handedness.",
         "height_revision": {
-          "source_image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+          "source_image": "highsm-17640-full.jpg",
           "coordinate_system": "1019 x 807 comparison pixels; origin top left",
           "named_points": {
             "rear_ceiling_corner": [
@@ -26351,7 +26351,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -26474,7 +26474,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -29604,7 +29604,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -30458,7 +30458,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -30582,7 +30582,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -33848,7 +33848,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -33868,7 +33868,7 @@
         "blockout_revision": "Rail source endpoints approximately (1158,400) and (1777,285), inspection pixels, establish a lower head than S1. Opening head revised to 3.12 m; no resolved exterior objects.",
         "identify_note": "Repeated fold context crops consolidated into this visible textile field.",
         "height_revision": {
-          "source_image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+          "source_image": "highsm-17640-full.jpg",
           "coordinate_system": "1019 x 807 comparison pixels; origin top left",
           "named_points": {
             "rear_ceiling_corner": [
@@ -45319,7 +45319,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -45339,7 +45339,7 @@
         "blockout_revision": "Rail source endpoints approximately (1158,400) and (1777,285), inspection pixels, establish a lower head than S1. Opening head revised to 3.12 m; no resolved exterior objects.",
         "identify_note": "Repeated fold context crops consolidated into this visible textile field.",
         "height_revision": {
-          "source_image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+          "source_image": "highsm-17640-full.jpg",
           "coordinate_system": "1019 x 807 comparison pixels; origin top left",
           "named_points": {
             "rear_ceiling_corner": [
@@ -56790,7 +56790,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -57600,7 +57600,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -57628,7 +57628,7 @@
         "blockout_revision": "Window/sofa/portrait correction; geometry and declarations updated together from preserved baseline.",
         "facing_note": "Retained floorplan room front; named source silhouette landmarks determine left/right handedness.",
         "foreground_curtain_revision": {
-          "source_image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+          "source_image": "highsm-17640-full.jpg",
           "coordinate_system": "normalized image fractions, origin top left",
           "named_points": {
             "bowl_center": [
@@ -57656,7 +57656,7 @@
           "facing": "Existing room-space local front retained; sofa back is camera-near, chair-facing seat is beyond it; curtain front faces into room."
         },
         "height_revision": {
-          "source_image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+          "source_image": "highsm-17640-full.jpg",
           "coordinate_system": "1019 x 807 comparison pixels; origin top left",
           "named_points": {
             "rear_ceiling_corner": [
@@ -117410,7 +117410,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -117428,7 +117428,7 @@
         },
         "interpretation": "Left curtain gold tieback cord; label reviewed at S3; existing room-space geometry retained.",
         "foreground_curtain_revision": {
-          "source_image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+          "source_image": "highsm-17640-full.jpg",
           "coordinate_system": "normalized image fractions, origin top left",
           "named_points": {
             "bowl_center": [
@@ -118167,7 +118167,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -118195,7 +118195,7 @@
         "blockout_revision": "Window/sofa/portrait correction; geometry and declarations updated together from preserved baseline.",
         "facing_note": "Retained floorplan room front; named source silhouette landmarks determine left/right handedness.",
         "foreground_curtain_revision": {
-          "source_image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+          "source_image": "highsm-17640-full.jpg",
           "coordinate_system": "normalized image fractions, origin top left",
           "named_points": {
             "bowl_center": [
@@ -118223,7 +118223,7 @@
           "facing": "Existing room-space local front retained; sofa back is camera-near, chair-facing seat is beyond it; curtain front faces into room."
         },
         "height_revision": {
-          "source_image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+          "source_image": "highsm-17640-full.jpg",
           "coordinate_system": "1019 x 807 comparison pixels; origin top left",
           "named_points": {
             "rear_ceiling_corner": [
@@ -178006,7 +178006,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -178024,7 +178024,7 @@
         },
         "interpretation": "Middle curtain gold tieback cord; label reviewed at S3; existing room-space geometry retained.",
         "foreground_curtain_revision": {
-          "source_image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+          "source_image": "highsm-17640-full.jpg",
           "coordinate_system": "normalized image fractions, origin top left",
           "named_points": {
             "bowl_center": [
@@ -178763,7 +178763,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -186261,7 +186261,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -187006,7 +187006,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -187130,7 +187130,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -187253,7 +187253,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -187281,7 +187281,7 @@
         "blockout_revision": "One-reentry: continuous planar ceiling, narrower chair arms and shallower lower base, slimmer foreground back bolster. Exact revised meshes supersede prior inferred S2 envelopes; contracted S1 camera retained.",
         "facing_note": "Retained floorplan room front; named source silhouette landmarks determine left/right handedness.",
         "foreground_curtain_revision": {
-          "source_image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+          "source_image": "highsm-17640-full.jpg",
           "coordinate_system": "normalized image fractions, origin top left",
           "named_points": {
             "bowl_center": [
@@ -486215,7 +486215,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -486233,7 +486233,7 @@
         },
         "interpretation": "Dark tabletop with bowl and papers at lower left, behind sofa from camera view. Position revised using projected image ordering and wall clearance; furniture envelopes are approximate, not recovered meshes. Position revised using projected image ordering and wall clearance; furniture envelopes are approximate, not recovered meshes.",
         "foreground_curtain_revision": {
-          "source_image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+          "source_image": "highsm-17640-full.jpg",
           "coordinate_system": "normalized image fractions, origin top left",
           "named_points": {
             "bowl_center": [
@@ -489533,7 +489533,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -494640,7 +494640,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -494795,7 +494795,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -495039,7 +495039,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -495283,7 +495283,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -495471,7 +495471,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -495627,7 +495627,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -614799,7 +614799,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -614992,7 +614992,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -615028,7 +615028,7 @@
         "facing_note": "Vector from back toward exposed seat establishes front; rocker opens image-left toward fireplace. Sofa back faces camera and seat opens into room.",
         "blockout_revision": "Rear ceiling/cornice raised 22.5 overlay pixels; bookcase 27.5 percent narrower and top 10 pixels higher; right chair slimmer arms and seat 17.5 pixels higher. Revised room-space meshes supersede provisional floorplan envelopes.",
         "height_revision": {
-          "source_image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+          "source_image": "highsm-17640-full.jpg",
           "coordinate_system": "1019 x 807 comparison pixels; origin top left",
           "named_points": {
             "rear_ceiling_corner": [
@@ -657169,7 +657169,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -660463,7 +660463,7 @@
     "shape": "cylinder",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -660590,7 +660590,7 @@
     "shape": "cylinder",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -660717,7 +660717,7 @@
     "shape": "cylinder",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -660844,7 +660844,7 @@
     "shape": "cylinder",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -660971,7 +660971,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -661094,7 +661094,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -661217,7 +661217,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -661383,7 +661383,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -662115,7 +662115,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -662839,7 +662839,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -663563,7 +663563,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -664287,7 +664287,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -665011,7 +665011,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -665735,7 +665735,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -666459,7 +666459,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -667183,7 +667183,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -667907,7 +667907,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -668631,7 +668631,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -669355,7 +669355,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -670079,7 +670079,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -670803,7 +670803,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -671531,7 +671531,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -671691,7 +671691,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -671814,7 +671814,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -671977,7 +671977,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -672091,7 +672091,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -672205,7 +672205,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -672319,7 +672319,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -672433,7 +672433,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -672583,7 +672583,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -672706,7 +672706,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -672820,7 +672820,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -672935,7 +672935,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -673054,7 +673054,7 @@
     "shape": "cylinder",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -673181,7 +673181,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -673308,7 +673308,7 @@
     "shape": "sphere",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -673326,7 +673326,7 @@
         },
         "interpretation": "Wide shallow bowl visible in annotated source crop; depth inferred from floorplan.",
         "foreground_curtain_revision": {
-          "source_image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+          "source_image": "highsm-17640-full.jpg",
           "coordinate_system": "normalized image fractions, origin top left",
           "named_points": {
             "bowl_center": [
@@ -678892,7 +678892,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -678910,7 +678910,7 @@
         },
         "interpretation": "Large desktop paper sheet visible in annotated source crop; depth inferred from floorplan.",
         "foreground_curtain_revision": {
-          "source_image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+          "source_image": "highsm-17640-full.jpg",
           "coordinate_system": "normalized image fractions, origin top left",
           "named_points": {
             "bowl_center": [
@@ -679662,7 +679662,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -679680,7 +679680,7 @@
         },
         "interpretation": "Closed book on desktop visible in annotated source crop; depth inferred from floorplan.",
         "foreground_curtain_revision": {
-          "source_image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+          "source_image": "highsm-17640-full.jpg",
           "coordinate_system": "normalized image fractions, origin top left",
           "named_points": {
             "bowl_center": [
@@ -680432,7 +680432,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -680450,7 +680450,7 @@
         },
         "interpretation": "Rectangular desk tray visible in annotated source crop; depth inferred from floorplan.",
         "foreground_curtain_revision": {
-          "source_image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+          "source_image": "highsm-17640-full.jpg",
           "coordinate_system": "normalized image fractions, origin top left",
           "named_points": {
             "bowl_center": [
@@ -681202,7 +681202,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -681220,7 +681220,7 @@
         },
         "interpretation": "Stone plinth beneath wolf figurine; label reviewed at S3; existing room-space geometry retained.",
         "foreground_curtain_revision": {
-          "source_image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+          "source_image": "highsm-17640-full.jpg",
           "coordinate_system": "normalized image fractions, origin top left",
           "named_points": {
             "bowl_center": [
@@ -681968,7 +681968,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -681986,7 +681986,7 @@
         },
         "interpretation": "She-wolf and infants figurine; label reviewed at S3; existing room-space geometry retained.",
         "foreground_curtain_revision": {
-          "source_image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+          "source_image": "highsm-17640-full.jpg",
           "coordinate_system": "normalized image fractions, origin top left",
           "named_points": {
             "bowl_center": [
@@ -695474,7 +695474,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -695492,7 +695492,7 @@
         },
         "interpretation": "Small framed desktop print; label reviewed at S3; existing room-space geometry retained.",
         "foreground_curtain_revision": {
-          "source_image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+          "source_image": "highsm-17640-full.jpg",
           "coordinate_system": "normalized image fractions, origin top left",
           "named_points": {
             "bowl_center": [
@@ -696232,7 +696232,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -696250,7 +696250,7 @@
         },
         "interpretation": "Partly obscured upright printed desktop item. Pale upright rectangular printed item behind the wolf figurine; lettering and a colored illustration are visible, but no portrait is discernible.",
         "foreground_curtain_revision": {
-          "source_image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+          "source_image": "highsm-17640-full.jpg",
           "coordinate_system": "normalized image fractions, origin top left",
           "named_points": {
             "bowl_center": [
@@ -696991,7 +696991,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -697009,7 +697009,7 @@
         },
         "interpretation": "Printed card in desktop holder; label reviewed at S3; existing room-space geometry retained.",
         "foreground_curtain_revision": {
-          "source_image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+          "source_image": "highsm-17640-full.jpg",
           "coordinate_system": "normalized image fractions, origin top left",
           "named_points": {
             "bowl_center": [
@@ -697749,7 +697749,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -698603,7 +698603,7 @@
     "shape": "cylinder",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -698717,7 +698717,7 @@
     "shape": "sphere",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -698831,7 +698831,7 @@
     "shape": "cylinder",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -698945,7 +698945,7 @@
     "shape": "sphere",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -699059,7 +699059,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -699182,7 +699182,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -699305,7 +699305,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -699428,7 +699428,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -699551,7 +699551,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -699570,7 +699570,7 @@
         "interpretation": "Left hanging tieback cord / tassel detail. Hanging cord is visible below the knot; an individual tassel end cannot be confidently isolated.",
         "identify_note": "Hanging cord is visible below the knot; an individual tassel end cannot be confidently isolated. Room-space placement is an approximate S3 inference; detail geometry is not built.",
         "foreground_curtain_revision": {
-          "source_image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+          "source_image": "highsm-17640-full.jpg",
           "coordinate_system": "normalized image fractions, origin top left",
           "named_points": {
             "bowl_center": [
@@ -699774,7 +699774,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -699793,7 +699793,7 @@
         "interpretation": "Middle hanging tieback cord / tassel detail. Hanging cord is visible below the knot; an individual tassel end cannot be confidently isolated.",
         "identify_note": "Hanging cord is visible below the knot; an individual tassel end cannot be confidently isolated. Room-space placement is an approximate S3 inference; detail geometry is not built.",
         "foreground_curtain_revision": {
-          "source_image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+          "source_image": "highsm-17640-full.jpg",
           "coordinate_system": "normalized image fractions, origin top left",
           "named_points": {
             "bowl_center": [
@@ -699997,7 +699997,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -700121,7 +700121,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -700140,7 +700140,7 @@
         "interpretation": "Exposed wooden sill beneath left lace curtain. Only exposed wood is cropped; curtains and furniture hide the remaining frame. Room-space dimensions are approximate.",
         "identify_note": "Only exposed wood is cropped; curtains and furniture hide the remaining frame. Room-space dimensions are approximate. Room-space placement is an approximate S3 inference; detail geometry is not built.",
         "height_revision": {
-          "source_image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+          "source_image": "highsm-17640-full.jpg",
           "coordinate_system": "1019 x 807 comparison pixels; origin top left",
           "named_points": {
             "rear_ceiling_corner": [
@@ -700390,7 +700390,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -700409,7 +700409,7 @@
         "interpretation": "Exposed wooden sill beneath right lace curtain. Only exposed wood is cropped; curtains and furniture hide the remaining frame. Room-space dimensions are approximate.",
         "identify_note": "Only exposed wood is cropped; curtains and furniture hide the remaining frame. Room-space dimensions are approximate. Room-space placement is an approximate S3 inference; detail geometry is not built.",
         "height_revision": {
-          "source_image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+          "source_image": "highsm-17640-full.jpg",
           "coordinate_system": "1019 x 807 comparison pixels; origin top left",
           "named_points": {
             "rear_ceiling_corner": [
@@ -700659,7 +700659,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -700678,7 +700678,7 @@
         "interpretation": "Exposed left wooden window jamb. Only exposed wood is cropped; curtains and furniture hide the remaining frame. Room-space dimensions are approximate.",
         "identify_note": "Only exposed wood is cropped; curtains and furniture hide the remaining frame. Room-space dimensions are approximate. Room-space placement is an approximate S3 inference; detail geometry is not built.",
         "height_revision": {
-          "source_image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+          "source_image": "highsm-17640-full.jpg",
           "coordinate_system": "1019 x 807 comparison pixels; origin top left",
           "named_points": {
             "rear_ceiling_corner": [
@@ -700891,7 +700891,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -700910,7 +700910,7 @@
         "interpretation": "Exposed middle wooden window jamb. Only exposed wood is cropped; curtains and furniture hide the remaining frame. Room-space dimensions are approximate.",
         "identify_note": "Only exposed wood is cropped; curtains and furniture hide the remaining frame. Room-space dimensions are approximate. Room-space placement is an approximate S3 inference; detail geometry is not built.",
         "height_revision": {
-          "source_image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+          "source_image": "highsm-17640-full.jpg",
           "coordinate_system": "1019 x 807 comparison pixels; origin top left",
           "named_points": {
             "rear_ceiling_corner": [
@@ -701123,7 +701123,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -701726,7 +701726,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842
@@ -701945,7 +701945,7 @@
     "shape": "box",
     "spatial_contract": {
       "source_evidence": {
-        "image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+        "image": "highsm-17640-full.jpg",
         "image_size_px": [
           6114,
           4842

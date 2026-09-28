@@ -1,19 +1,21 @@
 # Wilson House example progress
 
-RESUMABLE: 33/99 detail objects finalized; interrupted stage `object:drape_0`, attempt 1, sequence 307. Final scene gate and critic scores are not yet measured; latest available visual critic: 0/10 (`tier:large`).
+RESUMABLE: 33/99 detail objects finalized under current contracts; 266 attempt records, latest sequence 312. Latest driver event: `ENTER object:drape_0 attempt=2 sequence=312`.
 
 - Initial workflow: `05b4bad57d40f982c0ca4209af511e90c8f2454c`
-- Detail prompt driver fix: `ce3c95c9ca51d8a5663cbbe170d00781220e9714`
-- Resumed published workflow: `ed4bc7e691ec081840040e3acc7918af97c712b5`
-- Pipeline input: `highsm-17640-full.jpg` (6114×4842); no input downscaling.
+- Current workflow: `428a8fbd94d5dc66d01e975c063a160f22a8f9d1`
+- Pipeline input: `highsm-17640-full.jpg` (6114×4842, the full-resolution file linked in [ATTRIBUTION.md](ATTRIBUTION.md)); no input downscaling.
 - Published source: `source.jpg` (1529×1211).
-- Completed detail objects under current contracts: 33/99.
-- Recorded attempts: 263; latest sequence: 307.
-- The pipeline process ended during the final listed attempt without a completion record. Resume uses the recorded attempt counts; the interrupted attempt has no score.
 - Next `PHOTO_TO_SCENE_STAGE`: `detail`.
-- Resume command (from the repository root): `BOTQ_ARTIFACTS_DIR=/home/bot/.local/state/botq/artifacts/4243 PHOTO_TO_SCENE_ROOT=/home/bot/scratch/photo-to-scene/example/work PHOTO_TO_SCENE_STAGE=detail ./pipeline.sh /home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg`
+- Resume, from the repository root, with the retained work directory of this run:
 
-## Completed detail objects
+```sh
+PHOTO_TO_SCENE_ROOT=/absolute/path/to/work PHOTO_TO_SCENE_STAGE=detail ./pipeline.sh /absolute/path/to/highsm-17640-full.jpg
+```
+
+The driver resumes from its recorded attempt counts; an attempt interrupted before its record has no score.
+
+## Finalized detail objects
 
 | Object | Best recorded score | Attempts |
 |---|---:|---:|

@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "stage": "S1 FLOORPLAN",
-  "reference_image": "/home/bot/scratch/photo-to-scene/example/highsm-17640-full.jpg",
+  "reference_image": "highsm-17640-full.jpg",
   "units": "metres",
   "coordinate_convention": {
     "origin": "southwest interior corner of provisional rectangular shell",
