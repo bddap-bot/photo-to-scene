@@ -1,6 +1,6 @@
 # Wilson House example progress
 
-RESUMABLE: 33/99 detail objects finalized under current contracts; 266 attempt records, latest sequence 312. Latest driver event: `ENTER object:drape_0 attempt=2 sequence=312`.
+RESUMABLE: 79/99 detail objects finalized under current contracts; 344 attempt records, latest sequence 390. Latest driver event: `ENTER object:andiron_1 attempt=1 sequence=390`.
 
 - Initial workflow: `05b4bad57d40f982c0ca4209af511e90c8f2454c`
 - Current workflow: `428a8fbd94d5dc66d01e975c063a160f22a8f9d1`
@@ -29,9 +29,18 @@ The driver resumes from its recorded attempt counts; an attempt interrupted befo
 | cornice_n | 8/10 | 1 |
 | baseboard_n | 6/10 | 2 |
 | mantel | 6/10 | 2 |
+| firebox | 7/10 | 2 |
 | hearth | 7/10 | 2 |
+| portrait | 8/10 | 1 |
+| sheer_0 | 7/10 | 2 |
 | sheer_1 | 7/10 | 2 |
 | curtain_rail | 5/10 | 2 |
+| drape_0 | 7/10 | 2 |
+| tieback_0 | 6/10 | 2 |
+| drape_1 | 7/10 | 2 |
+| tieback_1 | 6/10 | 2 |
+| drape_2 | 7/10 | 2 |
+| rail_crest | 7/10 | 2 |
 | radiator | 7/10 | 2 |
 | rug | 8/10 | 1 |
 | sofa | 7/10 | 2 |
@@ -46,11 +55,48 @@ The driver resumes from its recorded attempt counts; an attempt interrupted befo
 | display_table | 3/10 | 2 |
 | orange_chair | 5/10 | 2 |
 | stool | 7/10 | 2 |
+| mantel_clock | 8/10 | 1 |
+| sconce | 4/10 | 2 |
+| microphone | 8/10 | 1 |
+| book_0_0 | 8/10 | 2 |
+| book_0_1 | 8/10 | 1 |
+| book_0_2 | 8/10 | 1 |
+| book_0_3 | 7/10 | 2 |
+| book_0_4 | 7/10 | 2 |
+| book_0_5 | 7/10 | 2 |
+| book_0_6 | 8/10 | 2 |
+| book_1_0 | 8/10 | 1 |
+| book_1_1 | 7/10 | 2 |
+| book_1_2 | 8/10 | 1 |
+| book_1_3 | 7/10 | 2 |
+| book_2_0 | 8/10 | 2 |
+| book_2_1 | 8/10 | 1 |
+| table_lamp | 8/10 | 2 |
+| open_book | 8/10 | 1 |
 | tablecloth | 6/10 | 2 |
+| photo_frame_0 | 8/10 | 1 |
+| photo_frame_1 | 8/10 | 1 |
+| statue | 6/10 | 2 |
+| stationery_box | 8/10 | 2 |
+| table_tray | 6/10 | 2 |
 | desk_bowl | 8/10 | 1 |
 | desk_papers | 7/10 | 2 |
+| desk_book | 6/10 | 2 |
+| desk_tray | 8/10 | 2 |
+| horse_pedestal | 7/10 | 2 |
+| she_wolf_figurine | 5/10 | 2 |
+| fire_screen | 7/10 | 2 |
+| andiron_0 | 4/10 | 2 |
+| andiron_ball_0 | 8/10 | 1 |
+| andiron_ball_1 | 8/10 | 1 |
+| walking_cane | 8/10 | 1 |
+| fire_tool_stand | 7/10 | 2 |
 | window_sill_left | 8/10 | 2 |
 | window_sill_right | 7/10 | 2 |
+| window_frame_left | 8/10 | 1 |
+| window_frame_middle | 7/10 | 2 |
 | fireplace_fender | 4/10 | 2 |
+| window_frame_right | 7/10 | 2 |
+| book_rest_gallery | 6/10 | 2 |
 
 The full attempt history and score definitions are in [report.md](report.md) and [scores.md](scores.md).
