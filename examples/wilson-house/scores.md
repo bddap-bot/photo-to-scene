@@ -1,8 +1,8 @@
 # Wilson House scores
 
-RESUMABLE: 33/99 detail objects finalized; interrupted stage `object:drape_0`, attempt 1, sequence 307. Final scene gate and critic scores are not yet measured; latest available visual critic: 0/10 (`tier:large`).
+COMPLETE: all 99 detail objects finalized. Final scene gate 0/10: the observed spatial-contract gate rejected integration and materials with the same 68 errors, so no scene-level critic ran. Post-run materials critic on the final render: 7/10.
 
-A gate score of 10 means the applicable driver checks passed; 0 means they rejected the attempt. A dash means no scored machine gate or no visual critic ran. Gate success measures contract compliance, not photographic similarity. Final gate and visual scores remain separate.
+A gate score of 10 means the applicable driver checks passed; 0 means they rejected the attempt. A dash means no scored machine gate or no visual critic ran. "Call stopped" marks an attempt whose model call the driver stopped at its time bound. Gate success measures contract compliance, not photographic similarity. Final gate and visual scores remain separate.
 
 | Stage | Attempt | Gate score | Critic score | Seconds | What changed |
 |---|---:|---:|---:|---:|---|
@@ -269,6 +269,357 @@ A gate score of 10 means the applicable driver checks passed; 0 means they rejec
 | object:sheer_1 | 1 | 10/10 | 7/10 | 214 | Initial entry or forward rebuild. |
 | object:sheer_1 | 2 | 10/10 | 6/10 | 228 | Match the tall, near floor-length proportions of the visible sheer rather than a wide, shallow rectangle.; Make the floral lace finer and less visibly repetitive, with softer contrast and a warmer ivory tone.; Vary the vertical folds and reproduce the stronger translucency in the lower section, including the subtle horizontal transition visible in the crop. |
 | tier:large | 1 | — | 0/10 | 11307 | Integrated footprint tier before descending. |
+| tier:large | 1 | — | call stopped | 1557 | Integrated footprint tier before descending. |
+| tier:large | 2 | — | call stopped | 1546 | model call had no non-whitespace output and no busy child process for 1500 s |
+| object:drape_0 | 1 | 10/10 | 5/10 | 231 | Initial entry or forward rebuild. |
+| object:drape_0 | 2 | 10/10 | 7/10 | 233 | Move the gathered waist farther left and slightly upward; let the lower panel hang nearly vertically beneath it with a modest flare, rather than slanting strongly left.; Join the upper and lower fabric continuously at the gather and add the visible ornate gold tieback.; Replace evenly spaced tubular ridges with broader, irregular folds that sweep into the tieback, using darker rust velvet with softer highlights. |
+| object:portrait | 1 | 10/10 | 8/10 | 232 | Initial entry or forward rebuild. |
+| object:table_lamp | 1 | 10/10 | 6/10 | 188 | Initial entry or forward rebuild. |
+| object:table_lamp | 2 | 10/10 | 8/10 | 213 | Add the tall dark curved arm above the shade, including its inward curl and decorative collars.; Offset the shade to the left of the main upright; the reference support emerges near the shade’s right edge.; Give the shade a squarer, subtly cornered lower outline and finer edging instead of the thick circular rim. |
+| object:desk_book | 1 | 10/10 | 6/10 | 156 | Initial entry or forward rebuild. |
+| object:desk_book | 2 | 10/10 | 6/10 | 135 | Reduce the page-block thickness and cover overhang for a slimmer profile.; Replace the coarse cloudy cover texture with finer, irregular dark decorative markings over a muted brown-olive surface.; Make the cover border a narrow, worn gold line rather than a broad, uniformly clean rim. |
+| object:sheer_0 | 1 | 10/10 | 7/10 | 194 | Initial entry or forward rebuild. |
+| object:sheer_0 | 2 | 10/10 | 5/10 | 259 | Make the panel substantially taller relative to its width to match the visible window opening.; Use fewer, broader folds with subtly varied spacing and depth; soften the repeated sharp vertical ridges.; Increase translucency between the floral motifs and strengthen their creamy white contrast, allowing more backlight through the lower portion. |
+| object:open_book | 1 | 10/10 | 8/10 | 143 | Initial entry or forward rebuild. |
+| object:drape_1 | 1 | 10/10 | 6/10 | 158 | Initial entry or forward rebuild. |
+| object:drape_1 | 2 | 10/10 | 7/10 | 232 | Add the visible gold ornamental tieback around the gathered waist and soften the abrupt junction between upper and lower fabric.; Widen the upper panel relative to its height and preserve a straighter left edge; the crop’s fabric sweeps inward mainly from the right.; Vary fold widths and depths, soften the lower flare, and use darker reddish rust velvet with subdued highlights instead of uniformly glossy ridges. |
+| object:sconce | 1 | 10/10 | 4/10 | 230 | Initial entry or forward rebuild. |
+| object:sconce | 2 | 10/10 | 4/10 | 204 | Connect both lamp dishes to the body with rising curled brass arms; the rendered supports stop well below the lamps.; Shorten and broaden the shades into squat, rounded cups with slightly irregular rims, and give them a warmer luminous yellow appearance.; Replace the oversized plain spear backplate with a narrower ornamented central stem, layered scrollwork, and a small decorative bottom finial. |
+| object:fire_screen | 1 | 10/10 | 7/10 | 110 | Initial entry or forward rebuild. |
+| object:fire_screen | 2 | 10/10 | 7/10 | 145 | Make the mesh more transparent and regularly patterned so the dark firebox remains faintly visible through it; reduce the mottled surface appearance.; Add subtle vertical folds and overlapping edges near the center to convey hanging mesh curtains rather than rigid flat panels.; Reduce the visual weight of the bottom rail, keeping the top rod and narrow side frame dominant. |
+| object:rail_crest | 1 | 10/10 | 7/10 | 273 | Initial entry or forward rebuild. |
+| object:rail_crest | 2 | 10/10 | 7/10 | 149 | Compress the vertical spacing and shorten exposed branches so the ornaments cluster closely around the central medallion.; Replace pointed leaf tips and broad plain backing surfaces with rounded, lobed floral scrollwork matching the crop’s irregular silhouette.; Darken the gold to aged bronze-gilt, with deeper recess shading and subtler highlights. |
+| object:walking_cane | 1 | 10/10 | 8/10 | 72 | Initial entry or forward rebuild. |
+| object:horse_pedestal | 1 | 10/10 | 6/10 | 162 | Initial entry or forward rebuild. |
+| object:horse_pedestal | 2 | 10/10 | 7/10 | 244 | Make the pedestal taller relative to its width and depth to match the crop’s upright proportions.; Replace the smooth, repeating cream waves with irregular, finely mottled amber, ochre, and reddish-brown stone veining; keep the pale band comparatively plain.; Simplify the densely layered top trim into the crop’s thicker, gently rounded projecting cap and restrained stepped edges. |
+| object:statue | 1 | 10/10 | 6/10 | 249 | Initial entry or forward rebuild. |
+| object:statue | 2 | 10/10 | 6/10 | 331 | Refine the oversized, cartoonlike head into a smaller, naturally proportioned face turned slightly left, with sculpted hair and a less rounded cap.; Replace the straight, columnlike robe with asymmetric layered drapery, including the prominent diagonal folds and gathered fabric across the lower body.; Flatten and broaden the instrument across the chest, and integrate the hands, sleeves, and shoulders into detailed continuous forms instead of rounded separate masses. |
+| object:mantel_clock | 1 | 10/10 | 8/10 | 165 | Initial entry or forward rebuild. |
+| object:desk_tray | 1 | 10/10 | 7/10 | 151 | Initial entry or forward rebuild. |
+| object:desk_tray | 2 | 10/10 | 8/10 | 181 | Lower the raised rim and emphasize the layered outer edge; add the small rounded feet visible beneath the crop’s front corners.; Replace the evenly spaced flower stems with denser, varied pale floral ornament across the tray bed.; Lighten the dark interior to a mottled silvery brown and soften the brass finish with tarnish and wear. |
+| object:firebox | 1 | 10/10 | 6/10 | 153 | Initial entry or forward rebuild. |
+| object:firebox | 2 | 10/10 | 7/10 | 143 | Give the mesh curtains visible vertical folds, slight unevenness, and a clearer central overlap; the crop shows hanging screens rather than a taut plane.; Reduce the contrast and regularity of the brick joints, darken the interior, and separate it from the mesh with visible depth.; Make the mesh pattern coarser and more diagonally legible, matching the prominent metal weave in the crop. |
+| object:drape_2 | 1 | 10/10 | 6/10 | 116 | Initial entry or forward rebuild. |
+| object:drape_2 | 2 | 10/10 | 7/10 | 241 | Add deeper, irregular folds and overlapping slack fabric above the tie, especially the heavy curved fold along the lower edge of the swag.; Broaden the gathered waist and lower hanging panel, preserving a substantial outer vertical fold instead of converging all pleats into a narrow pinch.; Add the visible gold tieback and give the fabric a darker rust velvet finish with softer, less uniform highlights. |
+| object:fire_tool_stand | 1 | 10/10 | 3/10 | 228 | Initial entry or forward rebuild. |
+| object:fire_tool_stand | 2 | 10/10 | 7/10 | 165 | Add the two prominent upright oval tool handles at staggered heights, with thick twisted iron rims and inward curled details.; Replace the single exposed central shaft with closely grouped tool shafts and ornamental curved supports matching the crop.; Reduce and lower the broad horizontal hoop to the compact support beneath the handles; the crop does not support the render's prominent splayed tripod feet. |
+| object:stationery_box | 1 | 10/10 | 7/10 | 187 | Initial entry or forward rebuild. |
+| object:stationery_box | 2 | 10/10 | 8/10 | 120 | Reduce front-to-back depth while preserving the broad rectangular front.; Add upright cream papers or envelopes and small gold-toned stationery components visible above the rim.; Make the gold front decoration finer and less raised, with smaller scallops along the bottom and side edges. |
+| object:she_wolf_figurine | 1 | 10/10 | 4/10 | 313 | Initial entry or forward rebuild. |
+| object:she_wolf_figurine | 2 | 10/10 | 5/10 | 223 | Match the crop's left-facing silhouette: use a longer, narrower muzzle, smaller ears, and a head held roughly level with the back.; Replace the cylindrical torso and bulbous shoulder and rump with a continuous anatomical body; make the legs thicker, straighter, and less angular.; Place the infants in a compact sculptural group beneath the belly, supported on a shallow rectangular plinth rather than hanging separately in midair. |
+| object:photo_frame_0 | 1 | 10/10 | 8/10 | 131 | Initial entry or forward rebuild. |
+| object:photo_frame_1 | 1 | 10/10 | 8/10 | 91 | Initial entry or forward rebuild. |
+| object:book_rest_gallery | 1 | 10/10 | 5/10 | 151 | Initial entry or forward rebuild. |
+| object:book_rest_gallery | 2 | 10/10 | 6/10 | 94 | Reduce the crest height and flatten its silhouette into smaller, closely spaced rounded lobes.; Make the spiral relief smaller and subtler; the prominent projecting curls exceed the visible ornament.; Darken the wood toward near-black reddish brown and reduce the bright glossy highlights. |
+| object:book_0_3 | 1 | 10/10 | 5/10 | 195 | Initial entry or forward rebuild. |
+| object:book_0_3 | 2 | 10/10 | 7/10 | 108 | Reduce the visible width of both books substantially relative to their height to match the narrow spines.; Make the tan book slightly taller than the red book and keep them tightly packed.; Soften the inset rectangular borders and texture; the crop shows worn, mostly plain spines with faint horizontal divisions. |
+| object:book_0_5 | 1 | 10/10 | 6/10 | 176 | Initial entry or forward rebuild. |
+| object:book_0_5 | 2 | 10/10 | 7/10 | 239 | Raise the shorter book so its top sits closer to the taller book’s top, matching the crop’s modest height difference.; Replace the taller spine’s large rectangular outline with compact, irregular gold ornament concentrated near the top.; Darken the spine materials toward burgundy-black and make the gold bands and pale lettering less uniform and more subdued. |
+| object:book_1_3 | 1 | 10/10 | 7/10 | 115 | Initial entry or forward rebuild. |
+| object:book_1_3 | 2 | 10/10 | 7/10 | 105 | Make the upper spine markings brighter, denser, and more irregular, matching the crop’s worn gold bands and lettering.; Add stronger mottled wear and warm reddish-brown variation to the spine.; Soften and round the spine edges, with a more visibly worn, uneven top edge. |
+| object:book_0_0 | 1 | 10/10 | 7/10 | 107 | Initial entry or forward rebuild. |
+| object:book_0_0 | 2 | 10/10 | 8/10 | 131 | Give the books a slight rightward lean toward their tops and vary their alignment to match the crop.; Darken the central tan spine toward warm ochre-brown and strengthen its reddish cover edges.; Soften the crisp edges and regular spine markings with subtle wear and tonal variation. |
+| object:book_0_1 | 1 | 10/10 | 8/10 | 175 | Initial entry or forward rebuild. |
+| object:book_0_2 | 1 | 10/10 | 8/10 | 176 | Initial entry or forward rebuild. |
+| object:book_0_4 | 1 | 10/10 | 7/10 | 115 | Initial entry or forward rebuild. |
+| object:book_0_4 | 2 | 10/10 | 7/10 | 134 | Narrow the middle brown book relative to the tan and olive books.; Concentrate the olive spine’s gold decoration into compact horizontal groups near the top.; Add stronger dark horizontal bands and brighter worn edges to the two narrow spines. |
+| object:book_0_6 | 1 | 10/10 | 7/10 | 173 | Initial entry or forward rebuild. |
+| object:book_0_6 | 2 | 10/10 | 8/10 | 182 | Bring the books together so their edges nearly touch; the crop shows only a narrow dark seam.; Warm the pale spine toward aged golden ivory and its edge trim toward ochre.; Give the dark spine a richer reddish-brown tone, especially along its edges. |
+| object:book_1_0 | 1 | 10/10 | 8/10 | 123 | Initial entry or forward rebuild. |
+| object:book_1_1 | 1 | 10/10 | 7/10 | 93 | Initial entry or forward rebuild. |
+| object:book_1_1 | 2 | 10/10 | 7/10 | 101 | Introduce slight leaning and uneven lower edges instead of perfectly parallel books on a shared baseline.; Reduce the width and visual dominance of the rightmost burgundy volume to better match the crop.; Soften the crisp inset borders and gold markings, using more muted, worn spine surfaces. |
+| tier:medium | 1 | — | call stopped | 1892 | Integrated footprint tier before descending. |
+| tier:medium | 2 | — | 0/10 | 134 | model call had no non-whitespace output and no busy child process for 1500 s |
+| object:book_1_2 | 1 | 10/10 | 8/10 | 106 | Initial entry or forward rebuild. |
+| object:book_2_0 | 1 | 10/10 | 7/10 | 148 | Initial entry or forward rebuild. |
+| object:book_2_0 | 2 | 10/10 | 8/10 | 114 | Darken the blue spines and give the central spine a warmer, near-black burgundy tone.; Introduce subtle variation in spine alignment and top-edge angles.; Reduce the contrast of the pale horizontal end bands to match the crop’s subdued detailing. |
+| object:book_2_1 | 1 | 10/10 | 8/10 | 164 | Initial entry or forward rebuild. |
+| object:microphone | 1 | 10/10 | 8/10 | 183 | Initial entry or forward rebuild. |
+| object:tieback_1 | 1 | 10/10 | 4/10 | 329 | Initial entry or forward rebuild. |
+| object:tieback_1 | 2 | 10/10 | 6/10 | 195 | Shorten the span and deepen the curve, with a steeper left section and a rising right section.; Replace the evenly repeated spiral medallions with varied, clustered ornamental forms and a larger sculpted left terminal.; Darken the gold to an aged bronze-gold finish, with stronger dark recesses and selective bright highlights. |
+| object:tieback_0 | 1 | 10/10 | 4/10 | 141 | Initial entry or forward rebuild. |
+| object:tieback_0 | 2 | 10/10 | 6/10 | 167 | Shorten the exposed connecting section substantially and increase its thickness relative to the end ornaments.; Curve the tieback into a shallow wrap around the gathered curtain instead of keeping it nearly straight.; Replace the widely spread, pointed leaf loops with compact, rounded ornamental clusters matching the crop. |
+| object:table_tray | 1 | 10/10 | 6/10 | 187 | Initial entry or forward rebuild. |
+| object:table_tray | 2 | 10/10 | 5/10 | 158 | Increase the body height relative to its footprint and reduce the broad, square appearance of the top.; Shape the lid with a gently raised center and beveled perimeter instead of a flat inset panel.; Use warmer brown-bronze recessed sides, darker seams, and brighter worn metallic trim to match the crop. |
+| object:andiron_ball_0 | 1 | 10/10 | 8/10 | 109 | Initial entry or forward rebuild. |
+| object:andiron_ball_1 | 1 | 10/10 | 8/10 | 81 | Initial entry or forward rebuild. |
+| object:window_frame_middle | 1 | 10/10 | 6/10 | 90 | Initial entry or forward rebuild. |
+| object:window_frame_middle | 2 | 10/10 | 7/10 | 103 | Add the pale inset strip visible along the upper section, terminating just below the crop’s midpoint with a distinct squared end.; Make the lower exposed section broader and flatter, with fewer continuous fine grooves.; Darken the wood to a richer warm brown and strengthen the recessed edge shadows while keeping the upper inset pale. |
+| object:window_frame_right | 1 | 10/10 | 4/10 | 107 | Initial entry or forward rebuild. |
+| object:window_frame_right | 2 | 10/10 | 7/10 | 170 | Darken the frame to a warm, aged brown with subdued highlights.; Reduce the prominent parallel grooves; the crop shows a broader, smoother face with subtle recessed edges.; Match the visible exposure: the frame is clearest near the top and increasingly concealed by the diagonal curtain edge below. |
+| object:window_frame_left | 1 | 10/10 | 8/10 | 96 | Initial entry or forward rebuild. |
+| object:andiron_0 | 1 | 10/10 | 3/10 | 114 | Initial entry or forward rebuild. |
+| object:andiron_0 | 2 | 10/10 | 4/10 | 143 | Replace the small top cap with a prominent spherical brass finial.; Give the finial a softly aged brass finish with a broad, warm highlight. |
+| object:andiron_1 | 1 | 10/10 | 6/10 | 86 | Initial entry or forward rebuild. |
+| object:andiron_1 | 2 | 10/10 | 6/10 | 196 | Replace the flattened top cap with a large spherical brass finial, slightly wider than the shaft, supported by a narrow collar.; Shorten the shaft relative to the complete object to accommodate the ball and match the crop’s proportions.; Darken the brass to an aged brown-gold finish with restrained highlights and darker recesses around the base rings. |
+| object:candlestick_0 | 1 | 10/10 | 7/10 | 138 | Initial entry or forward rebuild. |
+| object:candlestick_0 | 2 | 10/10 | 8/10 | 119 | Shorten the central pear-shaped body and give it a broader, more angular lower shoulder.; Replace the flared bell-shaped foot with a straighter tapered pedestal and more distinct horizontal steps.; Flatten and sharpen the projecting collars so they read as thin turned brass discs rather than rounded cushions. |
+| object:candlestick_1 | 1 | 10/10 | 7/10 | 86 | Initial entry or forward rebuild. |
+| object:candlestick_1 | 2 | 10/10 | 7/10 | 173 | Add the tall, slender white taper visible above the top cup; use the whole photograph to establish its full height.; Narrow the central bulb and make its lower contour less spherical, matching the crop’s slimmer pear-shaped body.; Reduce the broad, heavy stepped foot and refine the lower stem into the crop’s smaller, more delicate collars. |
+| object:tieback_hanging_0 | 1 | 10/10 | 6/10 | 121 | Initial entry or forward rebuild. |
+| object:tieback_hanging_0 | 2 | 10/10 | 6/10 | 81 | Make the cord thinner relative to its length.; Introduce the crop’s subtle bends and uneven hanging contour instead of a nearly straight upper section.; Soften the blunt lower cutoff into a slightly irregular, tapered tip. |
+| object:tieback_hanging_1 | 1 | 10/10 | 5/10 | 111 | Initial entry or forward rebuild. |
+| object:tieback_hanging_1 | 2 | 10/10 | 4/10 | 96 | Reverse the overall lean: the visible strand in the crop drifts right toward the bottom, while the render drifts left.; Match the crop’s gentle, continuous curve instead of the render’s alternating bends.; Reduce the pronounced spiral texture and use a smoother, muted golden-brown finish. |
+| object:desk_photo_1 | 1 | 10/10 | 5/10 | 160 | Initial entry or forward rebuild. |
+| object:desk_photo_1 | 2 | 10/10 | 7/10 | 214 | Make the frame slimmer, with narrower rails and a slight backward lean; reduce the oversized solid left strip.; Separate the blue-and-gold foreground object from the frame instead of embedding it as a flat inset panel.; Use warmer, aged cream surfaces and subtler lettering; replace the crisp diamond pattern with finer, denser ornament on the foreground object. |
+| object:desk_photo_2 | 1 | 10/10 | 6/10 | 261 | Initial entry or forward rebuild. |
+| object:desk_photo_2 | 2 | 10/10 | 7/10 | 101 | Shorten the exposed panel toward the crop’s nearly square proportions and give it a stronger backward lean.; Darken the panel to aged brown and add subtle mottling; reduce the bright, uniform appearance of the border.; Make the inscription darker and more compact, with tighter lettering clustered near the upper centre rather than widely spread looping strokes. |
+| object:desk_photo_0 | 1 | 10/10 | 7/10 | 138 | Initial entry or forward rebuild. |
+| object:desk_photo_0 | 2 | 10/10 | 7/10 | 133 | Make the upper markings smaller, denser, and less uniformly spaced; the crop reads as tightly packed decorative detail rather than large repeated glyphs.; Refine the lower animal into a slimmer silhouette with finer legs and a more curved tail, matching the crop.; Darken the frame and panels to aged brown and muted green, and reduce the bright, uniform appearance of the frame rails. |
+| object:small_cup | 1 | 10/10 | 6/10 | 171 | Initial entry or forward rebuild. |
+| object:small_cup | 2 | 10/10 | 7/10 | 199 | Shorten the body relative to its diameter to match the crop’s compact proportions.; Reduce the handle’s outward projection and opening, keeping it closer to the body.; Brighten the body to reflective silver with stronger light bands; retain the warmer handle tone. |
+| object:photo_image_0 | 1 | 10/10 | 8/10 | 139 | Initial entry or forward rebuild. |
+| object:photo_image_1 | 1 | 10/10 | 9/10 | 94 | Initial entry or forward rebuild. |
+| object:mantel_clock_face | 1 | 10/10 | 7/10 | 202 | Initial entry or forward rebuild. |
+| object:mantel_clock_face | 2 | 10/10 | 8/10 | 248 | Use smaller, finer Roman numerals with serif details and rotate them around the dial to match the crop.; Replace the broad ivory outer rim with a rounded, aged brass bezel.; Refine the main hands with the crop’s more delicate, decorative silhouettes instead of simple tapered blades. |
+| object:stationery_0 | 1 | 10/10 | 2/10 | 171 | Initial entry or forward rebuild. |
+| object:stationery_0 | 2 | 10/10 | 7/10 | 203 | Add the red rectangular holder with its broad front face, thin gold-colored upper rim, and small central gold detail.; Reduce the white paper to a small triangular protrusion above the holder’s left side.; Add the short pale paper edges and small darker contents visible along the holder’s top. |
+| object:stationery_1 | 1 | 10/10 | 2/10 | 191 | Initial entry or forward rebuild. |
+| object:stationery_1 | 2 | 10/10 | 7/10 | 206 | Replace the tall stepped silhouette with a shallow, horizontally elongated rectangular organizer.; Use dark red front and side panels with thin brass edging instead of an entirely gold body.; Add visible white paper sheets rising behind the front panel and small brass compartments or accessories along the top. |
+| object:stationery_2 | 1 | 10/10 | 4/10 | 187 | Initial entry or forward rebuild. |
+| object:stationery_2 | 2 | 10/10 | 5/10 | 102 | Reduce the height of both outer forms relative to their width; the crop shows squat, nearly square silhouettes.; Make the open tops shallower and less prominent, with finer rims and less pronounced dark front recesses.; Use a lighter, warmer brass finish with softer shading to match the crop’s golden material. |
+| object:fire_tool_0 | 1 | 10/10 | 7/10 | 127 | Initial entry or forward rebuild. |
+| object:fire_tool_0 | 2 | 10/10 | 7/10 | 143 | Thicken the shaft and broaden the handle to match the crop’s heavier silhouette.; Make the upper shaft’s twisted sections more pronounced, with visible alternating bulges and narrow necks.; Give the handle a blunter, rounded rectangular profile and add subtle unevenness to the shaft. |
+| object:fire_tool_1 | 1 | 10/10 | 7/10 | 121 | Initial entry or forward rebuild. |
+| object:fire_tool_1 | 2 | 10/10 | 7/10 | 97 | Make the twisted sections broader and more pronounced in silhouette, with larger alternating faces.; Reduce the fine ribbed surface detail so the shaft reads as smooth, worn forged iron. |
+| object:fire_tool_2 | 1 | 10/10 | 3/10 | 192 | Initial entry or forward rebuild. |
+| object:fire_tool_2 | 2 | 10/10 | 6/10 | 218 | Enlarge and thicken the oval handle relative to the shaft, adding the pronounced twisted-rope relief around its perimeter.; Replace the small inner curl with a thicker, inward-coiling scroll that fills more of the handle opening.; Build the curved, flared neck and lower hooked flourish beneath the oval, using rounded dark iron surfaces with visible highlights. |
+| object:candle_0 | 1 | 10/10 | 8/10 | 95 | Initial entry or forward rebuild. |
+| object:candle_1 | 1 | 10/10 | 8/10 | 78 | Initial entry or forward rebuild. |
+| tier:small | 1 | — | call stopped | 2384 | Integrated footprint tier before descending. |
+| tier:small | 2 | — | call stopped | 1616 | model call had no non-whitespace output and no busy child process for 1500 s |
+| integrate | 1 | 0/10 | — | 919 | Initial entry or forward rebuild. |
+| integrate | 2 | 0/10 | — | 168 | north_right: footprint did not round-trip; mantel: footprint did not round-trip; mantel: region carved_frieze did not round-trip; curtain_rail: footprint did not round-trip; curtain_rail: region body did not round-trip; drape_0: footprint did not round-trip; drape_0: region long_pleated_tail did not round-trip; tieback_0: footprint did not round-trip; tieback_0: region body did not round-trip; drape_1: footprint did not round-trip; tieback_1: footprint did not round-trip; tieback_1: region body did not round-trip; drape_2: footprint did not round-trip; rail_crest: footprint did not round-trip; rail_crest: region body did not round-trip; globe: footprint did not round-trip; globe: region base did not round-trip; gold_chair: footprint did not round-trip; red_chair: footprint did not round-trip; round_table: footprint did not round-trip; round_table: region foot did not round-trip; orange_chair: footprint did not round-trip; mantel_clock_face: footprint did not round-trip; sconce: footprint did not round-trip; book_0_0: footprint did not round-trip; book_0_0: region body did not round-trip; book_0_1: footprint did not round-trip; book_0_1: region body did not round-trip; book_0_2: footprint did not round-trip; book_0_2: region body did not round-trip; book_0_3: footprint did not round-trip; book_0_3: region body did not round-trip; book_0_4: footprint did not round-trip; book_0_4: region body did not round-trip; book_0_5: footprint did not round-trip; book_0_5: region body did not round-trip; book_0_6: footprint did not round-trip; book_0_6: region body did not round-trip; book_1_0: footprint did not round-trip; book_1_0: region body did not round-trip; book_1_1: footprint did not round-trip; book_1_1: region body did not round-trip; book_1_2: footprint did not round-trip; book_1_2: region body did not round-trip; book_1_3: footprint did not round-trip; book_1_3: region body did not round-trip; book_2_0: footprint did not round-trip; book_2_0: region body did not round-trip; book_2_1: footprint did not round-trip; book_2_1: region body did not round-trip; table_lamp: footprint did not round-trip; table_lamp: region shade did not round-trip; stationery_1: region body did not round-trip; stationery_2: region body did not round-trip; desk_bowl: footprint did not round-trip; she_wolf_figurine: footprint did not round-trip; walking_cane: footprint did not round-trip; tieback_hanging_0: footprint did not round-trip; tieback_hanging_1: footprint did not round-trip; tieback_hanging_1: region body did not round-trip; fire_tool_stand: footprint did not round-trip; book_rest_gallery: region body did not round-trip; sofa: support regions were not observed; orange_chair: support regions were not observed; mantel_clock_face: observed support relationship failed with floor; fire_tool_0: observed support relationship failed with floor; fire_tool_1: observed support relationship failed with floor; fire_tool_2: observed support relationship failed with floor |
+| integrate | 3 | 0/10 | — | 244 | north_right: footprint did not round-trip; mantel: footprint did not round-trip; mantel: region carved_frieze did not round-trip; curtain_rail: footprint did not round-trip; curtain_rail: region body did not round-trip; drape_0: footprint did not round-trip; drape_0: region long_pleated_tail did not round-trip; tieback_0: footprint did not round-trip; tieback_0: region body did not round-trip; drape_1: footprint did not round-trip; tieback_1: footprint did not round-trip; tieback_1: region body did not round-trip; drape_2: footprint did not round-trip; rail_crest: footprint did not round-trip; rail_crest: region body did not round-trip; globe: footprint did not round-trip; globe: region base did not round-trip; gold_chair: footprint did not round-trip; red_chair: footprint did not round-trip; round_table: footprint did not round-trip; round_table: region foot did not round-trip; orange_chair: footprint did not round-trip; mantel_clock_face: footprint did not round-trip; sconce: footprint did not round-trip; book_0_0: footprint did not round-trip; book_0_0: region body did not round-trip; book_0_1: footprint did not round-trip; book_0_1: region body did not round-trip; book_0_2: footprint did not round-trip; book_0_2: region body did not round-trip; book_0_3: footprint did not round-trip; book_0_3: region body did not round-trip; book_0_4: footprint did not round-trip; book_0_4: region body did not round-trip; book_0_5: footprint did not round-trip; book_0_5: region body did not round-trip; book_0_6: footprint did not round-trip; book_0_6: region body did not round-trip; book_1_0: footprint did not round-trip; book_1_0: region body did not round-trip; book_1_1: footprint did not round-trip; book_1_1: region body did not round-trip; book_1_2: footprint did not round-trip; book_1_2: region body did not round-trip; book_1_3: footprint did not round-trip; book_1_3: region body did not round-trip; book_2_0: footprint did not round-trip; book_2_0: region body did not round-trip; book_2_1: footprint did not round-trip; book_2_1: region body did not round-trip; table_lamp: footprint did not round-trip; table_lamp: region shade did not round-trip; stationery_1: region body did not round-trip; stationery_2: region body did not round-trip; desk_bowl: footprint did not round-trip; she_wolf_figurine: footprint did not round-trip; walking_cane: footprint did not round-trip; tieback_hanging_0: footprint did not round-trip; tieback_hanging_1: footprint did not round-trip; tieback_hanging_1: region body did not round-trip; fire_tool_stand: footprint did not round-trip; book_rest_gallery: region body did not round-trip; sofa: support regions were not observed; orange_chair: support regions were not observed; mantel_clock_face: observed support relationship failed with floor; fire_tool_0: observed support relationship failed with floor; fire_tool_1: observed support relationship failed with floor; fire_tool_2: observed support relationship failed with floor |
+| materials | 1 | 0/10 | — | 611 | Initial entry or forward rebuild. |
+
+## GOTO history
+
+Every GOTO the driver logged, in order: taken (`count=`), refused at an allowance cap, or rejected for naming no valid stage.
+
+- rejected origin=builder requested= reason=target is not in canonical stage set
+- cap request ignored origin=builder requested=blockout reason=wall_w has a facing/frame conflict: its broad room-facing plaster surface is at world X=0, with normal (+1,0), but front_xy and frame.y_axis_xy are (0,-1), tangent to that surface. The declared local front therefore describes the narrow end of the wall. Correct the blockout frame before detail construction, preserving the existing world envelope and corrected shell height. Proposed frame: origin_xyz [-0.125,3.4,0], x_axis_xy [0,-1], y_axis_xy [1,0], size_xyz [6.8,0.25,3.7139255], front_xy [1,0]. Preserve body region bounds, floor support, and external child ownership; regenerate ordered footprint from the corrected frame. Reissue the object entry after validating the contract. This request uses the canonical stage field to repair the previous rejected GOTO.
+- count=1 origin=builder stage=blockout reason=Spatial facing conflict in wall_w: the broad room-facing plaster plane at world X=0 has normal (+1,0), but the supplied front_xy and frame.y_axis_xy are (0,-1), tangent to that plane. Correct the frame in blockout and reissue the entry before detail construction. Preserve the existing world bounds, corrected height, body region, floor support, and external child ownership. The previous routing request was ignored due to the driver re-entry cap; this spatial conflict remains unresolved.
+- count=2 origin=builder stage=blockout reason=The appended correction requires a projecting chimney breast and raised architectural trim. The supplied plaster body is confined to world X=-0.25..0 and assigns children to external ownership. The visible room-side projection exceeds that body region and footprint; incorporating externally owned trim conflicts with ownership. The corrected facing is already consistent with the crop.
+- count=3 origin=builder stage=blockout reason=The requested portrait-oriented chimney panel conflicts with its contracted 2.38 m width and 2.05 m height. Changing its proportions and widening rails requires revised spatial regions.
+- count=4 origin=builder stage=blockout reason=Requested panel layout changes conflict with declared spatial region envelopes.
+- count=5 origin=builder stage=blockout reason=Appended corrections require spatial changes: the central panel bottom is fixed at z=1.74 m with a declared 0.16 m mantel gap, and chimney projection is fixed at 0.38 m. Lowering the panel and deepening the breast would violate the supplied region contract.
+- cap reached origin=builder requested=floorplan reason=The appended correction calls for lowering the central panel and deepening the chimney breast, but the supplied wall_w contract fixes the panel bottom at z=1.74 m with a 0.16 m gap above the 1.58 m mantel, and fixes chimney projection at 0.38 m. The latter is also fixed_features.chimney.size_m[0] in floorplan.json. Implementing the requested spatial changes requires coordinated revision of these dimensions and their camera projection; changing only the detail mesh would violate the declared regions. Return to floorplan to resolve the projection conflict before rebuilding blockout.
+- cap reached origin=builder requested=blockout reason=Appended crop corrections require changing explicit spatial region envelopes. Current detail already implements the contracted central panel bottom, width, margins, near-side width and maximum cornice projection; further directional changes cannot be performed within those envelopes.
+- cap reached origin=builder requested=blockout reason=The appended correction requires a large patterned rug covering most of the floor, but the supplied Wood floor contract assigns children to external ownership and declares only a body region ending at z=0. Adding the rug within this detail asset would invent ownership, footprint and elevation outside the declared region.
+- cap reached origin=builder requested=blockout reason=The appended sofa silhouette corrections conflict with the authoritative exact region meshes. The current back is a separate narrow crest over a slab-shaped rear panel, and the rolled arms are tall narrow ellipsoids. The detail test enforces exact region bounds. Revise these spatial regions before rebuilding detail rather than silently changing the contracted padding envelopes.
+- cap reached origin=builder requested=blockout reason=Deep perimeter cornice beneath ceiling conflicts with the sole exact slab region and rear minimum bound.
+- cap reached origin=builder requested=blockout reason=Direct floor contact conflicts with the elevated above-window body in the crop and authoritative mesh.
+- cap reached origin=builder requested=blockout reason=The requested ornament conflicts with ownership.children=external and the sole declared plaster body region.
+- cap reached origin=builder requested=blockout reason=Shelf begins at z=1.48 m while both piers and carved_frieze end at z=1.45 m, leaving a 0.03 m unassigned gap. The crop shows continuous stepped supporting mouldings between frieze and shelf. Filling the gap requires changing region extents or adding an owned region.
+- cap request ignored origin=builder requested= reason=The supplied regions leave an unsupported 0.03 m gap between the pier/frieze tops at z=1.45 and shelf bottom at z=1.48. The crop shows continuous supporting cornice molding in this location. With children externally owned, detail cannot assign this missing connecting geometry without resolving its region and ownership.
+- cap reached origin=builder requested=blockout reason=Requested marble inner surround lies outside the four declared mantel regions; resolve regions and ownership before detail refinement.
+- cap reached origin=builder requested=blockout reason=The crop shows a broad continuous dark wooden panel with raised carved framing beneath the studded near tabletop edge. The desk contract declares only a top at world Z=0.74..0.80 and four narrow corner legs below it. No region contains the visible panel between those legs, and children are externally owned. Modeling that panel in the detail stage would introduce unassigned geometry or incorrectly tag it as a leg/top.
+- cap reached origin=builder requested=blockout reason=Isolated detail render reproduces the accepted region geometry but exposes a crop conflict in runner curvature and floor-support topology. This requires a spatial correction, not a material/detail adjustment.
+- cap request ignored origin=builder requested=blockout reason=Runner and leg regions conflict with the crop: runners curl up to seat height and legs extend below them to the floor. The crop shows shallow broad wooden runners supporting the leg ends.
+- cap reached origin=builder requested=blockout reason=The supplied runner and leg regions conflict with the crop: runners rise to 0.423338 m, above the seat underside at 0.397800 m, and legs extend to floor level below the runner rails. The crop shows shallow broad runners beneath the leg ends. The existing isolated render confirms excessive runner curvature.
+- cap request ignored origin=builder requested=blockout reason=Runner and leg regions conflict with the crop: runners curl up to seat height and legs extend below the rails. The crop shows shallow broad runners beneath the leg ends.
+- cap reached origin=builder requested=blockout reason=The supplied regional meshes conflict with the crop silhouette. A fresh isolated render preserving the contracted frame shows a central gather and a strongly diagonal tail, whereas the crop shows a gather near the left edge and a near-vertical hanging tail. Detail material work cannot repair those spatial relationships without revising the declared meshes and envelopes.
+- cap request ignored origin=builder requested=blockout reason=Supplied spatial meshes conflict with the crop: central gather, upper fabric fanning to both sides, and strongly slanted lower tail instead of a left-side gather, dominant rightward diagonal sweep, and nearly vertical tail.
+- cap reached origin=builder requested=blockout reason=The supplied spatial meshes conflict with the crop: the gather is near the center of the upper fan and the long tail slants strongly sideways, whereas the crop shows a left-side gather, a nearly vertical tail, and a dominant sweep upward to the right. A new render alone cannot repair this spatial conflict.
+- cap request ignored origin=builder requested=blockout reason=The supplied spatial meshes conflict with the crop silhouette: central gather, two-sided upper fan, and strongly slanted lower tail instead of a left-side gather, dominant rightward sweep, and nearly vertical tail.
+- cap reached origin=builder requested=blockout reason=Crop/object evidence mismatch: the crop shows furniture and a perforated under-window panel with horizontal trim, but no identifiable floor junction or baseboard. The contract assigns this visible extent to a 7.2 m wide, 0.17 m high floor-supported strip. Reconcile the source assignment before detailing the visible panel as that strip.
+- cap request ignored origin=builder requested=blockout reason=The crop shows under-window trim and a perforated panel behind furnishings, but no identifiable floor junction or baseboard. The contracted floor-supported body (7.2 x 0.14 x 0.17 m) cannot be verified against the supplied visible evidence.
+- cap reached origin=builder requested=blockout reason=Source assignment requires reconciliation: the crop shows under-window trim and a perforated panel behind furniture, without an identifiable floor junction or baseboard. It does not establish the contracted floor-supported 7.2 x 0.14 x 0.17 m strip.
+- cap request ignored origin=builder requested=blockout reason=Source assignment conflicts with the identifiable architectural evidence: the crop shows under-window mouldings and a perforated panel behind furnishings, while the contract specifies a floor-supported 0.17 m baseboard. No floor junction is identifiable.
+- cap reached origin=builder requested=blockout reason=The requested visible gold tieback conflicts with spatial_contract.ownership.children=external. The existing builder explicitly excludes the externally owned tieback.
+- cap request ignored origin=builder requested=blockout reason=The requested gold tieback conflicts with spatial_contract.ownership.children=external. The builder explicitly excludes the tieback and the entry declares only cloth regions.
+- rejected origin=builder requested= reason=target is not in canonical stage set
+- cap request ignored origin=builder requested= reason=Required gold molding and surrounding framing conflict with external child ownership; only the plaster body region is declared. Recess placement needs reconciliation.
+- cap reached origin=builder requested=blockout reason=The requested large upper medallion ornament conflicts with external child ownership and lacks a declared region. The existing detail explicitly excludes surrounding wall ornament. Resolve ownership and extent before adding it.
+- cap request ignored origin=builder requested=blockout reason=The requested large upper ornament with oval medallions and a central vertical support conflicts with the supplied external child ownership and rail-only body region. The crop shows the ornament continuing beyond the upper crop boundary, so its full extent cannot be established from this input.
+- cap reached origin=builder requested=blockout reason=The crop prominently shows a separate framed mesh fire screen in front of a dark fireplace opening. The supplied entry declares only the opening body, with children externally owned and no screen region or attachment relationship. Assigning the visible screen assembly to this detail asset would assume ownership that the contract does not grant.
+- cap request ignored origin=builder requested=blockout reason=The crop shows a prominent framed mesh screen, but the entry declares only the shallow opening body and assigns children to external ownership. Screen ownership and front-plane placement need upstream reconciliation.
+- cap reached origin=builder requested=blockout reason=Declared region meshes disconnect the rolled arm pads from the upholstered supports and all feet from the base; rear feet also lie wholly behind the base. The crop shows continuous upholstered arms and an attached dark wooden foot beneath the chair. Repair requires spatial region and support/footprint reconciliation before detail.
+- cap request ignored origin=builder requested=blockout reason=Declared regions remain disconnected: arm pads float above supports and all feet terminate below the chair body. Rear feet also lie behind the base. The crop shows continuous upholstered arms and an attached turned wooden foot.
+- rejected origin=builder requested= reason=target is not in canonical stage set
+- cap request ignored origin=builder requested=blockout reason=Exact contracted region meshes contain disconnected arm pads and feet inconsistent with the crop. Repair requires changing spatial regions, so S4 cannot honestly pass the detail gate within this contract.
+- cap reached origin=builder requested=blockout reason=The requested lower gathered waist and continuous hanging sweep conflict with the declared cloth regions; the visible gold tieback also requires coordinated external ownership and placement.
+- cap request ignored origin=builder requested=blockout reason=Requested lower gathered waist and deeper hanging sweep conflict with the declared cloth regions; the visible ornate gold tieback also requires explicit ownership and placement.
+- cap reached origin=builder requested=blockout reason=The crop shows broad cloth panels hanging far below the tabletop, but the contract declares only a top and four narrow leg regions. Cloth ownership is unspecified while children are external.
+- cap request ignored origin=builder requested=blockout reason=Declared regions omit the broad hanging tablecloth visible in the crop; cloth ownership is unresolved under children=external.
+- cap reached origin=builder requested=blockout reason=The crop shows broad cloth hanging below the tabletop between the legs. Declared regions cover only top (world z=0.81..0.87 m) and four narrow legs, with no hanging-cloth region. Children are external and cloth ownership is unspecified.
+- cap request ignored origin=builder requested=blockout reason=The crop-visible hanging tablecloth has no declared spatial region or explicit ownership. Only the tabletop at z=0.81..0.87 m and four narrow legs are declared; children are externally owned.
+- cap reached origin=builder requested=blockout reason=The declared arm and seat regions cannot contain the crop-visible continuous upholstered arm sides. Both arm regions start at world z=0.504 m, while the seat region ends at z=0.4935 m. This forces a 0.0105 m opening beneath each arm outside the back region. The crop shows solid red upholstery descending from the rolled arms into the seat/base, most clearly on the image-right side. No connecting side region is declared, and external child ownership does not authorize inventing one in detail.
+- cap request ignored origin=builder requested=blockout reason=Arm regions leave an uncovered vertical gap above the seat, conflicting with the crop-visible continuous upholstered sides below the rolled arms.
+- cap reached origin=builder requested=blockout reason=Crop-visible continuous upholstered sides conflict with region coverage: both arms start at z=0.504 m, above the seat top at z=0.4935 m, leaving a 10.5 mm gap away from the back.
+- cap request ignored origin=builder requested=blockout reason=The crop shows continuous upholstered arm sides joining the seat/base. Both arm regions start at z=0.504 m while the seat ends at z=0.4935 m. Away from the back, no declared chair region covers this 0.0105 m interval.
+- cap reached origin=builder requested=blockout reason=The crop-visible bookcase has intermediate vertical wooden side slats between its corner posts. The supplied contract declares only four narrow corner-post regions and four horizontal shelf regions; no region covers these integral frame members between shelf levels. Faithful detail geometry would exceed the declared component regions.
+- cap request ignored origin=builder requested=blockout reason=The crop shows integral vertical wooden side slats between the corner posts. The complete entry declares only four corner-post regions and four horizontal shelf regions, leaving the inter-shelf slats without spatial coverage. A faithful detail asset requires coordinated bookcase-owned side-frame regions.
+- cap reached origin=builder requested=blockout reason=The crop shows integral vertical wooden side slats between the corner posts and across the open shelf tiers. The supplied contract has only four corner-post regions and four horizontal shelf regions; none covers these inter-shelf side members. The missing-asset correction does not resolve that spatial conflict.
+- cap request ignored origin=builder requested= reason=The crop shows integral vertical wooden side slats spanning the open shelf tiers. The complete current entry contains only four corner-post regions and four shelf regions; none covers the inter-shelf side slats. This is a region-coverage conflict with the crop.
+- rejected origin=builder requested= reason=target is not in canonical stage set
+- cap request ignored origin=builder requested=blockout reason=The crop-visible curved splayed base requires table-owned geometry outside the narrow pedestal above the declared foot region. The foot region ends at z=0.07 m, while all geometry above that height is constrained to the pedestal's 0.10 x 0.10 m cross-section until the tabletop. This does not cover the raised curved legs visible beneath the turned shaft.
+- cap reached origin=builder requested=blockout reason=The raised curved splayed table base extends beyond the narrow pedestal above the declared foot ceiling of 0.07 m. Faithful geometry conflicts with current region coverage.
+- cap request ignored origin=builder requested=blockout reason=The crop shows a raised curved splayed base extending outside the narrow 0.10 x 0.10 m pedestal above the foot region ceiling at z=0.07 m. Integral base geometry conflicts with declared region coverage.
+- cap reached origin=builder requested=blockout reason=Declared rails reach the post tops, conflicting with raised ball finials in the crop; lower perimeter metalwork lacks region coverage.
+- cap reached origin=builder requested=blockout reason=The crop and appended corrections conflict with narrow post regions and missing base-frame and rear-support regions. Faithful detail repair requires coordinated spatial revision.
+- cap reached origin=builder requested=blockout reason=The visible deep drawer/apron below the tabletop has no spatial region. The top is restricted to world z=0.69..0.75 m; the remaining four regions are isolated narrow legs. A spanning apron below the top cannot fit those regions.
+- cap reached origin=builder requested=blockout reason=The deeper drawer/apron and lower horizontal framing requested from the reference conflict with the supplied regions. The top occupies only world z=0.69..0.75 m; all other regions are isolated 0.05 m square leg boxes. These force an implausibly shallow drawer and cannot contain spanning lower framing.
+- cap reached origin=builder requested=blockout reason=The crop depicts a hanging rust-orange curtain, but the contract assigns a floor-supported plaster wall slab. Resolve identity, regions and ownership before detail.
+- cap reached origin=builder requested=blockout reason=Confirmed gathered velvet curtain is assigned a floor-supported plaster-wall slab. Its crop overlaps drape_2, which already identifies the same right-window gathered curtain. Correcting the silhouette and adding the gold tieback requires spatial and ownership reconciliation.
+- cap reached origin=builder requested=blockout reason=The contracted 1.70 m length and 0.08 m height make the sill/apron too slender to reproduce the photographed broad fascia and wide lower trim or satisfy the requested fascia height increase.
+- cap reached origin=builder requested=blockout reason=The contracted length of 1.70 m and total height of 0.08 m (height/length 0.047) produce the overly slender isolated render and conflict with the requested taller broad fascia.
+- cap reached origin=builder requested=blockout reason=The requested deeper continuous apron and broader feet conflict with the supplied spatial regions. Top coverage is restricted to z=0.19..0.25 m, with no continuous apron region below it. Each leg is restricted to a 0.05 by 0.05 m footprint and extends to z=0.19 m.
+- cap reached origin=builder requested=blockout reason=The base region is confined to z=0..0.10 m, with only a 0.05 m square stem above it until z=0.53 m. The broad curved tripod legs in the crop rise roughly a quarter to a third of the object height and cannot fit these region envelopes.
+- cap reached origin=builder requested=blockout reason=The base region z=0..0.10 m permits only 10.5 percent of total object height, conflicting with the requested high leg shoulders. Crop shoulders near y=540..565 of 763 pixels lie approximately 26–29 percent above the lowest foot. The 0.05 m stem width also needs review for the rounded bulb.
+- count=1 origin=critic stage=blockout reason=blockout: Reduce the foreground table’s rightward extent. Its visible edge reaches roughly 51% of image width at the bottom, versus 27% in the reference, obscuring too much of the sofa.
+- cap reached origin=builder requested=blockout reason=The reference and requested corrections require a stepped ceiling perimeter around the projecting left chimney wall, but the ceiling contract supplies only a rectangular eight-vertex slab. The deep cornice descends below the ceiling body envelope at the rear junction and overlaps the separately declared cornice_n object. Faithful detail requires coordinated footprint, region and ownership repair.
+- rejected origin=builder requested= reason=target is not in canonical stage set
+- cap reached origin=builder requested=blockout reason=Rug is separately owned and supported by floor. Its z=0..0.015 m envelope lies above floor body z=-0.08..0 m, whose children are external. Adding it to floor would conflict with ownership and bounds.
+- cap reached origin=builder requested=blockout reason=The supplied corrections conflict with fixed wall panel region extents and the cornice projection envelope. Revise spatial regions and related metadata before S4 refinement; do not silently alter the contracted frame in the detail builder.
+- cap reached origin=builder requested=blockout reason=Spatial region silhouettes conflict with the supplied crop: back_crest is a separate narrow bolster over a slab-like rounded_back, and rolled_arm regions produce tall narrow oval ends instead of broad, low, softly outward-rolled padding. Existing isolated render confirms this mismatch. Revise authoritative padding meshes before detail rebuilding.
+- cap reached origin=builder requested=blockout reason=The authoritative padding regions conflict with the crop and explicit silhouette corrections. Detail currently reproduces a separate narrow crest above a flat back and narrow upright oval arms. Revise spatial padding meshes before detail can satisfy the reference.
+- cap reached origin=builder requested=blockout reason=The visible continuous carved desk panel beneath the studded tabletop edge has no assigned spatial region. The complete desk entry declares only a top at world z=0.7400000095..0.7999999523 and four narrow corner legs below it. Filling the broad space between legs would conflict with those regions; children are externally owned. Repair the structural regions before building the detail asset.
+- cap reached origin=builder requested=blockout reason=The photographed continuous carved desk panel below the studded tabletop has no owned spatial region. Existing regions contain only a top at z=0.74..0.80 m and four narrow corner legs, so adding the visible panel would violate region containment.
+- cap reached origin=builder requested=blockout reason=The photograph and explicit correction require a broad solid paneled front, but the spatial contract declares only top and four narrow leg regions. Tabletop accessories are externally owned and require coordinated ownership/support regions rather than duplicate desk child meshes.
+- rejected origin=builder requested= reason=target is not in canonical stage set
+- cap reached origin=builder requested=blockout reason=north_above correction requires ownership and region reconciliation: its contract assigns children externally, while requested cornice_n and curtain_rail are separate assets outside its body envelope.
+- cap reached origin=builder requested=blockout reason=The large fan-shaped oval-medallion crest above the floral band has no declared owner or region. The entry supplies only a 0.2491915225982666 m-high rail body and declares children external. The existing asset omits the crest. Do not compress the crest into the shallow rail envelope.
+- cap reached origin=builder requested=blockout reason=The current 5.05 m-wide frame is only 0.24919 m high including ornaments. The full photograph shows a large crest rising several band heights above the rail. The crop clips its top. The complete silhouette conflicts with this shallow envelope.
+- cap reached origin=builder requested=blockout reason=The crop supports elevated moulded trim above the under-window radiator grille, not the contracted 0.17 m high floor-contact baseboard. Existing north_below and radiator entries already claim enclosure and grille components. Elevation and ownership need reconciliation before detail modeling.
+- cap reached origin=builder requested=blockout reason=Photographs identify elevated horizontal moulded trim above the radiator grille beneath the windows, but the supplied frame starts at z=0 with floor contact and a supported_by floor relationship.
+- cap reached origin=builder requested=blockout reason=Contracted component regions are disconnected and contradict the continuous upholstered sides and attached supporting feet visible in the crop. Repair spatial regions before detail construction.
+- cap reached origin=builder requested=blockout reason=The supplied component regions conflict with the photographed connected chair and the explicit corrections. Detail geometry confined to these regions cannot attach all feet or make continuous upholstered sides. Repair the spatial contract before rerunning this object stage.
+- rejected origin=builder requested= reason=target is not in canonical stage set
+- cap reached origin=builder requested=blockout reason=The requested burgundy marble inner lintel and side strips fall outside every declared mantel region. Below z=1.15 m the piers only cover local x=-0.88..-0.65 and +0.65..+0.88 m; the inner span is unassigned. Resolve marble regions and ownership before detail construction.
+- cap reached origin=builder requested=blockout reason=Runner and leg/support regions conflict with crop; isolated render confirms steep curls and detached legs. Repair spatial contract before detail regeneration.
+- cap reached origin=builder requested=blockout reason=Supplied regions conflict with reference silhouette and appended corrections. Runner tops reach 0.423338 m above the seat underside at 0.397800 m; leg tops at 0.367200 m leave a 0.030600 m attachment gap. Crossrail and cane-rib regions impose a divided slatted back.
+- cap reached origin=builder requested=blockout reason=The supplied component regions conflict with the reference fender: 0.025 m-wide posts over 0.28 m height force slender uprights, rail regions at z=0.315..0.340 m meet the finial tops, and no regions cover the visible low framing or rear return supports. Repair regions and ownership before rebuilding the detail asset.
+- cap reached origin=builder requested=blockout reason=Requested corrections conflict with component regions: posts are only 0.025 m wide over 0.28 m height; rail regions at z=0.315..0.340 m leave insufficient space for finials above junctions; no regions cover rear posts or the low base.
+- rejected origin=builder requested= reason=target is not in canonical stage set
+- cap reached origin=builder requested=blockout reason=The tablecloth drape regions are only 0.020 m deep and the top region only 0.020 m high. The isolated render remains boxlike, whereas the crop shows broad irregular folds and a rounded tabletop-to-drape transition. Review the cloth region envelopes against the photograph and display_table contact before rebuilding the drape. Preserve the confirmed identification, enlarged floral ornament and mostly straight hem.
+- cap reached origin=builder requested=blockout reason=Requested integrated cloth conflicts with separate tablecloth ownership and display_table regions limited to top and four legs. Adding drapes here would duplicate external geometry and exceed declared regions.
+- cap reached origin=builder requested=blockout reason=Requested fuller arms integrated into upholstered side panels and deeper low seat base conflict with fixed arm and seat regions. Repair region envelopes before rebuilding detail.
+- cap reached origin=builder requested=blockout reason=Requested reduction of exposed top depth conflicts with the fixed 0.180000305 m depth, footprint and body envelope. The existing isolated test requires exact world-envelope equality. Repair the spatial contract before rebuilding the narrower ledge.
+- rejected origin=builder requested= reason=target is not in canonical stage set
+- cap reached origin=builder requested=blockout reason=lamp_table shows a substantial spanning drawer/apron beneath the tabletop, but its top region spans only z=0.69..0.75 m and the remaining regions are four isolated 0.05 m-wide leg boxes. Deeper apron geometry and low framing require region repair and ownership review before detail rebuilding.
+- cap reached origin=builder requested=blockout reason=The requested crop-matching detail conflicts with the declared regions and child ownership. The top region covers only z=0.69..0.75 m, and the remaining regions are four isolated 0.05 m square leg columns. A deep spanning apron, heavier recessed supports and lower horizontal framing cannot be modeled inside these regions. The requested open book is currently externally owned.
+- cap reached origin=builder requested=blockout reason=The visible integral vertical side slats occupy inter-shelf space outside all eight declared regions (four corner posts and four horizontal shelves). Repair region coverage before detail construction.
+- cap reached origin=builder requested=blockout reason=The crop and current corrections require continuous integral side slats and three book-filled compartments, but the spatial contract contains only four corner-post and four shelf regions and assigns children externally. Resolve regions and ownership before detail rebuilding.
+- cap reached origin=builder requested=blockout reason=Confirmed curtain identification conflicts with the retained plaster-wall spatial contract: a 1.30 m-wide slab extending from floor to sloping ceiling, explicit floor support, and source interpretation Plaster at right window edge. The crop shows gathered velvet suspended below a separate rail, with its lower extent occluded by the orange chair. Correct suspension, extent and ownership require spatial repair.
+- cap reached origin=builder requested=blockout reason=Confirmed suspended curtain conflicts with retained plaster interpretation, ceiling-topped slab region and unsupported floor-contact relationship. Repair spatial contract before detail refinement.
+- cap reached origin=builder requested=blockout reason=The requested deeper apron and shorter exposed legs conflict with the declared regions. The top region spans z=0.19–0.25 m, normalized 0.76–1. Below 0.19 m only four narrow leg regions exist. Lowering a full-width apron would violate region containment. The crop shows a substantially deeper frame and shorter exposed feet.
+- rejected origin=builder requested= reason=target is not in canonical stage set
+- rejected origin=builder requested= reason=target is not in canonical stage set
+- rejected origin=builder requested= reason=second invalid target from same stage ignored
+- rejected origin=builder requested= reason=target is not in canonical stage set
+- cap reached origin=builder requested=blockout reason=round_table foot and pedestal regions conflict with the reference. The foot region ends at z=0.07 m, only 9.7 percent of table height, while the curved splayed feet visibly join the pedestal higher, approximately in the lower quarter of its height. Above 0.07 m the only support region is a 0.10 m square pedestal envelope, excluding the spreading upper feet. Repair foot and pedestal region coverage and review the base footprint against the partly occluded crop. Preserve the circular top, external prop ownership and floor contact. Then resume object:round_table to build the asset and render a fresh isolated view.
+- cap reached origin=builder requested=blockout reason=The foot region is restricted to z=0..0.07 m. The crop shows raised foot roots and substantial downward curves through approximately the lower quarter of the table. The existing asset explicitly flattens its feet to satisfy this region. Requested descending feet require spatial region repair.
+- cap reached origin=builder requested=blockout reason=The crop shows raised spreading tripod leg roots roughly one quarter to one third of the object height above the floor. The base region ends at z=0.10 m, only 10.5 percent of the 0.95 m height, and the stem above it is only 0.05 m wide. These regions cannot contain the visible rising and spreading legs. Existing detail geometry compresses them into the low base envelope.
+- cap reached origin=builder requested=blockout reason=The requested tall descending tripod conflicts with the base region z=0..0.10 m (10.5% of the 0.95 m total height). The crop shows leg roots near the lower third; the 0.05 m-wide stem region cannot own or contain these spreading leg shoulders. Repair the spatial regions before returning to detail.
+- rejected origin=builder requested= reason=target is not in canonical stage set
+- cap reached origin=builder requested=blockout reason=sheer_1 spatial conflict: body width 3.20 m and height 2.11665 m produce a broad panel, whereas both reference images and the correction require the tall right window field. Re-solve its extent using the contracted camera, not the crop aspect ratio alone. The body depth is limited to 0.025 m and 17 fold regions are fixed thin strips; revise regions to accommodate deeper irregular continuous gathers. Preserve separate ownership of velvet drapes, rail, sill and foreground display objects. Then resume object:sheer_1 for the finer denser branching floral pattern, warmer softer ivory, lower-field translucency, uneven hem and fresh detail render.
+- count=2 origin=critic stage=blockout reason=The comparison needs to be rerun to produce a reliable verdict.
+- cap reached origin=builder requested=blockout reason=Conflicting ceiling height declarations: the body mesh and frame reflect the latest downward correction, but ceiling_plane retains the previous elevation. Reconcile the plane metadata and connected wall-top/cornice relationships at blockout before detail validation.
+- cap reached origin=builder requested=blockout reason=Requested panel placement and extent corrections conflict with the explicit spatial regions; revise blockout before rerunning detail.
+- cap reached origin=builder requested=blockout reason=Requested cornice and curtain rail additions conflict with external child ownership. The separate curtain_rail asset explicitly omits the large fan crest because a taller owned region is absent.
+- cap reached origin=builder requested=blockout reason=Current contracted runner, leg and back regions conflict with the supplied reference crop. Runner tips rise above the seat underside; legs descend to floor level yet stop short of the seat. The reference shows shallow broad rocking rails supporting connected leg ends. The back has uninterrupted tall cane fields flanking an ornamental central splat, rather than the current full-width mid-back crossrail and heavy vertical ribs.
+- rejected origin=builder requested= reason=target is not in canonical stage set
+- cap reached origin=builder requested=blockout reason=The requested corrections conflict with contracted component meshes, back pose and support relationships. Runner tips rise above the seat underside, legs stop below the seat, and four cane-panel regions plus back_crossrail enforce the rejected divided back.
+- cap reached origin=builder requested=blockout reason=The current carved_frieze region is compressed into z=1.3124473095..1.4500000477 (height 0.1375527382 m), whereas both photographs show a broad carved band below the shelf. The existing detailed frieze spans z=1.15..1.45 (0.30 m), and cannot fit the supplied region without visibly flattening the foliage. The newly owned marble inset_header reaches z=1.3124473095 and occupies the lower part of that former carved band. This is a region-boundary conflict requiring blockout reconciliation, not a material-only repair.
+- cap reached origin=builder requested=blockout reason=Requested taller frieze and broader marble jambs conflict with the current component region bounds. Reconcile their shared boundaries and the corrected opening before rebuilding detail.
+- cap reached origin=builder requested=blockout reason=Confirmed curtain identification conflicts with inherited plaster-wall body, region extent and floor-support relationship. Detail cannot resolve these spatial conflicts within the current contract.
+- cap reached origin=builder requested=blockout reason=Confirmed curtain conflicts with inherited solid plaster region and floor support; reconcile silhouette, suspension and ownership.
+- cap reached origin=builder requested=blockout reason=Requested taller fascia and thicker bottom molding conflict with the thin contracted envelope.
+- rejected origin=builder requested= reason=target is not in canonical stage set
+- cap reached origin=builder requested=blockout reason=The requested deep apron, fuller domed cushion and chunky curved supports conflict with the contracted top region at z=0.19..0.25 m and four support regions only 0.05 m wide. The existing apron and feet nearly fill those regions. Repair the regional proportions before detail remodeling.
+- cap reached origin=builder requested=blockout reason=Requested increased panel height relative to width changes the fixed body dimensions. Adding continuous gilt molding conflicts with the current external-child ownership and substrate-only asset.
+- cap reached origin=builder requested=blockout reason=Requested substantially taller curtain proportions conflict with the contracted width 3.200000047683716 m and height 2.0052683353424072 m (height/width 0.62665). Existing isolated render is a wide, squat field; the supplied crop and whole photograph show a full-height right-window sheer. Resolve the panel extent against the right opening before detail refinement.
+- count=3 origin=critic stage=blockout reason=blockout
+- cap reached origin=builder requested=blockout reason=Requested projecting layered perimeter cornice conflicts with current ceiling body extent and separate cornice_n ownership. Resolve at blockout before detail adds this geometry.
+- cap reached origin=builder requested=blockout reason=Supplied one-reentry corrections conflict with explicit wall-panel region layout; repair spatial declarations before S4 regeneration.
+- cap reached origin=builder requested=blockout reason=Requested cornice and ornate pelmet/crest additions conflict with the external-child ownership and body envelope of north_above. These components already have separate object entries and cannot be duplicated within this panel asset.
+- cap reached origin=builder requested=blockout reason=Current declared component regions conflict with the photographed chair: disconnected legs/seat and four-field crossrail back instead of tall cane fields with an oval central ornament. Repair spatial regions and support relationships before rerunning S4.
+- cap reached origin=builder requested=blockout reason=Current declared regions and component relationships conflict with the supplied crop and explicit one-reentry corrections; repair the rocker contract before rebuilding detail.
+- cap reached origin=builder requested=blockout reason=Confirmed large oval-medallion foliate crest conflicts with the shallow body envelope; existing asset explicitly omits it for lack of a taller owned region.
+- rejected origin=builder requested= reason=target is not in canonical stage set
+- cap reached origin=builder requested=blockout reason=The complete large branching crest shown above the rail conflicts with the current body-only spatial envelope: frame size 4.733662 x 0.200001 x 0.249192 m and z bounds 2.910509..3.159700 m. The source crop clips the crest top, while the full reference shows its tall silhouette. Existing detail code explicitly omits the crest because no taller owned region exists. Repair the envelope and region ownership before rebuilding detail.
+- cap reached origin=builder requested=blockout reason=Current component regions conflict with the photographed proportions: the broad carved frieze is compressed to 0.137553 m, whereas the marble header occupies 0.369060 m. The cream outer uprights are also much wider than the adjacent marble jambs, reversing the visible crop relationship. Repair region boundaries before detail rebuilding.
+- cap reached origin=builder requested=blockout reason=The requested substantial carved frieze and continuous cream moulded frame conflict with the current component regions. carved_frieze is only 0.137553 m tall across 1.760 m, while inset_header occupies 0.369060 m vertically immediately below it. The existing detail builder compresses a 0.30 m carving into that shallow allocation. Faithful height and frame corrections require spatial region refitting.
+- cap reached origin=builder requested=blockout reason=The confirmed velvet curtain conflicts with the retained plaster-wall spatial contract: a broad 1.30 x 0.25 x 3.938762 m floor-supported box with a ceiling-plane-shaped body mesh. The crop shows gathered textile suspended beneath the rail with its lower extent occluded by the chair.
+- cap reached origin=builder requested=blockout reason=The retained 1.30 x 0.25 x 3.94 m floor-supported plaster envelope conflicts with the suspended gathered curtain identified in both photographs; the chair occludes its lower extent.
+- rejected origin=critic requested= reason=target is not in canonical stage set
+- count=4 origin=critic stage=blockout reason=Retry the composition comparison.
+- cap reached origin=builder requested=blockout reason=Resolve crest ownership and assembled silhouette before rerunning detail. The expanded identification crop includes the whole crest, while the rail retains a shallow body-only frame and external-child ownership. The current rail asset duplicates rail_crest as a vertically compressed motif.
+- rejected origin=builder requested= reason=target is not in canonical stage set
+- cap reached origin=builder requested=blockout reason=Reconcile curtain_rail crest ownership and spatial envelope before detail. The expanded crop and requested correction include a tall branching seven-medallion crest, but curtain_rail retains external-child ownership and a body-only frame 0.249192 m high (top z=3.159700 m). The separately indexed rail_crest reaches z=3.404253 m. Assign the crest to this assembly with explicit regions and revised bounds/frame, and remove duplicate external ownership; verify crest attachment, broad fan silhouette and placement against both photographs. Then resume object:curtain_rail to add the central upright stem and seven oval leaf-framed medallions, thicken the decorative face with dense overlapping floral/foliate relief, and give the small finials fuller varied leaves and sculptural depth. Previous routing used an unrecognized key; the pipeline reads the stage field, now set to the canonical blockout value.
+- count=5 origin=critic stage=blockout reason=blockout: Lower the ceiling corner and curtain header in image space. The render's corner is near 19% image height versus roughly 23% in the reference; the curtain header is also too high.
+- cap reached origin=builder requested=blockout reason=Requested deep perimeter cornice conflicts with the ceiling body bounds and separately assigned cornice geometry.
+- cap reached origin=builder requested=blockout reason=The requested image-left outer-edge panel placement and clearance above the lower horizontal trim conflict with the current explicit wall_panel_0 region meshes. Repair spatial regions before rerunning S4 detail.
+- cap reached origin=builder requested=blockout reason=The requested larger rounded top roll and thicker outward-bulging near arm conflict with the existing slim upholstered_body silhouette. The entry provides an exact continuous mesh and explicitly records slimmer foreground back bolster plus bolster_refinement depth_scale=0.75 and height_scale=0.86. This is a component-volume and silhouette correction requiring revised spatial evidence before S4 detail.
+- cap reached origin=builder requested=blockout reason=Requested additions conflict with the current external-child ownership and body envelope. The cornice, lower rail and fan-shaped crest are separately contracted objects; adding them to north_above would duplicate ownership and exceed its bounds.
+- cap reached origin=builder requested=blockout reason=The supplied region proportions conflict with the reference crop: carved_frieze is restricted to z=1.3124473094940186..1.4500000476837158, only 0.137553 m (8.7% of overall height). The existing detail consequently flattens the foliate panel, while the photograph shows a substantially taller carved band. The marble header is 0.369060 m tall, 2.68 times the frieze height, reversing the visual balance of these adjacent bands in the crop. Repair requires changing shared region boundaries and must occur in blockout.
+- cap reached origin=builder requested=blockout reason=Requested frieze height, continuous cream frame and screen conflict with the current region allocation and external-child ownership. The frieze is constrained to z=1.312447..1.450000 (0.137553 m), whereas the marble header occupies z=0.943387..1.312447 (0.369060 m). Existing detail compresses the carving to fit; the crop shows a much taller foliate panel with substantial end consoles and a cream transverse molding before the marble.
+- cap reached origin=builder requested=blockout reason=The requested full fan-shaped crest conflicts with external rail_crest ownership and curtain_rail frame/body bounds. Rail height is 0.249192 m and top is 3.078405 m; the separately indexed crest reaches 3.322957 m.
+- cap reached origin=builder requested=blockout reason=Confirmed curtain identification conflicts with the inherited plaster-wall body, floor support and uncertain ownership. The broad 1.300 x 0.250 x 3.834 m floor-to-ceiling region requires spatial repair before curtain detail integration.
+- rejected origin=builder requested= reason=target is not in canonical stage set
+- cap reached origin=builder requested=blockout reason=The confirmed hanging curtain retains a plaster-derived 1.30 m wide floor-supported body and overlaps drape_2. The previous request parsed an empty stage; this request uses the canonical stage key.
+- cap reached origin=builder requested=blockout reason=The supplied frame and regions conflict with the tall right-window lace field. Repair spatial evidence before detail scoring.
+- cap reached origin=builder requested=blockout reason=The contracted 3.20 m width and 1.92397 m height produce a landscape sheer, conflicting with the tall visible right-window panel and explicit proportion correction. The 17 thin fold regions are separated from the body in depth, constraining continuous varied folds.
+- cap request ignored within tier=large; descending to next footprint tier
+- cap reached origin=builder requested=blockout reason=The contracted lower-tail mesh slants strongly sideways below the gather, conflicting with the nearly vertical hanging tail visible in the crop and whole reference. This requires spatial region/footprint repair before detail refinement.
+- cap reached origin=builder requested=blockout reason=The supplied cloth region meshes fix a waist too far right and a lower tail slanting strongly left, conflicting with the crop and requested correction. The visible ornate gold tieback has no region and children are externally owned. Reconcile spatial regions and ownership before S4 detail.
+- cap reached origin=builder requested=blockout reason=Portrait frame/canvas region proportions conflict with the crop. Side rails are only 0.08/1.30 = 6.15% of the total width, and top/bottom rails are 0.07/1.9765 = 3.54% of the height. The photographed broad gilt surround occupies substantially more of the outer rectangle; the isolated detail render confirms the overly large canvas and thin frame. Revise all five region boundaries together using perspective-rectified inner and outer frame landmarks, preserving the painting above the mantel and wall attachment.
+- cap reached origin=builder requested=blockout reason=The contracted centered stem and topmost shade region conflict with the visible offset bridge-arm lamp silhouette; upper decorative arm has no declared region.
+- cap reached origin=builder requested=blockout reason=The supplied spatial regions conflict with the photographed bridge-arm lamp and the explicit reentry corrections: the stem is centered, the shade occupies the top of the overall envelope, and no region accommodates the tall curved arm above the shade. Detail geometry cannot resolve these conflicts while respecting the declared regions.
+- cap reached origin=builder requested=blockout reason=Spatial proportion conflict: current contracted sheer is 1.7000 m wide by 1.92397 m high, yielding a nearly square isolated field. The crop and whole photograph show a tall narrow left-window lace field; the previous object review also requests a taller panel relative to width. Resolve projected extent and drape occlusion in blockout before further detail work.
+- cap reached origin=builder requested=blockout reason=Requested taller, narrower panel and fewer broad soft folds conflict with the contracted width/height and 17 separately constrained narrow fold regions. Reconcile spatial contract against both reference images before rerunning detail.
+- cap reached origin=builder requested=blockout reason=Requested silhouette and tieback corrections conflict with the contracted region outlines and external child ownership; repair spatial evidence before another detail pass.
+- cap reached origin=builder requested=blockout reason=Declared component regions cannot contain the photographed rising scroll arms and socket assemblies continuously between mount and glass shades.
+- cap reached origin=builder requested=blockout reason=The crop and requested correction require continuous rising curled brass arms connecting the central body to both lamp dishes, but the supplied arms region ends at world Z=2.04 while both shade regions start at Z=2.15. The 0.11 m uncovered vertical gap cannot be bridged while respecting declared regions.
+- cap reached origin=builder requested=blockout reason=The requested upright proportions conflict with the contracted size_xyz of approximately [0.22, 0.21, 0.24] metres. S4 must not silently change the object frame, footprint, or external-child placement. Repair the blockout dimensions and dependent relationships, then rerun this detail stage.
+- cap reached origin=builder requested=blockout reason=The requested visible gold tieback conflicts with spatial_contract.ownership.children=external and has no declared region or assigned child in this entry. Reconcile ownership before adding geometry. The crop also requires a broader gathered waist with a substantial continuous outside vertical fold rather than the current narrow convergence.
+- cap reached origin=builder requested=blockout reason=Ownership and visible-extent conflict: the source crop includes loop-handled fireplace tools above a low curved holder, but the entry describes only the holder and declares children external, with only one body region. The crop upper extent is tool geometry, not confirmed holder geometry. A faithful combined silhouette cannot be assigned to this holder-only detail asset under that contract.
+- cap reached origin=builder requested=blockout reason=The crop shows two infants in the open space beneath the wolf and a long tail descending beside its hind legs. The current six regions only assign body, head and four narrow leg columns. The body region starts at world z=1.1200000048 (canonical z≈0.381), leaving the central lower space containing the infants unassigned; the tail likewise extends outside the upper body region and narrow leg columns. With children declared external and no explicit ownership assignment for these components, building the complete visible figurine would violate the current region/ownership contract. Please assign infants and tail to this figurine (with appropriate regions), or provide explicit external object ownership, and reconcile the thin sculpture base with the separately owned horse_pedestal. Retain the existing desk-group placement unless the reference supports a spatial adjustment, then rerun S4 for this object.
+- cap reached origin=builder requested=blockout reason=The reference and explicit reentry corrections conflict with the contracted region envelopes. Repair regions before the next detail build.
+- cap reached origin=builder requested=blockout reason=The declared +Y-front frame has width 0.2319999933, depth 0.0543751717 and height 0.2572844066, making its front width/height about 0.902. The 55 by 206 pixel crop has a narrow upright silhouette (extent ratio 0.267, with the red binding narrower still). The room photograph shows upright narrow spines on the bookcase. Review width/depth axis assignment, facing and shelf placement against the source camera; establish whether this entry owns the red book alone or both visible red and tan bindings. Repair the frame, footprint and body region consistently before detail construction; do not compensate by silently changing the detail scale or including adjacent furniture.
+- cap reached origin=builder requested=blockout reason=The source crop at pixels (3086,2799)-(3141,2933) shows upright bindings in the bookcase upper compartment, immediately beneath its top. The current body/frame instead runs from z=0.048240829 to z=0.341973871 metres, at floor level in a bookcase whose top is z=1.232821226. This conflicts with the photographed shelf placement. Also review width/depth and front axes: current front width/height is 0.232/0.293733=0.790 versus crop extent 55/134=0.410; perspective and neighboring bindings must be accounted for before fixing that dimension. Detail geometry cannot repair the shelf-height conflict without altering the contracted pose.
+- cap reached origin=builder requested=blockout reason=Detail corrections and fresh isolated render are complete, but the existing frame places the books at z=0.04824..0.34197, near floor level. The crop and room photograph place these spines in the bookcase upper shelf compartment behind the chair. Repair shelf elevation and region placement; retain the revised detail asset and apply the corrected frame once.
+- cap reached origin=builder requested=blockout reason=Source crop (2852,2799,55,206) is in the upper compartment of the small bookcase, while the contracted body is at world z=0.04824..0.32375 near floor level. Contact says bookcase shelf but no shelf relationship resolves this elevation conflict.
+- cap reached origin=builder requested=blockout reason=Spatial evidence conflict: source crop [2911,2799,55,206] shows book spines in the upper bookcase compartment, whereas the contracted body occupies z=0.048240829..0.341973871 near the floor of the 1.232821226-high bookcase. Neighboring upper-row slots also progress along world Y although the declared front is -Y; reconcile row direction and facing against the reference before detail integration.
+- cap reached origin=builder requested=blockout reason=The source crop (3145,2799,55,134) shows bindings in the upper bookcase compartment, partly obscured by an externally owned wooden upright. The contracted book body is at z=0.0482408367..0.3055252433, near the bottom of a bookcase spanning z=0..1.2328212261. This contradicts upper-shelf contact and cannot be corrected in canonical detail geometry without changing the frame.
+- cap reached origin=builder requested=blockout reason=The unchanged contracted book bounds z=0.04824..0.30553 place the bindings near the bottom of the bookcase (z=0..1.23282), but source crop [3145,2799,55,134] shows its upper shelf compartment. Reconcile shelf contact, frame and region placement against the reference camera. The requested detail spacing and color corrections are complete and the isolated asset validation passed.
+- cap reached origin=builder requested=blockout reason=Medium-tier integration preserves the completed assets and existing contracts, but upper-shelf book placement conflicts with the reference image. book_0_0 through book_0_6 occupy the bottom shelf (base z=0.04824 m), while their source crops show bindings directly beneath the bookcase top. The bookcase upper shelf surface is z=0.837961 m and top is z=1.232821 m. Correct shelf assignment, elevation, and facing in blockout; these cannot be repaired by changing normalized detail geometry while preserving its spatial contract.
+- cap reached origin=builder requested=blockout reason=Medium-tier integration preserves the completed assets and existing contracts, but upper-shelf book placement conflicts with the reference image. book_0_0 through book_0_6 occupy the bottom shelf (base z=0.04824 m), while their source crops show bindings directly beneath the bookcase top. The bookcase upper shelf surface is z=0.837961 m and top is z=1.232821 m. Correct shelf assignment, elevation, and facing in blockout; these cannot be repaired by changing normalized detail geometry while preserving its spatial contract.
+- cap request ignored within tier=medium; descending to next footprint tier
+- cap reached origin=builder requested=blockout reason=The source crop [2794,3226,55,206] depicts books in the bottom compartment of the small bookcase, but the contracted frame places their base at z=0.837961 and top at z=1.095245 within a bookcase spanning z=0..1.232821. This is an upper-compartment placement and conflicts with the source shelf contact. The source upper-shelf entry book_0_0 is conversely at z=0.048241..0.305525, indicating reversed shelf indexing. Correct the book_2_0 frame, bbox, body region and shelf contact against the reference camera before detail construction; also verify width/depth and +Y facing against the narrow crop. Preserve external ownership of the bookcase.
+- cap reached origin=builder requested=blockout reason=The source crop shows a bottom-compartment book behind the gold chair, but the contracted base z=0.837961 and top z=1.113470 place it at the upper shelf of a bookcase spanning z=0..1.232821. Upper-row book_0_0 conversely starts at z=0.048241. Shelf placement conflicts with the reference and cannot be fixed within normalized detail geometry.
+- rejected origin=builder requested= reason=target is not in canonical stage set
+- cap reached origin=builder requested=blockout reason=Ownership conflict: assets/drape_1.py already creates the middle-curtain gold tieback as three braided strands and thirteen leaf scrolls in region long_pleated_tail. A separate tieback_1 asset would duplicate the photographed ornament.
+- cap reached origin=builder requested=blockout reason=Verified ownership conflict: assets/drape_1.py builds three braided gold strands and thirteen gold leaf scrolls at the same gathered waist (lines 116-142), duplicating the separately owned tieback_1. The tieback frame is 0.3200 wide by 0.0500 high, constraining the deep compact asymmetric silhouette visible in the crop and requested by the correction. Resolve ownership and reassess the frame at the curtain gather before detail rebuilding.
+- cap reached origin=builder requested=blockout reason=Contact/frame conflict with drape_0: at waist_z=2.28285, assets/drape_0.py generates the curtain waist across world x=0.932..1.158, while the entire tieback_0 body frame spans x=1.21228957..1.53228951. The intervals are disjoint by at least 0.05429. The crop and whole photograph show the fitting crossing the gathered cloth, not floating beside it. The curtain surface is also at y approximately 6.556..6.614, behind the tieback envelope y=6.45750..6.49250. Coordinate the tieback contact and frame with the corrected actual curtain waist; verify compact diagonal silhouette, size and body region against the source crop.
+- cap reached origin=builder requested=blockout reason=Verified contact/frame conflict for tieback_0: at the drape_0 gathered waist z=2.28285, assets/drape_0.py places the cloth at x=0.932..1.158, while the tieback_0 contracted region starts at x=1.212289571762085 (minimum lateral gap 0.054289571762085). The source crop shows the fitting wrapping the gathered cloth. The curtain surface also lies around y=6.556..6.614, beyond the tieback region y=6.457499980926514..6.492499828338623. Detail-only changes within the current frame cannot establish the required contact.
+- cap reached origin=builder requested=blockout reason=The supplied height envelope conflicts with the substantial box side walls visible in the crop. Resolve proportions with the source camera before detail construction.
+- cap reached origin=builder requested=blockout reason=table_tray: the contracted 0.100 x 0.110 x 0.012 m frame imposes a broad, nearly square, shallow slab. The crop shows substantial vertical side walls and a compact rectangular lidded box; the latest correction explicitly requests increased body height relative to footprint and a less broad square top. Refit its height and footprint against the source camera, coordinating frame, bbox, body region and round_table support contact. Preserve proposal and identification. Return to object:table_tray for a gently crowned lid with beveled perimeter, warm brown-bronze recessed sides, dark seams and bright worn metallic trim.
+- cap reached origin=builder requested=blockout reason=Requested progressive lower concealment is a spatial relationship with externally owned drape_2. The crop shows the jamb clearest at the top and rust fabric increasingly covering it below. Current drape_2 envelope is offset from the jamb and ends above its lower section; reconcile their projected overlap using the scene camera. Do not taper the wood or incorporate external fabric into the jamb asset.
+- cap reached origin=builder requested=blockout reason=The requested prominent spherical finial is the defining visible feature in the andiron_0 crop, but is separately owned by andiron_ball_0. The current andiron_0 body bounds end at z=0.38 m and are only 0.08 m wide/deep; the separately contracted 0.09 m diameter ball occupies z=0.38..0.47 m. Replacing the body cap with that ball within the existing frame would shrink/reposition it or duplicate external geometry. This is an ownership and bounds conflict requiring blockout recourse.
+- rejected origin=builder requested= reason=target is not in canonical stage set
+- cap reached origin=builder requested=blockout reason=andiron_1 crop and correction require a complete spherical-finial andiron, but its body frame is z=0.06..0.38 m (width 0.08 m), while externally owned andiron_ball_1 occupies z=0.38..0.47 m (width 0.09 m). Reconcile combined frame, finial ownership, collar contact and shaft-to-ball proportions against the crop before returning to object:andiron_1. Avoid a duplicate ball. Then rebuild and render with aged brown-gold brass, restrained highlights and dark base-ring recesses.
+- cap reached origin=builder requested=blockout reason=candlestick_1 correction requests the complete white taper, but its current body envelope is z=1.58..1.86 m and children are external. The blockout layout assigns the taper to candle_1, z=1.86..2.24 m, size 0.018 x 0.018 x 0.38 m, supported by candlestick_1. The whole photograph and candle crop extent [2102,1864,45,334] confirm its full height above the cup, beyond the holder crop. Reconcile ownership and the complete silhouette in blockout: preserve a separate candle with an assembly preview or explicitly reassign it and enlarge the contracted envelope, avoiding duplication. Then rerun this detail stage, narrowing the central pear body with a less spherical lower contour and reducing the heavy foot and lower collars.
+- cap reached origin=builder requested=blockout reason=desk_photo_1 correction exposes separate blue-and-gold foreground desktop object. Current body region and external child ownership provide no independently placed region/entry for it; prior detail incorrectly embedded it as a printed panel. Establish its own ownership, footprint and front-of-frame relationship, then detail it with fine dense aged blue/gold ornament. Retain the corrected slim cream frame asset and partial lettering; wolf and lower photo remain externally owned. Frame lean fits existing envelope.
+- cap reached origin=builder requested=blockout reason=Visual review of the fresh isolated detail exposes a size/aspect conflict with the crop: current frame is 0.130 m wide by 0.180 m high (width/height 0.72), but the visible cream-edged card is approximately 160 px wide and 140-155 px high above the foreground lip. Its slight bottom occlusion does not establish the much taller portrait envelope. Reconcile card dimensions and holder extent with the source before final detail scoring.
+- cap reached origin=builder requested=blockout reason=The dial contract declares front [0,-1] and local width 0.012 m, depth 0.105 m, while the enclosing mantel_clock faces [1,0]. The crop shows the dial mounted on the broad front of that case, so these facing and width/depth assignments conflict with the reference. The dial is also incorrectly declared floor-supported despite its minimum elevation of 1.625 m. Parent clock geometry already includes an ivory dial, marks, numerals and hands, requiring ownership reconciliation before adding this separate face.
+- cap reached origin=builder requested=blockout reason=Dial facing, width/depth, support and bezel ownership conflict with the reference and enclosing mantel clock. Repair spatial contract before detail rerun.
+- cap reached origin=builder requested=blockout reason=Reconcile separate paper ownership and its vertical placement with the stationery_box before detail construction. The crop shows a small cream tip above the red rim; the current parent asset already constructs upright cream envelopes despite external child ownership, while the separate paper frame rises substantially above that parent content envelope.
+- cap reached origin=builder requested=blockout reason=Requested combined holder-and-paper silhouette conflicts with the narrow paper-only frame and separate stationery_box ownership; existing parent contents also duplicate this paper.
+- cap reached origin=builder requested=blockout reason=Ownership conflict: assets/stationery_box.py already creates brass stationery tabs and small capped gold fittings in the same holder whose children are declared external. Adding the separately assigned accessory risks duplicate geometry. The accessory frame also extends to z=0.86 while the parent frame ends at z=0.82; reconcile the source-camera silhouette and attachment before assigning final detail extent.
+- cap reached origin=builder requested=blockout reason=Requested shallow horizontal organizer conflicts with the existing tall accessory-only frame and separately assigned holder and paper geometry.
+- cap reached origin=builder requested=blockout reason=Accessory ownership and support/extent need coordinated reconciliation before a distinct stationery_2 detail can be integrated.
+- cap reached origin=builder requested=blockout reason=The broad loop-handled tool visible in crop conflicts with the inherited 0.025 x 0.025 x 0.92 m slender-tool frame, and its geometry is already included in assets/fire_tool_stand.py. Detail building requires coordinated extent and ownership repair.
+- cap reached origin=builder requested=blockout reason=Requested enlargement conflicts with the current 0.025 x 0.025 x 0.92 m frame, and fire_tool_stand already models the loop-handled implements. The source shows a substantial oval grip and curved neck, whereas the current envelope forces a miniature grip on a disproportionately long shaft. Spatial and ownership repair is needed before detail refinement.
+- cap reached origin=builder requested=blockout reason=Small-tier assembly preserves completed geometry and frames, but the mantel_clock_face spatial contract cannot place a broad dial on the parent clock front: its front is [0,-1], perpendicular to the parent front [1,0], and its normalized dial width is scaled to 0.012 m while depth is 0.105 m. The parent asset already builds the ivory dial, indices and hands. The child is also declared floor-supported at z=1.625 m. Fixing orientation, proportions, support and duplicate dial ownership requires coordinated blockout contract repair; altering completed geometry or moving it in the composition would violate the preservation requirement.
+- cap reached origin=builder requested=blockout reason=Small-tier assembly preserves completed geometry and frames, but the mantel_clock_face spatial contract cannot place a broad dial on the parent clock front: its front is [0,-1], perpendicular to the parent front [1,0], and its normalized dial width is scaled to 0.012 m while depth is 0.105 m. The parent asset already builds the ivory dial, indices and hands. The child is also declared floor-supported at z=1.625 m. Fixing orientation, proportions, support and duplicate dial ownership requires coordinated blockout contract repair; altering completed geometry or moving it in the composition would violate the preservation requirement.
+- cap reached origin=builder requested=blockout reason=The measured integrated scene fails the observed spatial-contract gate. Repair coordinated footprints, region extents, support references and external-child ownership, then rerun affected object stages and S5. Measurements were not substituted with declarations; assets were not independently AABB-fitted.
+- cap reached origin=builder requested=blockout reason=Contract reconciliation required: mantel_clock_face.body starts at Z=1.625 m but its relationship requires floor.body contact at Z=0 within 0.03 m; sofa and orange_chair support relationships omit region and support_region. Fire tools start 0.06 m above their declared floor support. Reconcile all measured footprint/region failures and external-child ownership conflicts using the reference, then rebuild affected assets and rerun S5. Do not substitute expected geometry for measured observations.
+- rejected origin=builder requested= reason=target is not in canonical stage set
+- cap reached origin=builder requested=blockout reason=Contract reconciliation required: mantel_clock_face.body starts at Z=1.625 m but its relationship requires floor.body contact at Z=0 within 0.03 m; sofa and orange_chair support relationships omit region and support_region. Fire tools start 0.06 m above their declared floor support. Reconcile all measured footprint/region failures and external-child ownership conflicts using the reference, then rebuild affected assets and rerun S5. Do not substitute expected geometry for measured observations.
+- cap reached origin=builder requested=blockout reason=Inherited assembly has contradictory support contracts and measured geometry mismatches. Reconcile mantel_clock_face elevated body versus floor support and absent sofa/orange_chair support region IDs, then affected assets and integration. S6 changes materials and lighting only; final aperture measurements are refreshed from source-corresponding render pixels.
 
 ## Critic and gate findings
 
@@ -2271,3 +2622,1225 @@ Recognisable as a pale floral lace sheer, but the render is too wide and short, 
 
 
 - 
+
+### tier:large attempt 1
+
+model call had no non-whitespace output and no busy child process for 1500 s
+
+- model call had no non-whitespace output and no busy child process for 1500 s
+
+### tier:large attempt 2
+
+model call had no non-whitespace output and no busy child process for 1500 s
+
+- model call had no non-whitespace output and no busy child process for 1500 s
+
+### object:drape_0 attempt 1
+
+Recognisable as a gathered rust-coloured drape, but the angular silhouette, disconnected waist, and uniform tubular folds differ substantially from the reference's heavy velvet curtain.
+
+- Move the gathered waist farther left and slightly upward; let the lower panel hang nearly vertically beneath it with a modest flare, rather than slanting strongly left.
+- Join the upper and lower fabric continuously at the gather and add the visible ornate gold tieback.
+- Replace evenly spaced tubular ridges with broader, irregular folds that sweep into the tieback, using darker rust velvet with softer highlights.
+
+### object:drape_0 attempt 2
+
+Recognisable as the gathered rust-red drape, with a convincing broad silhouette. The render simplifies the heavy velvet folds and omits the prominent gold tieback.
+
+- Add the visible gold tieback around the gathered waist, including its decorative ends.
+- Give the upper fabric deeper, less uniform folds that hang vertically near the top before sweeping toward the tieback; soften the taut triangular outline.
+- Improve the velvet material with warm golden highlights, subtle surface texture, and broader rounded folds in the lower hanging panel.
+
+### object:portrait attempt 1
+
+The portrait is highly recognizable, with matching pose, clothing, and painted background. The frame is substantially too narrow and dark compared with the crop.
+
+- Widen the frame’s broad, flat gold band while preserving the painting’s proportions.
+- Use a warmer, brighter aged-gold finish and strengthen the raised ornamental molding around the outer frame.
+
+### object:table_lamp attempt 1
+
+Recognisable lamp with a pale bell shade and dark tapered support, but the centered construction misses the reference’s distinctive suspended shade and curved upper arm.
+
+- Add the tall dark curved arm above the shade, including its inward curl and decorative collars.
+- Offset the shade to the left of the main upright; the reference support emerges near the shade’s right edge.
+- Give the shade a squarer, subtly cornered lower outline and finer edging instead of the thick circular rim.
+
+### object:table_lamp attempt 2
+
+Recognisable silhouette, with a convincing ivory bell shade and dark tapered stem. The upper scrollwork and shade edging are simplified; the base is obscured in the reference and cannot be judged reliably.
+
+- Make the upper arm taller and narrower, with the crop’s tighter return curl and textured inner edge.
+- Restore the stacked collars and exposed vertical support visible beside the shade’s upper-right edge.
+- Add the shade’s raised top and bottom binding and subtle vertical fabric seams.
+
+### object:desk_book attempt 1
+
+Recognisable as a thin, closed book with pale page edges, but the render looks thicker and its cloudy cover lacks the reference’s worn decorative detail.
+
+- Reduce the page-block thickness and cover overhang for a slimmer profile.
+- Replace the coarse cloudy cover texture with finer, irregular dark decorative markings over a muted brown-olive surface.
+- Make the cover border a narrow, worn gold line rather than a broad, uniformly clean rim.
+
+### object:desk_book attempt 2
+
+Recognisable as a thin closed book, with a plausible rectangular silhouette and pale page edge. The cover reads as uniformly speckled board rather than the reference’s worn, decorative binding.
+
+- Replace the dense, uniform speckling with larger, irregular dark decorative patches and softly worn areas.
+- Strengthen the warm gold border around the cover while keeping its edges slightly uneven and aged.
+- Darken the binding beneath the pale page strip to make the thin layered construction clearer.
+
+### object:sheer_0 attempt 1
+
+Recognisable as an ivory floral lace sheer, but the render is too wide and its folds too narrow and regular compared with the tall window curtain in the crop.
+
+- Make the panel substantially taller relative to its width to match the visible window opening.
+- Use fewer, broader folds with subtly varied spacing and depth; soften the repeated sharp vertical ridges.
+- Increase translucency between the floral motifs and strengthen their creamy white contrast, allowing more backlight through the lower portion.
+
+### object:sheer_0 attempt 2
+
+Recognisable as a pale lace curtain, but the render reads as a broad, flat patterned sheet. The crop shows a tall, softly pleated sheer with visible translucency and vertical floral detail.
+
+- Make the panel substantially taller relative to its width to match the narrow window curtain.
+- Add deeper, irregular vertical folds with soft shading and a gently uneven hanging hem.
+- Replace the dense diagonal pattern with delicate vertical floral vines, and increase translucency between motifs.
+
+### object:open_book attempt 1
+
+Clearly recognisable as an open book, with convincing paper and cover materials. The crop shows more pronounced page curl and a softer, less rigid silhouette.
+
+- Increase the asymmetric page arch, especially the raised rear portion of the left page stack.
+- Soften the straight page edges and sharp central seam into gently curved sheets flowing into the gutter.
+- Make the printed text subtler; the crop reads primarily as pale paper with faint print.
+
+### object:drape_1 attempt 1
+
+The render reads as a gathered rust-colored drape, but its angular waist, regular folds, and smooth material miss the crop’s heavy velvet and softer gathering.
+
+- Add the visible gold ornamental tieback around the gathered waist and soften the abrupt junction between upper and lower fabric.
+- Widen the upper panel relative to its height and preserve a straighter left edge; the crop’s fabric sweeps inward mainly from the right.
+- Vary fold widths and depths, soften the lower flare, and use darker reddish rust velvet with subdued highlights instead of uniformly glossy ridges.
+
+### object:drape_1 attempt 2
+
+Clearly recognizable as the tied rust-colored drape. The broad silhouette matches, but the folds look mechanically regular and the fabric lacks the reference's rich velvet texture.
+
+- Replace evenly spaced grooves and sharp bends at the tie with softer, irregular folds that gather naturally into the cinch.
+- Give the fabric a richer burnt-orange velvet appearance with subtle texture and warm highlights on raised folds.
+- Make the gold tieback thicker and more ornate, with a deeper hanging curve and prominent decorative end fittings.
+
+### object:sconce attempt 1
+
+Recognisable as a two-light brass sconce, but floating shades, elongated cups, and a plain spear-shaped backplate differ substantially from the compact, ornate reference.
+
+- Connect both lamp dishes to the body with rising curled brass arms; the rendered supports stop well below the lamps.
+- Shorten and broaden the shades into squat, rounded cups with slightly irregular rims, and give them a warmer luminous yellow appearance.
+- Replace the oversized plain spear backplate with a narrower ornamented central stem, layered scrollwork, and a small decorative bottom finial.
+
+### object:sconce attempt 2
+
+The twin amber shades and ornate brass finish suggest the reference sconce, but floating lamps, overly wide spacing, and thin open ornament substantially weaken the match.
+
+- Connect both lamp trays to continuous upward-curving scroll arms; the rendered lamps currently float far above their supports.
+- Reduce the lateral spread and bring the shades closer to the central body to match the crop’s compact proportions.
+- Replace the thin wire-like central loops with a substantial embossed backplate and denser sculpted ornament, retaining the tapered lower pendant.
+
+### object:fire_screen attempt 1
+
+The render is recognisable as the dark rectangular fireplace screen, with a convincing thin frame and paired panels. Its flat, opaque-looking infill misses the crop's fine mesh, subtle folds, and visible depth behind the screen.
+
+- Make the mesh more transparent and regularly patterned so the dark firebox remains faintly visible through it; reduce the mottled surface appearance.
+- Add subtle vertical folds and overlapping edges near the center to convey hanging mesh curtains rather than rigid flat panels.
+- Reduce the visual weight of the bottom rail, keeping the top rod and narrow side frame dominant.
+
+### object:fire_screen attempt 2
+
+Recognisable dark metal fireplace screen with a thin frame and central split. The render reads as a flat perforated panel, while the crop shows hanging woven mesh with folds and partial transparency.
+
+- Give the two mesh curtains subtle vertical folds and a slightly uneven central opening instead of a rigid, continuous flat surface.
+- Use a more legible diagonal woven mesh with greater transparency so the fireplace interior can show through.
+- Reduce the prominence of the bottom frame and central upright; emphasise the slim upper suspension rod visible in the crop.
+
+### object:rail_crest attempt 1
+
+Recognisable eight-medallion gilt crest with the correct branching arrangement. The render is too tall, open, and sharply leaf-shaped compared with the crop’s compact, densely ornamented fan.
+
+- Compress the vertical spacing and shorten exposed branches so the ornaments cluster closely around the central medallion.
+- Replace pointed leaf tips and broad plain backing surfaces with rounded, lobed floral scrollwork matching the crop’s irregular silhouette.
+- Darken the gold to aged bronze-gilt, with deeper recess shading and subtler highlights.
+
+### object:rail_crest attempt 2
+
+Recognisable seven-lobed ornamental crest with the correct central medallion and branching arrangement. The render is too tall, open, and uniformly rounded compared with the compact, densely carved, dark gilded reference.
+
+- Compress the overall height and bring the lobes closer together, especially the lower pair, to reduce exposed branches and shorten the bare central stem.
+- Replace the oversized repeated curls and bead clusters with finer, denser leaf relief and more irregular carved edges.
+- Darken the gold toward aged bronze with deeper recess shading and restrained highlights; reduce the bright, uniform matte finish.
+
+### object:walking_cane attempt 1
+
+The cane is readily recognizable, with the correct curved wooden handle, diagonal shaft, and metal foot. The rendered shaft has a more conspicuously bumpy silhouette and a lighter, more uniform finish than the reference.
+
+- Reduce the shaft’s repeating bulges so its outline reads straighter, retaining subtle spiral surface detailing.
+- Darken the wood to a richer brown and introduce restrained tonal variation along the shaft.
+- Shorten the metal ferrule slightly to match the crop’s compact tip.
+
+### object:horse_pedestal attempt 1
+
+The rectangular pedestal, pale horizontal band, and small lower label are recognisable. The render looks too broad and squat, and its regular striped material misses the crop’s mottled amber stone.
+
+- Make the pedestal taller relative to its width and depth to match the crop’s upright proportions.
+- Replace the smooth, repeating cream waves with irregular, finely mottled amber, ochre, and reddish-brown stone veining; keep the pale band comparatively plain.
+- Simplify the densely layered top trim into the crop’s thicker, gently rounded projecting cap and restrained stepped edges.
+
+### object:horse_pedestal attempt 2
+
+Recognisable banded stone pedestal, but the render is too squat and its marble pattern lacks the crop’s broad, flowing veins.
+
+- Make the pedestal taller relative to its width, particularly the lower marble body.
+- Replace the fine mottling with broad, wavy ochre, cream, and reddish-brown veins; darken the upper stone section.
+- Increase the height of the inset top plinth and give it the bronze-gold finish visible beneath the horse.
+
+### object:statue attempt 1
+
+Recognisable as a dark bronze, robed musician holding a stringed instrument, but the render's simplified face, tubular body, and smooth components miss the crop's ornate sculptural character.
+
+- Refine the oversized, cartoonlike head into a smaller, naturally proportioned face turned slightly left, with sculpted hair and a less rounded cap.
+- Replace the straight, columnlike robe with asymmetric layered drapery, including the prominent diagonal folds and gathered fabric across the lower body.
+- Flatten and broaden the instrument across the chest, and integrate the hands, sleeves, and shoulders into detailed continuous forms instead of rounded separate masses.
+
+### object:statue attempt 2
+
+Recognizable as a dark bronze, robed musician holding a stringed instrument, but the render has a detached-looking head, overly narrow body, and exaggerated diagonal drapery compared with the crop.
+
+- Shorten the exposed neck and integrate the head into the raised cloak collar; turn and tilt the head toward the left as in the crop.
+- Broaden the robed silhouette and replace the repetitive diagonal folds with predominantly long vertical folds and irregular gathered fabric near the base.
+- Make the instrument slimmer and more angular, with a narrower left neck and less bulbous right body; integrate the hands and sleeves more closely around it.
+
+### object:mantel_clock attempt 1
+
+Clearly recognisable as the mantel clock, with a brass circular case and sweeping wooden base. The render's base is too broad and solid, and its wood is lighter than the reference.
+
+- Reduce the base width relative to the clock case and raise the wooden shoulders slightly to match the crop's more compact silhouette.
+- Replace the continuous bottom plinth with distinct low end feet and a recessed central underside.
+- Darken the wood to near-black reddish brown and soften the brass highlights to match the aged finish.
+
+### object:desk_tray attempt 1
+
+Recognisable rectangular decorative desk tray with rounded brass edging and two crossbars. The render is too deep and clean, with sparse, repetitive ornament compared with the shallow, densely patterned reference.
+
+- Lower the raised rim and emphasize the layered outer edge; add the small rounded feet visible beneath the crop’s front corners.
+- Replace the evenly spaced flower stems with denser, varied pale floral ornament across the tray bed.
+- Lighten the dark interior to a mottled silvery brown and soften the brass finish with tarnish and wear.
+
+### object:desk_tray attempt 2
+
+The tray is readily recognisable: the rounded rectangular rim, two crosswise dividers, patterned inset, and small feet match. The render's inset decoration is more sparse and angular, and its rim reads taller than the crop.
+
+- Make the inset decoration denser and more varied, with small pale floral marks and scattered dots rather than repeated large angular vines.
+- Lower the inner rim slightly while retaining the rounded, layered outer edge.
+- Give the two dividers a lighter brass finish and a more gently undulating profile, as visible in the crop.
+
+### object:firebox attempt 1
+
+Recognisable as a dark screened firebox, but the render reads as a flat brick panel rather than layered mesh curtains over a recessed opening.
+
+- Give the mesh curtains visible vertical folds, slight unevenness, and a clearer central overlap; the crop shows hanging screens rather than a taut plane.
+- Reduce the contrast and regularity of the brick joints, darken the interior, and separate it from the mesh with visible depth.
+- Make the mesh pattern coarser and more diagonally legible, matching the prominent metal weave in the crop.
+
+### object:firebox attempt 2
+
+Recognisable as the fireplace's dark mesh screen, with broadly matching proportions and framing. The render looks too uniformly flat and opaque compared with the crop's hanging curtains and partially visible interior.
+
+- Give the mesh stronger vertical folds and a clearer central opening with overlapping curtain edges.
+- Reduce mesh contrast and increase transparency enough to reveal the dim firebox masonry and metal grate behind it.
+- Refine the top support into a slender round rod with visible curtain suspension details.
+
+### object:drape_2 attempt 1
+
+Recognisable as the right-hand rust curtain, with the correct gathered silhouette, but the render looks thin and regularly pleated compared with the heavy, layered velvet in the crop.
+
+- Add deeper, irregular folds and overlapping slack fabric above the tie, especially the heavy curved fold along the lower edge of the swag.
+- Broaden the gathered waist and lower hanging panel, preserving a substantial outer vertical fold instead of converging all pleats into a narrow pinch.
+- Add the visible gold tieback and give the fabric a darker rust velvet finish with softer, less uniform highlights.
+
+### object:drape_2 attempt 2
+
+The rust-colored tied-back drape is recognizable, but its folds are too uniform and taut, and the lower hanging panel is too narrow compared with the crop.
+
+- Add deeper, irregular overlapping folds and a fuller sagging sweep above the tieback; the crop shows loose layered fabric gathering into the right edge.
+- Widen the lower panel and flare its left edge farther outward toward the floor, retaining uneven vertical folds.
+- Give the fabric a softer velvet sheen with warm highlights along fold ridges, and replace the exposed thin gold band with a compact ornamental tieback tucked beside the gather.
+
+### object:fire_tool_stand attempt 1
+
+The dark iron material fits, but the render reads as an empty modern stand rather than the ornate fireplace tool assembly in the crop. The dominant loop handles and clustered shafts are absent.
+
+- Add the two prominent upright oval tool handles at staggered heights, with thick twisted iron rims and inward curled details.
+- Replace the single exposed central shaft with closely grouped tool shafts and ornamental curved supports matching the crop.
+- Reduce and lower the broad horizontal hoop to the compact support beneath the handles; the crop does not support the render's prominent splayed tripod feet.
+
+### object:fire_tool_stand attempt 2
+
+Recognisable dark iron fireplace-tool stand with staggered twisted-loop handles. The render captures the main motif, but the left handle and scrollwork differ visibly. The lower stand is obscured in the photograph and cannot be confidently assessed.
+
+- Make the left loop broader and rounder; it is too elongated vertically.
+- Reproduce the left handle’s pronounced curled flourish below the loop instead of concentrating the scrollwork inside it.
+- Thicken the twisted loop rims slightly to match the reference’s heavier ironwork.
+
+### object:stationery_box attempt 1
+
+The red stationery box and gold edging are recognisable, but the render reads as an empty deep bin. The crop shows a shallower desk organizer filled with papers and small writing accessories.
+
+- Reduce front-to-back depth while preserving the broad rectangular front.
+- Add upright cream papers or envelopes and small gold-toned stationery components visible above the rim.
+- Make the gold front decoration finer and less raised, with smaller scallops along the bottom and side edges.
+
+### object:stationery_box attempt 2
+
+The red stationery holder is readily recognizable, with an open top, cream papers, and gold border decoration. The render looks more elongated and shallow than the crop, and its trim is too delicate.
+
+- Reduce the width relative to the front-panel height to match the crop's taller, more compact proportions.
+- Thicken the gold scalloped decoration and give it the crop's broader, looped pattern along the sides and bottom.
+- Vary the heights and overlap of the papers and gold fittings; the crop shows a less evenly arranged cluster with a prominent rear white sheet.
+
+### object:she_wolf_figurine attempt 1
+
+The gold wolf with two infants is recognizable, but the render's cartoon head, segmented body, and dangling infants differ substantially from the compact sculptural reference.
+
+- Match the crop's left-facing silhouette: use a longer, narrower muzzle, smaller ears, and a head held roughly level with the back.
+- Replace the cylindrical torso and bulbous shoulder and rump with a continuous anatomical body; make the legs thicker, straighter, and less angular.
+- Place the infants in a compact sculptural group beneath the belly, supported on a shallow rectangular plinth rather than hanging separately in midair.
+
+### object:she_wolf_figurine attempt 2
+
+Recognisable as a gold she-wolf with twins, but the render's rounded, cartoonlike anatomy and suspended infants differ substantially from the crop's sculptural silhouette.
+
+- Reshape the capsule-like torso into a leaner wolf body with a defined shoulder, narrower belly, and sloping neck; reduce the oversized ears and refine the muzzle.
+- Replace the straight rod legs with tapered, jointed limbs and distinct paws, and add the long downward-curving tail visible beside the hind legs.
+- Add the rectangular plinth and reposition the twins close to its surface beneath the belly, with articulated human bodies reaching upward rather than hanging as round figures.
+
+### object:photo_frame_0 attempt 1
+
+The frame is readily recognizable, with a convincing beaded silver border, broad mat, and matching portrait. The main differences are the oversized top ornament and cooler, flatter material appearance.
+
+- Reduce the top ornament’s width and height, and integrate it into the upper rail; the crop shows a compact decorative flourish.
+- Warm the mat toward muted tan and give the silver trim stronger highlights and darker recesses.
+- Reduce the exposed dark outer backing so the narrow silver edging defines the silhouette.
+
+### object:photo_frame_1 attempt 1
+
+The portrait, beaded border, and broad mat make the object readily recognizable. The rendered frame looks slightly too wide, its mat too pale, and its top ornament too sprawling.
+
+- Make the outer frame slightly narrower relative to its height, accounting for the crop’s perspective.
+- Darken and warm the mat to the crop’s muted tan-brown tone.
+- Replace the wide, thin wavy top ornament with the crop’s compact, raised central crest.
+
+### object:book_rest_gallery attempt 1
+
+The dark wooden material is plausible, but the render emphasizes a broad decorative panel with oversized spirals. The crop shows a compact, low crest behind the open book; fine carving is too blurred to verify.
+
+- Reduce the crest height and flatten its silhouette into smaller, closely spaced rounded lobes.
+- Make the spiral relief smaller and subtler; the prominent projecting curls exceed the visible ornament.
+- Darken the wood toward near-black reddish brown and reduce the bright glossy highlights.
+
+### object:book_rest_gallery attempt 2
+
+The dark wood and curled crest are recognizable, but the render reads as a broad decorative panel. The crop emphasizes a compact cluster of rounded scrollwork behind the open book; the book obscures most lower geometry.
+
+- Cluster the crest lobes more tightly and reduce the long, plain end extensions.
+- Give the scrolls thicker, rounder relief with deeper recesses instead of thin surface spirals.
+- Use a warmer reddish-brown wood finish with subtle highlights on the rounded carving.
+
+### object:book_0_3 attempt 1
+
+The red and tan upright books are recognisable, but the render shows broad cover-like faces instead of the crop’s tall, narrow spines.
+
+- Reduce the visible width of both books substantially relative to their height to match the narrow spines.
+- Make the tan book slightly taller than the red book and keep them tightly packed.
+- Soften the inset rectangular borders and texture; the crop shows worn, mostly plain spines with faint horizontal divisions.
+
+### object:book_0_3 attempt 2
+
+The two upright books are recognisable, with appropriate red and tan colors. The render is too clean and regular, and exaggerates the tan book’s height advantage.
+
+- Reduce the tan book’s height advantage so the book tops sit nearly level, as in the crop.
+- Remove the conspicuous projecting cover tips and give the tops subtle sloping, layered edges.
+- Add worn, mottled spine textures and faint horizontal bands, especially on the red book.
+
+### object:book_0_5 attempt 1
+
+Recognisable as two dark antique book spines, but the render exaggerates their height difference and simplifies the taller spine’s ornate gold decoration into a box.
+
+- Raise the shorter book so its top sits closer to the taller book’s top, matching the crop’s modest height difference.
+- Replace the taller spine’s large rectangular outline with compact, irregular gold ornament concentrated near the top.
+- Darken the spine materials toward burgundy-black and make the gold bands and pale lettering less uniform and more subdued.
+
+### object:book_0_5 attempt 2
+
+The two dark, gilt-decorated book spines are recognisable, with the taller right volume correctly emphasized. The render is too flat and regular, and its gold ornament differs from the crop.
+
+- Add the raised horizontal spine bands and stronger upper-edge relief visible in the crop.
+- Replace the right spine’s thin oval ornament with the denser, angular gold decoration shown near its top.
+- Warm the bindings toward worn reddish brown and strengthen the pale horizontal marking below the right spine’s gold decoration.
+
+### object:book_1_3 attempt 1
+
+Recognisable as the narrow brown book spine in the crop, with broadly matching proportions. The render looks too clean and flat, and its gold markings are too faint and regular.
+
+- Make the upper spine markings brighter, denser, and more irregular, matching the crop’s worn gold bands and lettering.
+- Add stronger mottled wear and warm reddish-brown variation to the spine.
+- Soften and round the spine edges, with a more visibly worn, uneven top edge.
+
+### object:book_1_3 attempt 2
+
+The render reads as a narrow brown leather book with gilt spine decoration, matching the crop reasonably well. Its straight, uniform silhouette and dense bright markings make it look cleaner and more regular than the reference.
+
+- Give the spine a slight taper and subtle lean to match the crop's less parallel edges.
+- Reduce the density and brightness of the gilt markings, keeping subdued, worn horizontal details near the upper spine.
+- Darken the leather toward burgundy brown and add uneven edge wear, especially along the right side.
+
+### object:book_0_0 attempt 1
+
+The three-book group is recognisable, with broadly matching relative widths and heights. The render is too upright, evenly aligned, and clean compared with the leaning, warm-toned books in the crop.
+
+- Give the books a slight rightward lean toward their tops and vary their alignment to match the crop.
+- Darken the central tan spine toward warm ochre-brown and strengthen its reddish cover edges.
+- Soften the crisp edges and regular spine markings with subtle wear and tonal variation.
+
+### object:book_0_0 attempt 2
+
+The three leaning books are recognisable, with convincing relative heights and dark, tan-red, and olive coloring. The render is cleaner and more uniform than the worn bindings visible in the crop.
+
+- Add stronger horizontal spine bands and faint worn markings to the dark left book.
+- Darken and mottle the central tan binding, softening the bright red cover edges.
+- Introduce subtle uneven wear along the covers and bottom edges.
+
+### object:book_0_1 attempt 1
+
+The two narrow books are recognisable, with the correct relative heights and leaning arrangement. The render looks cleaner and lighter than the dark, worn books in the crop.
+
+- Darken the leaning book to near-black brown and deepen the upright book to muted burgundy.
+- Soften the crisp cover edges and regular horizontal bands, adding subtle uneven wear.
+- Reduce the visible gap between the books toward their lower ends.
+
+### object:book_0_2 attempt 1
+
+The four closely packed book spines match the crop’s narrow proportions and alternating dark burgundy and red coloring. The render is slightly too regular and crisply outlined.
+
+- Soften the raised spine borders and horizontal seams, which appear more pronounced than in the crop.
+- Introduce subtle variation in spine alignment and surface shading to reduce the uniformly straight, flat appearance.
+
+### object:book_0_4 attempt 1
+
+The three upright books are recognisable, with appropriate stepped heights and muted tan, brown, and olive covers. The middle spine is too wide, and the gold markings lack the crop’s compact, banded appearance.
+
+- Narrow the middle brown book relative to the tan and olive books.
+- Concentrate the olive spine’s gold decoration into compact horizontal groups near the top.
+- Add stronger dark horizontal bands and brighter worn edges to the two narrow spines.
+
+### object:book_0_4 attempt 2
+
+Recognisable as a cluster of upright antique books, with convincing muted tan and olive materials. The rendered spine widths and decorative bands are less faithful to the crop.
+
+- Narrow the visible tan spine relative to the olive book; the rendered left book appears disproportionately broad.
+- Reduce the thickness and contrast of the dark horizontal bands on the tan spines.
+- Make the olive spine’s gold decoration more compact, with short stacked marks concentrated near the top.
+
+### object:book_0_6 attempt 1
+
+The two upright books are recognizable, with a convincing height difference and spine detailing. The large separation and muted colors weaken the match to the tightly packed crop.
+
+- Bring the books together so their edges nearly touch; the crop shows only a narrow dark seam.
+- Warm the pale spine toward aged golden ivory and its edge trim toward ochre.
+- Give the dark spine a richer reddish-brown tone, especially along its edges.
+
+### object:book_0_6 attempt 2
+
+The paired upright books closely match the crop’s relative heights and widths. The cream spine needs stronger vertical tonal variation, and the surface detailing is too conspicuous.
+
+- Give the cream spine a brighter ivory center and darker ochre edges to match the crop.
+- Reduce the cream spine’s scattered dark speckles and soften its outlined border.
+- Darken the brown spine and make its horizontal bands less prominent.
+
+### object:book_1_0 attempt 1
+
+The render recognisably matches the upright cluster of red and dark leather-bound books. Its outlines and spine details are cleaner and more uniform than the softly worn, uneven books in the crop.
+
+- Increase the warm red saturation of the left-hand spines while retaining the dark brown right-hand books.
+- Vary spine alignment and thickness slightly to reproduce the crop’s uneven spacing and subtle lean.
+- Soften the sharply inset rectangular spine panels and add restrained wear and mottling to the covers.
+
+### object:book_1_1 attempt 1
+
+The render reads as the correct cluster of upright books, with broadly matching burgundy and ochre colors. The crop shows a less regular arrangement with narrower, slightly leaning spines and softer detail.
+
+- Introduce slight leaning and uneven lower edges instead of perfectly parallel books on a shared baseline.
+- Reduce the width and visual dominance of the rightmost burgundy volume to better match the crop.
+- Soften the crisp inset borders and gold markings, using more muted, worn spine surfaces.
+
+### object:book_1_1 attempt 2
+
+The render reads as the correct cluster of dark, aged books, with the red spine and ochre section recognizable. It is more evenly aligned and crisply separated than the crop.
+
+- Introduce slight leaning and overlap between the books to match the crop’s irregular silhouette.
+- Reduce the red spine’s saturation and soften its bright inset border.
+- Make the ochre section less uniformly rectangular, with subtler edges and darker, uneven wear.
+
+### tier:medium attempt 1
+
+model call had no non-whitespace output and no busy child process for 1500 s
+
+- model call had no non-whitespace output and no busy child process for 1500 s
+
+### tier:medium attempt 2
+
+No verdict text was recorded.
+
+- blockout: Refine the foreground sofa’s silhouette: restore the long, tall back, distinct rolled end, and separate right arm. Its current inflated curves change the largest foreground occlusion.
+- blockout: Match the rocking chair’s angled back, lower frame, and curved runners more closely; preserve its overlap with the rear chair and table.
+- detail: Establish the rug’s visible perimeter and the rear tablecloth’s irregular hanging edge before adding smaller ornaments.
+
+### object:book_1_2 attempt 1
+
+The narrow cluster of dark burgundy book spines is recognisable, with close overall proportions. The render looks more uniformly flat and sharply outlined than the softly rounded, shadowed spines in the crop.
+
+- Soften the rectangular spine borders and give the spines a subtly rounded profile.
+- Deepen the near-black shadows between books and vary the burgundy tones slightly.
+- Make the small gold spine markings softer and less crisply defined.
+
+### object:book_2_0 attempt 1
+
+The upright book cluster is recognisable and its overall proportions match well. The render is cleaner and more uniformly aligned than the dark, uneven spines in the crop.
+
+- Darken the blue spines and give the central spine a warmer, near-black burgundy tone.
+- Introduce subtle variation in spine alignment and top-edge angles.
+- Reduce the contrast of the pale horizontal end bands to match the crop’s subdued detailing.
+
+### object:book_2_0 attempt 2
+
+The upright book group is recognisable, with convincing proportions and the crop's blue, dark brown, and red spine sequence. The render's raised borders are too prominent, and its surfaces look cleaner than the reference.
+
+- Reduce the thickness and contrast of the raised spine borders and end bands.
+- Add subtle faded spine markings and uneven wear, particularly on the red book.
+- Give the narrow rightmost spine a slightly clearer muted olive-brown face.
+
+### object:book_2_1 attempt 1
+
+The render recognisably matches the narrow burgundy book spine, dark upper section, and gold vertical accent. Its rigid raised borders make it read somewhat like a framed panel rather than a worn book.
+
+- Reduce the thickness and projection of the dark side rails and top corner posts.
+- Add subtle wear and warmer red variation to the spine, with a softer, less uniform gold stripe.
+
+### object:microphone attempt 1
+
+Clearly recognizable as the reference microphone, with the correct plaque, suspended capsule, metal stand, and pedestal. The rendered head is too elongated, and the central ornament appears heavier than in the crop.
+
+- Widen the outer suspension ring slightly relative to its height to match the crop’s rounder silhouette.
+- Make the central brass ornament thinner and more compact, and reduce the prominence of the dark opening behind it.
+- Reduce the thickness of the dark bottom plinth and flatten the pedestal’s raised shoulder.
+
+### object:tieback_1 attempt 1
+
+The gold material and curved silhouette suggest a curtain tieback, but the render reads as a long, uniform decorative chain. The crop shows a compact, deeper, asymmetric drape with irregular, chunky ornament.
+
+- Shorten the span and deepen the curve, with a steeper left section and a rising right section.
+- Replace the evenly repeated spiral medallions with varied, clustered ornamental forms and a larger sculpted left terminal.
+- Darken the gold to an aged bronze-gold finish, with stronger dark recesses and selective bright highlights.
+
+### object:tieback_1 attempt 2
+
+Recognisable as a curved gilt curtain tieback, but the render has oversized, widely spaced ornaments and a conspicuous dark backing. The crop reads as a compact, densely decorated gold fitting.
+
+- Reduce the size and projection of the bulbous leaf ornaments and tighten their spacing into finer, denser relief.
+- Narrow and conceal the broad dark backing so the visible curve reads predominantly as gilt ornament.
+- Make the U-shaped curve more compact, with a tighter bottom bend and a shorter right-hand rise.
+
+### object:tieback_0 attempt 1
+
+The gold material reads correctly, but the render resembles a long decorative rod. The crop shows a compact, curved curtain tieback with clustered ornaments and a short, thicker connecting section.
+
+- Shorten the exposed connecting section substantially and increase its thickness relative to the end ornaments.
+- Curve the tieback into a shallow wrap around the gathered curtain instead of keeping it nearly straight.
+- Replace the widely spread, pointed leaf loops with compact, rounded ornamental clusters matching the crop.
+
+### object:tieback_0 attempt 2
+
+Recognizable as a gold curtain tieback, but the render reads as a symmetrical floral handle. The crop shows a slimmer, more angular connector with compact, irregular ornaments and darker antique-gold recesses.
+
+- Slim and taper the connecting bar, replacing the broad bowed tube with a more angular profile.
+- Reduce the oversized matching flower ends; use compact, asymmetric clustered ornaments with less open scrollwork.
+- Deepen the dark recesses and vary the gold finish to match the crop’s aged metal and concentrated highlights.
+
+### object:table_tray attempt 1
+
+The layered metallic edges are recognizable, but the render reads as a broad, flat slab rather than the crop’s compact, taller rectangular lidded object.
+
+- Increase the body height relative to its footprint and reduce the broad, square appearance of the top.
+- Shape the lid with a gently raised center and beveled perimeter instead of a flat inset panel.
+- Use warmer brown-bronze recessed sides, darker seams, and brighter worn metallic trim to match the crop.
+
+### object:table_tray attempt 2
+
+The render captures a rectangular lidded form, but reads as a broad, thin bronze platform rather than the crop’s compact silver-toned box.
+
+- Increase the body height relative to its footprint to match the crop’s deeper side walls.
+- Reduce the lid’s broad sloping border and overhang; add the crop’s narrower, stacked lid moldings.
+- Use dark, aged silver-toned surfaces with bright worn edges and horizontal side trim instead of predominantly brown panels.
+
+### object:andiron_ball_0 attempt 1
+
+The render clearly matches the spherical brass andiron finial. Its silhouette is close, but the crop shows darker, warmer metal with a smaller concentrated highlight.
+
+- Darken the brass to a warmer bronze-gold, especially around the sides and lower edge.
+- Reduce the broad white reflections to a smaller, softer highlight near the upper center.
+- Reduce the conspicuous surface mottling for a smoother metal appearance.
+
+### object:andiron_ball_1 attempt 1
+
+The spherical brass finial is recognisable, but the render is paler and more mottled than the crop and omits the small base collar.
+
+- Add the short brass neck and stepped collar visible beneath the ball.
+- Deepen the brass to a warmer bronze-gold with darker shading around the lower edge.
+- Reduce surface mottling and tighten the broad highlights into a smaller, softer highlight near the upper center.
+
+### object:window_frame_middle attempt 1
+
+The render reads as a slender wooden window divider, but its uniform full-height molding misses the crop’s stepped profile and stronger light–dark material contrast.
+
+- Add the pale inset strip visible along the upper section, terminating just below the crop’s midpoint with a distinct squared end.
+- Make the lower exposed section broader and flatter, with fewer continuous fine grooves.
+- Darken the wood to a richer warm brown and strengthen the recessed edge shadows while keeping the upper inset pale.
+
+### object:window_frame_middle attempt 2
+
+The render captures the narrow brown vertical frame and pale upper inset, but looks flatter and more uniformly straight than the partly curtain-obscured reference.
+
+- Give the pale inset a slightly tapered outline and soften its lower edge to match the crop.
+- Deepen the recessed dark channel beside the pale inset and strengthen the stepped wood molding.
+- Use warmer, darker brown wood with subtle tonal variation instead of the uniform light brown surface.
+
+### object:window_frame_right attempt 1
+
+The render reads as a narrow vertical frame, but its pale, uniformly exposed molding poorly matches the dark brown frame largely concealed by rust-colored drapery in the crop.
+
+- Darken the frame to a warm, aged brown with subdued highlights.
+- Reduce the prominent parallel grooves; the crop shows a broader, smoother face with subtle recessed edges.
+- Match the visible exposure: the frame is clearest near the top and increasingly concealed by the diagonal curtain edge below.
+
+### object:window_frame_right attempt 2
+
+Recognisable as a narrow wooden window jamb. The render captures the tall silhouette and vertical grooves, but looks flatter and more uniformly pale than the dark, recessed trim visible beside the curtain.
+
+- Deepen the longitudinal recesses and strengthen the stepped molding profile.
+- Darken the wood to a warmer brown, with stronger shadow in the recessed channels.
+- Reduce the broad flat central face relative to the narrow raised molding strips.
+
+### object:window_frame_left attempt 1
+
+Recognisable tall, narrow wooden window trim with convincing longitudinal moulding. The render is more uniformly striped and flatter in profile than the softly rounded, warm-toned crop.
+
+- Broaden and round the main raised moulding, reducing the prominence of the thin parallel grooves.
+- Add warmer amber highlights and deeper brown recesses, with subtle unevenness in the wood finish.
+
+### object:andiron_0 attempt 1
+
+The brass material reads correctly, but the crop’s defining feature is a round ball finial. The rendered tall post has a small shaped cap instead. Most of the actual andiron is hidden behind the sofa, so its shaft and base cannot be reliably judged from this crop.
+
+- Replace the small top cap with a prominent spherical brass finial.
+- Give the finial a softly aged brass finish with a broad, warm highlight.
+
+### object:andiron_0 attempt 2
+
+The brass material reads correctly, but the crop's defining feature is a spherical finial, while the render has a tall shaft ending in a narrow, flattened cap. Most of the actual andiron is obscured by the sofa, so its lower geometry cannot be assessed from this crop.
+
+- Replace the top cap with a smooth brass sphere.
+- Use a short, narrow neck beneath the sphere; the whole photograph supports a ball-topped upright rather than the rendered capped column.
+
+### object:andiron_1 attempt 1
+
+The brass shaft and stepped base are recognizable, but the missing spherical finial substantially changes the silhouette. The render also appears brighter and less aged than the crop.
+
+- Replace the flattened top cap with a large spherical brass finial, slightly wider than the shaft, supported by a narrow collar.
+- Shorten the shaft relative to the complete object to accommodate the ball and match the crop’s proportions.
+- Darken the brass to an aged brown-gold finish with restrained highlights and darker recesses around the base rings.
+
+### object:andiron_1 attempt 2
+
+The brass material, tall shaft, and stepped base are recognisable, but the missing spherical finial substantially changes the silhouette.
+
+- Replace the flattened top cap with a large spherical brass finial, slightly narrower than the widest base, seated on a small collar.
+- Reduce the base tiers' outward bulge and thickness to match the crop's more compact, flatter stepped foot.
+- Darken the brass and soften the broad shaft highlights to match the crop's aged, subdued finish.
+
+### object:candlestick_0 attempt 1
+
+Recognisable brass candlestick with the correct stacked components and metallic finish. The rendered central body is too elongated and rounded, and the foot is too bell-shaped compared with the crop.
+
+- Shorten the central pear-shaped body and give it a broader, more angular lower shoulder.
+- Replace the flared bell-shaped foot with a straighter tapered pedestal and more distinct horizontal steps.
+- Flatten and sharpen the projecting collars so they read as thin turned brass discs rather than rounded cushions.
+
+### object:candlestick_0 attempt 2
+
+The render convincingly matches the brass candlestick’s overall silhouette and stacked turned sections. The central bulb is slightly too conical, and the lower stem’s collar transitions are too pronounced.
+
+- Round the central bulb’s sides and underside, softening the broad, abrupt bottom edge into the crop’s pear-shaped contour.
+- Reduce the projecting collar above the tapered foot and blend the lower stem into a more continuous, finely stepped profile.
+
+### object:candlestick_1 attempt 1
+
+The brass holder is recognisable, with a close sequence of turned collars and a bulbous middle. The missing white candle and exaggerated central bulb are the main visible differences.
+
+- Add the tall, slender white taper visible above the top cup; use the whole photograph to establish its full height.
+- Narrow the central bulb and make its lower contour less spherical, matching the crop’s slimmer pear-shaped body.
+- Reduce the broad, heavy stepped foot and refine the lower stem into the crop’s smaller, more delicate collars.
+
+### object:candlestick_1 attempt 2
+
+Recognisable brass candlestick with matching turned construction and warm metallic finish. The missing white candle and elongated lower pedestal weaken the match to the crop.
+
+- Add the tall, slender white taper candle visible above the brass socket.
+- Shorten the lower conical pedestal and restore the compact stacked rings above the flared foot.
+- Make the central bulb rounder and less elongated, with a clearer shoulder and tighter lower neck.
+
+### object:tieback_hanging_0 attempt 1
+
+The render reads as a hanging gold tieback cord, but its uniform thickness and restrained curvature look stiffer than the slender, irregular strand visible against the curtain.
+
+- Make the cord thinner relative to its length.
+- Introduce the crop’s subtle bends and uneven hanging contour instead of a nearly straight upper section.
+- Soften the blunt lower cutoff into a slightly irregular, tapered tip.
+
+### object:tieback_hanging_0 attempt 2
+
+The render reads as a hanging cord, but its repeated bends and uniform rope texture differ from the crop’s straighter, subdued gold strand.
+
+- Reduce the alternating bends; follow the crop’s mostly straight diagonal descent with a slight terminal curl.
+- Make the lower end less sharply tapered and more softly irregular.
+- Darken the pale rope to muted antique gold and soften the prominent twisted texture.
+
+### object:tieback_hanging_1 attempt 1
+
+The render reads as a slender gold hanging cord, but its lean and curvature differ from the crop. Its coarse rope texture also appears stronger than the reference.
+
+- Reverse the overall lean: the visible strand in the crop drifts right toward the bottom, while the render drifts left.
+- Match the crop’s gentle, continuous curve instead of the render’s alternating bends.
+- Reduce the pronounced spiral texture and use a smoother, muted golden-brown finish.
+
+### object:tieback_hanging_1 attempt 2
+
+The render captures a thin hanging cord, but its nearly straight, rigid silhouette and flat tan surface only partly match the softly curving golden cord beside the curtain.
+
+- Introduce a gentle, uneven curve that follows the curtain edge rather than a nearly straight diagonal.
+- Give the cord a warmer golden-brown material with subtle braided texture and soft highlights.
+- Refine the width and taper to preserve the crop's delicate cord appearance without a blunt lower tip.
+
+### object:desk_photo_1 attempt 1
+
+The cream rectangular frame and partial lettering are recognizable, but the render reads as a large cabinet panel. The crop shows a slim, leaning frame partly obscured by a separate blue-and-gold foreground object.
+
+- Make the frame slimmer, with narrower rails and a slight backward lean; reduce the oversized solid left strip.
+- Separate the blue-and-gold foreground object from the frame instead of embedding it as a flat inset panel.
+- Use warmer, aged cream surfaces and subtler lettering; replace the crisp diamond pattern with finer, denser ornament on the foreground object.
+
+### object:desk_photo_1 attempt 2
+
+Recognisable as the upright cream desk frame. The inset panel and small letter match the visible crop, but the frame reads too flat, clean, and uniformly pale.
+
+- Increase the visible depth of the left outer edge and strengthen the shadow where the inset panel meets the frame.
+- Use a warmer, darker tan finish with subtle surface wear and uneven coloration.
+- Darken the small letter to match the stronger brown contrast visible in the crop.
+
+### object:desk_photo_2 attempt 1
+
+The cream-edged tan inscription card is recognisable, but the render is too tall, clean, and lightly coloured compared with the crop.
+
+- Shorten the exposed panel toward the crop’s nearly square proportions and give it a stronger backward lean.
+- Darken the panel to aged brown and add subtle mottling; reduce the bright, uniform appearance of the border.
+- Make the inscription darker and more compact, with tighter lettering clustered near the upper centre rather than widely spread looping strokes.
+
+### object:desk_photo_2 attempt 2
+
+Recognisable as the tan, cream-edged desktop plaque in the crop. The render captures its main components, but the panel looks too square and the pale lower support is too tall and solid.
+
+- Make the panel slightly narrower relative to its height and increase its backward lean to match the crop's sloping side edges.
+- Reduce the height of the pale foreground support and reproduce the visible dark inset beneath its thin upper rail.
+- Make the inscription more compact and irregular, with clustered lettering toward the upper left; add the small dark mark near the panel's upper edge.
+
+### object:desk_photo_0 attempt 1
+
+The framed decorative panel is recognisable, with an upper patterned field and a lower animal silhouette. The render is too clean and regular compared with the crop’s darker, more intricate appearance.
+
+- Make the upper markings smaller, denser, and less uniformly spaced; the crop reads as tightly packed decorative detail rather than large repeated glyphs.
+- Refine the lower animal into a slimmer silhouette with finer legs and a more curved tail, matching the crop.
+- Darken the frame and panels to aged brown and muted green, and reduce the bright, uniform appearance of the frame rails.
+
+### object:desk_photo_0 attempt 2
+
+The framed text-and-animal display is recognisable, with the correct stacked panels and warm brown palette. The animal silhouette and frame finish are the main visible mismatches.
+
+- Shorten the animal’s elongated torso and reduce its overall width; the crop shows a more compact silhouette within the lower panel.
+- Make the frame’s bevels more pronounced and lighten their worn gold-brown highlights.
+- Arrange the upper markings into denser, more regular text-like rows instead of widely spaced angular glyphs.
+
+### object:small_cup attempt 1
+
+Recognisable as a metal handled cup, but the render is too tall and dark, with an oversized handle compared with the crop.
+
+- Shorten the body relative to its diameter to match the crop’s compact proportions.
+- Reduce the handle’s outward projection and opening, keeping it closer to the body.
+- Brighten the body to reflective silver with stronger light bands; retain the warmer handle tone.
+
+### object:small_cup attempt 2
+
+Recognisable as the small handled metal cup, but the render shows a broader body, a more exposed opening, and a cleaner silver finish than the crop.
+
+- Narrow the body slightly relative to its height.
+- Reduce the visible opening to a shallower ellipse, matching the crop's lower viewing angle.
+- Add darker warm reflections across the upper body while retaining the bright silver highlights below.
+
+### object:photo_image_0 attempt 1
+
+The portrait is recognisable, with matching head placement, brown jacket, dark neckwear, and dark background. The rendered face and clothing appear softer and lower-contrast than the crop; the frontal proportions are consistent with the crop’s angled view.
+
+- Increase definition around the eyes, nose, moustache, and jaw.
+- Clarify the jacket lapels, front seams, and visible button.
+- Slightly brighten the face and jacket while preserving the dark background.
+
+### object:photo_image_1 attempt 1
+
+The portrait is readily recognizable: the headwear, face, patterned garment, and dark sepia background closely match the crop. Fine facial and fabric details appear slightly softer in the render.
+
+- Slightly increase local contrast around the eyes, headband, and garment pattern while preserving the photograph’s muted sepia appearance.
+
+### object:mantel_clock_face attempt 1
+
+The render captures the cream dial, Roman numerals, upper subdial, winding holes, and approximate hand positions. Recognition is good, but the typography and rim look more modern and plain than the crop.
+
+- Use smaller, finer Roman numerals with serif details and rotate them around the dial to match the crop.
+- Replace the broad ivory outer rim with a rounded, aged brass bezel.
+- Refine the main hands with the crop’s more delicate, decorative silhouettes instead of simple tapered blades.
+
+### object:mantel_clock_face attempt 2
+
+Recognisable clock face with the correct brass surround, ivory dial, Roman numerals, upper subdial, and winding holes. The crop’s oval appearance largely reflects the photograph’s oblique viewpoint.
+
+- Warm the dial toward aged cream and soften the contrast of its markings.
+- Refine the main hands into finer, more intricate ornamental silhouettes; the rendered outlines look comparatively angular.
+
+### object:stationery_0 attempt 1
+
+The render captures only a pale tapered paper shape. The crop and whole photograph show stationery in a red rectangular holder, whose missing body dominates the mismatch.
+
+- Add the red rectangular holder with its broad front face, thin gold-colored upper rim, and small central gold detail.
+- Reduce the white paper to a small triangular protrusion above the holder’s left side.
+- Add the short pale paper edges and small darker contents visible along the holder’s top.
+
+### object:stationery_0 attempt 2
+
+Recognisable as the red stationery holder, with a pale triangular paper, small upright contents, and central brass fitting. The render is overly crisp and heavily outlined compared with the crop.
+
+- Reduce the thick black side and bottom borders; use subtler dark red shading and finer brass edging.
+- Make the pale paper slightly broader and asymmetric, with its tip leaning left.
+- Lower and irregularly arrange the right-hand contents so they read as small stationery pieces rather than evenly spaced thick books.
+
+### object:stationery_1 attempt 1
+
+The render reads as a tall brass stepped ornament. The crop shows a low, wide red stationery organizer containing pale papers and small brass accessories.
+
+- Replace the tall stepped silhouette with a shallow, horizontally elongated rectangular organizer.
+- Use dark red front and side panels with thin brass edging instead of an entirely gold body.
+- Add visible white paper sheets rising behind the front panel and small brass compartments or accessories along the top.
+
+### object:stationery_1 attempt 2
+
+The red stationery organizer, white papers, and brass accents are recognizable. The render is too regular and sparse compared with the crop’s uneven cluster of small accessories.
+
+- Vary the brass accessories’ heights and shapes rather than using three similar rectangular holders.
+- Stagger and slightly tilt the papers to match the crop’s uneven silhouette.
+- Reduce the conspicuous black corner strips and soften the uniformly polished finish.
+
+### object:stationery_2 attempt 1
+
+The two brass forms and small central piece roughly match the arrangement, but the render reads as tall open bins rather than the low, compact stationery fittings visible in the crop.
+
+- Reduce the height of both outer forms relative to their width; the crop shows squat, nearly square silhouettes.
+- Make the open tops shallower and less prominent, with finer rims and less pronounced dark front recesses.
+- Use a lighter, warmer brass finish with softer shading to match the crop’s golden material.
+
+### object:stationery_2 attempt 2
+
+The two flanking holders and small central piece broadly match the arrangement, but the render lacks the prominent white paper and reads as oversized, plain wooden bins.
+
+- Add the white paper or envelopes projecting above and between the holders, as visible in the crop.
+- Reduce the holders’ height relative to their width and make their open cavities less prominent.
+- Use a darker brown finish with lighter gold edging instead of uniform tan surfaces.
+
+### object:fire_tool_0 attempt 1
+
+Recognisable as the slender dark fireplace tool, but the render is too thin and regular, with understated forged twists.
+
+- Thicken the shaft and broaden the handle to match the crop’s heavier silhouette.
+- Make the upper shaft’s twisted sections more pronounced, with visible alternating bulges and narrow necks.
+- Give the handle a blunter, rounded rectangular profile and add subtle unevenness to the shaft.
+
+### object:fire_tool_0 attempt 2
+
+The render captures the long iron tool, capped handle, and twisted shaft, but looks straighter and more mechanically uniform than the crop.
+
+- Make the shaft slightly bowed and uneven rather than perfectly straight.
+- Use broader, less regular twists extending farther down the shaft; the rendered twisting is concentrated near the top.
+- Add subtle brown wear and softened highlights to match the aged iron surface.
+
+### object:fire_tool_1 attempt 1
+
+The render reads as the slender dark fireplace tool in the crop, with a flattened upper end and separated twisted sections. Its twists look too fine and shallow compared with the crop’s broad, visibly undulating ironwork.
+
+- Make the twisted sections broader and more pronounced in silhouette, with larger alternating faces.
+- Reduce the fine ribbed surface detail so the shaft reads as smooth, worn forged iron.
+
+### object:fire_tool_1 attempt 2
+
+Recognisable as a slender, dark twisted iron fireplace tool. The render captures the overall proportions, but its twists look like isolated swollen sections rather than the crop’s more continuous angular spiral.
+
+- Make the twisted sections read as rotating square iron, with sharper edges and flatter faces instead of rounded bulges.
+- Shorten the long straight middle section and distribute the twists more continuously along the visible shaft.
+- Add subtle warm metallic highlights so the twisted faces remain legible against the dark finish.
+
+### object:fire_tool_2 attempt 1
+
+The render captures a dark metal shaft and loop handle, but the handle is too small, thin, and plain to match the crop's substantial ornamental ironwork. The crop primarily supports judging the handle; most of the shaft is obscured.
+
+- Enlarge and thicken the oval handle relative to the shaft, adding the pronounced twisted-rope relief around its perimeter.
+- Replace the small inner curl with a thicker, inward-coiling scroll that fills more of the handle opening.
+- Build the curved, flared neck and lower hooked flourish beneath the oval, using rounded dark iron surfaces with visible highlights.
+
+### object:fire_tool_2 attempt 2
+
+Recognizable as an ornate black iron fire-tool handle, but the render stretches the compact loop and reverses the lower scroll seen in the crop.
+
+- Shorten and widen the rope-textured outer loop to match the crop’s near-round oval silhouette.
+- Make the inner spiral smaller and more tightly curled within the loop.
+- Move the lower outward curl to the left and shorten the neck beneath the loop.
+
+### object:candle_0 attempt 1
+
+Recognisable unlit taper candle, but the render is too slender and cool white, with an overly elongated pointed tip.
+
+- Widen the lower shaft relative to its height and strengthen the gradual taper toward the top.
+- Shorten and soften the pointed tip to match the crop’s small, rounded peak.
+- Use warmer ivory wax with subtle surface variation.
+
+### object:candle_1 attempt 1
+
+The render clearly matches the tall ivory taper candle, though its tip is too sharply conical and its surface too uniform compared with the crop.
+
+- Soften the pointed tip into a slightly irregular, rounded wax crown with a tiny visible wick.
+- Add subtle warm ivory variation and faint vertical wax irregularities while preserving the slender silhouette.
+
+### tier:small attempt 1
+
+model call had no non-whitespace output and no busy child process for 1500 s
+
+- model call had no non-whitespace output and no busy child process for 1500 s
+
+### tier:small attempt 2
+
+model call had no non-whitespace output and no busy child process for 1500 s
+
+- model call had no non-whitespace output and no busy child process for 1500 s
+
+### integrate attempt 1
+
+integrate spatial contract gate failed: 68 validation error(s)
+
+- north_right: footprint did not round-trip
+- mantel: footprint did not round-trip
+- mantel: region carved_frieze did not round-trip
+- curtain_rail: footprint did not round-trip
+- curtain_rail: region body did not round-trip
+- drape_0: footprint did not round-trip
+- drape_0: region long_pleated_tail did not round-trip
+- tieback_0: footprint did not round-trip
+- tieback_0: region body did not round-trip
+- drape_1: footprint did not round-trip
+- tieback_1: footprint did not round-trip
+- tieback_1: region body did not round-trip
+- drape_2: footprint did not round-trip
+- rail_crest: footprint did not round-trip
+- rail_crest: region body did not round-trip
+- globe: footprint did not round-trip
+- globe: region base did not round-trip
+- gold_chair: footprint did not round-trip
+- red_chair: footprint did not round-trip
+- round_table: footprint did not round-trip
+- round_table: region foot did not round-trip
+- orange_chair: footprint did not round-trip
+- mantel_clock_face: footprint did not round-trip
+- sconce: footprint did not round-trip
+- book_0_0: footprint did not round-trip
+- book_0_0: region body did not round-trip
+- book_0_1: footprint did not round-trip
+- book_0_1: region body did not round-trip
+- book_0_2: footprint did not round-trip
+- book_0_2: region body did not round-trip
+- book_0_3: footprint did not round-trip
+- book_0_3: region body did not round-trip
+- book_0_4: footprint did not round-trip
+- book_0_4: region body did not round-trip
+- book_0_5: footprint did not round-trip
+- book_0_5: region body did not round-trip
+- book_0_6: footprint did not round-trip
+- book_0_6: region body did not round-trip
+- book_1_0: footprint did not round-trip
+- book_1_0: region body did not round-trip
+- book_1_1: footprint did not round-trip
+- book_1_1: region body did not round-trip
+- book_1_2: footprint did not round-trip
+- book_1_2: region body did not round-trip
+- book_1_3: footprint did not round-trip
+- book_1_3: region body did not round-trip
+- book_2_0: footprint did not round-trip
+- book_2_0: region body did not round-trip
+- book_2_1: footprint did not round-trip
+- book_2_1: region body did not round-trip
+- table_lamp: footprint did not round-trip
+- table_lamp: region shade did not round-trip
+- stationery_1: region body did not round-trip
+- stationery_2: region body did not round-trip
+- desk_bowl: footprint did not round-trip
+- she_wolf_figurine: footprint did not round-trip
+- walking_cane: footprint did not round-trip
+- tieback_hanging_0: footprint did not round-trip
+- tieback_hanging_1: footprint did not round-trip
+- tieback_hanging_1: region body did not round-trip
+- fire_tool_stand: footprint did not round-trip
+- book_rest_gallery: region body did not round-trip
+- sofa: support regions were not observed
+- orange_chair: support regions were not observed
+- mantel_clock_face: observed support relationship failed with floor
+- fire_tool_0: observed support relationship failed with floor
+- fire_tool_1: observed support relationship failed with floor
+- fire_tool_2: observed support relationship failed with floor
+
+### integrate attempt 2
+
+integrate spatial contract gate failed: 68 validation error(s)
+
+- north_right: footprint did not round-trip
+- mantel: footprint did not round-trip
+- mantel: region carved_frieze did not round-trip
+- curtain_rail: footprint did not round-trip
+- curtain_rail: region body did not round-trip
+- drape_0: footprint did not round-trip
+- drape_0: region long_pleated_tail did not round-trip
+- tieback_0: footprint did not round-trip
+- tieback_0: region body did not round-trip
+- drape_1: footprint did not round-trip
+- tieback_1: footprint did not round-trip
+- tieback_1: region body did not round-trip
+- drape_2: footprint did not round-trip
+- rail_crest: footprint did not round-trip
+- rail_crest: region body did not round-trip
+- globe: footprint did not round-trip
+- globe: region base did not round-trip
+- gold_chair: footprint did not round-trip
+- red_chair: footprint did not round-trip
+- round_table: footprint did not round-trip
+- round_table: region foot did not round-trip
+- orange_chair: footprint did not round-trip
+- mantel_clock_face: footprint did not round-trip
+- sconce: footprint did not round-trip
+- book_0_0: footprint did not round-trip
+- book_0_0: region body did not round-trip
+- book_0_1: footprint did not round-trip
+- book_0_1: region body did not round-trip
+- book_0_2: footprint did not round-trip
+- book_0_2: region body did not round-trip
+- book_0_3: footprint did not round-trip
+- book_0_3: region body did not round-trip
+- book_0_4: footprint did not round-trip
+- book_0_4: region body did not round-trip
+- book_0_5: footprint did not round-trip
+- book_0_5: region body did not round-trip
+- book_0_6: footprint did not round-trip
+- book_0_6: region body did not round-trip
+- book_1_0: footprint did not round-trip
+- book_1_0: region body did not round-trip
+- book_1_1: footprint did not round-trip
+- book_1_1: region body did not round-trip
+- book_1_2: footprint did not round-trip
+- book_1_2: region body did not round-trip
+- book_1_3: footprint did not round-trip
+- book_1_3: region body did not round-trip
+- book_2_0: footprint did not round-trip
+- book_2_0: region body did not round-trip
+- book_2_1: footprint did not round-trip
+- book_2_1: region body did not round-trip
+- table_lamp: footprint did not round-trip
+- table_lamp: region shade did not round-trip
+- stationery_1: region body did not round-trip
+- stationery_2: region body did not round-trip
+- desk_bowl: footprint did not round-trip
+- she_wolf_figurine: footprint did not round-trip
+- walking_cane: footprint did not round-trip
+- tieback_hanging_0: footprint did not round-trip
+- tieback_hanging_1: footprint did not round-trip
+- tieback_hanging_1: region body did not round-trip
+- fire_tool_stand: footprint did not round-trip
+- book_rest_gallery: region body did not round-trip
+- sofa: support regions were not observed
+- orange_chair: support regions were not observed
+- mantel_clock_face: observed support relationship failed with floor
+- fire_tool_0: observed support relationship failed with floor
+- fire_tool_1: observed support relationship failed with floor
+- fire_tool_2: observed support relationship failed with floor
+
+### integrate attempt 3
+
+integrate spatial contract gate failed: 68 validation error(s)
+
+- north_right: footprint did not round-trip
+- mantel: footprint did not round-trip
+- mantel: region carved_frieze did not round-trip
+- curtain_rail: footprint did not round-trip
+- curtain_rail: region body did not round-trip
+- drape_0: footprint did not round-trip
+- drape_0: region long_pleated_tail did not round-trip
+- tieback_0: footprint did not round-trip
+- tieback_0: region body did not round-trip
+- drape_1: footprint did not round-trip
+- tieback_1: footprint did not round-trip
+- tieback_1: region body did not round-trip
+- drape_2: footprint did not round-trip
+- rail_crest: footprint did not round-trip
+- rail_crest: region body did not round-trip
+- globe: footprint did not round-trip
+- globe: region base did not round-trip
+- gold_chair: footprint did not round-trip
+- red_chair: footprint did not round-trip
+- round_table: footprint did not round-trip
+- round_table: region foot did not round-trip
+- orange_chair: footprint did not round-trip
+- mantel_clock_face: footprint did not round-trip
+- sconce: footprint did not round-trip
+- book_0_0: footprint did not round-trip
+- book_0_0: region body did not round-trip
+- book_0_1: footprint did not round-trip
+- book_0_1: region body did not round-trip
+- book_0_2: footprint did not round-trip
+- book_0_2: region body did not round-trip
+- book_0_3: footprint did not round-trip
+- book_0_3: region body did not round-trip
+- book_0_4: footprint did not round-trip
+- book_0_4: region body did not round-trip
+- book_0_5: footprint did not round-trip
+- book_0_5: region body did not round-trip
+- book_0_6: footprint did not round-trip
+- book_0_6: region body did not round-trip
+- book_1_0: footprint did not round-trip
+- book_1_0: region body did not round-trip
+- book_1_1: footprint did not round-trip
+- book_1_1: region body did not round-trip
+- book_1_2: footprint did not round-trip
+- book_1_2: region body did not round-trip
+- book_1_3: footprint did not round-trip
+- book_1_3: region body did not round-trip
+- book_2_0: footprint did not round-trip
+- book_2_0: region body did not round-trip
+- book_2_1: footprint did not round-trip
+- book_2_1: region body did not round-trip
+- table_lamp: footprint did not round-trip
+- table_lamp: region shade did not round-trip
+- stationery_1: region body did not round-trip
+- stationery_2: region body did not round-trip
+- desk_bowl: footprint did not round-trip
+- she_wolf_figurine: footprint did not round-trip
+- walking_cane: footprint did not round-trip
+- tieback_hanging_0: footprint did not round-trip
+- tieback_hanging_1: footprint did not round-trip
+- tieback_hanging_1: region body did not round-trip
+- fire_tool_stand: footprint did not round-trip
+- book_rest_gallery: region body did not round-trip
+- sofa: support regions were not observed
+- orange_chair: support regions were not observed
+- mantel_clock_face: observed support relationship failed with floor
+- fire_tool_0: observed support relationship failed with floor
+- fire_tool_1: observed support relationship failed with floor
+- fire_tool_2: observed support relationship failed with floor
+
+### materials attempt 1
+
+materials spatial contract gate failed: 68 validation error(s)
+
+- north_right: footprint did not round-trip
+- mantel: footprint did not round-trip
+- mantel: region carved_frieze did not round-trip
+- curtain_rail: footprint did not round-trip
+- curtain_rail: region body did not round-trip
+- drape_0: footprint did not round-trip
+- drape_0: region long_pleated_tail did not round-trip
+- tieback_0: footprint did not round-trip
+- tieback_0: region body did not round-trip
+- drape_1: footprint did not round-trip
+- tieback_1: footprint did not round-trip
+- tieback_1: region body did not round-trip
+- drape_2: footprint did not round-trip
+- rail_crest: footprint did not round-trip
+- rail_crest: region body did not round-trip
+- globe: footprint did not round-trip
+- globe: region base did not round-trip
+- gold_chair: footprint did not round-trip
+- red_chair: footprint did not round-trip
+- round_table: footprint did not round-trip
+- round_table: region foot did not round-trip
+- orange_chair: footprint did not round-trip
+- mantel_clock_face: footprint did not round-trip
+- sconce: footprint did not round-trip
+- book_0_0: footprint did not round-trip
+- book_0_0: region body did not round-trip
+- book_0_1: footprint did not round-trip
+- book_0_1: region body did not round-trip
+- book_0_2: footprint did not round-trip
+- book_0_2: region body did not round-trip
+- book_0_3: footprint did not round-trip
+- book_0_3: region body did not round-trip
+- book_0_4: footprint did not round-trip
+- book_0_4: region body did not round-trip
+- book_0_5: footprint did not round-trip
+- book_0_5: region body did not round-trip
+- book_0_6: footprint did not round-trip
+- book_0_6: region body did not round-trip
+- book_1_0: footprint did not round-trip
+- book_1_0: region body did not round-trip
+- book_1_1: footprint did not round-trip
+- book_1_1: region body did not round-trip
+- book_1_2: footprint did not round-trip
+- book_1_2: region body did not round-trip
+- book_1_3: footprint did not round-trip
+- book_1_3: region body did not round-trip
+- book_2_0: footprint did not round-trip
+- book_2_0: region body did not round-trip
+- book_2_1: footprint did not round-trip
+- book_2_1: region body did not round-trip
+- table_lamp: footprint did not round-trip
+- table_lamp: region shade did not round-trip
+- stationery_1: region body did not round-trip
+- stationery_2: region body did not round-trip
+- desk_bowl: footprint did not round-trip
+- she_wolf_figurine: footprint did not round-trip
+- walking_cane: footprint did not round-trip
+- tieback_hanging_0: footprint did not round-trip
+- tieback_hanging_1: footprint did not round-trip
+- tieback_hanging_1: region body did not round-trip
+- fire_tool_stand: footprint did not round-trip
+- book_rest_gallery: region body did not round-trip
+- sofa: support regions were not observed
+- orange_chair: support regions were not observed
+- mantel_clock_face: observed support relationship failed with floor
+- fire_tool_0: observed support relationship failed with floor
+- fire_tool_1: observed support relationship failed with floor
+- fire_tool_2: observed support relationship failed with floor

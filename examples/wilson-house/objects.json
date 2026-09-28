@@ -29579,7 +29579,7 @@
   },
   {
     "id": "firebox",
-    "label": "Dark fireplace opening",
+    "label": "Dark fireplace opening with hanging iron mesh curtains",
     "crop_bbox": [
       912,
       2995,
@@ -30428,8 +30428,8 @@
       }
     },
     "proposed_label": "Dark fireplace opening",
-    "final_label": "Dark fireplace opening",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Dark fireplace opening with hanging iron mesh curtains",
+    "label_reason": "The crop shows two hanging dark metal mesh curtains suspended below a narrow rod, with prominent diagonal weave, uneven vertical folds and overlapping free edges near the center. Dim irregular masonry is visible behind the screens. The whole photograph places this unlit opening inside the marble fireplace below the mantel. The marble surround, brass andirons, tools and foreground sofa are externally owned and omitted."
   },
   {
     "id": "hearth",
@@ -30557,7 +30557,7 @@
   },
   {
     "id": "portrait",
-    "label": "Large framed portrait",
+    "label": "Large ornate gold-framed portrait of a seated man",
     "crop_bbox": [
       956,
       258,
@@ -33818,12 +33818,12 @@
       }
     },
     "proposed_label": "Large framed portrait",
-    "final_label": "Large framed portrait",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Large ornate gold-framed portrait of a seated man",
+    "label_reason": "The crop shows a vertical painted portrait of a seated man in a dark three-piece suit, holding a slender pen, with a map labelled Europe behind him and books at the right. The gold-toned rectangular surround has broad flat rails, stepped inner mouldings and repeated carved ornament. The whole photograph confirms this is the large wall-hung painting above the fireplace mantel, separate from the surrounding chimney-breast panelling."
   },
   {
     "id": "sheer_0",
-    "label": "Left lace curtain field including folds",
+    "label": "Left ivory floral lace sheer curtain with gathered vertical folds",
     "crop_bbox": [
       4060,
       1300,
@@ -45289,8 +45289,8 @@
       }
     },
     "proposed_label": "Left lace curtain field including folds",
-    "final_label": "Left lace curtain field including folds",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Left ivory floral lace sheer curtain with gathered vertical folds",
+    "label_reason": "The crop shows a translucent warm ivory textile with dense branching leaves and floral lace, long gathered vertical folds, and a narrow sewn hem above the sill. The whole photograph places this field inside the left window beneath overlapping rust velvet drapes. The rust swag, window joinery and foreground chair are adjacent objects, not parts of the sheer."
   },
   {
     "id": "sheer_1",
@@ -57575,7 +57575,7 @@
   },
   {
     "id": "drape_0",
-    "label": "Long gathered curtain with diagonal sweep",
+    "label": "Rust velvet window drape with diagonal sweep, gathered waist and long hanging tail",
     "crop_bbox": [
       3871,
       1290,
@@ -117380,12 +117380,12 @@
       }
     },
     "proposed_label": "Long gathered curtain with diagonal sweep",
-    "final_label": "Long gathered curtain with diagonal sweep",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Rust velvet window drape with diagonal sweep, gathered waist and long hanging tail",
+    "label_reason": "The crop shows heavy dark rust-orange fabric sweeping from a broad upper attachment into a left-side gold tieback, then hanging nearly vertically with a modest flare. Broad irregular folds and soft pile highlights support velvet. The whole photograph confirms this is the leftmost outer window drape, beside a separate ivory lace sheer and below an ornate rail. The proposed identification is confirmed; the visible tieback remains externally owned under the existing contract."
   },
   {
     "id": "tieback_0",
-    "label": "Left curtain gold tieback cord",
+    "label": "Left curtain ornate gold-colored tieback",
     "crop_bbox": [
       3970,
       1912,
@@ -118137,12 +118137,12 @@
       }
     },
     "proposed_label": "Left curtain gold tieback cord",
-    "final_label": "Left curtain gold tieback cord",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Left curtain ornate gold-colored tieback",
+    "label_reason": "The crop shows a short, thick gold-colored band with a shallow wrapping curve between compact rounded ornamental clusters. The upper-left cluster has curled raised lobes; the lower-right terminal has similarly dense relief. Bright highlights and dark recesses suggest a metallic finish. In the full photograph this fitting holds the gathered waist of the left rust-red curtain. The proposed tieback identification is confirmed, but cord alone does not describe the prominent ornamental terminals; the core material is not certain from the photograph."
   },
   {
     "id": "drape_1",
-    "label": "Long gathered curtain with diagonal sweep",
+    "label": "Long gathered rust-red velvet drape with diagonal sweep and gold ornamental tieback",
     "crop_bbox": [
       4614,
       1183,
@@ -177976,12 +177976,12 @@
       }
     },
     "proposed_label": "Long gathered curtain with diagonal sweep",
-    "final_label": "Long gathered curtain with diagonal sweep",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Long gathered rust-red velvet drape with diagonal sweep and gold ornamental tieback",
+    "label_reason": "The crop shows a heavy dark reddish-rust velvet curtain with deep irregular folds, a broad upper panel sweeping inward from the right against a straighter left edge, a gathered waist wrapped in ornamental gold, and a long gently flared tail. The whole photograph confirms this is the middle opaque drape in front of separately owned white lace curtains; rail, lace, framed photographs and statue are not part of this asset."
   },
   {
     "id": "tieback_1",
-    "label": "Middle curtain gold tieback cord",
+    "label": "Middle curtain ornate aged gold-colored tieback",
     "crop_bbox": [
       4676,
       1867,
@@ -178733,12 +178733,12 @@
       }
     },
     "proposed_label": "Middle curtain gold tieback cord",
-    "final_label": "Middle curtain gold tieback cord",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Middle curtain ornate aged gold-colored tieback",
+    "label_reason": "The crop shows an asymmetric curved gold-colored ornament holding gathered rust-red curtain fabric, with a larger sculpted left terminal, irregular curled and leaf-like clusters, dark recesses and bright worn highlights. The room photograph places it at the middle curtain gather between the lace-covered windows. This confirms an ornate curtain tieback; the photograph does not establish whether its core is flexible cord or rigid metal. Curtain fabric belongs to the separate drape."
   },
   {
     "id": "drape_2",
-    "label": "Long gathered curtain with diagonal sweep",
+    "label": "Rust velvet window drape with gathered diagonal swag, pleated tail and gold tieback",
     "crop_bbox": [
       5570,
       980,
@@ -186231,12 +186231,12 @@
       }
     },
     "proposed_label": "Long gathered curtain with diagonal sweep",
-    "final_label": "Long gathered curtain with diagonal sweep",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Rust velvet window drape with gathered diagonal swag, pleated tail and gold tieback",
+    "label_reason": "The crop shows heavy dark rust velvet, deep irregular folds, a rolled curved swag edge, a broad outer vertical fold and a small gold tieback at the right-hand gather. The whole photograph confirms the outer right window drape; the white patterned lace and ornamental overhead rail are separate objects."
   },
   {
     "id": "rail_crest",
-    "label": "Leaf crest above curtain rail",
+    "label": "Gilt feather-and-foliate fan crest above curtain rail",
     "crop_bbox": [
       5116,
       743,
@@ -186976,8 +186976,8 @@
       }
     },
     "proposed_label": "Leaf crest above curtain rail",
-    "final_label": "Leaf crest above curtain rail",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Gilt feather-and-foliate fan crest above curtain rail",
+    "label_reason": "The crop shows seven radiating feather-like foliate fronds with raised oval eye medallions, curled scalloped edges, a larger central oval ornament, and bundled upright stems. The whole photograph locates this small gold relief ornament centered above the curtain rail; the long rail below is a separate object. The original leaf-crest proposal is broadly correct but the feather-like fan and oval centers are more specific visible features."
   },
   {
     "id": "radiator",
@@ -660557,7 +660557,7 @@
     },
     "proposed_label": "Mantel brass candlestick",
     "final_label": "Mantel brass candlestick",
-    "label_reason": "Root proposal awaiting object review."
+    "label_reason": "Confirmed from both images: the crop shows a golden turned brass candle holder with a stepped circular base, straight tapered pedestal, thin projecting collars, a short pear-shaped central body with a broad lower shoulder, and a cylindrical socket with a flat projecting lip. The full photograph places this holder at the left end of the mantel, paired with another holder and supporting a white taper. The white candle is outside this crop and is excluded from this externally owned child geometry."
   },
   {
     "id": "candle_0",
@@ -660684,7 +660684,7 @@
     },
     "proposed_label": "Tall white taper candle",
     "final_label": "Tall white taper candle",
-    "label_reason": "Root proposal awaiting object review."
+    "label_reason": "The crop shows a long, slender ivory-white wax shaft with a gently tapering profile and a narrowed, rounded tip; no flame is visible. In the full photograph it stands upright in the left brass candlestick on the mantel. The brass holder is separately owned by candlestick_0 and is not part of this candle."
   },
   {
     "id": "candlestick_1",
@@ -660811,7 +660811,7 @@
     },
     "proposed_label": "Mantel brass candlestick",
     "final_label": "Mantel brass candlestick",
-    "label_reason": "Root proposal awaiting object review."
+    "label_reason": "The crop shows a reflective gold-brass candle holder with a broad stepped circular foot, tapered lower stem with small ring moldings, rounded pear-shaped central knop, projecting shoulder disc, and a tall narrow socket flaring into a lip beneath a white taper. The whole photograph places it on the right end of the mantel as the partner to the left candlestick. The white candle is a separate externally owned child, not part of this brass body."
   },
   {
     "id": "candle_1",
@@ -660938,11 +660938,11 @@
     },
     "proposed_label": "Tall white taper candle",
     "final_label": "Tall white taper candle",
-    "label_reason": "Root proposal awaiting object review."
+    "label_reason": "The crop shows a long smooth white wax shaft, a gently narrowing upper section and small uneven pointed tip with no visible flame. The whole photograph places it upright in the right brass candlestick on the fireplace mantel; the brass holder is a separate object."
   },
   {
     "id": "mantel_clock",
-    "label": "Small mantel clock",
+    "label": "Small mantel clock with swept mahogany base and brass bezel",
     "crop_bbox": [
       1369,
       2252,
@@ -661064,12 +661064,12 @@
       }
     },
     "proposed_label": "Small mantel clock",
-    "final_label": "Small mantel clock",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Small mantel clock with swept mahogany base and brass bezel",
+    "label_reason": "The crop shows a low, wide dark wooden plinth with swept shoulders supporting a circular brass-rimmed ivory dial with Roman numerals and hands. The full photograph places this same small freestanding clock on the mantel shelf between two candlesticks, confirming the proposed mantel-clock identification."
   },
   {
     "id": "mantel_clock_face",
-    "label": "Pale clock dial",
+    "label": "Pale Roman-numeral mantel clock dial",
     "crop_bbox": [
       1507,
       2270,
@@ -661187,8 +661187,8 @@
       }
     },
     "proposed_label": "Pale clock dial",
-    "final_label": "Pale clock dial",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Pale Roman-numeral mantel clock dial",
+    "label_reason": "The crop shows an aged ivory circular dial with fine serif Roman hours rotated around its perimeter, minute ticks, delicate pierced dark hands, a small upper subsidiary dial and lower winding apertures. A rounded aged brass edge surrounds the face. The whole photograph places it in the dark wooden mantel clock between the candlesticks beneath the portrait. These features confirm the proposed label Pale clock dial; the brass edge is included here as explicitly requested in the detail correction, while the wooden case is omitted."
   },
   {
     "id": "sconce",
@@ -661350,11 +661350,11 @@
     },
     "proposed_label": "Two-arm wall sconce",
     "final_label": "Two-arm wall sconce",
-    "label_reason": "Root proposal awaiting object review."
+    "label_reason": "Confirmed by both images: an ornate brass-colored wall backplate with a tapered pendant, two scrolling branches, circular drip pans and sockets, and two upward-facing glowing amber/ivory glass cup shades. The room photograph places it beside the fireplace above a separate small clock; that clock is excluded."
   },
   {
     "id": "microphone",
-    "label": "Vintage broadcast microphone on stand",
+    "label": "Vintage ring-mounted broadcast microphone on a tabletop stand",
     "crop_bbox": [
       2931,
       2390,
@@ -662085,12 +662085,12 @@
       }
     },
     "proposed_label": "Vintage broadcast microphone on stand",
-    "final_label": "Vintage broadcast microphone on stand",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Vintage ring-mounted broadcast microphone on a tabletop stand",
+    "label_reason": "The crop shows a silver circular suspension ring surrounding a round microphone capsule, a small lettered station plaque above, a narrow upright metal stem, and a low stepped dark base. The whole photograph places this small freestanding broadcast microphone on top of the bookcase beneath the wall sconce. The station lettering is too soft to establish an exact model or attribution."
   },
   {
     "id": "book_0_0",
-    "label": "Visible book spines on bookcase",
+    "label": "Worn upright book spines on bookcase",
     "crop_bbox": [
       2794,
       2799,
@@ -662809,12 +662809,12 @@
       }
     },
     "proposed_label": "Visible book spines on bookcase",
-    "final_label": "Visible book spines on bookcase",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Worn upright book spines on bookcase",
+    "label_reason": "The crop shows a group of narrow standing book bindings: a nearly black plum spine at left with faint broken horizontal marks, a wider warm ochre-brown spine bordered by reddish cover edges, and a shadowed olive binding at right. Their tops lean slightly right with uneven alignment. The whole photograph places these books on the small bookcase behind the central upholstered chair. No title is legible; the surrounding shelf and furniture are externally owned geometry."
   },
   {
     "id": "book_0_1",
-    "label": "Visible book spines on bookcase",
+    "label": "Dark upright and leaning book bindings on the bookcase",
     "crop_bbox": [
       2852,
       2799,
@@ -663533,12 +663533,12 @@
       }
     },
     "proposed_label": "Visible book spines on bookcase",
-    "final_label": "Visible book spines on bookcase",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Dark upright and leaning book bindings on the bookcase",
+    "label_reason": "The crop shows a broad, nearly black plum book binding whose top leans to the right, next to a slender upright reddish-brown binding. Narrow raised cover edges, dark vertical joints and faint transverse end creases support the book identification. In the whole photograph these forms sit among the volumes beneath the top of the small bookcase behind the upholstered chair. The crop is too soft and shadowed to establish a title or author. Surrounding shelf rails belong to the externally owned bookcase."
   },
   {
     "id": "book_0_2",
-    "label": "Visible book spines on bookcase",
+    "label": "Upright dark burgundy and muted red book spines on the bookcase",
     "crop_bbox": [
       2911,
       2799,
@@ -664257,12 +664257,12 @@
       }
     },
     "proposed_label": "Visible book spines on bookcase",
-    "final_label": "Visible book spines on bookcase",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Upright dark burgundy and muted red book spines on the bookcase",
+    "label_reason": "The crop shows several closely packed vertical bindings: dark plum-burgundy upper sections, two more visible muted red lower spine panels, narrow rounded edges and deep dark cover joints. The whole photograph places this patch among books in the small bookcase behind the upholstered chair. This confirms the proposed book-spine identification; the blurred crop does not establish titles, authors, or an exact volume count."
   },
   {
     "id": "book_0_3",
-    "label": "Visible book spines on bookcase",
+    "label": "Two narrow upright book spines, faded red and tan",
     "crop_bbox": [
       2969,
       2799,
@@ -664981,12 +664981,12 @@
       }
     },
     "proposed_label": "Visible book spines on bookcase",
-    "final_label": "Visible book spines on bookcase",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Two narrow upright book spines, faded red and tan",
+    "label_reason": "The crop shows two tightly packed, tall narrow spines: faded red at left and tan at right, with the tan book slightly taller. Mostly plain worn surfaces have faint horizontal divisions and softened edges; no title is legible. The whole photograph places them among books on the small bookcase behind the patterned chair. The dark lower-right obstruction belongs to foreground furniture, not the books."
   },
   {
     "id": "book_0_4",
-    "label": "Visible book spines on bookcase",
+    "label": "Upright worn tan, brown and dark olive book spines with faded gilt markings",
     "crop_bbox": [
       3028,
       2799,
@@ -665705,12 +665705,12 @@
       }
     },
     "proposed_label": "Visible book spines on bookcase",
-    "final_label": "Visible book spines on bookcase",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Upright worn tan, brown and dark olive book spines with faded gilt markings",
+    "label_reason": "The crop shows adjacent tall narrow bindings: a partial tan spine at left, a brown binding with pale horizontal rules, and a broader dark olive spine at right with several short gold markings near its upper half. The room photograph places these upright books on the small bookcase behind the upholstered chair. No title or author is legible; the dark shelf above is external bookcase geometry."
   },
   {
     "id": "book_0_5",
-    "label": "Visible book spines on bookcase",
+    "label": "Two dark burgundy-black upright book spines with worn gilt tooling",
     "crop_bbox": [
       3086,
       2799,
@@ -666429,12 +666429,12 @@
       }
     },
     "proposed_label": "Visible book spines on bookcase",
-    "final_label": "Visible book spines on bookcase",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Two dark burgundy-black upright book spines with worn gilt tooling",
+    "label_reason": "The crop shows two adjacent burgundy-black upright bindings with only a modest top-height difference, thin faded horizontal bands on the shorter left spine, compact irregular gold ornament near the taller right spine top, and pale illegible markings below. The whole room photograph places these spines among books in the case behind the chair. No title or author is legible."
   },
   {
     "id": "book_0_6",
-    "label": "Visible book spines on bookcase",
+    "label": "Adjacent upright reddish-brown and aged golden-ivory book bindings",
     "crop_bbox": [
       3145,
       2799,
@@ -667153,12 +667153,12 @@
       }
     },
     "proposed_label": "Visible book spines on bookcase",
-    "final_label": "Visible book spines on bookcase",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Adjacent upright reddish-brown and aged golden-ivory book bindings",
+    "label_reason": "The object crop shows a tall dark reddish-brown book spine at left with faint horizontal tooling and warmer brown edges, immediately beside a slightly shorter golden-ivory spine with ochre border wear. Only a narrow dark seam separates the bindings. The whole reference photograph locates these upright volumes in the bookcase behind the upholstered chair. No title or author can be read. The surrounding shelf and case remain externally owned."
   },
   {
     "id": "book_1_0",
-    "label": "Visible book spines on bookcase",
+    "label": "Upright red and dark burgundy book spines on the bookcase",
     "crop_bbox": [
       2794,
       3012,
@@ -667877,12 +667877,12 @@
       }
     },
     "proposed_label": "Visible book spines on bookcase",
-    "final_label": "Visible book spines on bookcase",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Upright red and dark burgundy book spines on the bookcase",
+    "label_reason": "The narrow crop shows adjacent tall bindings with red spine faces, nearly black burgundy edges, vertical cover joints and uneven worn headcaps. The whole photograph locates this group on the middle shelf of the small bookcase beside the globe and behind the upholstered chair. No title is legible; the proposed book-spine identification is confirmed."
   },
   {
     "id": "book_1_1",
-    "label": "Visible book spines on bookcase",
+    "label": "Upright red, ochre-brown and dark plum book bindings on the bookcase",
     "crop_bbox": [
       2852,
       3012,
@@ -668601,12 +668601,12 @@
       }
     },
     "proposed_label": "Visible book spines on bookcase",
-    "final_label": "Visible book spines on bookcase",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Upright red, ochre-brown and dark plum book bindings on the bookcase",
+    "label_reason": "The narrow crop shows adjacent tall rectangular bindings with dark vertical cover joints, muted red at the left, worn ochre-brown edges through the center, and a shadowed plum binding at the right. Uneven top edges and small pale worn patches support the book identification; the whole photograph places them in the middle compartment of the small bookcase behind the upholstered chair. No lettering is legible."
   },
   {
     "id": "book_1_2",
-    "label": "Visible book spines on bookcase",
+    "label": "Upright dark burgundy book spines on the bookcase",
     "crop_bbox": [
       2911,
       3012,
@@ -669325,12 +669325,12 @@
       }
     },
     "proposed_label": "Visible book spines on bookcase",
-    "final_label": "Visible book spines on bookcase",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Upright dark burgundy book spines on the bookcase",
+    "label_reason": "The crop shows several parallel, narrow burgundy and plum binding faces, separated by dark vertical joints, with softly rounded edges and a few faint pale horizontal wear or gilt marks. The whole photograph places these bindings in the bookcase behind the upholstered chair. This supports upright book spines; no title is legible and the exact volume count is uncertain."
   },
   {
     "id": "book_1_3",
-    "label": "Visible book spines on bookcase",
+    "label": "Upright brown leather-bound book with worn gilt spine bands",
     "crop_bbox": [
       2969,
       3012,
@@ -670049,12 +670049,12 @@
       }
     },
     "proposed_label": "Visible book spines on bookcase",
-    "final_label": "Visible book spines on bookcase",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Upright brown leather-bound book with worn gilt spine bands",
+    "label_reason": "The crop shows a narrow reddish-brown upright binding with a softly rounded spine, a lighter worn headcap, and several faded gold horizontal rules and illegible marks near its top. The whole photograph places it among the books in the revolving bookcase behind the upholstered chair. Surrounding dark shelf edges and the bright neighboring sliver are not parts of this book; no title or author can be resolved."
   },
   {
     "id": "book_2_0",
-    "label": "Visible book spines on bookcase",
+    "label": "Upright dark navy, near-black burgundy and red book spines on the bottom bookcase shelf",
     "crop_bbox": [
       2794,
       3226,
@@ -670773,12 +670773,12 @@
       }
     },
     "proposed_label": "Visible book spines on bookcase",
-    "final_label": "Visible book spines on bookcase",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Upright dark navy, near-black burgundy and red book spines on the bottom bookcase shelf",
+    "label_reason": "The crop shows narrow vertical binding faces in dark navy, warm near-black burgundy and red, separated by shadowed joints, with slightly uneven top edges and subdued worn end folds. The full photograph places this cluster in the lower compartment of the small bookcase behind the gold upholstered chair. The shelf belongs to the bookcase and is omitted; titles and exact volume count are not legible."
   },
   {
     "id": "book_2_1",
-    "label": "Visible book spines on bookcase",
+    "label": "Partly obscured upright burgundy-red book spine on the bottom bookcase shelf",
     "crop_bbox": [
       2852,
       3226,
@@ -671497,12 +671497,12 @@
       }
     },
     "proposed_label": "Visible book spines on bookcase",
-    "final_label": "Visible book spines on bookcase",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Partly obscured upright burgundy-red book spine on the bottom bookcase shelf",
+    "label_reason": "The crop shows a narrow upright burgundy-red binding with straight vertical edges, a dark head, a faint worn horizontal head edge and a muted ochre strip along the left edge. The room photograph places it among the bottom-compartment books behind the gold upholstered chair. The curved gold-brown occluder on the right is the external chair arm, not part of the binding. No lettering is legible and the adjacent dark strips do not establish an exact volume count."
   },
   {
     "id": "table_lamp",
-    "label": "Table lamp with white shade",
+    "label": "Dark metal bridge-arm lamp with ivory bell-shaped shade",
     "crop_bbox": [
       3568,
       2407,
@@ -671657,8 +671657,8 @@
       }
     },
     "proposed_label": "Table lamp with white shade",
-    "final_label": "Table lamp with white shade",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Dark metal bridge-arm lamp with ivory bell-shaped shade",
+    "label_reason": "The crop shows a white-to-ivory fabric bell shade with subtly squared flared lower corners and thin sewn edging. A tall dark curved bridge above it has an inward curl and turned collars, with a small brass socket over the shade. The dark upright appears near the right edge of the shade and continues behind the red chair. The whole-room image confirms this lamp beside the writing table; its actual foot and support contact are obscured."
   },
   {
     "id": "open_book",
@@ -671785,7 +671785,7 @@
     },
     "proposed_label": "Open book on side table",
     "final_label": "Open book on side table",
-    "label_reason": "Root proposal awaiting object review."
+    "label_reason": "The crop shows two pale cream page blocks lying open, broad curved page surfaces dipping into a central binding gutter, layered front edges and faint dense printed lines. The whole photograph places this open volume on the small side table beside the lamp, behind the upholstered chair. The reddish wooden forms in front belong to adjacent furniture, not the book; no title or specific publication is legible."
   },
   {
     "id": "tablecloth",
@@ -671952,7 +671952,7 @@
   },
   {
     "id": "photo_frame_0",
-    "label": "Framed photograph on display table",
+    "label": "Tabletop portrait photograph in a beaded metallic frame with a wide beige mat",
     "crop_bbox": [
       4645,
       2775,
@@ -672061,12 +672061,12 @@
       }
     },
     "proposed_label": "Framed photograph on display table",
-    "final_label": "Framed photograph on display table",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Tabletop portrait photograph in a beaded metallic frame with a wide beige mat",
+    "label_reason": "The crop shows a dark sepia bust portrait surrounded by a broad beige rectangular mat, narrow reflective beaded metal edging, and a small top ornament. The whole-room photograph places this small backward-leaning frame on the cloth-covered display table beside the statue; the table and statue are separate objects. No identity of the sitter is inferred."
   },
   {
     "id": "photo_image_0",
-    "label": "Dark photograph insert",
+    "label": "Dark sepia bust portrait photograph insert",
     "crop_bbox": [
       4696,
       2830,
@@ -672175,12 +672175,12 @@
       }
     },
     "proposed_label": "Dark photograph insert",
-    "final_label": "Dark photograph insert",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Dark sepia bust portrait photograph insert",
+    "label_reason": "The crop shows a rectangular dark photographic print with a light-toned male face, short hair, dark high collar and jacketed shoulders against a nearly black background. In the whole reference this is the left small portrait on the cloth-covered table beside the statue. The surrounding beige mat and narrow metallic frame are separately owned; this entry identifies only the print, without inferring the sitter's identity."
   },
   {
     "id": "photo_frame_1",
-    "label": "Framed photograph on display table",
+    "label": "Tabletop portrait photograph in a beaded metallic frame with a broad beige mat",
     "crop_bbox": [
       5089,
       2775,
@@ -672289,12 +672289,12 @@
       }
     },
     "proposed_label": "Framed photograph on display table",
-    "final_label": "Framed photograph on display table",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Tabletop portrait photograph in a beaded metallic frame with a broad beige mat",
+    "label_reason": "The crop shows an upright rectangular sepia portrait of a sitter wearing a head covering and patterned clothing, surrounded by a broad beige mat, thin reflective beaded metal perimeter and small central top ornament. The whole photograph locates this frame on the cloth-covered display table to the right of the dark statue, separate from the other framed portrait. This confirms the proposed framed-photograph identification; the sitter is not identified."
   },
   {
     "id": "photo_image_1",
-    "label": "Dark photograph insert",
+    "label": "Dark sepia bust portrait photograph insert",
     "crop_bbox": [
       5130,
       2830,
@@ -672403,12 +672403,12 @@
       }
     },
     "proposed_label": "Dark photograph insert",
-    "final_label": "Dark photograph insert",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Dark sepia bust portrait photograph insert",
+    "label_reason": "The crop shows a light face with round spectacles, short hair, a pale neckline and patterned clothing against a near-black sepia background. The whole photograph places this print inside the right-hand tabletop frame beside the statue on the cloth-covered table. The pale mat and outer frame belong to the separate frame asset; the sitter identity is not inferred."
   },
   {
     "id": "statue",
-    "label": "Standing bronze figurine",
+    "label": "Dark bronze statuette of a robed musician holding a lute-like instrument",
     "crop_bbox": [
       4893,
       2514,
@@ -672549,12 +672549,12 @@
       }
     },
     "proposed_label": "Standing bronze figurine",
-    "final_label": "Standing bronze figurine",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Dark bronze statuette of a robed musician holding a lute-like instrument",
+    "label_reason": "The crop shows a standing human figure with a brimmed cap, modeled face and hands, a long heavily folded robe, and an elongated instrument held diagonally across the chest with a narrow neck and rounded body. Dark brown metallic highlights and a stepped rectangular base support the bronze-statuette identification. The whole photograph places this small sculpture on the cloth-covered table between framed photographs. The precise figure and instrument type are uncertain."
   },
   {
     "id": "stationery_box",
-    "label": "Stationery holder on round table",
+    "label": "Red stationery holder with fine gold borders, cream papers and brass-colored fittings",
     "crop_bbox": [
       3857,
       3136,
@@ -672676,12 +672676,12 @@
       }
     },
     "proposed_label": "Stationery holder on round table",
-    "final_label": "Stationery holder on round table",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Red stationery holder with fine gold borders, cream papers and brass-colored fittings",
+    "label_reason": "The crop shows a broad crimson rectangular front, fine scalloped gold borders along the bottom and sides, a shallow open compartment with rising side edges, upright cream papers or envelopes and small gold-toned fittings above the rim. The whole photograph locates the holder on the small round table in front of the red chair. The red covering appears leather-like, though its exact material is uncertain."
   },
   {
     "id": "stationery_0",
-    "label": "Papers in stationery holder",
+    "label": "Red rectangular stationery holder with small cream paper tip",
     "crop_bbox": [
       3878,
       3136,
@@ -672790,12 +672790,12 @@
       }
     },
     "proposed_label": "Papers in stationery holder",
-    "final_label": "Papers in stationery holder",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Red rectangular stationery holder with small cream paper tip",
+    "label_reason": "The crop shows a broad red rectangular front with a thin gold-colored upper rim and a small central gold fitting. A small cream triangular paper tip rises above its left side; short pale paper edges and darker contents peek above the top. The whole photograph places the holder on the small round table in front of the red chair. The original proposal is preserved; the correction includes the visually dominant holder as explicitly requested under capped reentry."
   },
   {
     "id": "stationery_1",
-    "label": "Small brass-colored accessory in stationery holder",
+    "label": "Shallow dark-red rectangular stationery organizer with brass edging, white papers and small brass-colored fittings",
     "crop_bbox": [
       3929,
       3136,
@@ -672905,12 +672905,12 @@
       }
     },
     "proposed_label": "Small brass-colored accessory in stationery holder",
-    "final_label": "Small brass-colored accessory in stationery holder",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Shallow dark-red rectangular stationery organizer with brass edging, white papers and small brass-colored fittings",
+    "label_reason": "The crop shows a dark-red horizontal front panel and side, thin bright brass-colored edges, white sheets rising behind the panel, and short gold-colored fittings across the top. In the full photograph these belong to the shallow rectangular stationery organizer on the small round table in front of the red chair. This supports the corrected organizer identification rather than a tall stepped brass ornament; the tiny crop cannot establish the precise function of each fitting."
   },
   {
     "id": "stationery_2",
-    "label": "Brass-colored accessories in stationery holder",
+    "label": "Small brass-colored fittings in stationery holder",
     "crop_bbox": [
       3981,
       3136,
@@ -673020,12 +673020,12 @@
       }
     },
     "proposed_label": "Brass-colored accessories in stationery holder",
-    "final_label": "Brass-colored accessories in stationery holder",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Small brass-colored fittings in stationery holder",
+    "label_reason": "The crop shows two squat, nearly square golden rectangular fittings with fine bright edges, subtle shaded faces and shallow cup-like upper edges, plus a smaller central gold upright. The pale background and red lower rim belong to the surrounding holder. The whole photograph places these accessories inside the red stationery holder on the small round table in front of the red chair. The generic proposed identification is supported; their specific function and actual brass composition cannot be established from the image."
   },
   {
     "id": "small_cup",
-    "label": "Small table cup",
+    "label": "Small silver-toned handled cup",
     "crop_bbox": [
       4098,
       3178,
@@ -673147,12 +673147,12 @@
       }
     },
     "proposed_label": "Small table cup",
-    "final_label": "Small table cup",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Small silver-toned handled cup",
+    "label_reason": "The crop shows a compact cylindrical silver-toned cup with bright horizontal reflection bands, a rounded lower edge and dark open mouth. A small warm-metal loop handle lies close to its right side. The full photograph places it among the articles on the round table beside the red stationery holder. The taller brass-colored item at right and the foreground table edge belong to neighboring objects. Fine handle attachment details remain indistinct at this resolution."
   },
   {
     "id": "table_tray",
-    "label": "Small lidded box on round table",
+    "label": "Small rectangular lidded metal box on round table",
     "crop_bbox": [
       3716,
       3195,
@@ -673274,8 +673274,8 @@
       }
     },
     "proposed_label": "Small lidded box on round table",
-    "final_label": "Small lidded box on round table",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Small rectangular lidded metal box on round table",
+    "label_reason": "The crop shows a closed rectangular metal box with straight side walls, a raised flat lid, a dark horizontal lid/body seam, bright corner and rim bands, and a projecting stepped base. The whole photograph locates it on the round table immediately left of the red stationery holder. These visible features confirm the proposed lidded-box identification; the exact metal and function are uncertain."
   },
   {
     "id": "desk_bowl",
@@ -679633,7 +679633,7 @@
   },
   {
     "id": "desk_book",
-    "label": "Closed book on desktop",
+    "label": "Thin closed book with mottled olive-brown cover",
     "crop_bbox": [
       0,
       4216,
@@ -680398,12 +680398,12 @@
       }
     },
     "proposed_label": "Closed book on desktop",
-    "final_label": "Closed book on desktop",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Thin closed book with mottled olive-brown cover",
+    "label_reason": "The crop shows a flat rectangular mottled dark olive-brown cover, a pale ochre cover edge and a thin layered side consistent with a closed bound volume. In the whole photograph it rests on the foreground desktop beside the separately owned loose printed papers. The left portion is cut off by the photograph; no title or exact binding decoration can be resolved."
   },
   {
     "id": "desk_tray",
-    "label": "Rectangular desk tray",
+    "label": "Ornamented rectangular metal desk tray",
     "crop_bbox": [
       193,
       3979,
@@ -681168,12 +681168,12 @@
       }
     },
     "proposed_label": "Rectangular desk tray",
-    "final_label": "Rectangular desk tray",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Ornamented rectangular metal desk tray",
+    "label_reason": "The crop shows a shallow rounded rectangular tray with a layered metal edge, a low brass-toned rim, two transverse bowed rails, dense pale floral ornament over a mottled silvery-brown bed, and small rounded feet beneath the front corners. The whole photograph shows it lying on the foreground desk next to the green bowl and stone plinth. These features confirm the proposed rectangular desk tray; the precise metal and historical function cannot be established from the photograph."
   },
   {
     "id": "horse_pedestal",
-    "label": "Stone plinth beneath wolf figurine",
+    "label": "Banded amber-brown stone statuette plinth",
     "crop_bbox": [
       306,
       3645,
@@ -681938,8 +681938,8 @@
       }
     },
     "proposed_label": "Stone plinth beneath wolf figurine",
-    "final_label": "Stone plinth beneath wolf figurine",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Banded amber-brown stone statuette plinth",
+    "label_reason": "The crop shows an upright rectangular plinth with finely mottled amber, ochre and reddish-brown stone, a broad comparatively plain pale horizontal belt, a darker upper course, a rounded projecting cap and a tiny pale inventory patch at the lower corner. The whole photograph confirms its position on the foreground desk supporting a gold-colored animal statuette. The proposed stone plinth identification is confirmed; the animal species is not established by this pedestal crop. The separate statuette and mounting plate are external ownership and excluded."
   },
   {
     "id": "she_wolf_figurine",
@@ -695445,7 +695445,7 @@
     },
     "proposed_label": "She-wolf and infants figurine",
     "final_label": "She-wolf and infants figurine",
-    "label_reason": "Root proposal awaiting object review."
+    "label_reason": "Confirmed in both images: a gold-toned she-wolf stands in left-facing profile with a long narrow muzzle, small pointed ears, four legs and a descending tail. Two small human infants beneath its belly identify the she-wolf-and-twins sculptural group. The room photograph shows this figurine above a separate tall banded stone pedestal on the foreground desk; the pedestal is externally owned."
   },
   {
     "id": "desk_photo_0",
@@ -696203,11 +696203,11 @@
     },
     "proposed_label": "Small framed desktop print",
     "final_label": "Small framed desktop print",
-    "label_reason": "Root proposal awaiting object review."
+    "label_reason": "The crop shows a narrow warm tan rectangular frame around an upper dark panel of pale block-like lettering and a lower dark olive panel with a small rust-colored animal-like silhouette. The whole photograph locates this upright print at the far left of the foreground desk, among other small display items. This supports the proposed framed-print identification rather than a photographic portrait; the inscription and animal species are not reliably legible. Neighboring curved objects and foreground decorative edging are outside this framed item."
   },
   {
     "id": "desk_photo_1",
-    "label": "Partly obscured upright printed desktop item",
+    "label": "Slim aged cream desktop frame holding a partly obscured printed card",
     "crop_bbox": [
       175,
       3377,
@@ -696961,12 +696961,12 @@
       }
     },
     "proposed_label": "Partly obscured upright printed desktop item",
-    "final_label": "Partly obscured upright printed desktop item",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Slim aged cream desktop frame holding a partly obscured printed card",
+    "label_reason": "The crop shows slender raised cream rails around a recessed warm paper surface, with a partial lowercase e and a slight backward lean. The whole photograph places this upright item on the desk behind the gilded wolf and a smaller photograph. No portrait is discernible in this frame. The blue-and-gold piece has its own foreground edge and occludes the card, so it is a separate object rather than an inset illustration. The precise card wording and purpose remain uncertain."
   },
   {
     "id": "desk_photo_2",
-    "label": "Printed card in desktop holder",
+    "label": "Printed card in aged cream-edged desktop holder",
     "crop_bbox": [
       124,
       3556,
@@ -697719,8 +697719,8 @@
       }
     },
     "proposed_label": "Printed card in desktop holder",
-    "final_label": "Printed card in desktop holder",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Printed card in aged cream-edged desktop holder",
+    "label_reason": "The crop shows a nearly square exposed brown paper panel with compact dark decorative lettering near the upper centre, narrow rounded aged cream edging, and a pale horizontal holder lip across the bottom. The whole photograph places this small upright item on the foreground desk beside other display items. These features support the proposed printed-card identification; the inscription is too blurred to transcribe reliably."
   },
   {
     "id": "fire_screen",
@@ -698574,11 +698574,11 @@
     },
     "proposed_label": "Fireplace mesh screen",
     "final_label": "Fireplace mesh screen",
-    "label_reason": "Root proposal awaiting object review."
+    "label_reason": "Confirmed in the crop and whole-room photograph: a shallow dark rectangular frame spans the fireplace opening, supporting two fine diamond-mesh curtains with subtle vertical ripples and a central meeting seam beneath a rounded horizontal suspension rail. The firebox is partly visible through the mesh. The brass ball-topped posts, marble surround, and foreground sofa are separate objects, not components of the screen."
   },
   {
     "id": "andiron_0",
-    "label": "Brass andiron",
+    "label": "Brass andiron with spherical finial",
     "crop_bbox": [
       1342,
       3449,
@@ -698687,12 +698687,12 @@
       }
     },
     "proposed_label": "Brass andiron",
-    "final_label": "Brass andiron",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Brass andiron with spherical finial",
+    "label_reason": "The crop shows a round gold-colored metal finial with a broad warm highlight and softly darkened brass edges above the striped sofa. In the whole photograph it stands before the fireplace screen, paired with the visible right-hand brass andiron with a slender upright and turned foot. This confirms the proposed Brass andiron identification; the sofa occludes most of the left supporting body. In the retained spatial contract this entry owns the supporting body, and the prominent sphere belongs to the separate andiron_ball_0 entry above it."
   },
   {
     "id": "andiron_ball_0",
-    "label": "Andiron spherical finial",
+    "label": "Brass spherical andiron finial",
     "crop_bbox": [
       1352,
       3494,
@@ -698801,12 +698801,12 @@
       }
     },
     "proposed_label": "Andiron spherical finial",
-    "final_label": "Andiron spherical finial",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Brass spherical andiron finial",
+    "label_reason": "The crop shows a smooth round gold-colored metal ball with a broad bright reflection and darker tarnished perimeter. In the full photograph it is the left of the two matching brass ball finials in front of the fireplace screen; its lower portion and supporting andiron are occluded by the sofa. This confirms the proposed andiron spherical finial identification; only the ball belongs to this entry."
   },
   {
     "id": "andiron_1",
-    "label": "Brass andiron",
+    "label": "Brass andiron upright with turned base",
     "crop_bbox": [
       1793,
       3449,
@@ -698915,12 +698915,12 @@
       }
     },
     "proposed_label": "Brass andiron",
-    "final_label": "Brass andiron",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Brass andiron upright with turned base",
+    "label_reason": "The crop shows a warm gold-colored metal upright with a long gently tapered shaft, a narrow collar beneath a spherical finial, and a broad stepped circular foot with rounded moldings. In the whole reference it stands on the hearth before the fireplace screen, paired with the partly sofa-obscured left andiron. This confirms the proposed Brass andiron identification. This entry owns the supporting upright and turned base; the spherical finial is separately owned by andiron_ball_1 and is omitted from this body asset."
   },
   {
     "id": "andiron_ball_1",
-    "label": "Andiron spherical finial",
+    "label": "Brass spherical andiron finial",
     "crop_bbox": [
       1799,
       3442,
@@ -699029,12 +699029,12 @@
       }
     },
     "proposed_label": "Andiron spherical finial",
-    "final_label": "Andiron spherical finial",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Brass spherical andiron finial",
+    "label_reason": "The crop shows a smooth round gold/brass-colored ball with a broad pale specular highlight, darker tarnished edges, and a narrow collar beneath it. In the whole photograph it caps the right-hand upright at the fireplace, matching the other andiron ball. This confirms the proposed spherical andiron finial identification; the supporting collar and post are externally owned and are not included in the ball asset."
   },
   {
     "id": "fire_tool_0",
-    "label": "Upright fireplace tool",
+    "label": "Upright dark iron fireplace tool",
     "crop_bbox": [
       630,
       2713,
@@ -699152,12 +699152,12 @@
       }
     },
     "proposed_label": "Upright fireplace tool",
-    "final_label": "Upright fireplace tool",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Upright dark iron fireplace tool",
+    "label_reason": "The crop shows a very long narrow dark metal shaft with subtly twisted/faceted stretches and a thicker rounded rectangular top grip. The whole photograph places this upright implement immediately left of the fireplace surround, supporting identification as a fireplace tool. The lower working end is obscured by foreground furniture, so a specific poker, shovel or tong function cannot be confirmed."
   },
   {
     "id": "fire_tool_1",
-    "label": "Upright fireplace tool",
+    "label": "Upright dark iron fireplace tool",
     "crop_bbox": [
       667,
       2713,
@@ -699275,12 +699275,12 @@
       }
     },
     "proposed_label": "Upright fireplace tool",
-    "final_label": "Upright fireplace tool",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Upright dark iron fireplace tool",
+    "label_reason": "The crop shows a narrow black-brown upright implement with a long square-section shaft, conspicuous twisted facets in its upper and lower portions, and a thicker blunt oblong grip at the top. In the whole photograph it stands beside the left edge of the fireplace among other hearth implements. This supports the proposed fireplace-tool identification; the obscured working end does not establish whether it is a poker, shovel, or another specific tool."
   },
   {
     "id": "fire_tool_2",
-    "label": "Upright fireplace tool",
+    "label": "Ornate loop-handled iron fireplace tool (working end obscured)",
     "crop_bbox": [
       705,
       3305,
@@ -699398,12 +699398,12 @@
       }
     },
     "proposed_label": "Upright fireplace tool",
-    "final_label": "Upright fireplace tool",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Ornate loop-handled iron fireplace tool (working end obscured)",
+    "label_reason": "The foreground tool has a thick oval rope-twisted iron grip enclosing a substantial inward scroll, with a flared curved neck and returning hook above the thin descending shaft. Rounded dark surfaces catch worn metallic highlights. The whole photograph locates it among the fireplace tools left of the hearth; the sofa hides its working end, so its poker, shovel, or tong subtype is uncertain. The taller rear grip and horizontal cradle belong to surrounding objects."
   },
   {
     "id": "walking_cane",
-    "label": "Walking cane leaning by gold chair",
+    "label": "Crook-handled spiral wooden walking cane leaning by gold chair",
     "crop_bbox": [
       3499,
       3226,
@@ -699521,12 +699521,12 @@
       }
     },
     "proposed_label": "Walking cane leaning by gold chair",
-    "final_label": "Walking cane leaning by gold chair",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Crook-handled spiral wooden walking cane leaning by gold chair",
+    "label_reason": "The crop shows a rounded crook handle continuing into a long, slender brown wooden shaft with continuous diagonal spiral relief and a short bright metal ferrule at the floor. The whole photograph confirms that this separate cane leans beside the gold upholstered chair, between the chair and nearby table/rocker; the surrounding furniture is external to the cane."
   },
   {
     "id": "tieback_hanging_0",
-    "label": "Left hanging tieback cord / tassel detail",
+    "label": "Left hanging curtain tieback cord",
     "crop_bbox": [
       3936,
       2001,
@@ -699744,12 +699744,12 @@
       }
     },
     "proposed_label": "Left hanging tieback cord / tassel detail",
-    "final_label": "Left hanging tieback cord / tassel detail",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Left hanging curtain tieback cord",
+    "label_reason": "The crop shows a narrow muted golden-brown cord descending with slight bends against broad rust velvet folds. The full photograph locates it directly beneath the left curtain gather and ornamental tieback. The broad reddish surfaces are the externally owned curtain; no distinct tassel head or fringed end can be resolved, so the final identification is limited to the hanging cord."
   },
   {
     "id": "tieback_hanging_1",
-    "label": "Middle hanging tieback cord / tassel detail",
+    "label": "Middle hanging curtain tieback cord",
     "crop_bbox": [
       4696,
       1960,
@@ -699967,12 +699967,12 @@
       }
     },
     "proposed_label": "Middle hanging tieback cord / tassel detail",
-    "final_label": "Middle hanging tieback cord / tassel detail",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Middle hanging curtain tieback cord",
+    "label_reason": "The crop shows a narrow ochre-gold strand descending from the gathered curtain at the top, distinct from the broad rust-colored fabric folds and straight window trim. The whole photograph locates this strand below the middle curtain tieback. A separate tassel head or fringe cannot be confidently resolved, so the confirmed identification is the hanging cord only."
   },
   {
     "id": "fire_tool_stand",
-    "label": "Fireplace-tool holder (partly occluded)",
+    "label": "Ornate wrought-iron fireplace tool set and compact holder (partly occluded)",
     "crop_bbox": [
       712,
       3308,
@@ -700091,8 +700091,8 @@
       }
     },
     "proposed_label": "Fireplace-tool holder (partly occluded)",
-    "final_label": "Fireplace-tool holder (partly occluded)",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Ornate wrought-iron fireplace tool set and compact holder (partly occluded)",
+    "label_reason": "Two prominent upright oval handles have thick twisted iron rims and inward scrolls, at staggered heights. Closely grouped dark shafts descend through a small curved retaining cradle beneath the handles. The full photograph locates this fireplace tool assembly left of the hearth behind the sofa, which conceals the lower shafts and base. The explicit reentry correction includes the visible tools in this asset; the hidden base construction is uncertain."
   },
   {
     "id": "window_sill_left",
@@ -700862,7 +700862,7 @@
     },
     "proposed_label": "Exposed left wooden window jamb",
     "final_label": "Exposed left wooden window jamb",
-    "label_reason": "Root proposal awaiting object review."
+    "label_reason": "The crop shows a continuous narrow warm-brown wooden upright with longitudinal grain, a broad smooth face and fine recessed edge moldings. In the full photograph it borders the left window opening beside the white lace curtain, below the tied-back rust drape. The white lace on its right and burgundy furniture across its foot are external occluders, not parts of the jamb. These features confirm the proposed identification."
   },
   {
     "id": "window_frame_middle",
@@ -701094,7 +701094,7 @@
     },
     "proposed_label": "Exposed middle wooden window jamb",
     "final_label": "Exposed middle wooden window jamb",
-    "label_reason": "Root proposal awaiting object review."
+    "label_reason": "Confirmed in both images: a narrow rigid brown vertical jamb occupies the middle window division behind the rust drape and beside the lace curtain. The crop shows dark recessed side edges, a broad flat lower timber face, and a pale straight inset along the upper section ending in a square horizontal edge just below midpoint. The pale inset is included as jamb detail per the correction; lace, drapery and foreground picture frame remain external occluders."
   },
   {
     "id": "fireplace_fender",
@@ -701916,11 +701916,11 @@
     },
     "proposed_label": "Exposed far-right wooden window jamb",
     "final_label": "Exposed far-right wooden window jamb",
-    "label_reason": "Root proposal awaiting object review."
+    "label_reason": "Confirmed using both supplied images: a narrow rigid warm aged-brown timber strip separates the white patterned lace at left from the rust-colored outer curtain at right, at the far-right edge of the window in the whole photograph. The exposed upper portion has a broad smooth face with subdued highlights and shallow recessed edges, rather than repeated prominent grooves. The diagonal fabric edge increasingly conceals the wood below; that contour belongs to the externally owned drape, not a taper in the wooden jamb. The proposed label is preserved verbatim."
   },
   {
     "id": "book_rest_gallery",
-    "label": "Carved wooden book-rest / gallery behind open book",
+    "label": "Carved wooden writing-table gallery behind the open book",
     "crop_bbox": [
       3540,
       2796,
@@ -702134,7 +702134,7 @@
       }
     },
     "proposed_label": "Carved wooden book-rest / gallery behind open book",
-    "final_label": "Carved wooden book-rest / gallery behind open book",
-    "label_reason": "Root proposal awaiting object review."
+    "final_label": "Carved wooden writing-table gallery behind the open book",
+    "label_reason": "The crop shows a near-black reddish-brown wooden rail behind the cream pages, with a low crest of small, closely spaced rounded lobes and subdued relief. The whole photograph locates it on the small writing table beside the lamp, behind the central upholstered chair. This supports a carved writing-table gallery; no adjustable book-rest mechanism is visible. Fine spiral carving is indistinct, so the relief is kept subtle. The open book and lower-left chair carving belong to separate objects."
   }
 ]

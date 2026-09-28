@@ -51,12 +51,13 @@ Floorplan establishes the room and camera. Blockout becomes the spatial authorit
 
 ## Results so far
 
-The scores below come from two runs of the same private evaluation scene. “Gate score” is the final machine-gate result, while “critic score” is the last available visual evaluation before a hard gate prevents further criticism.
+The first two rows come from runs of the same private evaluation scene; the third is the public [Wilson House example](examples/wilson-house/report.md). “Gate score” is the final machine-gate result, while “critic score” is the last available visual evaluation before a hard gate prevents further criticism.
 
 | Run | Workflow SHA | Gate score | Critic score | Binding stage | What changed |
 |---|---|---:|---:|---|---|
 | Run 3 | Unversioned run artifact | Pass (legacy envelope gate) | 5/10 | Blockout | Establishes the staged baseline. The legacy gate checks outer axis-aligned bounds but does not preserve directional or internal spatial structure. |
 | v4 run 1 | `81defd9544e6f700500cbc37cb3e496960e69e7c` | 0/10 | 5/10 | Materials | Fixes sectional placement and facing, the black far window, and duplicated basket geometry. The stricter materials gate then reports 25 footprint or region contract failures across 20 objects. |
+| Wilson House | `428a8fbd94d5dc66d01e975c063a160f22a8f9d1`, continued from `05b4bad57d40f982c0ca4209af511e90c8f2454c` | 0/10 | 7/10 (post-run) | Blockout | Completes 99 detailed objects, integration, materials, and the final render. The observed gate reports 68 contract errors that only blockout can repair, after both GOTO allowances were spent. No scene critic ran inside the run; the materials critic prompt, run once on the final render, scores 7/10. |
 
 The lower v4 gate score reflects stricter measurement rather than a claim of lower visual quality: failures that the earlier envelope proxy accepts now stop the pipeline with concrete object-level errors.
 
@@ -68,10 +69,9 @@ CPU rendering and per-object review also make a complete run expensive. Visual c
 
 ## Example
 
-The [Wilson House worked example](examples/wilson-house/report.md) reconstructs a public-domain Library of Congress photograph and currently preserves 37 of 99 completed detail objects.
-The latest completed detail attempt passed its asset gate (10/10) and scored 7/10 visually; final scene scores and the photo/final comparison remain pending.
+The [Wilson House worked example](examples/wilson-house/report.md) reconstructs a public-domain Library of Congress photograph end to end: 99 detailed objects, integration, materials, and a final render. The final scene scores 0/10 on the observed spatial-contract gate (68 errors) and 7/10 from the workflow's materials critic, run once on the final render after the gate blocked the in-run critic.
 
-![Wilson House detail checkpoint](examples/wilson-house/renders/detail-progress.png)
+![Wilson House reference photograph (left) and final render (right)](examples/wilson-house/renders/side-by-side.jpg)
 
 ## License
 
