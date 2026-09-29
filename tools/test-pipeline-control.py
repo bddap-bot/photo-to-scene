@@ -503,7 +503,8 @@ run_detail
 
     def goto_scenario(self, root, integrate_origin, materials_origin, target="blockout", expected_rc=0):
         prefix = PIPELINE.split("\nfeedback=\ncurrent=", 1)[0]
-        script = prefix + f'''
+        nix_shell = 'nix-shell() { [ "$1 $2 $3" = "-p python3 --run" ] || return 127; bash -c "$4"; }\n'
+        script = nix_shell + prefix + f'''
 model() {{
   cat > "$STATE/last_prompt"
   jq -n --arg reason "synthetic $ACTIVE_STAGE region lies outside footprint" '{{stage:"blockout",reason:$reason}}' > "$STATE/goto.json"
@@ -529,15 +530,17 @@ within_s56_budget() {{ return 0; }}
 PHOTO_TO_SCENE_STAGE=detail
 feedback=
 ''' + main_loop() + '\ndone\n'
-        for resource in ("prompts", "builders"):
+        for resource in ("prompts", "builders", "tools"):
             link = root / resource
             if not link.exists():
                 link.symlink_to(Path(__file__).resolve().parents[1] / resource)
         driver = root / "driver.sh"
         driver.write_text(script)
+        photo = root / "synthetic.jpg"
+        photo.write_bytes(b"")
         env = dict(os.environ, PHOTO_TO_SCENE_ROOT=str(root), BOTQ_ARTIFACTS_DIR=str(root / "artifacts"))
         result = subprocess.run(
-            ["bash", str(driver), "synthetic.jpg"],
+            ["bash", str(driver), str(photo)],
             env=env, text=True, capture_output=True, timeout=60,
         )
         self.assertEqual(result.returncode, expected_rc, result.stderr)
