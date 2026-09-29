@@ -116,3 +116,70 @@ of those restricted dependencies.
 - [TRELLIS.2 hardware and licensing](https://github.com/microsoft/TRELLIS.2/blob/75fbf0183001ed9876c8dbb35de6b68552ee08bd/README.md), [offload implementation](https://github.com/microsoft/TRELLIS.2/blob/75fbf0183001ed9876c8dbb35de6b68552ee08bd/trellis2/pipelines/trellis2_image_to_3d.py).
 - [RMBG terms](https://huggingface.co/briaai/RMBG-2.0), [DINOv3 terms](https://huggingface.co/facebook/dinov3-vitl16-pretrain-lvd1689m), [depth checkpoint terms](https://huggingface.co/depth-anything/Depth-Anything-V2-Large), [FP8 metadata](https://huggingface.co/visualbruno/TRELLIS.2-4B-FP8).
 - [FlashAttention GPU/precision support](https://github.com/Dao-AILab/flash-attention#nvidia-cuda-support), [Mira-Scene paper](https://arxiv.org/abs/2609.23796). Published benchmark gains are not measurements on this photograph.
+
+## Measured layout run: design and stop rule (recorded before execution)
+
+The ruling above rests on published mesh-backend minimums. Mira-Scene's layout
+does not use a mesh: `5_construct_scene.py` solves each object's pose and scale
+with `solve_similarity_transforms` from the CCM, the depth point map and the
+instance masks; meshes enter only later support placement and GLB export. The
+stages that produce the layout were never run on this GPU. This run measures
+them and then compares the layout with the blockout. The earlier baseline
+numbers stand.
+
+**Stages.** Segmentation, depth (released default: Pixel-Perfect Depth with its
+MoGe-2 and Depth Anything V2 helpers; `--enable_metric` for metric scale),
+CCM (`2_inference_CCM.py` at its released defaults, pinned source above) and the
+mesh-free initial layout solve. Every third-party install and inference step runs
+through the bubblewrap sandbox on the GeForce RTX 2080 (8192 MiB). The GPU is
+shared with resident processes; their memory is recorded at the start of each stage.
+
+**Measures, per stage and scene.** Peak PyTorch allocated and reserved memory
+inside the stage process; peak device memory sampled every 0.5 s minus the
+pre-stage baseline; wall-clock time with model load reported separately.
+
+**Fitting ladder.** Each stage runs at its released defaults first. On an
+out-of-memory failure it retries, in order, with model CPU offload, then the
+xformers attention backend (the PyTorch backend if xformers has no build for
+compute capability 7.5), then both. If BF16 kernels are unavailable on this
+architecture, FP16 and then FP32 are tried and the precision is recorded. CCM
+batches every instance of a scene together, so if the full instance set does
+not fit at the last rung, the largest instance count that fits is found by
+halving and the scene runs in groups of that size, recorded as a deviation.
+
+**Stop rule.** A stage is feasible when some rung completes the Wilson House
+input within 8192 MiB of device memory and 60 minutes of wall time. It is
+infeasible when every rung fails; the binding number is the failing allocation
+or the elapsed time. The layout half is feasible when depth, CCM and the layout
+solve are all feasible. A checkpoint behind an access agreement this evaluation
+holds no account for is not obtained: its stage is recorded as blocked, not
+infeasible, and an ungated model with the same interface substitutes for it. For
+segmentation that substitute is SAM 2.1 (`facebook/sam2.1-hiera-large`), box-prompted
+with each blockout object's `crop_bbox`, which also carries the blockout's object
+IDs through to the comparison. If the layout half is infeasible, box 1 stops
+with that number.
+
+**Mesh backend.** TRELLIS.2 runs once on one instance with the adapter's default
+`low_vram`, and what happens is recorded: output, peak memory and time, or the
+exact failure.
+
+**Comparison.** Objects: every blockout object with a `crop_bbox`, except the
+room shell (`floor`, `ceiling`, `wall_w`, `north_*`, `cornice_n`, `baseboard_n`),
+which also supplies no instance for CCM. Mira-Scene's camera-space transforms
+enter the blockout's room frame through the blockout's own camera
+(`floorplan.json`), with no fitting to objects; the canonical front is -Y, the
+glTF front after the pipeline's canonical alignment. For each object:
+
+1. *Photo alignment*: IoU between the image-space box of each layout's projected
+   3D box, each through its own camera, and the box of the object's mask.
+2. *Contract gate*: `tools/spatial-contract.py` on the blockout's contracts, with
+   Mira-Scene's footprint, front and body region as the observed record, at the
+   default 0.03 m tolerance; errors counted by kind.
+3. *Deviation*: footprint-centre distance, front angle and extent ratios.
+
+Photo alignment favours a pixel-aligned method by construction and uses the same
+masks and depth Mira-Scene fits to; it measures agreement with the observations,
+not ground truth. **Decision rule:** Mira-Scene wins when its median per-object
+photo IoU exceeds the blockout's by at least 0.10 and it is higher on at least
+60 % of compared objects. A win opens the design issue named in #24; otherwise
+#24 closes with the table.
