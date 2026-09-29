@@ -24,8 +24,12 @@ The driver creates the work directory, seeds its generic asset builder, and writ
 ```sh
 PHOTO_TO_SCENE_ROOT="$PWD/work" \
 PHOTO_TO_SCENE_STAGE=integrate \
-./pipeline.sh /absolute/path/to/photo.jpg
+./pipeline.sh "$PWD/work/input/reference.jpg"
 ```
+
+The driver copies the input into `input/reference.<extension>` and records its run-relative path in `input.json`. All input-photo `image`, `source_image`, and `reference_image` fields use that path, including nested evidence and per-object entries. Resolve these paths from the run root, not the JSON file’s directory. Every model stage receives the same reference convention. A different photograph is rejected when resuming an existing run.
+
+Move or publish the complete run directory with `input.json` and `input/` intact; resume using the bundled photograph at its new location. The final artifact directory also includes this pair beside the exported contracts, so input-photo references work without rewriting. Legacy contracts with external references are not automatically migrated. Generated Blender scripts and saved scenes may have their own external dependencies; this guarantee covers contract image references.
 
 Valid resume targets are `floorplan`, `blockout`, `identify`, `detail`, `object:<id>`, `integrate`, and `materials`. Set `BOTQ_ARTIFACTS_DIR` to override the final artifact directory.
 

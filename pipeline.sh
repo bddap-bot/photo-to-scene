@@ -1,12 +1,15 @@
 #!/usr/bin/env bash
 set -uo pipefail
 PIPELINE_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
-ROOT=${PHOTO_TO_SCENE_ROOT:-$PWD/work}
+ROOT=$(realpath -m "${PHOTO_TO_SCENE_ROOT:-$PWD/work}")
 STATE="$ROOT/state"
 PROMPTS="$PIPELINE_DIR/prompts"
 ASSETS="$ROOT/assets"
 TEXTURES="$ROOT/textures"
-INPUT=$(realpath "${1:?usage: pipeline.sh PHOTO}")
+SOURCE=$(realpath -e "${1:?usage: pipeline.sh PHOTO}") || exit 1
+input_reference() { nix-shell -p python3 --run "$(printf '%q ' python3 "$PIPELINE_DIR/tools/input-reference.py" "$1" "$ROOT" "$SOURCE")"; }
+INPUT_REF=$(input_reference prepare) || exit 1
+INPUT="$ROOT/$INPUT_REF"
 SCHEMA="$PIPELINE_DIR/verdict.schema.json"
 ARTIFACTS=${BOTQ_ARTIFACTS_DIR:-$ROOT/artifacts}
 mkdir -p "$STATE/crops" "$STATE/verdicts" "$STATE/attempts" "$ASSETS" "$TEXTURES" "$ARTIFACTS"
@@ -40,7 +43,7 @@ model() {
   local -a victims=()
   MODEL_FAILURE=
   : > "$log"
-  codex exec --ephemeral --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -C "$ROOT" "$@" <&0 >> "$log" 2>&1 &
+  codex exec --ephemeral --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -C "$ROOT" "$@" < <(if [ -n "${INPUT_REF:-}" ]; then printf 'Input photograph: %s, relative to the run root (your working directory). Use this value for input-photo image, source_image, and reference_image fields at every nesting level. Resolve contract image paths from the run root, including contracts in state/ or state/attempts/. Preserve other run-relative image references.\n' "$INPUT_REF"; fi; cat) >> "$log" 2>&1 &
   pid=$!
   tail -c +1 -f --pid="$pid" "$log" &
   echo_pid=$!
@@ -80,6 +83,7 @@ builder() {
   while :; do
     rm -f "$STATE/goto.json"
     model "$@" - < <(cat "$PROMPTS/$prompt"; if [ -n "$feedback" ]; then printf '\nOne-reentry correction context follows:\n%s\n' "$feedback"; fi) || return 0
+    if [ -n "${INPUT_REF:-}" ]; then input_reference normalize || exit 1; fi
     if [ -f "$STATE/goto.json" ]; then
       REQUEST_STAGE=$(jq -r '.stage // ""' "$STATE/goto.json")
       REQUEST_REASON=$(jq -r '.reason // ""' "$STATE/goto.json")
@@ -254,7 +258,8 @@ if [ ! -f "$STATE/best_materials.blend" ]; then log 'FAIL no S6 scene exists'; e
 MODEL_SECONDS=4800 builder final_builder.md "" || exit $?
 [ -z "$MODEL_FAILURE" ] || { log "FAIL final $MODEL_FAILURE"; exit 1; }
 write_report
-cp "$STATE/best_render.png" "$STATE/side_by_side.png" "$STATE/objects_sheet.png" "$STATE/scores.md" "$STATE/floorplan.json" "$STATE/objects.json" "$PIPELINE_DIR/pipeline.sh" "$ARTIFACTS/"
+cp "$STATE/best_render.png" "$STATE/side_by_side.png" "$STATE/objects_sheet.png" "$STATE/scores.md" "$STATE/floorplan.json" "$STATE/objects.json" "$PIPELINE_DIR/pipeline.sh" "$ROOT/input.json" "$ARTIFACTS/"
+if [ "$(realpath "$ARTIFACTS")" != "$ROOT" ]; then mkdir -p "$ARTIFACTS/input"; cp "$INPUT" "$ARTIFACTS/$INPUT_REF"; fi
 cp "$STATE/floorplan.json" "$ROOT/floorplan.json"
 cp "$STATE/objects.json" "$ROOT/objects.json"
 log "COMPLETE artifacts=$ARTIFACTS"
