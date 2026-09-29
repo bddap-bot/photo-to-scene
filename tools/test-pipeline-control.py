@@ -541,7 +541,7 @@ feedback=
         env = dict(os.environ, PHOTO_TO_SCENE_ROOT=str(root), BOTQ_ARTIFACTS_DIR=str(root / "artifacts"))
         result = subprocess.run(
             ["bash", str(driver), str(photo)],
-            env=env, text=True, capture_output=True, timeout=60,
+            env=env, text=True, capture_output=True, timeout=300,
         )
         self.assertEqual(result.returncode, expected_rc, result.stderr)
         return result

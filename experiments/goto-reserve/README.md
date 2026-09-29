@@ -57,7 +57,7 @@ tiers. Spatial validators and their acceptance criteria are unchanged.
 
 The first concurrent regression runs exposed a 15-second synthetic-process timeout
 and an existing model-call timing assertion. The new synthetic harness uses a
-60-second process deadline; exact accepted-count, feedback, and exhaustion
+300-second process deadline; exact accepted-count, feedback, and exhaustion
 assertions remain in place. These are control-flow measurements with mocked stage
 work, not timings or quality scores for reconstruction. The two reserves add at
 most two backward transitions; each transition can rebuild downstream stages under
