@@ -53,9 +53,12 @@ goto_available() {
 }
 
 spatial_validate() { local output_arg=; [ -z "${3:-}" ] || output_arg="--output '$3'"; nix-shell -p python3 --run "python3 '$PIPELINE_DIR/tools/spatial-contract.py' '$STATE/objects.json' --ids '$1' ${2:-} $output_arg"; }
-descendants() {
+tree_ticks() {
   local -a queue=("$1") children stat
   local pid child task line
+  { read -r line < "/proc/$1/stat"; } 2>/dev/null || return 0
+  read -ra stat <<< "${line##*) }"
+  printf '%s %s\n' "$1" "$((stat[13] + stat[14]))"
   while [ "${#queue[@]}" -gt 0 ]; do
     pid=${queue[0]}
     queue=("${queue[@]:1}")
@@ -88,7 +91,7 @@ model() {
     scanned=$size
     grown=0
     now=()
-    while read -r child child_ticks; do now[$child]=$child_ticks; grown=$((grown + child_ticks - ${before[$child]:-0})); done < <(descendants "$pid")
+    while read -r child child_ticks; do now[$child]=$child_ticks; grown=$((grown + child_ticks - ${before[$child]:-0})); done < <(tree_ticks "$pid")
     [ "$grown" -ge "$MODEL_BUSY_CPU_TICKS" ] && last=$SECONDS
     before=()
     for child in "${!now[@]}"; do before[$child]=${now[$child]}; done
@@ -97,8 +100,7 @@ model() {
     elif [ $((SECONDS - last)) -ge "$MODEL_IDLE_SECONDS" ]; then MODEL_FAILURE="model call had no non-whitespace output and no busy child process for $MODEL_IDLE_SECONDS s"
     else continue; fi
     stopped=$SECONDS
-    mapfile -t victims < <(descendants "$pid" | cut -d ' ' -f 1)
-    victims+=("$pid")
+    mapfile -t victims < <(tree_ticks "$pid" | cut -d ' ' -f 1)
     kill -TERM "${victims[@]}" 2>/dev/null
   done
   wait "$pid"

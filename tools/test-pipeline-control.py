@@ -33,7 +33,7 @@ def main_loop():
 
 
 def model_function(seconds=60, idle=2):
-    return f"MODEL_SECONDS={seconds}; MODEL_IDLE_SECONDS={idle}; MODEL_BUSY_CPU_TICKS={BUSY_CPU_TICKS}; MODEL_FAILURE=; SCHEMA=schema.json\n" + function("descendants") + "\n" + function("model")
+    return f"MODEL_SECONDS={seconds}; MODEL_IDLE_SECONDS={idle}; MODEL_BUSY_CPU_TICKS={BUSY_CPU_TICKS}; MODEL_FAILURE=; SCHEMA=schema.json\n" + function("tree_ticks") + "\n" + function("model")
 
 
 def idle_failure(seconds):
@@ -701,12 +701,12 @@ cat "$STATE/log"
         self.assertIn("GOTO count=1 origin=critic stage=detail reason=late critic", result.stdout)
 
 
-    def test_descendants_reads_only_the_call_tree(self) -> None:
-        script = function("descendants") + """
+    def test_tree_ticks_reads_only_the_call_tree(self) -> None:
+        script = function("tree_ticks") + """
 io_read() { local key value; while read -r key value; do [ "$key" = rchar: ] && READ=$value; done < "/proc/$BASHPID/io"; }
-measure() { ( io_read; local before=$READ; descendants "$tree" > "$1"; io_read; printf '%s\\n' "$((READ - before))" ) }
+measure() { ( io_read; local before=$READ; tree_ticks "$tree" > "$1"; io_read; printf '%s\\n' "$((READ - before))" ) }
 ( sleep 60 & bash -c 'sleep 60 & wait' & "$PYTHON" -c 'import subprocess, threading; threading.Thread(target=subprocess.run, args=(["sleep", "60"],)).start()' & wait ) > /dev/null 2>&1 & tree=$!
-for _ in $(seq 100); do [ "$(descendants "$tree" | wc -l)" -ge 5 ] && break; sleep 0.1; done
+until [ "$(tree_ticks "$tree" | wc -l)" -ge 6 ] || [ "$SECONDS" -ge 20 ]; do sleep 0.1; done
 alone=$(measure alone.txt)
 crowd=()
 for _ in $(seq 256); do sleep 60 & crowd+=("$!"); done
@@ -718,19 +718,32 @@ kill "${crowd[@]}" "$tree" $(cut -d ' ' -f 1 alone.txt) 2>/dev/null
             result = subprocess.run(["bash", "-c", script], cwd=directory, env={**os.environ, "PYTHON": sys.executable}, text=True, capture_output=True, timeout=60)
         self.assertEqual(result.returncode, 0, result.stderr)
         fields = dict(field.split("=") for field in result.stdout.split())
-        self.assertEqual(fields["pids"], "5")
+        self.assertEqual(fields["pids"], "6")
         self.assertEqual(fields["same"], "yes")
         self.assertGreater(int(fields["alone"]), 0)
         self.assertLess(int(fields["crowded"]) - int(fields["alone"]), 1024)
 
-    def test_model_busy_counts_growth_of_live_descendants(self) -> None:
+    def test_tree_ticks_counts_cpu_the_root_reaped(self) -> None:
+        script = function("tree_ticks") + """
+bash -c 'bash -c "for ((i = 0; i < 300000; i++)); do :; done"; sleep 60' & root=$!
+for _ in $(seq 600); do read -r pid ticks < <(tree_ticks "$root"); [ "$ticks" -gt 0 ] && break; sleep 0.1; done
+printf 'pid=%s root=%s ticks=%s\\n' "$pid" "$root" "$ticks"
+kill "$root"
+"""
+        result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=120)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        fields = dict(field.split("=") for field in result.stdout.split())
+        self.assertEqual(fields["pid"], fields["root"])
+        self.assertGreater(int(fields["ticks"]), 0)
+
+    def test_model_busy_counts_growth_per_process(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             script = f"""set -uo pipefail
 ROOT={directory}; STATE={directory}
 log() {{ printf '%s\\n' "$*"; }}
 {model_function(60, 3)}
 printf 0 > "$STATE/samples"
-descendants() {{ local n b; n=$(( $(cat "$STATE/samples") + 1 )); printf '%s' "$n" > "$STATE/samples"; printf '9000000 %s\\n' "$((20 * n))"; for ((b = n; b < 12; b++)); do printf '%s 100\\n' "$((9000000 + b))"; done; }}
+tree_ticks() {{ local n b; n=$(( $(cat "$STATE/samples") + 1 )); printf '%s' "$n" > "$STATE/samples"; printf '9000000 %s\\n' "$((20 * n))"; for ((b = n; b < 12; b++)); do printf '%s 100\\n' "$((9000000 + b))"; done; }}
 codex() {{ cat >/dev/null; sleep 6; printf 'rendered\\n'; }}
 model - <<< prompt
 printf 'rc=%s failure=%s\\n' "$?" "$MODEL_FAILURE"
