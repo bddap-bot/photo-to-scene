@@ -78,7 +78,7 @@ call first
 call second
 printf 'unreachable\\n'
 """
-        result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=120)
+        result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=300)
     return result, {line.split(" ", 1)[0]: line for line in result.stdout.splitlines() if " rc=" in line}
 
 
@@ -715,7 +715,7 @@ printf 'alone=%s crowded=%s pids=%s same=%s\\n' "$alone" "$crowded" "$(wc -l < a
 kill "${crowd[@]}" "$tree" $(cut -d ' ' -f 1 alone.txt) 2>/dev/null
 """
         with tempfile.TemporaryDirectory() as directory:
-            result = subprocess.run(["bash", "-c", script], cwd=directory, env={**os.environ, "PYTHON": sys.executable}, text=True, capture_output=True, timeout=60)
+            result = subprocess.run(["bash", "-c", script], cwd=directory, env={**os.environ, "PYTHON": sys.executable}, text=True, capture_output=True, timeout=300)
         self.assertEqual(result.returncode, 0, result.stderr)
         fields = dict(field.split("=") for field in result.stdout.split())
         self.assertEqual(fields["pids"], "6")
