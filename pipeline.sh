@@ -53,7 +53,25 @@ goto_available() {
 }
 
 spatial_validate() { local output_arg=; [ -z "${3:-}" ] || output_arg="--output '$3'"; nix-shell -p python3 --run "python3 '$PIPELINE_DIR/tools/spatial-contract.py' '$STATE/objects.json' --ids '$1' ${2:-} $output_arg"; }
-descendants() { cat /proc/[0-9]*/stat 2>/dev/null | awk -v root="$1" '{ pid = $1; sub(/^.*\) /, ""); parent[pid] = $2; ticks[pid] = $12 + $13 + $14 + $15 } END { do { grew = 0; for (pid in parent) if (!(pid in tree) && (parent[pid] == root || parent[pid] in tree)) { tree[pid] = 1; grew = 1 } } while (grew); for (pid in tree) print pid, ticks[pid] }'; }
+descendants() {
+  local -a queue=("$1") children stat
+  local pid child task line
+  while [ "${#queue[@]}" -gt 0 ]; do
+    pid=${queue[0]}
+    queue=("${queue[@]:1}")
+    for task in /proc/"$pid"/task/*/children; do
+      children=()
+      { read -ra children < "$task"; } 2>/dev/null
+      for child in "${children[@]}"; do
+        { read -r line < "/proc/$child/stat"; } 2>/dev/null || continue
+        read -ra stat <<< "${line##*) }"
+        [ "${stat[1]}" = "$pid" ] || continue
+        printf '%s %s\n' "$child" "$((stat[11] + stat[12] + stat[13] + stat[14]))"
+        queue+=("$child")
+      done
+    done
+  done
+}
 model() {
   local log="$STATE/model.log" pid echo_pid rc start=$SECONDS last=$SECONDS scanned=0 size ticks prior_ticks=0 stopped=
   local -a victims=()

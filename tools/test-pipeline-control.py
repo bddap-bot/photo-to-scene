@@ -3,6 +3,7 @@ import re
 import os
 import shlex
 import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -37,6 +38,65 @@ def model_function(seconds=60, idle=2):
 
 def idle_failure(seconds):
     return f"model call had no non-whitespace output and no busy child process for {seconds} s"
+
+
+def model_calls() -> tuple[subprocess.CompletedProcess[str], dict[str, str]]:
+    with tempfile.TemporaryDirectory() as directory:
+        script = f"""set -uo pipefail
+ROOT={directory}; STATE={directory}
+log() {{ printf '%s\\n' "$*"; }}
+{model_function(60, 3)}
+call() {{ local start=$SECONDS rc; model - <<< prompt; rc=$?; printf '%s rc=%s seconds=%s failure=%s marker=%s\\n' "$1" "$rc" "$((SECONDS - start))" "$MODEL_FAILURE" "$([ -f "$STATE/model_failed" ] && printf set || printf clear)"; }}
+codex() {{ cat >/dev/null; printf 'model started\\n'; while :; do printf '\\t \\n'; sleep 0.1; done; }}
+call whitespace
+codex() {{ cat >/dev/null; while :; do sleep 0.1; done; }}
+call silent
+codex() {{ trap 'touch "$STATE/graceful_term"; exit 0' TERM; cat >/dev/null; while :; do sleep 0.1; done; }}
+call graceful
+printf 'graceful_term=%s\\n' "$([ -f "$STATE/graceful_term" ] && printf yes || printf no)"
+codex() {{ trap '' TERM; cat >/dev/null; while :; do sleep 0.1; done; }}
+call stubborn
+codex() {{ cat >/dev/null; for _ in 1 2 3 4; do timeout 6 bash -c 'while :; do :; done' & done; wait; printf 'rendered\\n'; }}
+call busy
+codex() {{ cat >/dev/null; bash -c 'trap "" TERM; while :; do sleep 0.1; done' & printf '%s' "$!" > "$STATE/orphan"; trap 'exit 0' TERM; while :; do sleep 0.1; done; }}
+call orphaned
+printf 'orphan_alive=%s\\n' "$(kill -0 "$(cat "$STATE/orphan")" 2>/dev/null && printf yes || printf no)"
+MODEL_SECONDS=4
+codex() {{ cat >/dev/null; while :; do printf 'token '; sleep 0.1; done; }}
+call endless
+MODEL_SECONDS=60
+codex() {{ cat >/dev/null; return 3; }}
+call exited
+codex() {{ cat >/dev/null; printf 'done\\n'; }}
+call recovered
+codex() {{ cat >/dev/null; return 3; }}
+call again
+codex() {{ cat >/dev/null; while :; do sleep 0.1; done; }}
+call cut
+codex() {{ cat >/dev/null; return 3; }}
+call first
+call second
+printf 'unreachable\\n'
+"""
+        result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=120)
+    return result, {line.split(" ", 1)[0]: line for line in result.stdout.splitlines() if " rc=" in line}
+
+
+def call_seconds(line: str) -> int:
+    return int(line.split(" seconds=", 1)[1].split(" ", 1)[0])
+
+
+WALL_BOUNDS = {
+    "whitespace": "[3-6]", "silent": "[3-6]", "graceful": "[3-6]", "stubborn": "1[2-7]",
+    "busy": "[6-8]", "orphaned": "1[2-7]", "endless": "[4-6]", "cut": "[3-6]",
+}
+
+
+def benchmark() -> int:
+    _, calls = model_calls()
+    misses = [calls[name] for name, bound in WALL_BOUNDS.items() if not re.search(rf" seconds={bound} ", calls[name])]
+    print("\n".join(misses or ["model call wall times within bounds"]))
+    return 1 if misses else 0
 
 
 class PipelineControlTest(unittest.TestCase):
@@ -641,55 +701,45 @@ cat "$STATE/log"
         self.assertIn("GOTO count=1 origin=critic stage=detail reason=late critic", result.stdout)
 
 
-    def test_model_call_bounds(self):
-        with tempfile.TemporaryDirectory() as directory:
-            script = f"""set -uo pipefail
-ROOT={directory}; STATE={directory}
-log() {{ printf '%s\\n' "$*"; }}
-{model_function(60, 3)}
-call() {{ local start=$SECONDS rc; model - <<< prompt; rc=$?; printf '%s rc=%s seconds=%s failure=%s marker=%s\\n' "$1" "$rc" "$((SECONDS - start))" "$MODEL_FAILURE" "$([ -f "$STATE/model_failed" ] && printf set || printf clear)"; }}
-codex() {{ cat >/dev/null; printf 'model started\\n'; while :; do printf '\\t \\n'; sleep 0.1; done; }}
-call whitespace
-codex() {{ cat >/dev/null; while :; do sleep 0.1; done; }}
-call silent
-codex() {{ trap 'exit 0' TERM; cat >/dev/null; while :; do sleep 0.1; done; }}
-call graceful
-codex() {{ trap '' TERM; cat >/dev/null; while :; do sleep 0.1; done; }}
-call stubborn
-codex() {{ cat >/dev/null; timeout 6 bash -c 'while :; do :; done'; printf 'rendered\\n'; }}
-call busy
-codex() {{ cat >/dev/null; bash -c 'trap "" TERM; while :; do sleep 0.1; done' & printf '%s' "$!" > "$STATE/orphan"; trap 'exit 0' TERM; while :; do sleep 0.1; done; }}
-call orphaned
-printf 'orphan_alive=%s\\n' "$(kill -0 "$(cat "$STATE/orphan")" 2>/dev/null && printf yes || printf no)"
-MODEL_SECONDS=4
-codex() {{ cat >/dev/null; while :; do printf 'token '; sleep 0.1; done; }}
-call endless
-codex() {{ cat >/dev/null; return 3; }}
-call exited
-codex() {{ cat >/dev/null; printf 'done\\n'; }}
-call recovered
-codex() {{ cat >/dev/null; return 3; }}
-call again
-codex() {{ cat >/dev/null; while :; do sleep 0.1; done; }}
-call cut
-codex() {{ cat >/dev/null; return 3; }}
-call first
-call second
-printf 'unreachable\\n'
+    def test_descendants_reads_only_the_call_tree(self) -> None:
+        script = function("descendants") + """
+io_read() { local key value; while read -r key value; do [ "$key" = rchar: ] && READ=$value; done < "/proc/$BASHPID/io"; }
+measure() { ( io_read; local before=$READ; descendants "$tree" > "$1"; io_read; printf '%s\\n' "$((READ - before))" ) }
+( sleep 60 & bash -c 'sleep 60 & wait' & "$PYTHON" -c 'import subprocess, threading; threading.Thread(target=subprocess.run, args=(["sleep", "60"],)).start()' & wait ) > /dev/null 2>&1 & tree=$!
+for _ in $(seq 100); do [ "$(descendants "$tree" | wc -l)" -ge 5 ] && break; sleep 0.1; done
+alone=$(measure alone.txt)
+crowd=()
+for _ in $(seq 256); do sleep 60 & crowd+=("$!"); done
+crowded=$(measure crowded.txt)
+printf 'alone=%s crowded=%s pids=%s same=%s\\n' "$alone" "$crowded" "$(wc -l < alone.txt)" "$(cmp -s <(cut -d ' ' -f 1 alone.txt | sort) <(cut -d ' ' -f 1 crowded.txt | sort) && printf yes || printf no)"
+kill "${crowd[@]}" "$tree" $(cut -d ' ' -f 1 alone.txt) 2>/dev/null
 """
-            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=120)
-        calls = {line.split(" ", 1)[0]: line for line in result.stdout.splitlines() if " rc=" in line}
-        idle = rf"rc=1 seconds=[3-6] failure={idle_failure(3)} marker=clear"
+        with tempfile.TemporaryDirectory() as directory:
+            result = subprocess.run(["bash", "-c", script], cwd=directory, env={**os.environ, "PYTHON": sys.executable}, text=True, capture_output=True, timeout=60)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        fields = dict(field.split("=") for field in result.stdout.split())
+        self.assertEqual(fields["pids"], "5")
+        self.assertEqual(fields["same"], "yes")
+        self.assertGreater(int(fields["alone"]), 0)
+        self.assertLess(int(fields["crowded"]) - int(fields["alone"]), 1024)
+
+    def test_model_call_control(self) -> None:
+        result, calls = model_calls()
+        idle = rf"rc=1 seconds=\d+ failure={idle_failure(3)} marker=clear"
         self.assertEqual(result.returncode, 1, result.stderr)
-        self.assertRegex(calls["whitespace"], idle)
-        self.assertRegex(calls["silent"], idle)
-        self.assertRegex(calls["graceful"], idle)
-        self.assertRegex(calls["stubborn"], rf"rc=1 seconds=1[2-7] failure={idle_failure(3)}")
-        self.assertRegex(calls["busy"], r"rc=0 seconds=[6-8] failure= marker=clear")
+        for name in ("whitespace", "silent", "graceful", "cut"):
+            self.assertRegex(calls[name], idle)
+            self.assertGreaterEqual(call_seconds(calls[name]), 3)
+        self.assertIn("graceful_term=yes\n", result.stdout)
+        for name in ("stubborn", "orphaned"):
+            self.assertRegex(calls[name], idle)
+            self.assertGreaterEqual(call_seconds(calls[name]), 13)
+        self.assertRegex(calls["busy"], r"rc=0 seconds=\d+ failure= marker=clear")
+        self.assertGreaterEqual(call_seconds(calls["busy"]), 6)
         self.assertIn("rendered\n", result.stdout)
-        self.assertRegex(calls["orphaned"], rf"rc=1 seconds=1[2-7] failure={idle_failure(3)}")
         self.assertIn("orphan_alive=no\n", result.stdout)
-        self.assertRegex(calls["endless"], r"rc=1 seconds=[4-6] failure=model call exceeded its 4 s wallclock bound marker=clear")
+        self.assertRegex(calls["endless"], r"rc=1 seconds=\d+ failure=model call exceeded its 4 s wallclock bound marker=clear")
+        self.assertGreaterEqual(call_seconds(calls["endless"]), 4)
         self.assertRegex(calls["exited"], r"rc=1 seconds=\d+ failure=model call exited with status 3 marker=set")
         self.assertRegex(calls["recovered"], r"rc=0 seconds=\d+ failure= marker=clear")
         self.assertRegex(calls["again"], r"rc=1 seconds=\d+ failure=model call exited with status 3 marker=set")
@@ -1189,4 +1239,6 @@ printf 'rc=%s request=%s\\n' "$?" "$REQUEST_STAGE"
                 self.assertFalse(render_left)
 
 if __name__ == "__main__":
+    if sys.argv[1:] == ["benchmark"]:
+        sys.exit(benchmark())
     unittest.main()
