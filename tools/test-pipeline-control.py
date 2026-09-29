@@ -56,12 +56,12 @@ call graceful
 printf 'graceful_term=%s\\n' "$([ -f "$STATE/graceful_term" ] && printf yes || printf no)"
 codex() {{ trap '' TERM; cat >/dev/null; while :; do sleep 0.1; done; }}
 call stubborn
-codex() {{ cat >/dev/null; for _ in 1 2 3 4; do timeout 6 bash -c 'while :; do :; done' & done; wait; printf 'rendered\\n'; }}
+codex() {{ for _ in 1 2 3 4; do timeout 6 bash -c 'while :; do :; done' & done; wait; printf 'rendered\\n'; }}
 call busy
-codex() {{ cat >/dev/null; bash -c 'trap "" TERM; while :; do sleep 0.1; done' & printf '%s' "$!" > "$STATE/orphan"; trap 'exit 0' TERM; while :; do sleep 0.1; done; }}
+codex() {{ trap 'exit 0' TERM; bash -c 'trap "" TERM; while :; do sleep 0.1; done' & printf '%s' "$!" > "$STATE/orphan"; cat >/dev/null; while :; do sleep 0.1; done; }}
 call orphaned
 printf 'orphan_alive=%s\\n' "$(kill -0 "$(cat "$STATE/orphan")" 2>/dev/null && printf yes || printf no)"
-MODEL_SECONDS=4
+MODEL_SECONDS=4; MODEL_IDLE_SECONDS=60
 codex() {{ cat >/dev/null; while :; do printf 'token '; sleep 0.1; done; }}
 call endless
 MODEL_SECONDS=60
@@ -71,8 +71,10 @@ codex() {{ cat >/dev/null; printf 'done\\n'; }}
 call recovered
 codex() {{ cat >/dev/null; return 3; }}
 call again
+MODEL_IDLE_SECONDS=3
 codex() {{ cat >/dev/null; while :; do sleep 0.1; done; }}
 call cut
+MODEL_IDLE_SECONDS=60
 codex() {{ cat >/dev/null; return 3; }}
 call first
 call second
