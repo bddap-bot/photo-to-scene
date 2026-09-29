@@ -73,7 +73,8 @@ descendants() {
   done
 }
 model() {
-  local log="$STATE/model.log" pid echo_pid rc start=$SECONDS last=$SECONDS scanned=0 size ticks prior_ticks=0 stopped=
+  local log="$STATE/model.log" pid echo_pid rc start=$SECONDS last=$SECONDS scanned=0 size grown child child_ticks stopped=
+  local -A before=() now=()
   local -a victims=()
   MODEL_FAILURE=
   : > "$log"
@@ -85,9 +86,12 @@ model() {
     size=$(stat -c %s "$log")
     [ "$size" -gt "$scanned" ] && [ "$(tail -c "+$((scanned + 1))" "$log" | head -c "$((size - scanned))" | tr -d '[:space:]' | wc -c)" -gt 0 ] && last=$SECONDS
     scanned=$size
-    ticks=$(descendants "$pid" | awk '{ total += $2 } END { print total + 0 }')
-    [ "$ticks" -ge $((prior_ticks + MODEL_BUSY_CPU_TICKS)) ] && last=$SECONDS
-    prior_ticks=$ticks
+    grown=0
+    now=()
+    while read -r child child_ticks; do now[$child]=$child_ticks; grown=$((grown + child_ticks - ${before[$child]:-0})); done < <(descendants "$pid")
+    [ "$grown" -ge "$MODEL_BUSY_CPU_TICKS" ] && last=$SECONDS
+    before=()
+    for child in "${!now[@]}"; do before[$child]=${now[$child]}; done
     if [ -n "$stopped" ]; then [ $((SECONDS - stopped)) -lt 10 ] || kill -KILL "${victims[@]}" 2>/dev/null; continue; fi
     if [ $((SECONDS - start)) -ge "$MODEL_SECONDS" ]; then MODEL_FAILURE="model call exceeded its $MODEL_SECONDS s wallclock bound"
     elif [ $((SECONDS - last)) -ge "$MODEL_IDLE_SECONDS" ]; then MODEL_FAILURE="model call had no non-whitespace output and no busy child process for $MODEL_IDLE_SECONDS s"

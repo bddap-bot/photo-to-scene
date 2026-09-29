@@ -723,6 +723,22 @@ kill "${crowd[@]}" "$tree" $(cut -d ' ' -f 1 alone.txt) 2>/dev/null
         self.assertGreater(int(fields["alone"]), 0)
         self.assertLess(int(fields["crowded"]) - int(fields["alone"]), 1024)
 
+    def test_model_busy_counts_growth_of_live_descendants(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            script = f"""set -uo pipefail
+ROOT={directory}; STATE={directory}
+log() {{ printf '%s\\n' "$*"; }}
+{model_function(60, 3)}
+printf 0 > "$STATE/samples"
+descendants() {{ local n b; n=$(( $(cat "$STATE/samples") + 1 )); printf '%s' "$n" > "$STATE/samples"; printf '9000000 %s\\n' "$((20 * n))"; for ((b = n; b < 12; b++)); do printf '%s 100\\n' "$((9000000 + b))"; done; }}
+codex() {{ cat >/dev/null; sleep 6; printf 'rendered\\n'; }}
+model - <<< prompt
+printf 'rc=%s failure=%s\\n' "$?" "$MODEL_FAILURE"
+"""
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=60)
+        self.assertIn("rendered\n", result.stdout)
+        self.assertIn("rc=0 failure=\n", result.stdout)
+
     def test_model_call_control(self) -> None:
         result, calls = model_calls()
         idle = rf"rc=1 seconds=\d+ failure={idle_failure(3)} marker=clear"
