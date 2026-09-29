@@ -62,7 +62,39 @@ def bbox_error(a, b):
     return max(abs(a[k][i] - b[k][i]) for k in ('min', 'max') for i in range(3))
 
 
-def check_contract(entry, entries, errors):
+def region_ids(geometry):
+    return [region.get('id') for region in geometry.get('regions', [])]
+
+
+def region_bbox(geometry, region_id):
+    box = next((region.get('bbox') for region in geometry.get('regions', []) if region.get('id') == region_id), None)
+    return box if isinstance(box, dict) and all(len(box.get(k, [])) == 3 for k in ('min', 'max')) else None
+
+
+def relationship_error(relation, own, other, tolerance):
+    kind = relation.get('type')
+    if kind not in ('minimum_xy_clearance', 'supported_by'):
+        return None
+    if kind == 'supported_by':
+        region, support = relation.get('region'), relation.get('support_region')
+        own_box, support_box = region_bbox(own, region), region_bbox(other, support)
+        if not own_box or not support_box:
+            return f'region must name one of {region_ids(own)} and support_region one of {region_ids(other)}; got region={region!r}, support_region={support!r}'
+    footprints = own.get('footprint_xy', []), other.get('footprint_xy', [])
+    if any(len(footprint) < 3 or any(len(point) != 2 for point in footprint) for footprint in footprints):
+        return 'both objects need footprint_xy with at least three [x, y] points'
+    gap = polygon_distance(*footprints)
+    if kind == 'minimum_xy_clearance':
+        if gap + 1e-6 < relation.get('metres', 0):
+            return f'footprints are {gap:.3f} m apart, less than {relation["metres"]} m'
+        return None
+    rise = own_box['min'][2] - support_box['max'][2]
+    if abs(rise) > tolerance or gap > tolerance:
+        return f'region {region} bottom z={own_box["min"][2]:.3f} m sits {rise:+.3f} m from support_region {support} top z={support_box["max"][2]:.3f} m and footprints are {gap:.3f} m apart; both must be within {tolerance} m'
+    return None
+
+
+def check_contract(entry, entries, tolerance, errors):
     ident = entry['id']
     contract = entry.get('spatial_contract')
     if not contract:
@@ -90,8 +122,8 @@ def check_contract(entry, entries, errors):
         errors.append(f'{ident}: frame axes must be orthonormal')
     elif sum(a * b for a, b in zip(frame['y_axis_xy'], front)) < .999:
         errors.append(f'{ident}: frame y axis must equal front_xy')
-    region_ids = [r.get('id') for r in contract.get('regions', [])]
-    if not region_ids or len(region_ids) != len(set(region_ids)):
+    ids = region_ids(contract)
+    if not ids or len(ids) != len(set(ids)):
         errors.append(f'{ident}: regions must be nonempty and unique')
     for region in contract.get('regions', []):
         box = region.get('bbox', {})
@@ -102,12 +134,9 @@ def check_contract(entry, entries, errors):
         if not other:
             errors.append(f'{ident}: unknown relationship target {relation.get("with")}')
             continue
-        if relation.get('type') == 'minimum_xy_clearance':
-            other_contract = other.get('spatial_contract')
-            if not other_contract:
-                errors.append(f'{ident}: clearance target lacks spatial_contract')
-            elif polygon_distance(footprint, other_contract['footprint_xy']) + 1e-6 < relation.get('metres', 0):
-                errors.append(f'{ident}: minimum_xy_clearance violated with {other["id"]}')
+        error = relationship_error(relation, contract, other.get('spatial_contract') or {}, tolerance)
+        if error:
+            errors.append(f'{ident}: declared {relation["type"]} {other["id"]}: {error}')
 
 
 def check_observed(entries, observed, ids, tolerance, errors):
@@ -147,19 +176,9 @@ def check_observed(entries, observed, ids, tolerance, errors):
             if other_id not in observed:
                 errors.append(f'{ident}: relationship target {other_id} was not observed')
                 continue
-            if relation.get('type') == 'minimum_xy_clearance':
-                gap = polygon_distance(observed[ident]['footprint_xy'], observed[other_id]['footprint_xy'])
-                if gap + 1e-6 < relation.get('metres', 0):
-                    errors.append(f'{ident}: observed minimum_xy_clearance violated with {other_id}')
-            if relation.get('type') == 'supported_by':
-                region_id = relation.get('region')
-                support_id = relation.get('support_region')
-                own = next((r['bbox'] for r in observed[ident].get('regions', []) if r['id'] == region_id), None)
-                support = next((r['bbox'] for r in observed[other_id].get('regions', []) if r['id'] == support_id), None)
-                if not own or not support:
-                    errors.append(f'{ident}: support regions were not observed')
-                elif abs(own['min'][2] - support['max'][2]) > tolerance or polygon_distance(observed[ident]['footprint_xy'], observed[other_id]['footprint_xy']) > tolerance:
-                    errors.append(f'{ident}: observed support relationship failed with {other_id}')
+            error = relationship_error(relation, observed[ident], observed[other_id], tolerance)
+            if error:
+                errors.append(f'{ident}: observed {relation["type"]} {other_id}: {error}')
 
 
 def main():
@@ -178,7 +197,7 @@ def main():
         if ident not in entries:
             errors.append(f'{ident}: missing object entry')
         else:
-            check_contract(entries[ident], entries, errors)
+            check_contract(entries[ident], entries, args.tolerance, errors)
     if args.observed:
         check_observed(entries, json.loads(Path(args.observed).read_text()), ids, args.tolerance, errors)
     digest = lambda path: hashlib.sha256(Path(path).read_bytes()).hexdigest()

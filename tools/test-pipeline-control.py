@@ -360,6 +360,33 @@ printf 'attempts=%s scores=%s error=%s\n' "$ATTEMPT_SEQ" "$(cut -f3 "$STATE/reco
         self.assertIn("FAIL integrate spatial contract did not round-trip attempt=3", result.stdout)
         self.assertIn("error=one: footprint did not round-trip", result.stdout)
 
+    def test_blockout_declaration_failure_is_fed_back_and_never_kept(self):
+        stage_verdict = "\n".join(function(name) for name in ("write_stage_check_verdict", "write_spatial_check_verdict", "run_blockout"))
+        for valid, expected in (("2", "rc=0 scores=0,5,0 kept=attempt2"), ("", "rc=1 scores=0,0,0")):
+            with self.subTest(valid=valid), tempfile.TemporaryDirectory() as directory:
+                state = Path(directory) / "state"
+                (state / "verdicts").mkdir(parents=True)
+                (state / "records.tsv").write_text("")
+                (state / "blockout_critic.md").write_text("criticize")
+                script = f'''set -uo pipefail
+STATE={state!s}; PROMPTS={state!s}; INPUT=input.jpg; ATTEMPT_SEQ=0; MODEL_FAILURE=
+next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
+log() {{ printf '%s\n' "$*"; }}
+builder() {{ printf '%s\n' "$2" > "$STATE/feedback_$ATTEMPT_SEQ"; printf '[{{"id":"attempt%s"}}]\n' "$ATTEMPT_SEQ" > "$STATE/objects.json"; for name in blockout.py blockout.png blockout_overlay.png; do : > "$STATE/$name"; done; }}
+spatial_validate() {{ [ "$ATTEMPT_SEQ" = "{valid}" ] && return 0; printf '%s\n' '{{"valid":false,"errors":["item: declared supported_by floor: raised"]}}' > "$3"; return 1; }}
+critic() {{ printf '%s\n' '{{"score":5,"corrections":["sharpen edges"]}}' > "$1"; }}
+score_of() {{ jq -r '.score // 0' "$1"; }}
+record() {{ printf '%s\t%s\t%s\n' "$1" "$2" "$3" >> "$STATE/records.tsv"; }}
+inbox() {{ :; }}
+{stage_verdict}
+run_blockout; rc=$?
+printf 'rc=%s scores=%s kept=%s\n' "$rc" "$(cut -f3 "$STATE/records.tsv" | paste -sd, -)" "$(jq -r '.[0].id' "$STATE/objects.json")"
+'''
+                result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=10)
+                self.assertIn(expected, result.stdout, result.stderr)
+                self.assertIn("FAIL blockout spatial contract declaration invalid attempt=1", result.stdout)
+                self.assertEqual((state / "feedback_2").read_text().strip(), "item: declared supported_by floor: raised")
+
     def test_integration_attempt_budget_resumes_from_records(self):
         run_integrate = function("run_integrate")
         functions = "\n".join(function(name) for name in ("write_stage_check_verdict", "write_spatial_check_verdict", "integrate_attempts", "integrate_best"))
