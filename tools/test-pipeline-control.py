@@ -15,12 +15,20 @@ def function(name):
     definition = PIPELINE.split(f"\n{name}() {{", 1)[1]
     first_line = definition.split("\n", 1)[0]
     if first_line.endswith("}"):
-        return f"{name}() {{{first_line}"
-    return f"{name}() {{" + definition.split("\n}\n", 1)[0] + "\n}"
+        result = f"{name}() {{{first_line}"
+    else:
+        result = f"{name}() {{" + definition.split("\n}\n", 1)[0] + "\n}"
+    if name in ("builder", "run_detail"):
+        result = goto_policy() + "\n" + result
+    return result
+
+
+def goto_policy():
+    return re.search(r"^GOTO_LIMIT=.*$", PIPELINE, re.M).group(0) + "\n" + function("goto_available")
 
 
 def main_loop():
-    return "current=" + PIPELINE.split("\nfeedback=\ncurrent=", 1)[1].split("done\nif [ ! -f", 1)[0]
+    return goto_policy() + "\ncurrent=" + PIPELINE.split("\nfeedback=\ncurrent=", 1)[1].split("done\nif [ ! -f", 1)[0]
 
 
 def model_function(seconds=60, idle=2):
@@ -47,11 +55,19 @@ class PipelineControlTest(unittest.TestCase):
         self.assertIn('return 43', PIPELINE)
 
     def test_capped_tier_critic_descends_to_next_tier(self):
-        run_detail = function("run_detail")
-        self.assertIn('[ "$tier_rc" -eq 43 ] && [ "$CRITIC_GOTOS" -ge 5 ]', run_detail)
-        self.assertIn('continue', run_detail)
-        mutated = run_detail.replace('[ "$CRITIC_GOTOS" -ge 5 ]', '[ "$CRITIC_GOTOS" -gt 5 ]')
-        self.assertNotIn('[ "$tier_rc" -eq 43 ] && [ "$CRITIC_GOTOS" -ge 5 ]', mutated)
+        with tempfile.TemporaryDirectory() as directory:
+            script = f'''set -uo pipefail
+STATE={directory}; BUILDER_GOTOS=5; CRITIC_GOTOS=5
+ACTIVE_STAGE=detail; REQUEST_STAGE=blockout
+log() {{ :; }}
+write_tiers() {{ : > "$STATE/object_tiers.tsv"; }}
+run_tier_critic() {{ printf '%s\\n' "$1"; return 43; }}
+{function("run_detail")}
+run_detail
+'''
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=10)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.splitlines(), ["large", "medium", "small"])
 
     def test_capped_builder_goto_retries_within_same_stage_attempt(self):
         builder = function("builder")
@@ -484,6 +500,106 @@ run_detail
             result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, stdin=subprocess.DEVNULL, timeout=10)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stdout, "one\ntwo\nthree\n")
+
+    def goto_scenario(self, root, integrate_origin, materials_origin, target="blockout", expected_rc=0):
+        prefix = PIPELINE.split("\nfeedback=\ncurrent=", 1)[0]
+        script = prefix + f'''
+model() {{
+  cat > "$STATE/last_prompt"
+  jq -n --arg reason "synthetic $ACTIVE_STAGE region lies outside footprint" '{{stage:"blockout",reason:$reason}}' > "$STATE/goto.json"
+}}
+inbox() {{ :; }}
+run_floorplan() {{ :; }}
+run_blockout() {{ printf '%s\\n' "$1" >> "$STATE/repairs"; }}
+run_identify() {{ :; }}
+run_detail() {{
+  ACTIVE_STAGE=object:synthetic
+  builder detail_builder.md "${{2:-}}" || return $?
+  REQUEST_STAGE=blockout; REQUEST_REASON='synthetic tier region mismatch'; return 43
+}}
+whole_scene() {{
+  if [ "$1" = builder ]; then
+    builder integrate_builder.md "$2" || return $?
+  fi
+  REQUEST_STAGE=$3; REQUEST_REASON="synthetic $ACTIVE_STAGE footprint mismatch"; return 43
+}}
+run_integrate() {{ whole_scene {integrate_origin} "$1" {target}; }}
+run_materials() {{ whole_scene {materials_origin} "$1" blockout; }}
+within_s56_budget() {{ return 0; }}
+PHOTO_TO_SCENE_STAGE=detail
+feedback=
+''' + main_loop() + '\ndone\n'
+        for resource in ("prompts", "builders"):
+            link = root / resource
+            if not link.exists():
+                link.symlink_to(Path(__file__).resolve().parents[1] / resource)
+        driver = root / "driver.sh"
+        driver.write_text(script)
+        env = dict(os.environ, PHOTO_TO_SCENE_ROOT=str(root), BOTQ_ARTIFACTS_DIR=str(root / "artifacts"))
+        result = subprocess.run(
+            ["bash", str(driver), "synthetic.jpg"],
+            env=env, text=True, capture_output=True, timeout=60,
+        )
+        self.assertEqual(result.returncode, expected_rc, result.stderr)
+        return result
+
+    def test_whole_scene_reserves_after_early_exhaustion_and_resume(self):
+        for integrate_origin, materials_origin in (("builder", "builder"), ("critic", "critic"),
+                                                   ("builder", "critic"), ("critic", "builder")):
+            for checkpoint in ("fresh", "split", "legacy"):
+                with self.subTest(integrate=integrate_origin, materials=materials_origin, checkpoint=checkpoint):
+                    with tempfile.TemporaryDirectory() as directory:
+                        root = Path(directory)
+                        state = root / "state"
+                        state.mkdir()
+                        if checkpoint == "split":
+                            (state / "builder_goto_count").write_text("5")
+                            (state / "critic_goto_count").write_text("5")
+                        elif checkpoint == "legacy":
+                            (state / "goto_count").write_text("10")
+                        result = self.goto_scenario(root, integrate_origin, materials_origin)
+                        expected = {"fresh": 12, "split": 2, "legacy": 7}[checkpoint]
+                        self.assertEqual(result.stdout.count("GOTO count="), expected, result.stdout)
+                        self.assertEqual(len((state / "repairs").read_text().splitlines()), expected)
+                        for stage in ("integrate", "materials"):
+                            self.assertTrue((state / f"{stage}_blockout_goto_used").exists())
+                        repairs = (state / "repairs").read_text()
+                        for stage, origin in (("integrate", integrate_origin), ("materials", materials_origin)):
+                            reason = f"synthetic {stage} region lies outside footprint" if origin == "builder" else f"synthetic {stage} footprint mismatch"
+                            self.assertIn(reason, repairs)
+                        self.assertIn("Do not write state/goto.json", (state / "last_prompt").read_text())
+                        resumed = self.goto_scenario(root, integrate_origin, materials_origin)
+                        self.assertNotIn("GOTO count=", resumed.stdout)
+                        self.assertEqual((state / "repairs").read_text(), repairs)
+                        self.assertIn("GOTO cap reached", resumed.stdout)
+
+    def test_reserve_is_blockout_only_and_shared_between_origins(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            state = root / "state"
+            state.mkdir()
+            (state / "builder_goto_count").write_text("5")
+            (state / "critic_goto_count").write_text("5")
+            result = self.goto_scenario(root, "critic", "builder", target="detail")
+            self.assertEqual(result.stdout.count("GOTO count="), 1)
+            self.assertFalse((state / "integrate_blockout_goto_used").exists())
+            self.assertTrue((state / "materials_blockout_goto_used").exists())
+            result = self.goto_scenario(root, "builder", "critic")
+            self.assertEqual(result.stdout.count("GOTO count="), 1)
+            self.assertTrue((state / "integrate_blockout_goto_used").exists())
+            self.assertEqual(len((state / "repairs").read_text().splitlines()), 2)
+
+    def test_reserve_write_failure_stops_before_dispatch(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            state = root / "state"
+            state.mkdir()
+            (state / "builder_goto_count").write_text("5")
+            (state / "critic_goto_count").write_text("5")
+            (state / "integrate_blockout_goto_used").mkdir()
+            result = self.goto_scenario(root, "builder", "critic", expected_rc=1)
+            self.assertNotIn("GOTO count=", result.stdout)
+            self.assertFalse((state / "repairs").exists())
 
     def test_critic_budget_is_independent(self):
         loop = main_loop()

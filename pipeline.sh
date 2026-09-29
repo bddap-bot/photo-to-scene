@@ -19,6 +19,7 @@ STAGES=(floorplan blockout identify detail)
 [ ! -f "$STATE/objects.json" ] || while IFS= read -r stage_id; do STAGES+=("object:$stage_id"); done < <(jq -r '.[].id' "$STATE/objects.json")
 STAGES+=(integrate materials)
 VALID_STAGE_TEXT="floorplan blockout identify detail object:<id> integrate materials"
+GOTO_LIMIT=5
 LEGACY_GOTOS=$(cat "$STATE/goto_count" 2>/dev/null || printf 0)
 BUILDER_GOTOS=$(cat "$STATE/builder_goto_count" 2>/dev/null || printf '%s' "$LEGACY_GOTOS")
 CRITIC_GOTOS=$(cat "$STATE/critic_goto_count" 2>/dev/null || printf 0)
@@ -36,6 +37,21 @@ next_attempt() { ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); printf '%s' "$ATTEMPT_SEQ" > "$
 score_of() { jq -r '.score // 0' "$1"; }
 record() { printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$1" "$2" "$3" "$4" "$5" "$6" "${7:-}" "${8:-}" >> "$STATE/records.tsv"; }
 valid_stage() { local candidate=$1 known id; for known in "${STAGES[@]}"; do [ "$candidate" = "$known" ] && return 0; done; case "$candidate" in object:*) id=${candidate#object:}; [ -f "$STATE/objects.json" ] && jq -e --arg id "$id" 'any(.id == $id)' "$STATE/objects.json" >/dev/null ;; *) return 1 ;; esac; }
+goto_available() {
+  local origin=$1 used=$BUILDER_GOTOS
+  GOTO_RESERVE=
+  [ "$origin" != critic ] || used=$CRITIC_GOTOS
+  [ "$used" -lt "$GOTO_LIMIT" ] && return 0
+  [ "$REQUEST_STAGE" = blockout ] || return 1
+  case "${ACTIVE_STAGE:-}" in
+    integrate|materials)
+      GOTO_RESERVE="$STATE/${ACTIVE_STAGE}_blockout_goto_used"
+      [ ! -f "$GOTO_RESERVE" ] && return 0 ;;
+  esac
+  GOTO_RESERVE=
+  return 1
+}
+
 spatial_validate() { local output_arg=; [ -z "${3:-}" ] || output_arg="--output '$3'"; nix-shell -p python3 --run "python3 '$PIPELINE_DIR/tools/spatial-contract.py' '$STATE/objects.json' --ids '$1' ${2:-} $output_arg"; }
 descendants() { cat /proc/[0-9]*/stat 2>/dev/null | awk -v root="$1" '{ pid = $1; sub(/^.*\) /, ""); parent[pid] = $2; ticks[pid] = $12 + $13 + $14 + $15 } END { do { grew = 0; for (pid in parent) if (!(pid in tree) && (parent[pid] == root || parent[pid] in tree)) { tree[pid] = 1; grew = 1 } } while (grew); for (pid in tree) print pid, ticks[pid] }'; }
 model() {
@@ -93,7 +109,7 @@ builder() {
         return 0
       fi
       if valid_stage "$REQUEST_STAGE"; then
-        if [ "$BUILDER_GOTOS" -lt 5 ]; then return 42; fi
+        if goto_available builder; then return 42; fi
         log "GOTO cap reached origin=builder requested=$REQUEST_STAGE reason=$REQUEST_REASON"
         cap_retry=1
         feedback="${feedback:+$feedback$'\n'}The builder GOTO cap is reached. Do not write state/goto.json. Complete within the existing spatial contract, retaining a contract-valid artifact when available so this attempt can be recorded."
@@ -204,7 +220,7 @@ run_detail() {
     for id in "${detail_ids[@]}"; do ACTIVE_TIER=$tier run_one_detail "$id" || return $?; done
     run_tier_critic "$tier"
     tier_rc=$?
-    if [ "$tier_rc" -eq 43 ] && [ "$CRITIC_GOTOS" -ge 5 ]; then
+    if [ "$tier_rc" -eq 43 ] && ! goto_available critic; then
       log "GOTO cap request ignored within tier=$tier; descending to next footprint tier"
       continue
     fi
@@ -244,7 +260,8 @@ while :; do
   if [ "$rc" -eq 42 ] || [ "$rc" -eq 43 ]; then
     origin=$([ "$rc" -eq 42 ] && printf builder || printf critic)
     if ! valid_stage "$REQUEST_STAGE"; then key="$origin:$ACTIVE_STAGE"; log "GOTO rejected origin=$origin requested=$REQUEST_STAGE reason=target is not in canonical stage set"; if [ "${INVALID_RETRIES[$key]:-0}" -eq 0 ]; then INVALID_RETRIES[$key]=1; feedback="Your GOTO target $REQUEST_STAGE is not a stage. Valid stages: $VALID_STAGE_TEXT. Re-raise with a valid one or continue."; continue; fi; log "GOTO rejected origin=$origin requested=$REQUEST_STAGE reason=second invalid target from same stage ignored"; current=$next; feedback=; continue; fi
-    if [ "$origin" = critic ] && [ "$CRITIC_GOTOS" -ge 5 ]; then log "GOTO cap reached origin=$origin requested=$REQUEST_STAGE reason=$REQUEST_REASON"; log "GOTO cap request ignored origin=$origin requested=$REQUEST_STAGE reason=$REQUEST_REASON"; current=$next; feedback=; [ "$current" = 'done' ] && break; continue; fi
+    if ! goto_available "$origin"; then log "GOTO cap reached origin=$origin requested=$REQUEST_STAGE reason=$REQUEST_REASON"; log "GOTO cap request ignored origin=$origin requested=$REQUEST_STAGE reason=$REQUEST_REASON"; current=$next; feedback=; [ "$current" = 'done' ] && break; continue; fi
+    [ -z "$GOTO_RESERVE" ] || printf 'used\n' > "$GOTO_RESERVE" || exit 1
     if [ "$origin" = builder ]; then BUILDER_GOTOS=$((BUILDER_GOTOS+1)); printf '%s' "$BUILDER_GOTOS" > "$STATE/builder_goto_count"; count=$BUILDER_GOTOS; else CRITIC_GOTOS=$((CRITIC_GOTOS+1)); printf '%s' "$CRITIC_GOTOS" > "$STATE/critic_goto_count"; count=$CRITIC_GOTOS; fi
     printf '%s' "$((BUILDER_GOTOS+CRITIC_GOTOS))" > "$STATE/goto_count"
     log "GOTO count=$count origin=$origin stage=$REQUEST_STAGE reason=$REQUEST_REASON"; current=$REQUEST_STAGE; feedback=$REQUEST_REASON; continue
