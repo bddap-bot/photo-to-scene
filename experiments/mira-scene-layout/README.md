@@ -183,3 +183,70 @@ not ground truth. **Decision rule:** Mira-Scene wins when its median per-object
 photo IoU exceeds the blockout's by at least 0.10 and it is higher on at least
 60 % of compared objects. A win opens the design issue named in #24; otherwise
 #24 closes with the table.
+
+## Measured layout run: results
+
+**The layout half does not run on this GPU: stop at box 1; #24 closes.**
+Segmentation and depth fit and finished. CCM, the stage that makes the layout,
+failed every rung of the pre-registered ladder:
+
+- **BF16**, the released precision: Turing has no fused BF16 attention, so
+  attention falls back to a kernel that materialises the whole score matrix.
+  One call asked for 5.06 GiB at 45 instances, and runs still failed at 3.
+- **FP16** fits in memory but overflows: every CCM value was NaN and no voxels
+  came out.
+- **FP32** holds the 4.66 GB transformer in full precision. One instance with
+  model offload peaked at 5,704 MiB allocated (5,872 MiB for the process), which
+  is more than the card had left.
+
+The card has 7,782 MiB usable, and other resident processes held 1.8–3.8 GiB of
+it throughout. An idle card might fit FP32 at one instance, but that run was not
+possible and is not claimed. Because the layout was never produced, the
+footprint, front and scale comparison with the blockout was not run, as the
+stop rule requires.
+
+![Device memory per attempt](measured-memory.png)
+
+| Stage | Model | Configuration that finished, or the binding number | Peak memory | Runtime |
+|---|---|---|---|---|
+| Segmentation | `facebook/sam2.1-hiera-large` (substitute; `facebook/sam3` is access-gated) | FP32, 90 box prompts from the blockout's `crop_bbox` | 4,924 MiB allocated, 5,628 MiB process | 326 s |
+| Depth | `gangweix/Pixel-Perfect-Depth` + `Ruicheng/moge-2-vitl-normal` + `depth-anything/Depth-Anything-V2-Large`, metric scale from `Ruicheng/moge-2-vitl` | Model offload + FP16 (released BF16 run out of memory; offload alone asked for an 8.80 GiB attention block) | 4,428 MiB allocated, 4,846 MiB process | 2,995 s |
+| CCM | `Yang-Tian/Mira-Scene` `pipeline/` rev `e0bc99e` | None. BF16 fails on memory (math-kernel attention), FP16 yields all-NaN maps, FP32 needs more than 5,704 MiB for a single instance | above the free memory in every rung | none completed |
+| Layout solve | `solve_similarity_transforms` | not reached | — | — |
+| Mesh (TRELLIS.2, `low_vram`) | `microsoft/TRELLIS.2-4B` | not reached: its image encoder `facebook/dinov3-vitl16-pretrain-lvd1689m` and `briaai/RMBG-2.0` refuse anonymous download ("Access denied. This repository requires approval.") | — | — |
+
+Runtimes are wall clock on a heavily loaded host; the load average ran from 45
+to 180 during the runs. Most of the depth time went to building the models on
+the CPU. Every attempt's figures are in [measured-run.json](measured-run.json).
+
+### Deviations and observations
+
+- **SAM3 substitution.** The `facebook/sam3` weights need an access agreement this
+  evaluation holds no account for. SAM 2.1, prompted with each blockout object's
+  `crop_bbox`, produced the 90 instance masks (median predicted mask quality 0.90)
+  and carried the blockout's object IDs through.
+- **Offload needed a patch.** The released `CCMVoxelPipeline` declares no model
+  offload order, so diffusers refuses to offload it. The evaluation set the order
+  to image encoder → transformer → VAE.
+- **Instance groups.** CCM batches every instance together, but its attention
+  runs within each instance, so splitting the 90 instances into groups changes
+  only the noise draw. The run halved the group size from 90 to 3; FP32 was also
+  tried with single instances.
+- **Retries.** Other processes' GPU use changed during the runs. The final FP16,
+  BF16 and FP32 attempts retried each out-of-memory failure up to 20 times; every
+  retry failed.
+- **Center crop.** The released CCM stage resizes the photograph to 518 pixels on
+  its short side and center-crops a square. That drops about 10 % of the
+  1529×1211 frame on each side: 7 of the 90 instances lie wholly outside the crop
+  and 16 partly. A non-square photograph needs letterboxing before this stage.
+- **Numerics.** Depth runs correctly in FP16; CCM does not. Its precision has
+  to be BF16 or FP32, and on Turing BF16 has no memory-efficient attention.
+
+### Decision
+
+Box 1 is a hardware loss, now measured rather than taken from published
+requirements. The CCM stage that produces the pixel-aligned layout has no
+numerically valid configuration within the memory this GPU has free. No
+layout-quality claim follows in either direction. #24 closes; it can reopen with
+a GPU that runs BF16 attention natively (compute capability 8.0 or newer) or one
+that gives CCM at least about 6 GB in FP32.

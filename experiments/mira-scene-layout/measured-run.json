@@ -1,0 +1,111 @@
+{
+ "gpu": "GeForce RTX 2080, 8192 MiB, 7.60 GiB usable, compute capability 7.5",
+ "mira_scene_source": "653cba6f4ca328797d44fd7357087573b873366a",
+ "attempts": [
+  {
+   "label": "Segmentation, SAM 2.1, 90 boxes, FP32",
+   "others_mib": 1811,
+   "process_mib": 5628,
+   "outcome": "completed",
+   "note": "326 s"
+  },
+  {
+   "label": "Depth, released BF16",
+   "others_mib": 1930,
+   "process_mib": 5408,
+   "outcome": "oom",
+   "note": "+564 MiB request"
+  },
+  {
+   "label": "Depth, + model offload",
+   "others_mib": 1839,
+   "process_mib": 5296,
+   "outcome": "oom",
+   "note": "8.80 GiB attention request"
+  },
+  {
+   "label": "Depth, + offload, FP16",
+   "others_mib": 2486,
+   "process_mib": 4846,
+   "outcome": "completed",
+   "note": "2995 s"
+  },
+  {
+   "label": "CCM, released BF16, 90",
+   "others_mib": 2136,
+   "process_mib": 5478,
+   "outcome": "oom",
+   "note": "input batch"
+  },
+  {
+   "label": "CCM, + offload, 90",
+   "others_mib": 3810,
+   "process_mib": 3896,
+   "outcome": "oom",
+   "note": "image encoder"
+  },
+  {
+   "label": "CCM, BF16 offload, 45",
+   "others_mib": 2048,
+   "process_mib": 4566,
+   "outcome": "oom",
+   "note": "5.06 GiB attention request"
+  },
+  {
+   "label": "CCM, FP16 offload, 45",
+   "others_mib": 1850,
+   "process_mib": 5488,
+   "outcome": "oom",
+   "note": "image encoder"
+  },
+  {
+   "label": "CCM, FP16 offload, 23",
+   "others_mib": 3760,
+   "process_mib": 3898,
+   "outcome": "oom",
+   "note": "image encoder"
+  },
+  {
+   "label": "CCM, FP16 offload, 12",
+   "others_mib": 3700,
+   "process_mib": 4022,
+   "outcome": "oom",
+   "note": "transformer"
+  },
+  {
+   "label": "CCM, FP16 offload, 6",
+   "others_mib": 3746,
+   "process_mib": 3970,
+   "outcome": "oom",
+   "note": "transformer attention"
+  },
+  {
+   "label": "CCM, FP16 offload, 3",
+   "others_mib": 3533,
+   "process_mib": 4212,
+   "outcome": "nan",
+   "note": "every CCM value NaN, 0 voxels"
+  },
+  {
+   "label": "CCM, BF16 offload, 3",
+   "others_mib": 2525,
+   "process_mib": 4586,
+   "outcome": "oom",
+   "note": "transformer attention"
+  },
+  {
+   "label": "CCM, FP32 offload, 3",
+   "others_mib": 1804,
+   "process_mib": 5890,
+   "outcome": "oom",
+   "note": "20 retries"
+  },
+  {
+   "label": "CCM, FP32 offload, 1",
+   "others_mib": 1892,
+   "process_mib": 5872,
+   "outcome": "oom",
+   "note": "5704 MiB allocated; 20 retries"
+  }
+ ]
+}
