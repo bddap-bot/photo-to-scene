@@ -1,3 +1,6 @@
+# CCM terminal evidence
+
+```text
 Audit of original CCM logs; counts are logged OOM events, not configured limits.
 
 ccm-g1fp32.log
@@ -23,3 +26,4 @@ co-tenant OOM retry 2: free 1913 MiB
 co-tenant OOM retry 3: free 1933 MiB
 co-tenant OOM retry 4: free 1913 MiB
 rc=143
+```

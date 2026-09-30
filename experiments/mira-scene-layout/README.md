@@ -207,10 +207,12 @@ memory on a shared device does not rule out the GPU class. The report therefore
 withdraws the hardware loss and leaves box 1 unresolved; comparison is pending,
 not forbidden by an established stop-rule failure.
 
-The earlier memory figure has been removed because it labelled interrupted
-FP32 attempts as OOM outcomes. Corrected per-attempt outcomes are in
+The memory figure now distinguishes interrupted FP32 attempts from completed
+stages. Corrected per-attempt outcomes are in
 [measured-run.json](measured-run.json); [audit excerpts](evidence-audit.md)
 record the terminal errors and observed retry counts without machine details.
+
+![Measured process peaks and corrected outcomes](measured-memory.png)
 
 | Stage | Model | Configuration that finished, or the binding number | Peak memory | Runtime |
 |---|---|---|---|---|
