@@ -4,6 +4,8 @@ Results tables carry numbers, not images of private scenes.
 Keep README for the reader: what the workflow does, how to run it, results, limits.
 Tests that gate a landing pass under any host load: they assert outcomes and derived lower bounds, never wall-time upper bounds. Model-call wall-time bounds are a benchmark: run `python3 tools/test-pipeline-control.py benchmark` on an idle host after changing `model()` or `tree_ticks()`.
 
+Edit by subtraction: resolve a problem by deleting code; a tactical patch over a symptom is not accepted. One implementation per thing, never two alive.
+
 ## Boundaries
 
 This photo-to-scene repository names only its own components. Name another project only as a declared, versioned dependency, never through its internals. Give a needed shared service a neutral name owned by this project. Do not import the environment of machines running agents: hostnames, addresses, paths outside the repository, service or queue names, credentials, camera frames, or renders of private places. No person's name, schedule or presence enters the repository. Before landing, grep the diff for other projects' names and host details. Remove host details and undeclared project references; dependency declarations expose only the dependency's name and version.
