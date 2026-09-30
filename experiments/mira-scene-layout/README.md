@@ -259,3 +259,22 @@ The FP32 rung needs a clean offload run with sufficient available memory, follow
 by the layout solve and both spatial-contract scores if it completes. An 8 GB
 card with approximately 6 GB free already meets the earlier proposed reopen
 condition, so that condition cannot support a hardware rejection.
+
+### Clean FP32 rerun method (recorded before execution)
+
+Rebuild the isolated evaluation environment from the pinned Mira-Scene source.
+Regenerate the same SAM 2.1 box-prompted masks from the sole public input; retain
+model revisions and the ID order. Use FP32 CCM with groups of one, the released
+sampling settings, and model CPU offload in image-encoder → transformer → VAE
+order. The scratch harness uses the pipeline execution device, rather than the
+current transformer-parameter device, for offloaded inputs. There is no in-process
+OOM retry: an error terminates that attempt. Check every produced CCM for finite
+values and retain the voxel counts. Record load-inclusive elapsed time, allocated
+and reserved peaks, device availability, and the actual terminal status.
+
+The original 60-minute stage bound applies to a complete scene, not to one
+instance. A timeout or OOM under competing allocations is reported with that
+qualification; a harness error or interruption leaves feasibility unresolved.
+If model offload still fails against available memory, a separately labelled
+sequential-offload attempt may measure whether a smaller residency fits; it is
+an additional configuration, not evidence that the original rung completed.
