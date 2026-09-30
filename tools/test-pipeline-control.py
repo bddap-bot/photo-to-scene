@@ -1182,6 +1182,7 @@ printf 'asset=%s\\n' "$(cat "$ASSETS/one.py")"
         self.assertIn("asset=completed\n", result.stdout)
 
     def test_failed_tier_call_is_retried_with_its_failure_text(self):
+        failure = "simulated model call failure"
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             state = root / "state"
@@ -1199,7 +1200,10 @@ next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
 score_of() {{ jq -r '.score // 0' "$1"; }}
 record() {{ printf '%s\\t%s\\t%s\\t%s\\t%s\\t%s\\n' "$MODE" "$1" "$2" "$3" "$5" "$6" >> "$STATE/records.tsv"; }}
 valid_stage() {{ return 1; }}
-codex() {{
+# Drive retry policy synchronously; watchdog timing is covered by model-call tests.
+SCHEMA=schema.json; MODEL_FAILURE=
+model() {{
+  MODEL_FAILURE=
   local call output= previous=
   for arg in "$@"; do [ "$previous" = -o ] && output=$arg; previous=$arg; done
   call=$(( $(cat "$STATE/calls") + 1 )); printf '%s' "$call" > "$STATE/calls"
@@ -1207,10 +1211,9 @@ codex() {{
   case "$MODE:$call" in
     retry:2) printf png > "$STATE/tier_large.png" ;;
     retry:3) printf '%s\\n' '{{"score":6,"summary":"off","corrections":["move the sofa"],"top_stage":"blockout","wrong_labels":[],"missing_objects":[]}}' > "$output" ;;
-    *) while :; do sleep 0.1; done ;;
+    *) MODEL_FAILURE={shlex.quote(failure)}; return 1 ;;
   esac
 }}
-{model_function()}
 {function("builder")}
 {function("critic")}
 {function("write_stage_check_verdict")}
@@ -1224,16 +1227,15 @@ done
             records = [line.split("\t") for line in (state / "records.tsv").read_text().splitlines()]
             retried_prompt = (state / "prompt_retry_2").read_text()
             verdicts = [json.loads(Path(row[5]).read_text()) for row in records]
-        idle = idle_failure(2)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual([row[:4] for row in records], [["retry", "tier:large", "1", "0"], ["retry", "tier:large", "2", "6"], ["fail", "tier:large", "1", "0"], ["fail", "tier:large", "2", "0"]])
-        self.assertEqual(records[1][4], idle)
+        self.assertEqual(records[1][4], failure)
         self.assertEqual([Path(row[5]).name for row in records], [f"tier_large_{sequence}.json" for sequence in range(1, 5)])
         self.assertEqual([verdict["score"] for verdict in verdicts], [0, 6, 0, 0])
-        self.assertTrue(retried_prompt.endswith(f"\nOne-reentry correction context follows:\nTier: large. Object ids: one \n{idle}\n"))
+        self.assertTrue(retried_prompt.endswith(f"\nOne-reentry correction context follows:\nTier: large. Object ids: one \n{failure}\n"))
         self.assertIn("retry rc=43 request=blockout reason=move the sofa calls=3\n", result.stdout)
         self.assertIn("tier:large review calls failed; continuing as though the tier passed\nfail rc=0 request= reason= calls=2\n", result.stdout)
-        self.assertEqual([verdict["corrections"] for verdict in verdicts[2:]], [[idle], [idle]])
+        self.assertEqual([verdict["corrections"] for verdict in verdicts[2:]], [[failure], [failure]])
 
     def test_detail_object_without_a_completed_attempt_keeps_no_asset(self):
         for mode, expected_rc in (("stopped", "0"), ("goto", "42")):
