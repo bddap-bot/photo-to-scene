@@ -40,7 +40,9 @@ def idle_failure(seconds):
     return f"model call had no non-whitespace output and no busy child process for {seconds} s"
 
 
-def model_calls() -> tuple[subprocess.CompletedProcess[str], dict[str, str]]:
+def model_calls(*, wall_benchmark: bool = False) -> tuple[subprocess.CompletedProcess[str], dict[str, str]]:
+    busy_call = """codex() { for _ in 1 2 3 4; do timeout 6 bash -c 'while :; do :; done' & done; wait; printf 'rendered\\n'; }
+call busy""" if wall_benchmark else ""
     with tempfile.TemporaryDirectory() as directory:
         script = f"""set -uo pipefail
 ROOT={directory}; STATE={directory}
@@ -56,8 +58,7 @@ call graceful
 printf 'graceful_term=%s\\n' "$([ -f "$STATE/graceful_term" ] && printf yes || printf no)"
 codex() {{ trap '' TERM; cat >/dev/null; while :; do sleep 0.1; done; }}
 call stubborn
-codex() {{ for _ in 1 2 3 4; do timeout 6 bash -c 'while :; do :; done' & done; wait; printf 'rendered\\n'; }}
-call busy
+{busy_call}
 codex() {{ trap 'exit 0' TERM; bash -c 'trap "" TERM; while :; do sleep 0.1; done' & printf '%s' "$!" > "$STATE/orphan"; cat >/dev/null; while :; do sleep 0.1; done; }}
 call orphaned
 printf 'orphan_alive=%s\\n' "$(kill -0 "$(cat "$STATE/orphan")" 2>/dev/null && printf yes || printf no)"
@@ -95,8 +96,10 @@ WALL_BOUNDS = {
 
 
 def benchmark() -> int:
-    _, calls = model_calls()
+    result, calls = model_calls(wall_benchmark=True)
     misses = [calls[name] for name, bound in WALL_BOUNDS.items() if not re.search(rf" seconds={bound} ", calls[name])]
+    if not re.search(r"rc=0 seconds=\d+ failure= marker=clear", calls["busy"]) or "rendered\n" not in result.stdout:
+        misses.append("busy call did not complete successfully")
     print("\n".join(misses or ["model call wall times within bounds"]))
     return 1 if misses else 0
 
@@ -789,9 +792,6 @@ printf 'finished rc=%s failure=%s\\n' "$?" "$MODEL_FAILURE"
         for name in ("stubborn", "orphaned"):
             self.assertRegex(calls[name], idle)
             self.assertGreaterEqual(call_seconds(calls[name]), 13)
-        self.assertRegex(calls["busy"], r"rc=0 seconds=\d+ failure= marker=clear")
-        self.assertGreaterEqual(call_seconds(calls["busy"]), 6)
-        self.assertIn("rendered\n", result.stdout)
         self.assertIn("orphan_alive=no\n", result.stdout)
         self.assertRegex(calls["endless"], r"rc=1 seconds=\d+ failure=model call exceeded its 4 s wallclock bound marker=clear")
         self.assertGreaterEqual(call_seconds(calls["endless"]), 4)
