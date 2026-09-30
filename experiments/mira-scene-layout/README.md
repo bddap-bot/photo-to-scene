@@ -278,3 +278,14 @@ qualification; a harness error or interruption leaves feasibility unresolved.
 If model offload still fails against available memory, a separately labelled
 sequential-offload attempt may measure whether a smaller residency fits; it is
 an additional configuration, not evidence that the original rung completed.
+
+### Gate version check
+
+A fresh declaration-only check using the pinned baseline gate
+(`adbd61ae79ce9be1e5839ebaa801fb4d86f6e9a9`) again reports 99 objects and zero
+errors. The current gate, after `0359029`, reports six support-declaration errors
+on those same objects: two missing support-region identifiers and four vertical
+support offsets. These are the previously documented support contradictions,
+now caught earlier. Neither declaration-only result is a new observed-geometry
+score; the historical final-scene result remains 68 errors. Any candidate
+comparison must identify the gate revision and use the same gate for both layouts.
