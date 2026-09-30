@@ -32,7 +32,7 @@ def main_loop():
     return goto_policy() + "\ncurrent=" + PIPELINE.split("\nfeedback=\ncurrent=", 1)[1].split("done\nif [ ! -f", 1)[0]
 
 
-def model_function(seconds=60, idle=2):
+def model_function(seconds: int = 60, idle: int = 2) -> str:
     return f"MODEL_SECONDS={seconds}; MODEL_IDLE_SECONDS={idle}; MODEL_BUSY_CPU_TICKS={BUSY_CPU_TICKS}; MODEL_FAILURE=; SCHEMA=schema.json\n" + function("tree_ticks") + "\n" + function("model")
 
 
@@ -754,7 +754,7 @@ printf 'rc=%s failure=%s\\n' "$?" "$MODEL_FAILURE"
         self.assertIn("rendered\n", result.stdout)
         self.assertIn("rc=0 failure=\n", result.stdout)
 
-    def test_model_defers_idle_verdict_while_cpu_accounting_is_pending(self) -> None:
+    def test_model_idle_deadline_survives_inactive_zombie(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             script = f"""set -uo pipefail
 ROOT={directory}; STATE={directory}
@@ -773,8 +773,8 @@ model - <<< prompt
 printf 'finished rc=%s failure=%s\\n' "$?" "$MODEL_FAILURE"
 """
             result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=300)
-        self.assertEqual(result.stdout.count("rendered\n"), 2)
-        self.assertIn("zombie rc=0 failure=\n", result.stdout)
+        self.assertEqual(result.stdout.count("rendered\n"), 1)
+        self.assertIn(f"zombie rc=1 failure={idle_failure(3)}\n", result.stdout)
         self.assertIn("finished rc=0 failure=\n", result.stdout)
         self.assertIn("bounded rc=1 failure=model call exceeded its 2 s wallclock bound\n", result.stdout)
 

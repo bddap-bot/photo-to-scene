@@ -76,7 +76,7 @@ tree_ticks() {
   done
 }
 model() {
-  local log="$STATE/model.log" pid echo_pid rc start=$SECONDS last=$SECONDS scanned=0 size grown child child_ticks child_state root_state zombie stopped=
+  local log="$STATE/model.log" pid echo_pid rc start=$SECONDS last=$SECONDS scanned=0 size grown child child_ticks child_state root_state stopped=
   local -A before=() now=()
   local -a victims=()
   MODEL_FAILURE=
@@ -91,13 +91,11 @@ model() {
     scanned=$size
     grown=0
     root_state=
-    zombie=
     now=()
     while read -r child child_ticks child_state; do
       now[$child]=$child_ticks
       grown=$((grown + child_ticks - ${before[$child]:-0}))
       [ "$child" != "$pid" ] || root_state=$child_state
-      [ "$child_state" != Z ] || zombie=$child
     done < <(tree_ticks "$pid")
     [ "$grown" -ge "$MODEL_BUSY_CPU_TICKS" ] && last=$SECONDS
     before=()
@@ -105,7 +103,7 @@ model() {
     if [ -n "$stopped" ]; then [ $((SECONDS - stopped)) -lt 10 ] || kill -KILL "${victims[@]}" 2>/dev/null; continue; fi
     [ -n "$root_state" ] && [ "$root_state" != Z ] || continue
     if [ $((SECONDS - start)) -ge "$MODEL_SECONDS" ]; then MODEL_FAILURE="model call exceeded its $MODEL_SECONDS s wallclock bound"
-    elif [ -z "$zombie" ] && [ $((SECONDS - last)) -ge "$MODEL_IDLE_SECONDS" ]; then MODEL_FAILURE="model call had no non-whitespace output and no busy child process for $MODEL_IDLE_SECONDS s"
+    elif [ $((SECONDS - last)) -ge "$MODEL_IDLE_SECONDS" ]; then MODEL_FAILURE="model call had no non-whitespace output and no busy child process for $MODEL_IDLE_SECONDS s"
     else continue; fi
     stopped=$SECONDS
     mapfile -t victims < <(tree_ticks "$pid" | cut -d ' ' -f 1)
