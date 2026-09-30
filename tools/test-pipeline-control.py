@@ -5,6 +5,7 @@ import shlex
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
 from pathlib import Path
 
@@ -43,7 +44,7 @@ def idle_failure(seconds):
 
 
 def model_calls(*, wall_benchmark: bool = False) -> tuple[subprocess.CompletedProcess[str], dict[str, str]]:
-    busy_call = """codex() { for _ in 1 2 3 4; do timeout 6 bash -c 'while :; do :; done' & done; wait; printf 'rendered\\n'; }
+    busy_call = """codex() { timeout 6 bash -c 'while :; do :; done'; printf 'rendered\\n'; }
 call busy""" if wall_benchmark else ""
     with tempfile.TemporaryDirectory() as directory:
         script = f"""set -uo pipefail
@@ -808,6 +809,61 @@ kill "$root"
         fields = dict(field.split("=") for field in result.stdout.split())
         self.assertEqual(fields["pid"], fields["root"])
         self.assertGreater(int(fields["ticks"]), 0)
+
+    def test_tree_ticks_detects_demand_with_and_without_contention(self) -> None:
+        cpu = str(min(os.sched_getaffinity(0)))
+        burn = "while True: pass"
+        sleeper = "import time\nwhile True: time.sleep(0.1)"
+        threaded = "import threading\nthreading.Thread(target=lambda: exec('while True: pass')).start()\nthreading.Event().wait()"
+        for loaded in (False, True):
+            competitor = subprocess.Popen(["taskset", "-c", cpu, sys.executable, "-c", burn]) if loaded else None
+            try:
+                for name, code in (("busy", burn), ("thread", threaded), ("sleep", sleeper)):
+                    with self.subTest(loaded=loaded, workload=name):
+                        child = subprocess.Popen(["taskset", "-c", cpu, "nice", "-n", "19", sys.executable, "-c", code])
+                        try:
+                            time.sleep(0.5)
+                            samples = []
+                            for _ in range(4):
+                                result = subprocess.run(["bash", "-c", function("tree_ticks") + f"\ntree_ticks {child.pid}"], text=True, capture_output=True, check=True)
+                                pid, ticks, state = result.stdout.split()
+                                self.assertEqual(int(pid), child.pid)
+                                stat = Path(f"/proc/{child.pid}/stat").read_text().rsplit(") ", 1)[1].split()
+                                samples.append((int(stat[11]) + int(stat[12]), state))
+                                if len(samples) < 4:
+                                    time.sleep(1)
+                            growth = [b[0] - a[0] for a, b in zip(samples, samples[1:])]
+                            runnable = sum(state == "R" for _, state in samples[1:])
+                            print(f"demand loaded={loaded} workload={name} cpu_ticks={growth} runnable={runnable}/3", flush=True)
+                            if name == "sleep":
+                                self.assertLess(max(growth), int(BUSY_CPU_TICKS))
+                                self.assertLess(runnable, 2)
+                            else:
+                                self.assertGreaterEqual(runnable, 2)
+                                if loaded:
+                                    self.assertLess(max(growth), int(BUSY_CPU_TICKS))
+                        finally:
+                            child.terminate()
+                            child.wait(timeout=10)
+            finally:
+                if competitor is not None:
+                    competitor.terminate()
+                    competitor.wait(timeout=10)
+
+    def test_model_runnable_child_without_cpu_is_busy(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            script = f"""set -uo pipefail
+ROOT={directory}; STATE={directory}
+log() {{ printf '%s\\n' "$*"; }}
+{model_function(60, 3)}
+tree_ticks() {{ printf '%s 0 S\\n9000000 0 R\\n' "$1"; }}
+codex() {{ cat >/dev/null; sleep 6; printf 'rendered\\n'; }}
+model - <<< prompt
+printf 'rc=%s failure=%s\\n' "$?" "$MODEL_FAILURE"
+"""
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=60)
+        self.assertIn("rendered\n", result.stdout)
+        self.assertIn("rc=0 failure=\n", result.stdout)
 
     def test_model_busy_counts_growth_per_process(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

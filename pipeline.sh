@@ -55,24 +55,29 @@ goto_available() {
 spatial_validate() { local output_arg=; [ -z "${3:-}" ] || output_arg="--output '$3'"; nix-shell -p python3 --run "python3 '$PIPELINE_DIR/tools/spatial-contract.py' '$STATE/objects.json' --ids '$1' ${2:-} $output_arg"; }
 tree_ticks() {
   local -a queue=("$1") children stat
-  local pid child task line
-  { read -r line < "/proc/$1/stat"; } 2>/dev/null || return 0
-  read -ra stat <<< "${line##*) }"
-  printf '%s %s %s\n' "$1" "$((stat[13] + stat[14]))" "${stat[0]}"
+  local pid child task line ticks state
   while [ "${#queue[@]}" -gt 0 ]; do
     pid=${queue[0]}
     queue=("${queue[@]:1}")
-    for task in /proc/"$pid"/task/*/children; do
+    { read -r line < "/proc/$pid/stat"; } 2>/dev/null || continue
+    read -ra stat <<< "${line##*) }"
+    ticks=$((stat[13] + stat[14]))
+    [ "$pid" = "$1" ] || ticks=$((ticks + stat[11] + stat[12]))
+    state=${stat[0]}
+    for task in /proc/"$pid"/task/*; do
+      { read -r line < "$task/stat"; } 2>/dev/null && {
+        read -ra stat <<< "${line##*) }"
+        [ "${stat[0]}" != R ] || state=R
+      }
       children=()
-      { read -ra children < "$task"; } 2>/dev/null
+      { read -ra children < "$task/children"; } 2>/dev/null
       for child in "${children[@]}"; do
         { read -r line < "/proc/$child/stat"; } 2>/dev/null || continue
         read -ra stat <<< "${line##*) }"
-        [ "${stat[1]}" = "$pid" ] || continue
-        printf '%s %s %s\n' "$child" "$((stat[11] + stat[12] + stat[13] + stat[14]))" "${stat[0]}"
-        queue+=("$child")
+        [ "${stat[1]}" != "$pid" ] || queue+=("$child")
       done
     done
+    printf '%s %s %s\n' "$pid" "$ticks" "$state"
   done
 }
 model() {
@@ -93,6 +98,7 @@ model() {
     root_state=
     now=()
     while read -r child child_ticks child_state; do
+      [ "$child_state" != R ] || last=$SECONDS
       now[$child]=$child_ticks
       grown=$((grown + child_ticks - ${before[$child]:-0}))
       [ "$child" != "$pid" ] || root_state=$child_state
