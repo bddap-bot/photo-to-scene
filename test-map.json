@@ -9,9 +9,7 @@
   "about": "Touched paths map to lightweight syntax checks. First matching rule wins and every tracked path must resolve.",
   "rules": [
     {
-      "paths": [
-        "examples/wilson-house/**"
-      ],
+      "paths": ["examples/wilson-house/**"],
       "tests": [
         "nix-shell -p imagemagick --run 'find examples/wilson-house -type f \\( -name \"*.png\" -o -name \"*.jpg\" \\) -print0 | xargs -0 magick identify'",
         "jq -e 'type == \"object\"' examples/wilson-house/floorplan.json",
@@ -21,61 +19,32 @@
       "why": "The Wilson House checkpoint and final example require readable images, valid contracts with unique object IDs, attribution, measurements, and resume provenance."
     },
     {
-      "paths": [
-        "prompts/*.md"
-      ],
-      "tests": [
-        "nix-shell -p python3 --run 'python3 tools/prompt-policy.py prompts'"
-      ],
+      "paths": ["prompts/*.md"],
+      "tests": ["nix-shell -p python3 --run 'python3 tools/prompt-policy.py prompts'"],
       "why": "Hard prompt requirements name their enforcing gate and available recourse."
     },
     {
-      "paths": [
-        "*.sh",
-        "**/*.sh"
-      ],
-      "tests": [
-        "nix-shell -p shellcheck --run 'shellcheck pipeline.sh'"
-      ],
+      "paths": ["*.sh", "**/*.sh"],
+      "tests": ["nix-shell -p shellcheck --run 'shellcheck pipeline.sh'"],
       "why": "Shell entry points are checked statically."
     },
     {
-      "paths": [
-        "*.py",
-        "**/*.py"
-      ],
-      "tests": [
-        "nix-shell -p python3 --run 'python3 -m py_compile builders/generic.py tools/input-reference.py tools/fetch-polyhaven.py tools/prompt-policy.py tools/spatial-contract.py tools/test-pipeline-control.py tools/test-prompt-policy.py tools/test-spatial-contract.py tools/test-input-reference.py'",
-        "nix-shell -p python3 --run 'python3 -m unittest -v tools/test-pipeline-control.py tools/test-prompt-policy.py tools/test-spatial-contract.py tools/test-input-reference.py'"
-      ],
+      "paths": ["*.py", "**/*.py"],
+      "tests": ["nix-shell -p python3 --run 'python3 -m py_compile builders/generic.py tools/input-reference.py tools/fetch-polyhaven.py tools/prompt-policy.py tools/spatial-contract.py tools/test-pipeline-control.py tools/test-prompt-policy.py tools/test-spatial-contract.py tools/test-input-reference.py'", "nix-shell -p python3 --run 'python3 -m unittest -v tools/test-pipeline-control.py tools/test-prompt-policy.py tools/test-spatial-contract.py tools/test-input-reference.py'"],
       "why": "Python sources are compiled for syntax errors."
     },
     {
-      "paths": [
-        "*.json",
-        "**/*.json"
-      ],
-      "tests": [
-        "find . -type f -name '*.json' -not -path './.git/*' -exec jq empty {} +"
-      ],
+      "paths": ["*.json", "**/*.json"],
+      "tests": ["find . -type f -name '*.json' -not -path './.git/*' -exec jq empty {} +"],
       "why": "JSON contracts and schemas must parse."
     },
     {
-      "paths": [
-        "experiments/**/*.png"
-      ],
-      "tests": [
-        "nix-shell -p imagemagick --run 'find experiments -type f -name \"*.png\" -print0 | xargs -0 magick identify'"
-      ],
+      "paths": ["experiments/**/*.png"],
+      "tests": ["nix-shell -p imagemagick --run 'find experiments -type f -name \"*.png\" -print0 | xargs -0 magick identify'"],
       "why": "Experiment figures must be readable images."
     },
     {
-      "paths": [
-        "*.md",
-        "**/*.md",
-        ".gitignore",
-        "LICENSE-*"
-      ],
+      "paths": ["*.md", "**/*.md", ".gitignore", "LICENSE-*"],
       "tests": [],
       "why": "Documentation, licenses, and local cache exclusions have no executable check."
     }
