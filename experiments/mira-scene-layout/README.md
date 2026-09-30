@@ -255,8 +255,8 @@ are in [measured-run.json](measured-run.json).
 Box 1 remains unresolved. Keep #24 open with boxes 1 and 3 unchecked. No design
 issue is warranted before a measured win; no loss has been established. The
 segmentation and depth results stand, as do the recorded baseline gate results.
-The FP32 rung needs a clean offload run with sufficient available memory, followed
-by the layout solve and both spatial-contract scores if it completes. An 8 GB
+A clean FP32 diagnostic has now completed one instance (see below). The complete
+scene, layout solve and both spatial-contract scores remain to be measured. An 8 GB
 card with approximately 6 GB free already meets the earlier proposed reopen
 condition, so that condition cannot support a hardware rejection.
 
@@ -289,3 +289,41 @@ support offsets. These are the previously documented support contradictions,
 now caught earlier. Neither declaration-only result is a new observed-geometry
 score; the historical final-scene result remains 68 errors. Any candidate
 comparison must identify the gate revision and use the same gate for both layouts.
+
+### Clean rerun: measured results
+
+**FP32 CCM fits and produces finite output for one instance.** The earlier claim
+that this GPU has no numerically valid fitting configuration is disproven. This
+diagnostic does not establish a complete-scene runtime or layout-quality result.
+
+| Rerun | Outcome | Peak allocated / reserved / process | Time |
+|---|---|---|---|
+| SAM 2.1, same 90 boxes, one prompt per call | All masks regenerated | 1376 / 1812 / 1954 MiB | 107.09 s; 16.22 s loading |
+| FP32 model offload, one instance, default allocator | Genuine transformer OOM: 172 MiB request with 139.5 MiB free; exit 1 | 5432 / 5738 / 5880 MiB | 71.98 s |
+| FP32 model offload, one instance, expandable allocator | **Completed**, finite CCM, **4033 voxels**, exit 0 | **5426 / 5630 / 5772 MiB** | **279.42 s** |
+| Complete scene, layout solve, spatial-contract comparison | Pending | — | Not measured |
+
+The successful case is `mantel`, first in the 90-instance order, using the
+released 30 denoising steps and the original source image. The allocator option
+is `PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True`, an additional fitting
+configuration. Both attempts used fresh processes and the corrected execution
+device; neither retried after OOM. The successful run began with 5865.5 MiB free.
+Output checks found finite CCM values and 4033 occupied voxels; no layout score
+is inferred from these checks. Process peaks were sampled during execution;
+PyTorch peaks were measured inside the process. The outer supervisor recorded
+76.55 s and 288.17 s respectively, including process startup and supervision.
+
+CCM weights remain `Yang-Tian/Mira-Scene`, revision
+`e0bc99eec6ec6e2a22b81a8af1f323dd07dbdde6`, and source remains
+`653cba6f4ca328797d44fd7357087573b873366a`. SAM 2.1 was pinned to
+`665f8e2ad61cf5f53d65644ff27c8ee525124610`. The rebuilt environment uses
+PyTorch 2.5.1+cu124, xformers 0.0.28.post3, diffusers 0.40.0, transformers
+5.17.0 and accelerate 1.15.0. Checkpoint downloads and all install/inference
+steps ran in the sandbox. No mesh stage or additional scene image was used.
+
+**Decision remains open.** The 60-minute bound is for a complete scene, not this
+single-instance diagnostic. Do not extrapolate a hardware rejection from its
+runtime. Remaining work is a complete-scene measurement with controlled GPU
+contention, the larger instance-group checks where memory permits, regeneration
+of depth for the layout solve, and the paired gate/photo comparison. Masks and
+the successful CCM output have been retained for continuation.

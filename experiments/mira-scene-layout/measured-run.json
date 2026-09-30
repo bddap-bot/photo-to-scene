@@ -113,8 +113,51 @@
       "logged_oom_events": 5,
       "exit_code": 1,
       "wall_s": 319.99
+    },
+    {
+      "label": "Segmentation rerun, SAM 2.1, sequential box prompts",
+      "model_id": "facebook/sam2.1-hiera-large",
+      "revision": "665f8e2ad61cf5f53d65644ff27c8ee525124610",
+      "instances": 90,
+      "outcome": "completed",
+      "wall_s": 107.0863159460132,
+      "supervised_wall_s": 111.16970784901059,
+      "load_s": 16.21736668102676,
+      "allocated_mib": 1375.94970703125,
+      "reserved_mib": 1812.0,
+      "process_mib": 1954,
+      "note": "Same 90 blockout boxes and public input; one prompt per call."
+    },
+    {
+      "label": "CCM, clean FP32 model offload, 1 instance",
+      "outcome": "oom",
+      "exit_code": 1,
+      "wall_s": 71.98297007501242,
+      "supervised_wall_s": 76.55450470399228,
+      "allocated_mib": 5432.03369140625,
+      "reserved_mib": 5738.0,
+      "process_mib": 5880,
+      "requested_mib": 172,
+      "free_at_failure_mib": 139.5,
+      "note": "Fresh process; genuine transformer OOM against shared free memory. No in-process retry or device mismatch. Does not bound 8192 MiB."
+    },
+    {
+      "label": "CCM, clean FP32 model offload, expandable allocator, 1 instance",
+      "outcome": "completed_diagnostic",
+      "exit_code": 0,
+      "wall_s": 279.41656035301276,
+      "supervised_wall_s": 288.1708635389805,
+      "allocated_mib": 5425.75537109375,
+      "reserved_mib": 5630.0,
+      "process_mib": 5772,
+      "free_before_mib": 5865.5,
+      "instances": 1,
+      "object_id": "mantel",
+      "finite_ccm": true,
+      "voxel_count": 4033,
+      "note": "30 released denoising steps; expandable_segments:True. One instance only, not a complete scene or a spatial score."
     }
   ],
-  "decision": "unresolved; prior hardware-loss ruling withdrawn",
+  "decision": "unresolved scene evaluation; clean FP32 single-instance diagnostic succeeds; prior hardware-loss ruling withdrawn",
   "workflow_sha": "adbd61ae79ce9be1e5839ebaa801fb4d86f6e9a9"
 }
