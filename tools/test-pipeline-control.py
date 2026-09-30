@@ -19,6 +19,8 @@ def function(name):
         result = f"{name}() {{{first_line}"
     else:
         result = f"{name}() {{" + definition.split("\n}\n", 1)[0] + "\n}"
+    if name == "run_one_detail":
+        result = function("detail_contract_hash") + "\n" + function("reuse_detail_records") + "\n" + result
     if name in ("builder", "run_detail"):
         result = goto_policy() + "\n" + result
     return result
@@ -531,6 +533,72 @@ cat "$STATE/scores.md"
         self.assertIn("| integrate | — | 1 | 7/10 | 4 | Initial stage entry or forward rebuild from accepted contracts. |", result.stdout)
         self.assertEqual(result.stdout.count(f"Verdict absent: `{missing}`"), 1)
         self.assertNotIn("verdict file unavailable", result.stdout)
+
+    def test_detail_reentry_ignores_annotations_but_invalidates_constraints(self):
+        original = {
+            "source_evidence": {"note": "photo"},
+            "frame": {"origin_xyz": [0, 0, 0], "size_xyz": [1, 1, 1],
+                      "x_axis_xy": [1, 0], "y_axis_xy": [0, 1]},
+            "footprint_xy": [[0, 0], [1, 0], [1, 1]],
+            "front_xy": [0, -1],
+            "regions": [{"id": "body", "bbox": {"min": [0, 0, 0], "max": [1, 1, 1]}}],
+            "ownership": {"children": "external"},
+            "relationships": [{"type": "above", "with": "floor"}],
+            "appearance": {"aperture_background": "source_visible", "minimum_luminance": 0.2},
+        }
+        variants = {
+            "confidence_added": ("regions", [dict(original["regions"][0], confidence=0.5)], False),
+            "evidence": ("source_evidence", {"note": "revised annotation"}, False),
+            "frame": ("frame", dict(original["frame"], size_xyz=[2, 1, 1]), True),
+            "footprint": ("footprint_xy", [[0, 0], [2, 0], [1, 1]], True),
+            "facing": ("front_xy", [1, 0], True),
+            "bbox": ("regions", [{"id": "body", "bbox": {"min": [0, 0, 0], "max": [2, 1, 1]}}], True),
+            "region_id": ("regions", [dict(original["regions"][0], id="seat")], True),
+            "ownership": ("ownership", {"children": "included"}, True),
+            "relationship": ("relationships", [{"type": "below", "with": "floor"}], True),
+            "appearance": ("appearance", dict(original["appearance"], minimum_luminance=0.4), True),
+        }
+        for legacy in (False, True):
+            for name, (field, value, changed) in variants.items():
+                for score, attempts in ((8, 1), (6, 2)):
+                    with self.subTest(legacy=legacy, field=name, score=score):
+                        with tempfile.TemporaryDirectory() as directory:
+                            state = Path(directory)
+                            (state / "attempts").mkdir()
+                            saved = state / "attempts" / "object_one_1.json"
+                            saved.write_text(json.dumps({"id": "one", "spatial_contract": original}))
+                            (state / "objects.json").write_text(json.dumps([
+                                {"id": "one", "spatial_contract": dict(original, **{field: value})}]))
+                            asset = state / "one.py"
+                            asset.write_text("accepted asset")
+                            functions = "\n".join(function(n) for n in (
+                                "detail_attempts", "detail_best", "run_one_detail"))
+                            hash_command = ("jq -cS '.spatial_contract' " + shlex.quote(str(saved))
+                                            + " | sha256sum | cut -d ' ' -f1" if legacy
+                                            else "detail_contract_hash " + shlex.quote(str(saved)))
+                            script = f"""set -euo pipefail
+STATE={directory}; ASSETS={directory}; ATTEMPT_SEQ=1
+{functions}
+hash=$({hash_command})
+for a in $(seq 1 {attempts}); do
+  printf 'object:one\\t%s\\t{score}\\t1\\taccepted\\t{directory}/verdicts/object_one_1.json\\t%s\\tlarge\n' "$a" "$hash"
+done > "$STATE/records.tsv"
+before=$(cut -f1-6,8 "$STATE/records.tsv")
+inbox() {{ :; }}
+log() {{ :; }}
+next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
+builder() {{ printf 'REBUILD\n'; return 43; }}
+restore_detail() {{ :; }}
+run_one_detail one
+test "$before" = "$(cut -f1-6,8 "$STATE/records.tsv")"
+printf 'REUSED best=%s attempts=%s\n' "$(detail_best one "$(detail_contract_hash "$STATE/entry_one.json")")" "$(detail_attempts one "$(detail_contract_hash "$STATE/entry_one.json")")"
+"""
+                            result = subprocess.run(["bash", "-c", script], text=True,
+                                                    capture_output=True, timeout=10)
+                            self.assertEqual(asset.read_text(), "accepted asset")
+                        self.assertEqual(result.returncode, 43 if changed else 0, result.stderr)
+                        self.assertEqual(result.stdout, "REBUILD\n" if changed else
+                                         f"REUSED best={score} attempts={attempts}\n")
 
     def test_detail_budget_is_keyed_to_contract(self):
         functions = "\n".join(function(name) for name in ("detail_attempts", "detail_best"))

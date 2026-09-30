@@ -210,10 +210,22 @@ restore_detail() {
   [ -n "$bestseq" ] && [ -f "$STATE/attempts/object_${id}_${bestseq}.png" ] && cp "$STATE/attempts/object_${id}_${bestseq}.png" "$STATE/detail_$id.png"
   if [ -n "$bestseq" ] && [ -f "$STATE/attempts/object_${id}_${bestseq}.json" ]; then cp "$STATE/attempts/object_${id}_${bestseq}.json" "$entry"; jq --slurpfile reviewed "$entry" --arg id "$id" 'map(if .id == $id then . + {proposed_label:$reviewed[0].proposed_label,final_label:$reviewed[0].final_label,label:$reviewed[0].final_label,label_reason:$reviewed[0].label_reason} else . end)' "$STATE/objects.json" > "$STATE/objects.json.next" && mv "$STATE/objects.json.next" "$STATE/objects.json"; fi
 }
+detail_contract_hash() { jq -cS '.spatial_contract | del(.source_evidence, .regions[]?.confidence)' "$1" | sha256sum | cut -d ' ' -f1; }
+reuse_detail_records() {
+  local id=$1 hash=$2 verdict old_hash snapshot
+  while IFS=$'\t' read -r verdict old_hash; do
+    snapshot="$STATE/attempts/$(basename "$verdict")"
+    [ -f "$snapshot" ] || continue
+    [ "$(jq -cS '.spatial_contract' "$snapshot" | sha256sum | cut -d ' ' -f1)" = "$old_hash" ] || continue
+    [ "$(detail_contract_hash "$snapshot")" = "$hash" ] || continue
+    awk -F '\t' -v OFS='\t' -v stage="object:$id" -v old="$old_hash" -v hash="$hash" '$1==stage && $7==old {$7=hash} {print}' "$STATE/records.tsv" > "$STATE/records.tsv.next" && mv "$STATE/records.tsv.next" "$STATE/records.tsv"
+  done < <(awk -F '\t' -v stage="object:$id" -v hash="$hash" '$1==stage && $7!=hash {print $6 "\t" $7}' "$STATE/records.tsv")
+}
 run_one_detail() {
   local id=$1 feedback=${2:-} force=${3:-0} entry="$STATE/entry_$1.json" best bestseq start score a rc verdict attempts marker limit contract_hash detail_context
   jq --arg id "$id" '.[] | select(.id==$id)' "$STATE/objects.json" > "$entry"
-  contract_hash=$(jq -cS '.spatial_contract' "$entry" | sha256sum | cut -d ' ' -f1)
+  contract_hash=$(detail_contract_hash "$entry")
+  reuse_detail_records "$id" "$contract_hash"
   attempts=$(detail_attempts "$id" "$contract_hash"); best=$(detail_best "$id" "$contract_hash")
   if [ "$force" -eq 0 ] && { [ "$best" -ge 8 ] || [ "$attempts" -ge 2 ]; }; then printf '%s best=%s attempts=%s\n' "$id" "$best" "$attempts" >> "$STATE/progress.md"; inbox; return 0; fi
   if [ "$attempts" -gt 0 ] && [ -z "$feedback" ]; then
