@@ -728,7 +728,7 @@ kill "${crowd[@]}" "$tree" $(cut -d ' ' -f 1 alone.txt) 2>/dev/null
     def test_tree_ticks_counts_cpu_the_root_reaped(self) -> None:
         script = function("tree_ticks") + """
 bash -c 'bash -c "for ((i = 0; i < 300000; i++)); do :; done"; sleep 60' & root=$!
-for _ in $(seq 600); do read -r pid ticks < <(tree_ticks "$root"); [ "$ticks" -gt 0 ] && break; sleep 0.1; done
+for _ in $(seq 600); do read -r pid ticks _ < <(tree_ticks "$root"); [ "$ticks" -gt 0 ] && break; sleep 0.1; done
 printf 'pid=%s root=%s ticks=%s\\n' "$pid" "$root" "$ticks"
 kill "$root"
 """
@@ -745,7 +745,7 @@ ROOT={directory}; STATE={directory}
 log() {{ printf '%s\\n' "$*"; }}
 {model_function(60, 3)}
 printf 0 > "$STATE/samples"
-tree_ticks() {{ local n b; n=$(( $(cat "$STATE/samples") + 1 )); printf '%s' "$n" > "$STATE/samples"; printf '9000000 %s\\n' "$((20 * n))"; for ((b = n; b < 12; b++)); do printf '%s 100\\n' "$((9000000 + b))"; done; }}
+tree_ticks() {{ local n b; n=$(( $(cat "$STATE/samples") + 1 )); printf '%s' "$n" > "$STATE/samples"; printf '%s 0 S\\n9000000 %s\\n' "$1" "$((20 * n))"; for ((b = n; b < 12; b++)); do printf '%s 100\\n' "$((9000000 + b))"; done; }}
 codex() {{ cat >/dev/null; sleep 6; printf 'rendered\\n'; }}
 model - <<< prompt
 printf 'rc=%s failure=%s\\n' "$?" "$MODEL_FAILURE"
@@ -753,6 +753,30 @@ printf 'rc=%s failure=%s\\n' "$?" "$MODEL_FAILURE"
             result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=60)
         self.assertIn("rendered\n", result.stdout)
         self.assertIn("rc=0 failure=\n", result.stdout)
+
+    def test_model_defers_idle_verdict_while_cpu_accounting_is_pending(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            script = f"""set -uo pipefail
+ROOT={directory}; STATE={directory}
+log() {{ printf '%s\\n' "$*"; }}
+{model_function(60, 3)}
+codex() {{ cat >/dev/null; sleep 6; printf 'rendered\\n'; }}
+tree_ticks() {{ printf '%s 0 S\\n9000000 0 Z\\n' "$1"; }}
+model - <<< prompt
+printf 'zombie rc=%s failure=%s\\n' "$?" "$MODEL_FAILURE"
+MODEL_SECONDS=2
+model - <<< prompt
+printf 'bounded rc=%s failure=%s\\n' "$?" "$MODEL_FAILURE"
+MODEL_SECONDS=60
+tree_ticks() {{ :; }}
+model - <<< prompt
+printf 'finished rc=%s failure=%s\\n' "$?" "$MODEL_FAILURE"
+"""
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=300)
+        self.assertEqual(result.stdout.count("rendered\n"), 2)
+        self.assertIn("zombie rc=0 failure=\n", result.stdout)
+        self.assertIn("finished rc=0 failure=\n", result.stdout)
+        self.assertIn("bounded rc=1 failure=model call exceeded its 2 s wallclock bound\n", result.stdout)
 
     def test_model_call_control(self) -> None:
         result, calls = model_calls()

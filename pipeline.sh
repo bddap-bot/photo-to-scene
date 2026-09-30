@@ -58,7 +58,7 @@ tree_ticks() {
   local pid child task line
   { read -r line < "/proc/$1/stat"; } 2>/dev/null || return 0
   read -ra stat <<< "${line##*) }"
-  printf '%s %s\n' "$1" "$((stat[13] + stat[14]))"
+  printf '%s %s %s\n' "$1" "$((stat[13] + stat[14]))" "${stat[0]}"
   while [ "${#queue[@]}" -gt 0 ]; do
     pid=${queue[0]}
     queue=("${queue[@]:1}")
@@ -69,14 +69,14 @@ tree_ticks() {
         { read -r line < "/proc/$child/stat"; } 2>/dev/null || continue
         read -ra stat <<< "${line##*) }"
         [ "${stat[1]}" = "$pid" ] || continue
-        printf '%s %s\n' "$child" "$((stat[11] + stat[12] + stat[13] + stat[14]))"
+        printf '%s %s %s\n' "$child" "$((stat[11] + stat[12] + stat[13] + stat[14]))" "${stat[0]}"
         queue+=("$child")
       done
     done
   done
 }
 model() {
-  local log="$STATE/model.log" pid echo_pid rc start=$SECONDS last=$SECONDS scanned=0 size grown child child_ticks stopped=
+  local log="$STATE/model.log" pid echo_pid rc start=$SECONDS last=$SECONDS scanned=0 size grown child child_ticks child_state root_state zombie stopped=
   local -A before=() now=()
   local -a victims=()
   MODEL_FAILURE=
@@ -90,14 +90,22 @@ model() {
     [ "$size" -gt "$scanned" ] && [ "$(tail -c "+$((scanned + 1))" "$log" | head -c "$((size - scanned))" | tr -d '[:space:]' | wc -c)" -gt 0 ] && last=$SECONDS
     scanned=$size
     grown=0
+    root_state=
+    zombie=
     now=()
-    while read -r child child_ticks; do now[$child]=$child_ticks; grown=$((grown + child_ticks - ${before[$child]:-0})); done < <(tree_ticks "$pid")
+    while read -r child child_ticks child_state; do
+      now[$child]=$child_ticks
+      grown=$((grown + child_ticks - ${before[$child]:-0}))
+      [ "$child" != "$pid" ] || root_state=$child_state
+      [ "$child_state" != Z ] || zombie=$child
+    done < <(tree_ticks "$pid")
     [ "$grown" -ge "$MODEL_BUSY_CPU_TICKS" ] && last=$SECONDS
     before=()
     for child in "${!now[@]}"; do before[$child]=${now[$child]}; done
     if [ -n "$stopped" ]; then [ $((SECONDS - stopped)) -lt 10 ] || kill -KILL "${victims[@]}" 2>/dev/null; continue; fi
+    [ -n "$root_state" ] && [ "$root_state" != Z ] || continue
     if [ $((SECONDS - start)) -ge "$MODEL_SECONDS" ]; then MODEL_FAILURE="model call exceeded its $MODEL_SECONDS s wallclock bound"
-    elif [ $((SECONDS - last)) -ge "$MODEL_IDLE_SECONDS" ]; then MODEL_FAILURE="model call had no non-whitespace output and no busy child process for $MODEL_IDLE_SECONDS s"
+    elif [ -z "$zombie" ] && [ $((SECONDS - last)) -ge "$MODEL_IDLE_SECONDS" ]; then MODEL_FAILURE="model call had no non-whitespace output and no busy child process for $MODEL_IDLE_SECONDS s"
     else continue; fi
     stopped=$SECONDS
     mapfile -t victims < <(tree_ticks "$pid" | cut -d ' ' -f 1)
