@@ -3,6 +3,7 @@
   "properties": {
     "scene_change": {
       "type": ["object", "null"],
+      "description": "Observable first scene correction for tier critics; other critics may return null.",
       "properties": {
         "action": {"type": "string", "enum": ["move", "resize", "rotate", "add", "remove", "reshape"]},
         "subject": {"type": "string", "minLength": 1},
@@ -19,6 +20,6 @@
     "wrong_labels": {"type": "array", "items": {"type": "string"}},
     "missing_objects": {"type": "array", "items": {"type": "string"}}
   },
-  "required": ["score", "summary", "corrections", "top_stage", "wrong_labels", "missing_objects"],
+  "required": ["scene_change", "score", "summary", "corrections", "top_stage", "wrong_labels", "missing_objects"],
   "additionalProperties": false
 }
