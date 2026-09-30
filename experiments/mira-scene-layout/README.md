@@ -324,8 +324,8 @@ steps ran in the sandbox. No mesh stage or additional scene image was used.
 **Decision remains open.** The 60-minute bound is for a complete scene, not this
 single-instance diagnostic. Do not extrapolate a hardware rejection from its
 runtime. Remaining work is a complete-scene measurement with controlled GPU
-contention, the larger instance-group checks where memory permits, regeneration
-of depth for the layout solve, and the paired gate/photo comparison. Masks and
+contention, the larger instance-group checks where memory permits, the layout
+solve, and the paired gate/photo comparison. Masks and
 the successful CCM output have been retained for continuation.
 
 Depth was also regenerated and retained for continuation: **756.84 s** inside
@@ -343,3 +343,28 @@ The evaluation-only depth sources were Pixel-Perfect Depth
 are recorded in the depth-regeneration entry of [measured-run.json](measured-run.json).
 The successful single-instance CCM and completed depth do not settle the
 complete-scene 60-minute bound or the paired spatial-contract comparison.
+
+### Clean grouped CCM measurements
+
+The same source, checkpoints, 30 denoising steps, model CPU offload and expandable
+allocator were tested in fresh processes without OOM retries. Both precisions
+used the PyTorch attention backend.
+
+| Configuration | Terminal result | Process peak (MiB) | Wrapper runtime (s) |
+|---|---|---:|---:|
+| FP32, 3 instances | OOM: 226 MiB request with 145.62 MiB free | 6910 | 35.35 |
+| BF16, 1 instance | Attention OOM: 2.67 GiB request; 5.46 GiB process memory at failure | 5588 | 19.91 |
+| FP32, 2 instances | Finite CCM; 3441 and 11756 voxels; exit 0 | 6912 | 346.63 |
+
+The two-instance FP32 run used **6396.25 MiB allocated / 6770 MiB reserved**;
+supervised runtime was **348.83 s**. Saved arrays were independently checked
+for finite values. This is a successful two-instance diagnostic, not the full
+90-instance scene. Its runtime is not extrapolated into a scene-level loss.
+
+The BF16 process memory plus requested allocation exceeds 8 GiB for that
+configuration. The three-instance FP32 failure still does not demonstrate an
+8192 MiB requirement: available memory remained reduced by other allocations.
+The next three-instance attempt requires more available memory; the initial
+7000 MiB availability target was insufficient. **The decision remains open**
+until the remaining fitting checks, complete-scene runtime and paired layout
+scores are measured. No workflow code changed.

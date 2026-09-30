@@ -27,3 +27,39 @@ co-tenant OOM retry 3: free 1933 MiB
 co-tenant OOM retry 4: free 1913 MiB
 rc=143
 ```
+
+## Clean grouped and BF16 attempts
+
+Each attempt used a fresh process, model CPU offload and the expandable allocator,
+with no OOM retry. The source and checkpoint revisions remain those in the report.
+
+```text
+FP32, 3 instances:
+CUDA out of memory. Tried to allocate 226.00 MiB.
+Free at failure: 145.62 MiB.
+Peak sampled process: 6910 MiB.
+Measurement wrapper: 35.349825 s; supervisor: 37.658075 s.
+exit=1; timed_out=false
+
+BF16, 1 instance, PyTorch scaled_dot_product_attention:
+CUDA out of memory. Tried to allocate 2.67 GiB.
+Free at failure: 1.43 GiB; process memory at failure: 5.46 GiB.
+Peak sampled process: 5588 MiB.
+Measurement wrapper: 19.912642 s; supervisor: 21.849507 s.
+exit=1; timed_out=false
+```
+
+The FP32 failure remains below the nominal device bound and cannot rule out an
+idle card. The BF16 allocation plus reported process memory exceeds 8 GiB for
+that configuration; it does not rule out FP32. A separate initial launch exited
+127 before inference because its Python interpreter was unavailable; restoring
+the exact interpreter resolved that environment failure. It is not a model OOM.
+
+```text
+FP32, 2 instances:
+CCM_FINITE g00 True VOXELS [3441, 11756]
+Done. 1 cases processed.
+Measurement wrapper: 346.633235 s; supervisor: 348.834690 s.
+Peak allocated: 6396.252441 MiB; reserved: 6770 MiB; process: 6912 MiB.
+exit=0; timed_out=false
+```

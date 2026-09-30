@@ -195,8 +195,55 @@
           "file": "model.pt"
         }
       ]
+    },
+    {
+      "label": "CCM, clean FP32 model offload, expandable allocator, 3 instances",
+      "outcome": "oom",
+      "exit_code": 1,
+      "wall_s": 35.34982491499977,
+      "supervised_wall_s": 37.65807482000673,
+      "allocated_mib": 6692.6875,
+      "reserved_mib": 6788.0,
+      "process_mib": 6910,
+      "free_before_mib": 6943.625,
+      "requested_mib": 226,
+      "free_at_failure_mib": 145.62,
+      "note": "Fresh process, no retries. Transformer OOM against reduced free memory; still does not establish an 8192 MiB requirement."
+    },
+    {
+      "label": "CCM, clean BF16 model offload, expandable allocator, 1 instance",
+      "outcome": "oom",
+      "exit_code": 1,
+      "wall_s": 19.912642189010512,
+      "supervised_wall_s": 21.849507400009315,
+      "allocated_mib": 5473.826171875,
+      "reserved_mib": 5508.0,
+      "process_mib": 5588,
+      "free_before_mib": 6943.625,
+      "requested_gib": 2.67,
+      "free_at_failure_gib": 1.43,
+      "process_at_failure_gib": 5.46,
+      "note": "PyTorch scaled_dot_product_attention OOM. The reported process memory plus requested allocation exceeds 8 GiB; this bounds this BF16 configuration only. FP32 remains viable."
+    },
+    {
+      "label": "CCM, clean FP32 model offload, expandable allocator, 2 instances",
+      "outcome": "completed_diagnostic",
+      "exit_code": 0,
+      "wall_s": 346.6332349209988,
+      "supervised_wall_s": 348.8346903040074,
+      "allocated_mib": 6396.25244140625,
+      "reserved_mib": 6770.0,
+      "process_mib": 6912,
+      "free_before_mib": 6943.625,
+      "instances": 2,
+      "finite_ccm": true,
+      "voxel_counts": [
+        3441,
+        11756
+      ],
+      "note": "30 released denoising steps. Two instances only; complete-scene runtime and paired spatial/photo scores remain unmeasured."
     }
   ],
-  "decision": "unresolved scene evaluation; clean FP32 single-instance diagnostic succeeds; prior hardware-loss ruling withdrawn",
+  "decision": "unresolved scene evaluation; clean FP32 one- and two-instance diagnostics succeed; prior hardware-loss ruling withdrawn",
   "workflow_sha": "adbd61ae79ce9be1e5839ebaa801fb4d86f6e9a9"
 }
