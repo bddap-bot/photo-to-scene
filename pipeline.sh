@@ -190,18 +190,52 @@ run_identify() {
 }
 write_tiers() { jq -r 'sort_by(-((.spatial_contract.frame.size_xyz[0] // 0) * (.spatial_contract.frame.size_xyz[1] // 0))) | length as $n | to_entries[] | [.value.id, (if .key < (($n + 2) / 3 | floor) then "large" elif .key < ((2 * $n + 2) / 3 | floor) then "medium" else "small" end)] | @tsv' "$STATE/objects.json" > "$STATE/object_tiers.tsv"; }
 run_tier_critic() {
-  local tier=$1 verdict start score a feedback=
+  local tier=$1 verdict start score a feedback='' rendered='' calibration='' baseline
   for a in 1 2; do
     next_attempt; start=$(date +%s); verdict="$STATE/verdicts/tier_${tier}_${ATTEMPT_SEQ}.json"
-    builder tier_builder.md "Tier: $tier. Object ids: $(awk -F '\t' -v tier="$tier" '$2==tier {printf "%s ",$1}' "$STATE/object_tiers.tsv")${feedback:+$'\n'$feedback}" -i "$INPUT" || return $?
-    critic "$verdict" detail -i "$INPUT" "$STATE/tier_${tier}.png" < "$PROMPTS/tier_critic.md"
+    MODEL_FAILURE=
+    if [ -z "$rendered" ]; then
+      builder tier_builder.md "Tier: $tier. Object ids: $(awk -F '\t' -v tier="$tier" '$2==tier {printf "%s ",$1}' "$STATE/object_tiers.tsv")${feedback:+$'\n'$feedback}" -i "$INPUT" || return $?
+      [ -n "$MODEL_FAILURE" ] || rendered=1
+    fi
+    critic "$verdict" detail -i "$INPUT" "$STATE/tier_${tier}.png" < <(cat "$PROMPTS/tier_critic.md"; printf '\n%s\n' "$feedback")
     score=$(score_of "$verdict"); record "tier:$tier" "$a" "$score" "$(( $(date +%s)-start ))" "${feedback:-Integrated footprint tier before descending.}" "$verdict" "" "$tier"; log "SCORE tier:$tier attempt=$a score=$score"
-    [ -n "$MODEL_FAILURE" ] || break
-    feedback=$MODEL_FAILURE
+    if [ -n "$MODEL_FAILURE" ]; then feedback=$MODEL_FAILURE; continue; fi
+    [ "$score" -lt 8 ] || { inbox; return 0; }
+    if ! jq -e '
+      .scene_change as $c |
+      ($c | type == "object") and
+      (["move","resize","rotate","add","remove","reshape"] | index($c.action) != null) and
+      ([$c.subject,$c.observed,$c.desired] | all(.[]; type == "string" and test("\\S"))) and
+      (.corrections[0] | type == "string" and test("\\S") and
+        (test("^(floorplan|blockout|identify|detail|integrate|materials|object:[^ ]+)[.!]?$|\\b(retry|rerun|re-run|run again)\\b"; "i") | not)) and
+      (.top_stage == "blockout" or .top_stage == "detail" or (.top_stage | startswith("object:")))
+    ' "$verdict" >/dev/null; then
+      feedback="Rejected tier non-verdict. Give an observable scene_change with action, subject, observed and desired geometry, and an actionable first correction. A comparison retry or a stage name is not a scene change."
+      log "REJECT tier:$tier attempt=$a reason=$feedback"
+      continue
+    fi
+    if [ "$(jq -r '.top_stage' "$verdict")" = blockout ]; then
+      if [ -z "$calibration" ]; then
+        calibration="$STATE/verdicts/tier_${tier}_${ATTEMPT_SEQ}_blockout.json"
+        critic "$calibration" blockout -i "$INPUT" "$STATE/tier_${tier}.png" < "$PROMPTS/blockout_critic.md"
+      fi
+      baseline=$(score_of "$calibration")
+      log "CALIBRATE tier:$tier tier_score=$score blockout_score=$baseline verdict=$calibration"
+      if [ -n "$MODEL_FAILURE" ] || [ "$((baseline-score))" -ge 5 ] || [ "$((score-baseline))" -ge 5 ]; then
+        feedback="Blockout redirect rejected: the blockout critic scored this same tier render $baseline/10 versus your $score/10 (or its call failed). Recompare the supplied render on the shared scale: 8 means composition is ready for smaller work. Explain the observable scene correction; use detail/object for detail defects."
+        [ -z "$MODEL_FAILURE" ] || calibration=
+        continue
+      fi
+    fi
+    REQUEST_STAGE=$(jq -r '.top_stage' "$verdict")
+    REQUEST_REASON=$(jq -r '.corrections[0]' "$verdict")
+    inbox
+    return 43
   done
   inbox
-  if [ -n "$MODEL_FAILURE" ]; then log "tier:$tier review calls failed; continuing as though the tier passed"; return 0; fi
-  if [ "$score" -lt 8 ]; then REQUEST_STAGE=$(jq -r '.top_stage // "detail"' "$verdict"); REQUEST_REASON=$(jq -r '.corrections[0] // "tier composition did not pass"' "$verdict"); return 43; fi
+  log "tier:$tier review unaccepted after one retry; descending without a GOTO"
+  return 0
 }
 restore_detail() {
   local id=$1 bestseq=$2 entry="$STATE/entry_$1.json"

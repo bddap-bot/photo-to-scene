@@ -1249,6 +1249,70 @@ printf 'asset=%s\\n' "$(cat "$ASSETS/one.py")"
         self.assertIn("integrate_best=0 5\n", result.stdout)
         self.assertIn("asset=completed\n", result.stdout)
 
+    def test_tier_non_verdicts_and_score_disagreement_retry_only_the_critic(self):
+        change = dict(action="resize", subject="foreground table",
+                      observed="right edge at 80% of image width",
+                      desired="right edge at 65% of image width")
+        actionable = dict(score=2, summary="table too wide",
+                          corrections=["Reduce the foreground table's rightward extent to 65%."],
+                          top_stage="blockout", wrong_labels=[], missing_objects=[],
+                          scene_change=change)
+        cases = []
+        for correction in ("The comparison needs to be rerun to produce a reliable verdict.",
+                           "blockout", "Retry the composition comparison."):
+            invalid = dict(actionable, corrections=[correction])
+            cases.extend([(correction, invalid, actionable, 3, 43, 2, 1),
+                          (correction + " repeated", invalid, invalid, 3, 0, 2, 0)])
+        cases.extend([
+            ("missing scene change", dict(actionable, scene_change=None), actionable, 3, 43, 2, 1),
+            ("empty observation", dict(actionable, scene_change=dict(change, observed=" ")),
+             actionable, 3, 43, 2, 1),
+            ("five point disagreement", actionable, actionable, 7, 0, 2, 1),
+            ("four point difference", actionable, actionable, 6, 43, 1, 1),
+            ("recalibrated", actionable, dict(actionable, score=7), 7, 43, 2, 1),
+            ("detail correction", dict(actionable, top_stage="detail"), actionable, 8, 43, 1, 0),
+            ("passing", dict(actionable, score=8, scene_change=None), actionable, 8, 0, 1, 0),
+        ])
+        for name, first, second, baseline, rc, reviews, comparisons in cases:
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                (root / "verdicts").mkdir()
+                (root / "object_tiers.tsv").write_text("table\tlarge\n")
+                for prompt in ("tier_critic", "blockout_critic"):
+                    (root / (prompt + ".md")).write_text(prompt)
+                for index, verdict in enumerate((first, second), 1):
+                    (root / f"review{index}.json").write_text(json.dumps(verdict))
+                (root / "baseline.json").write_text(json.dumps(dict(actionable, score=baseline)))
+                script = f"""set -uo pipefail
+STATE={root}; PROMPTS={root}; INPUT=reference.png; MODEL_FAILURE=
+ATTEMPT_SEQ=0; builds=0; reviews=0; comparisons=0; REQUEST_STAGE=; REQUEST_REASON=
+next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
+log() {{ printf '%s\\n' "$*"; }}
+inbox() {{ :; }}
+record() {{ :; }}
+score_of() {{ jq -r '.score // 0' "$1"; }}
+builder() {{ builds=$((builds+1)); printf render > "$STATE/tier_large.png"; }}
+critic() {{
+  cat >> "$STATE/prompts"
+  if [ "$2" = blockout ]; then
+    comparisons=$((comparisons+1))
+    [ "$*" = "$1 blockout -i reference.png $STATE/tier_large.png" ] || exit 99
+    cp "$STATE/baseline.json" "$1"
+  else
+    reviews=$((reviews+1)); cp "$STATE/review$reviews.json" "$1"
+  fi
+}}
+{function("run_tier_critic")}
+run_tier_critic large
+printf 'rc=%s builds=%s reviews=%s comparisons=%s stage=%s\\n' "$?" "$builds" "$reviews" "$comparisons" "$REQUEST_STAGE"
+"""
+                result = subprocess.run(["bash", "-c", script], capture_output=True,
+                                        text=True, timeout=60)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                stage = (second if reviews == 2 else first)["top_stage"] if rc == 43 else ""
+                self.assertIn(f"rc={rc} builds=1 reviews={reviews} comparisons={comparisons} stage={stage}\n",
+                              result.stdout)
+
     def test_failed_tier_call_is_retried_with_its_failure_text(self):
         failure = "simulated model call failure"
         with tempfile.TemporaryDirectory() as directory:
@@ -1278,7 +1342,7 @@ model() {{
   cat > "$STATE/prompt_${{MODE}}_$call"
   case "$MODE:$call" in
     retry:2) printf png > "$STATE/tier_large.png" ;;
-    retry:3) printf '%s\\n' '{{"score":6,"summary":"off","corrections":["move the sofa"],"top_stage":"blockout","wrong_labels":[],"missing_objects":[]}}' > "$output" ;;
+    retry:3) printf '%s\\n' '{{"score":6,"summary":"off","corrections":["move the sofa"],"top_stage":"detail","wrong_labels":[],"missing_objects":[],"scene_change":{{"action":"move","subject":"sofa","observed":"too far right","desired":"left by 10 pixels"}}}}' > "$output" ;;
     *) MODEL_FAILURE={shlex.quote(failure)}; return 1 ;;
   esac
 }}
@@ -1301,8 +1365,8 @@ done
         self.assertEqual([Path(row[5]).name for row in records], [f"tier_large_{sequence}.json" for sequence in range(1, 5)])
         self.assertEqual([verdict["score"] for verdict in verdicts], [0, 6, 0, 0])
         self.assertTrue(retried_prompt.endswith(f"\nOne-reentry correction context follows:\nTier: large. Object ids: one \n{failure}\n"))
-        self.assertIn("retry rc=43 request=blockout reason=move the sofa calls=3\n", result.stdout)
-        self.assertIn("tier:large review calls failed; continuing as though the tier passed\nfail rc=0 request= reason= calls=2\n", result.stdout)
+        self.assertIn("retry rc=43 request=detail reason=move the sofa calls=3\n", result.stdout)
+        self.assertIn("tier:large review unaccepted after one retry; descending without a GOTO\nfail rc=0 request= reason= calls=2\n", result.stdout)
         self.assertEqual([verdict["corrections"] for verdict in verdicts[2:]], [[failure], [failure]])
 
     def test_detail_object_without_a_completed_attempt_keeps_no_asset(self):
