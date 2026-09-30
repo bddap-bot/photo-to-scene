@@ -327,3 +327,19 @@ runtime. Remaining work is a complete-scene measurement with controlled GPU
 contention, the larger instance-group checks where memory permits, regeneration
 of depth for the layout solve, and the paired gate/photo comparison. Masks and
 the successful CCM output have been retained for continuation.
+
+Depth was also regenerated and retained for continuation: **756.84 s** inside
+the measurement wrapper (**766.99 s** including supervision), **2908 MiB
+allocated / 3060 MiB reserved / 3242 MiB process peak**, exit 0. It used FP16
+PPD weights and autocast, explicitly moving the semantic encoder, depth model
+and MoGe helpers between CPU and GPU. The metric scale was **1.0790084** over
+**1,829,907 shared valid pixels**. Timing includes loading and contention; a
+GPU reservation was acquired near completion, so this is not an isolated timing
+comparison with the earlier depth run.
+
+The evaluation-only depth sources were Pixel-Perfect Depth
+`427a86f5882aa3f7233c1b94fbdccce87f1c8313` and MoGe
+`74fbce054ebed49800de42d0ad0e83495065719a`; checkpoint IDs and exact revisions
+are recorded in the depth-regeneration entry of [measured-run.json](measured-run.json).
+The successful single-instance CCM and completed depth do not settle the
+complete-scene 60-minute bound or the paired spatial-contract comparison.

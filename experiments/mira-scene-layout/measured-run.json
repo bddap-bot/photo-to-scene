@@ -156,6 +156,45 @@
       "finite_ccm": true,
       "voxel_count": 4033,
       "note": "30 released denoising steps; expandable_segments:True. One instance only, not a complete scene or a spatial score."
+    },
+    {
+      "label": "Depth regeneration, staged model offload and FP16",
+      "outcome": "completed",
+      "exit_code": 0,
+      "wall_s": 756.8383121610095,
+      "supervised_wall_s": 766.9918440140027,
+      "allocated_mib": 2907.8984375,
+      "reserved_mib": 3060.0,
+      "process_mib": 3242,
+      "metric_scale": 1.0790084,
+      "shared_valid_pixels": 1829907,
+      "note": "Retained point map for continuation. FP16 PPD weights and autocast; stage models explicitly transferred between CPU and GPU. Timing includes loading and contention; not an isolated benchmark.",
+      "source_revisions": {
+        "PPD": "427a86f5882aa3f7233c1b94fbdccce87f1c8313",
+        "MoGe": "74fbce054ebed49800de42d0ad0e83495065719a"
+      },
+      "checkpoints": [
+        {
+          "model": "gangweix/Pixel-Perfect-Depth",
+          "revision": "be33763bc1bc1c581869a20ffde66c36b304b1a7",
+          "file": "ppd.pth"
+        },
+        {
+          "model": "Ruicheng/moge-2-vitl-normal",
+          "revision": "cb0e8bbd6b1e243589717c78e750b1ba4c093acf",
+          "file": "model.pt"
+        },
+        {
+          "model": "depth-anything/Depth-Anything-V2-Large",
+          "revision": "cbbb86a30ce19b5684b7a05155dc7e6cbc7685b9",
+          "file": "depth_anything_v2_vitl.pth"
+        },
+        {
+          "model": "Ruicheng/moge-2-vitl",
+          "revision": "39c4d5e957afe587e04eec59dc2bcc3be5ecd968",
+          "file": "model.pt"
+        }
+      ]
     }
   ],
   "decision": "unresolved scene evaluation; clean FP32 single-instance diagnostic succeeds; prior hardware-loss ruling withdrawn",
