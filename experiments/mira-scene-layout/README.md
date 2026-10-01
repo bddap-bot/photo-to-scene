@@ -412,3 +412,13 @@ zero candidate photo IoU and a missing-observation gate result; they are not
 dropped to improve the score. Invalid transforms are not replaced by identity
 poses. The baseline is the stored blockout layout and its bounding boxes; its
 historical rendered-geometry score remains a separately labeled result.
+
+Before computing the paired scores, the box convention is fixed symmetrically:
+both photo scores project **world-axis-aligned 3D bounding boxes** through each
+layout's own camera. The baseline boxes come from the stored object metadata;
+the candidate boxes and footprint hulls come from its transformed occupied voxel
+cells at resolution 64. Voxel cells include their half-cell extent, rather than
+using only center points. No mesh generation or object alignment fit is added.
+Candidate body regions use those world bounds; additional semantic regions and
+appearance measurements are not fabricated. The gate's missing-appearance errors
+are reported as unmeasured fields, not evidence of black rendered apertures.
