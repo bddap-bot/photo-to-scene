@@ -387,3 +387,28 @@ layout or a paired spatial/photo score.
 The native CCM transformer calls PyTorch scaled-dot-product attention. An earlier
 reference to an automatically selected sparse backend does not establish an
 explicit xformers attention measurement; that fitting rung remains to be exercised.
+
+### Supplemental fast configuration, before quality scoring
+
+Clean FP16 failed with a non-finite layout residual before transformer block 11's
+normalization. Experimental mixed FP16/FP32 variants succeeded for one instance
+but failed for larger input groups, including a later cross-attention projection.
+Those variants are not established scene configurations and are not used for the
+comparison. The transformer source is restored to the pinned implementation;
+only the documented CPU-offload execution-device correction remains.
+
+The next configuration uses **FP32, model CPU offload, explicit xformers CUTLASS
+attention, 10 denoising steps and guidance scale 1**. The last two are supported
+inference arguments, changed from the released 30 steps and guidance 3. This is
+an additional fast configuration, not a measurement of released-default quality
+or runtime. It adds no checkpoint, image, mesh, fitted camera or fitted object
+transform. It keeps the **8192 MiB / 60-minute complete-scene limit** and the
+registered **median photo-IoU improvement ≥0.10 and improvement on ≥60% of
+objects** decision rule.
+
+All 90 eligible object IDs remain in the comparison denominator. Missing or
+invalid transforms, including instances lost by the released center crop, receive
+zero candidate photo IoU and a missing-observation gate result; they are not
+dropped to improve the score. Invalid transforms are not replaced by identity
+poses. The baseline is the stored blockout layout and its bounding boxes; its
+historical rendered-geometry score remains a separately labeled result.
