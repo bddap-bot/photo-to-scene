@@ -242,6 +242,32 @@
         11756
       ],
       "note": "30 released denoising steps. Two instances only; complete-scene runtime and paired spatial/photo scores remain unmeasured."
+    },
+    {
+      "label": "CCM, FP32 model offload, expandable allocator, 3 instances, 7418 MiB initially free",
+      "outcome": "oom",
+      "exit_code": 1,
+      "wall_s": 30.495192900998518,
+      "supervised_wall_s": 32.431023271987215,
+      "allocated_mib": 6980.6875,
+      "reserved_mib": 7150.0,
+      "process_mib": 7232,
+      "free_before_mib": 7303.0625,
+      "requested_mib": 130,
+      "free_at_failure_mib": 185.06,
+      "note": "Fresh process; allocator failure despite reported free bytes exceeding request. Not an 8192 MiB bound."
+    },
+    {
+      "label": "CCM, FP32 model offload, CUDA asynchronous allocator, 3 instances",
+      "outcome": "oom",
+      "exit_code": 1,
+      "wall_s": 16.401055221969727,
+      "supervised_wall_s": 17.923025847994722,
+      "allocated_mib": 6339.705951690674,
+      "reserved_mib": 7136.0,
+      "process_mib": 7298,
+      "free_before_mib": 7303.0625,
+      "note": "Traceback ends in torch.OutOfMemoryError: Allocation on device. Raw wrapper classified this as error because the message omits out of memory; classification here uses exception type. No requested size reported; not an 8192 MiB bound."
     }
   ],
   "decision": "unresolved scene evaluation; clean FP32 one- and two-instance diagnostics succeed; prior hardware-loss ruling withdrawn",

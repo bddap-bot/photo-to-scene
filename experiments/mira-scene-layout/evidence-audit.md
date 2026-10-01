@@ -63,3 +63,28 @@ Measurement wrapper: 346.633235 s; supervisor: 348.834690 s.
 Peak allocated: 6396.252441 MiB; reserved: 6770 MiB; process: 6912 MiB.
 exit=0; timed_out=false
 ```
+
+## Three-instance FP32 with 7418 MiB initially free
+
+```text
+Expandable allocator:
+CUDA out of memory. Tried to allocate 130.00 MiB.
+Free at failure: 185.06 MiB.
+Peak allocated: 6980.6875 MiB; reserved: 7150 MiB; process: 7232 MiB.
+Measurement wrapper: 30.495193 s; supervisor: 32.431023 s.
+exit=1; timed_out=false
+
+CUDA asynchronous allocator:
+torch.OutOfMemoryError: Allocation on device
+Peak allocated: 6339.705952 MiB; reserved: 7136 MiB; process: 7298 MiB.
+Measurement wrapper: 16.401055 s; supervisor: 17.923026 s.
+exit=1; timed_out=false
+```
+
+Neither attempt establishes an 8192 MiB requirement. The expandable allocator
+failed even though the reported free bytes exceeded the request. The asynchronous
+allocator did not report a requested size. Its raw wrapper label was `error`
+because the message lacks the phrase `out of memory`; the recorded `oom` outcome
+uses the traceback's exception type. Subsequent measurements classify that type
+directly. A launch preceding these attempts exited 127 before inference because
+the exact interpreter was missing; restoring it resolved the launch failure.

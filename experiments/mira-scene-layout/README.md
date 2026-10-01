@@ -368,3 +368,22 @@ The next three-instance attempt requires more available memory; the initial
 7000 MiB availability target was insufficient. **The decision remains open**
 until the remaining fitting checks, complete-scene runtime and paired layout
 scores are measured. No workflow code changed.
+
+With **7418 MiB initially free**, three-instance FP32 still failed in fresh
+processes: the expandable allocator requested **130 MiB with 185.06 MiB free**
+(**7232 MiB process peak, 30.50 s**); the CUDA asynchronous allocator raised
+`torch.OutOfMemoryError` without a requested size (**7298 MiB, 16.40 s**).
+Neither establishes an 8192 MiB requirement. See the exact terminal evidence in
+[evidence-audit.md](evidence-audit.md).
+
+A two-instance **CPU layout-solve diagnostic** completed in **0.71 s** using the
+saved CCM and PPD point map. Depth points were resized by the shorter side and
+center-cropped to the same 518×518 canvas as CCM, with bilinear point interpolation
+and nearest-neighbor validity. The pinned similarity solver returned finite
+transforms with **7707 and 6336 correspondences**, with no identity fallback.
+This verifies the solve inputs for those two instances; it is not a complete-scene
+layout or a paired spatial/photo score.
+
+The native CCM transformer calls PyTorch scaled-dot-product attention. An earlier
+reference to an automatically selected sparse backend does not establish an
+explicit xformers attention measurement; that fitting rung remains to be exercised.
