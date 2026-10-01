@@ -1,6 +1,6 @@
 # Mira-Scene layout evaluation
 
-**Decision: photo-alignment win for the tested fast configuration.** Open a design issue for seeding `objects.json` from measured layout, keeping procedural builders unchanged.
+**Decision: photo-alignment win for the tested fast configuration.** Opened [design issue #34](https://github.com/bddap-bot/photo-to-scene/issues/34) for seeding `objects.json` from measured layout, keeping procedural builders unchanged.
 The 90-instance CCM stage completed on the GeForce RTX 2080 within the registered
 8192 MiB / 60-minute stage bound. The earlier hardware rejection is withdrawn.
 The candidate fails the existing spatial contracts; this is not an adoption approval.
