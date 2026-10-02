@@ -82,6 +82,7 @@ tree_ticks() {
 }
 model() {
   local log="$STATE/model.log" pid echo_pid rc start=$SECONDS last=$SECONDS scanned=0 size grown child child_ticks child_state root_state stopped=
+  local samples=0 runnable=0 active busy
   local -A before=() now=()
   local -a victims=()
   MODEL_FAILURE=
@@ -91,19 +92,26 @@ model() {
   tail -c +1 -f --pid="$pid" "$log" &
   echo_pid=$!
   while sleep 1; kill -0 "$pid" 2>/dev/null || { [ -n "$stopped" ] && [ $((SECONDS - stopped)) -lt 20 ] && kill -0 "${victims[@]}" 2>/dev/null; }; do
+    busy=0
     size=$(stat -c %s "$log")
-    [ "$size" -gt "$scanned" ] && [ "$(tail -c "+$((scanned + 1))" "$log" | head -c "$((size - scanned))" | tr -d '[:space:]' | wc -c)" -gt 0 ] && last=$SECONDS
+    [ "$size" -gt "$scanned" ] && [ "$(tail -c "+$((scanned + 1))" "$log" | head -c "$((size - scanned))" | tr -d '[:space:]' | wc -c)" -gt 0 ] && busy=1
     scanned=$size
     grown=0
+    active=0
     root_state=
     now=()
     while read -r child child_ticks child_state; do
-      [ "$child_state" != R ] || last=$SECONDS
+      [ "$child_state" != R ] || active=1
       now[$child]=$child_ticks
       grown=$((grown + child_ticks - ${before[$child]:-0}))
       [ "$child" != "$pid" ] || root_state=$child_state
     done < <(tree_ticks "$pid")
-    [ "$grown" -ge "$MODEL_BUSY_CPU_TICKS" ] && last=$SECONDS
+    [ "$grown" -ge "$MODEL_BUSY_CPU_TICKS" ] && busy=1
+    samples=$((samples + 1))
+    runnable=$((runnable + active))
+    if [ "$busy" -eq 1 ] || { [ $((SECONDS - last)) -ge "$MODEL_IDLE_SECONDS" ] && [ $((runnable * 2)) -ge "$samples" ]; }; then
+      last=$SECONDS; samples=0; runnable=0
+    fi
     before=()
     for child in "${!now[@]}"; do before[$child]=${now[$child]}; done
     if [ -n "$stopped" ]; then [ $((SECONDS - stopped)) -lt 10 ] || kill -KILL "${victims[@]}" 2>/dev/null; continue; fi

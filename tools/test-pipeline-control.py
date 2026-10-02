@@ -824,22 +824,22 @@ kill "$root"
                         try:
                             time.sleep(0.5)
                             samples = []
-                            for _ in range(4):
+                            for _ in range(31):
                                 result = subprocess.run(["bash", "-c", function("tree_ticks") + f"\ntree_ticks {child.pid}"], text=True, capture_output=True, check=True)
                                 pid, ticks, state = result.stdout.split()
                                 self.assertEqual(int(pid), child.pid)
                                 stat = Path(f"/proc/{child.pid}/stat").read_text().rsplit(") ", 1)[1].split()
                                 samples.append((int(stat[11]) + int(stat[12]), state))
-                                if len(samples) < 4:
-                                    time.sleep(1)
-                            growth = [b[0] - a[0] for a, b in zip(samples, samples[1:])]
+                                if len(samples) < 31:
+                                    time.sleep(0.08 + (len(samples) % 5) * 0.017)
+                            growth = [samples[n + 10][0] - samples[n][0] for n in (0, 10, 20)]
                             runnable = sum(state == "R" for _, state in samples[1:])
-                            print(f"demand loaded={loaded} workload={name} cpu_ticks={growth} runnable={runnable}/3", flush=True)
+                            print(f"demand loaded={loaded} workload={name} cpu_ticks={growth} runnable={runnable}/30", flush=True)
                             if name == "sleep":
                                 self.assertLess(max(growth), int(BUSY_CPU_TICKS))
-                                self.assertLess(runnable, 2)
+                                self.check_model_demand("".join(state for _, state in samples[1:]), idle_failure(30))
                             else:
-                                self.assertGreaterEqual(runnable, 2)
+                                self.check_model_demand("".join(state for _, state in samples[1:]), "model call exceeded its 90 s wallclock bound")
                                 if loaded:
                                     self.assertLess(max(growth), int(BUSY_CPU_TICKS))
                         finally:
@@ -849,6 +849,39 @@ kill "$root"
                 if competitor is not None:
                     competitor.terminate()
                     competitor.wait(timeout=10)
+
+    def test_model_requires_sustained_runnable_demand(self) -> None:
+        for pattern, expected in (("RSSSSS", idle_failure(6)),
+                                  ("RRRSSS", "model call exceeded its 18 s wallclock bound"),
+                                  ("RRRRRRSSSSSS", idle_failure(6))):
+            result = self.check_model_demand(pattern, expected, idle=6)
+            if pattern == "RRRRRRSSSSSS":
+                self.assertGreaterEqual(int(re.search(r"samples=(\d+)", result.stdout).group(1)), 12)
+
+    def check_model_demand(self, pattern, expected, idle=None):
+        idle = idle or len(pattern)
+        with tempfile.TemporaryDirectory() as directory:
+            script = f"""set -uo pipefail
+ROOT={directory}; STATE={directory}
+log() {{ printf '%s\\n' "$*"; }}
+{model_function(idle * 3, idle)}
+SECONDS=0
+sleep() {{ command sleep 0.02; SECONDS=$((SECONDS + 1)); }}
+printf 0 > "$STATE/samples"
+tree_ticks() {{
+  local n state pattern={pattern}
+  n=$(cat "$STATE/samples"); state=${{pattern:$((n % ${{#pattern}})):1}}
+  printf '%s' "$((n+1))" > "$STATE/samples"
+  printf '%s 0 %s\\n' "$1" "$state"
+}}
+codex() {{ exec sleep 60; }}
+model - <<< prompt
+printf 'rc=%s failure=%s samples=%s\\n' "$?" "$MODEL_FAILURE" "$(cat "$STATE/samples")"
+"""
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=30)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn(f"rc=1 failure={expected}", result.stdout)
+            return result
 
     def test_model_runnable_child_without_cpu_is_busy(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
