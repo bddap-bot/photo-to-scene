@@ -24,7 +24,14 @@ def function(name):
         result = function("detail_contract_hash") + "\n" + function("reuse_detail_records") + "\n" + result
     if name in ("builder", "run_detail"):
         result = goto_policy() + "\n" + result
+    if name in ("builder", "critic"):
+        result = goto_targets() + "\n" + result
     return result
+
+
+def goto_targets():
+    constants = "\n".join(re.search(rf"^{name}=.*$", PIPELINE, re.M).group(0) for name in ("STAGE_NAMES", "GOTO_FORMAT"))
+    return constants + "\n" + "\n".join(function(name) for name in ("goto_targets", "goto_target_text", "valid_stage", "goto_shape_error"))
 
 
 def goto_policy():
@@ -159,16 +166,12 @@ run_detail
             (state / "progress.md").write_text("")
             script = f'''set -uo pipefail
 ROOT={root!s}; STATE={state!s}; PROMPTS={prompts!s}; ASSETS={assets!s}; REQUEST_STAGE=; REQUEST_REASON=; BUILDER_GOTOS=5; CRITIC_GOTOS=0; ATTEMPT_SEQ=0
-STAGES=(floorplan blockout identify detail object:one integrate materials)
-VALID_STAGE_TEXT="floorplan blockout identify detail integrate materials"
-declare -A INVALID_RETRIES=()
 printf 0 > "$STATE/calls"
 log() {{ printf '%s\n' "$*"; }}
 inbox() {{ :; }}
 next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
 score_of() {{ jq -r '.score // 0' "$1"; }}
 record() {{ printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$1" "$2" "$3" "$4" "$5" "$6" "${{7:-}}" >> "$STATE/records.tsv"; }}
-valid_stage() {{ local candidate=$1 known; for known in "${{STAGES[@]}}"; do [ "$candidate" = "$known" ] && return 0; done; return 1; }}
 codex() {{ local calls; cat >/dev/null; calls=$(( $(cat "$STATE/calls") + 1 )); printf '%s' "$calls" > "$STATE/calls"; case "$calls" in 4) printf '%s\n' '{{"target":"blockout","reason":"malformed fallback"}}' > "$STATE/goto.json" ;; *) printf '%s\n' '{{"stage":"blockout","reason":"fixed-region conflict"}}' > "$STATE/goto.json" ;; esac; }}
 {model_function()}
 {builder}
@@ -197,7 +200,7 @@ printf 'attempt_seq=%s calls=%s records=%s integrate=%s\n' "$ATTEMPT_SEQ" "$(cat
         self.assertEqual(result.stdout.count("ENTER object:"), 2)
         self.assertIn("GOTO cap reached origin=builder requested=blockout reason=fixed-region conflict", result.stdout)
         self.assertIn("GOTO cap request ignored origin=builder requested=blockout reason=fixed-region conflict", result.stdout)
-        self.assertIn("GOTO rejected origin=builder requested= reason=cap fallback target is not in canonical stage set", result.stdout)
+        self.assertIn("GOTO rejected origin=builder requested= reason=cap fallback missing field `stage`; unexpected field `target`", result.stdout)
 
     def test_valid_builder_goto_survives_invalid_target_correction(self):
         builder = function("builder")
@@ -211,14 +214,10 @@ printf 'attempt_seq=%s calls=%s records=%s integrate=%s\n' "$ATTEMPT_SEQ" "$(cat
             (prompts / "builder.md").write_text("build")
             script = f'''set -uo pipefail
 ROOT={root!s}; STATE={state!s}; PROMPTS={prompts!s}; REQUEST_STAGE=; REQUEST_REASON=; BUILDER_GOTOS=4; CRITIC_GOTOS=0
-STAGES=(floorplan blockout identify detail integrate materials)
-VALID_STAGE_TEXT="floorplan blockout identify detail integrate materials"
-declare -A INVALID_RETRIES=()
 calls="$STATE/calls"
 printf 0 > "$calls"
 printf 0 > "$STATE/detail_records"
 log() {{ :; }}
-valid_stage() {{ local candidate=$1 known; for known in "${{STAGES[@]}}"; do [ "$candidate" = "$known" ] && return 0; done; return 1; }}
 codex() {{ local call; cat >/dev/null; call=$(( $(cat "$calls") + 1 )); printf '%s' "$call" > "$calls"; if [ "$call" -eq 1 ]; then printf '%s\n' '{{"target":"blockout","reason":"invalid field"}}' > "$STATE/goto.json"; else printf '%s\n' '{{"stage":"blockout","reason":"valid retry"}}' > "$STATE/goto.json"; fi; }}
 {model_function()}
 {builder}
@@ -238,6 +237,93 @@ done
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("blockout=1 detail_records=0 builder_gotos=5 calls=2", result.stdout)
 
+    def test_builder_goto_correction_names_the_field_then_follows_goto_policy(self):
+        for gotos, rc, calls, log in ((0, 42, 2, "GOTO count"), (5, 0, 3, "GOTO cap reached origin=builder requested=blockout reason=fixed")):
+            with self.subTest(gotos=gotos), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                state = root / "state"
+                state.mkdir()
+                (state / "objects.json").write_text('[{"id":"bowl","label":"wooden bowl"}]')
+                (root / "builder.md").write_text("Write state/goto.json targeting blockout when the contract conflicts.")
+                script = f'''set -uo pipefail
+ROOT={root!s}; STATE={state!s}; PROMPTS={root!s}; REQUEST_STAGE=; REQUEST_REASON=; BUILDER_GOTOS={gotos}; CRITIC_GOTOS=0; ACTIVE_STAGE=object:bowl
+printf 0 > "$STATE/calls"
+log() {{ printf '%s\\n' "$*"; }}
+codex() {{ local call; call=$(( $(cat "$STATE/calls") + 1 )); printf '%s' "$call" > "$STATE/calls"; cat > "$STATE/prompt_$call"; case "$call" in 1) printf '%s\\n' '{{"target":"blockout","reason":"fixed"}}' > "$STATE/goto.json" ;; 2) printf '%s\\n' '{{"stage":"blockout","reason":"fixed"}}' > "$STATE/goto.json" ;; esac; }}
+{model_function()}
+{function("builder")}
+rc=0
+builder builder.md '' || rc=$?
+printf 'rc=%s calls=%s stage=%s\\n' "$rc" "$(cat "$STATE/calls")" "$REQUEST_STAGE"
+'''
+                result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=30)
+                first, second = ((state / f"prompt_{n}").read_text() for n in (1, 2))
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn(f"rc={rc} calls={calls} stage=blockout", result.stdout)
+            self.assertIn('state/goto.json holding exactly {"stage": "<target>", "reason": "<why>"}', first)
+            self.assertIn("- object:bowl (wooden bowl)", first)
+            self.assertIn("missing field `stage`", second)
+            self.assertIn("unexpected field `target`", second)
+            if gotos:
+                self.assertIn(log, result.stdout)
+
+    def test_scene_critic_invalid_route_reasks_only_the_critic_after_final_attempt(self):
+        run_integrate = function("run_integrate")
+        helpers = "\n".join(function(name) for name in ("critic", "write_stage_check_verdict", "write_spatial_check_verdict", "integrate_attempts", "integrate_best"))
+        schema = Path(__file__).parents[1].joinpath("verdict.schema.json")
+        for second_route, rc, final_route in (("object:bowl", 43, "object:bowl"), ("object:rocking_chair", 0, "integrate")):
+            with self.subTest(second_route=second_route), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                state = root / "state"
+                (state / "verdicts").mkdir(parents=True)
+                for name in ("assemble.py", "integrate.png", "integrate_overlay.png", "spatial_observed.json"):
+                    (state / name).write_text("{}")
+                (state / "objects.json").write_text('[{"id":"bowl","final_label":"foreground bowl"},{"id":"D","label":"rocking chair"}]')
+                (state / "records.tsv").write_text("integrate\t1\t3\t1\t\tv1\t\nintegrate\t2\t4\t1\t\tv2\t\n")
+                (root / "integrate_critic.md").write_text("critique")
+                script = f'''set -uo pipefail
+ROOT={root!s}; STATE={state!s}; PROMPTS={root!s}; INPUT=photo.jpg; ATTEMPT_SEQ=2; REQUEST_STAGE=; REQUEST_REASON=
+printf 0 > "$STATE/calls"
+builds=0
+next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
+log() {{ printf '%s\\n' "$*"; }}
+inbox() {{ :; }}
+builder() {{ builds=$((builds+1)); }}
+spatial_validate() {{ return 0; }}
+score_of() {{ jq -r '.score // 0' "$1"; }}
+record() {{ printf '%s\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\n' "$1" "$2" "$3" "$4" "$5" "$6" "${{7:-}}" >> "$STATE/records.tsv"; }}
+codex() {{
+  local call output= schema= previous= route
+  for arg in "$@"; do [ "$previous" = -o ] && output=$arg; [ "$previous" = --output-schema ] && schema=$arg; previous=$arg; done
+  call=$(( $(cat "$STATE/calls") + 1 )); printf '%s' "$call" > "$STATE/calls"
+  cat > "$STATE/prompt_$call"; cp "$schema" "$STATE/schema_$call"
+  route=object:foreground_bowl; [ "$call" -eq 1 ] || route={second_route}
+  jq -n --arg route "$route" '{{scene_change:null,score:7,summary:"close",corrections:["shrink the bowl"],top_stage:$route,wrong_labels:[],missing_objects:[]}}' > "$output"
+}}
+{model_function()}
+SCHEMA={schema!s}
+{helpers}
+{run_integrate}
+rc=0
+run_integrate "" || rc=$?
+printf 'rc=%s builds=%s critic_calls=%s request=%s\\n' "$rc" "$builds" "$(cat "$STATE/calls")" "$REQUEST_STAGE"
+'''
+                result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=30)
+                enum = json.loads((state / "schema_1").read_text())["properties"]["top_stage"]["enum"]
+                prompt = (state / "prompt_1").read_text()
+                retry = (state / "prompt_2").read_text()
+                verdict = json.loads((state / "verdicts" / "integrate_3.json").read_text())
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn(f"rc={rc} builds=1 critic_calls=2", result.stdout)
+            self.assertIn("CRITIC route rejected stage=integrate requested=object:foreground_bowl", result.stdout)
+            self.assertEqual(verdict["top_stage"], final_route)
+            if rc:
+                self.assertIn("request=object:bowl", result.stdout)
+            self.assertEqual(enum, ["floorplan", "blockout", "identify", "detail", "integrate", "materials", "object:bowl", "object:D"])
+            self.assertIn("- object:bowl (foreground bowl)", prompt)
+            self.assertIn("- object:D (rocking chair)", prompt)
+            self.assertIn("top_stage to object:foreground_bowl, which is not a valid target", retry)
+
     def test_second_invalid_builder_goto_is_ignored(self):
         builder = function("builder")
         with tempfile.TemporaryDirectory() as directory:
@@ -249,12 +335,9 @@ done
             (prompts / "builder.md").write_text("build")
             script = f'''set -uo pipefail
 ROOT={root!s}; STATE={state!s}; PROMPTS={prompts!s}; REQUEST_STAGE=; REQUEST_REASON=
-STAGES=(floorplan blockout identify detail integrate materials)
-VALID_STAGE_TEXT="floorplan blockout identify detail integrate materials"
 calls="$STATE/calls"
 printf 0 > "$calls"
 log() {{ printf '%s\n' "$*"; }}
-valid_stage() {{ local candidate=$1 known; for known in "${{STAGES[@]}}"; do [ "$candidate" = "$known" ] && return 0; done; return 1; }}
 codex() {{ local call; cat >/dev/null; call=$(( $(cat "$calls") + 1 )); printf '%s' "$call" > "$calls"; printf '%s\n' '{{"target":"blockout","reason":"invalid field"}}' > "$STATE/goto.json"; }}
 {model_function()}
 {builder}
@@ -265,7 +348,7 @@ printf 'rc=%s calls=%s\n' "$rc" "$(cat "$calls")"
             result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=30)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("rc=0 calls=2", result.stdout)
-        self.assertIn("second invalid target from same stage ignored", result.stdout)
+        self.assertIn("second invalid GOTO from same stage ignored", result.stdout)
 
     def test_dense_detail_contract_does_not_expand_builder_request(self):
         builder = function("builder")
@@ -298,7 +381,6 @@ inbox() {{ :; }}
 next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
 score_of() {{ printf 8; }}
 record() {{ printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$1" "$2" "$3" "$4" "$5" "$6" "${{7:-}}" >> "$STATE/records.tsv"; }}
-valid_stage() {{ return 1; }}
 codex() {{
   local arg previous= workdir=
   for arg in "$@"; do
@@ -781,17 +863,13 @@ feedback=
             (root / "materials_critic.md").write_text("critique")
             script = f'''set -uo pipefail
 ROOT={root!s}; STATE={state!s}; PROMPTS={root!s}; INPUT=photo.png; MODEL_FAILURE=; ATTEMPT_SEQ=0; BEST_S6=-1
-STAGES=(floorplan blockout identify detail integrate materials)
-VALID_STAGE_TEXT="floorplan blockout identify detail integrate materials"
 BUILDER_GOTOS=0; CRITIC_GOTOS=0; REQUEST_STAGE=; REQUEST_REASON=
-declare -A INVALID_RETRIES=()
 builds=0
 log() {{ printf '%s\n' "$*"; }}
 inbox() {{ :; }}
 next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
 score_of() {{ jq -r '.score // 0' "$1"; }}
 record() {{ :; }}
-valid_stage() {{ local value=$1 item; for item in "${{STAGES[@]}}"; do [ "$value" = "$item" ] && return 0; done; return 1; }}
 builder() {{ builds=$((builds+1)); touch "$STATE/materials.png" "$STATE/materials.blend"; }}
 spatial_validate() {{ return 0; }}
 critic() {{ printf '%s\n' '{{"score":6,"top_stage":"floorplan","corrections":["rebuild floorplan"]}}' > "$1"; }}
@@ -819,17 +897,13 @@ printf 'builds=%s critic_gotos=%s best=%s\n' "$builds" "$CRITIC_GOTOS" "$([ -f "
             root = Path(directory)
             script = f'''set -uo pipefail
 STATE={root!s}
-STAGES=(floorplan blockout identify detail integrate materials)
-VALID_STAGE_TEXT="floorplan blockout identify detail integrate materials"
 BUILDER_GOTOS=0
 CRITIC_GOTOS=0
-declare -A INVALID_RETRIES=()
 REQUEST_STAGE=
 REQUEST_REASON=
 calls=0
 critic_sent=0
 log() {{ printf '%s\n' "$*" >> "$STATE/log"; }}
-valid_stage() {{ local value=$1 item; for item in "${{STAGES[@]}}"; do [ "$value" = "$item" ] && return 0; done; return 1; }}
 within_s56_budget() {{ return 0; }}
 run_floorplan() {{ return 0; }}
 run_blockout() {{ return 0; }}
@@ -1049,16 +1123,12 @@ printf 'finished rc=%s failure=%s\\n' "$?" "$MODEL_FAILURE"
             (state / "records.tsv").write_text("")
             script = f"""set -uo pipefail
 ROOT={root}; STATE={state}; PROMPTS={prompts}; INPUT=photo.jpg; ATTEMPT_SEQ=0; REQUEST_STAGE=; REQUEST_REASON=; BUILDER_GOTOS=0; CRITIC_GOTOS=0
-STAGES=(floorplan blockout identify detail integrate materials)
-VALID_STAGE_TEXT="floorplan blockout identify detail integrate materials"
-declare -A INVALID_RETRIES=()
 printf 0 > "$STATE/calls"
 log() {{ printf '%s\\n' "$*"; }}
 inbox() {{ :; }}
 next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
 score_of() {{ jq -r '.score // 0' "$1"; }}
 record() {{ printf '%s\\t%s\\t%s\\t%s\\t%s\\t%s\\n' "$1" "$2" "$3" "$4" "$5" "$6" >> "$STATE/records.tsv"; }}
-valid_stage() {{ return 1; }}
 codex() {{
   local call output= previous=
   for arg in "$@"; do [ "$previous" = -o ] && output=$arg; previous=$arg; done
@@ -1123,7 +1193,6 @@ inbox() {{ :; }}
 next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
 score_of() {{ jq -r '.score // 0' "$1"; }}
 record() {{ printf '%s\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\n' "$1" "$2" "$3" "$4" "$5" "$6" "${{7:-}}" >> "$STATE/records.tsv"; }}
-valid_stage() {{ return 1; }}
 verify_detail() {{ return 0; }}
 codex() {{
   local call output= previous=
@@ -1155,7 +1224,7 @@ run_one_detail one
         self.assertEqual([(row[0], row[1], row[2]) for row in records], [("object:one", "1", "0"), ("object:one", "2", "9")])
         self.assertEqual(first_verdict["corrections"], [idle_failure(2)])
         self.assertEqual(first_verdict["top_stage"], "object:one")
-        self.assertEqual(critic_prompt, "criticize object\nThe supplied object stage tag is object:one.\n")
+        self.assertTrue(critic_prompt.startswith("criticize object\nThe supplied object stage tag is object:one.\n\nValid GOTO targets"))
 
     def test_failed_build_skips_the_stage_gate_and_is_never_best(self):
         failure = "model call exited with status 1"
@@ -1188,7 +1257,6 @@ inbox() {{ :; }}
 next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
 score_of() {{ jq -r '.score // 0' "$1"; }}
 record() {{ printf '%s\\t%s\\t%s\\n' "$1" "$2" "$3" >> "$STATE/records.tsv"; [ "$1" = materials ] || exit 0; }}
-valid_stage() {{ return 1; }}
 spatial_validate() {{ printf 'gate ran\\n'; return 1; }}
 verify_detail() {{ printf 'gate ran\\n'; DETAIL_FAILURE="asset gate failed"; return 1; }}
 codex() {{ cat >/dev/null; return 1; }}
@@ -1230,7 +1298,6 @@ inbox() {{ :; }}
 next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
 score_of() {{ jq -r '.score // 0' "$1"; }}
 record() {{ printf '%s\\t%s\\t%s\\n' "$1" "$2" "$3" >> "$STATE/records.tsv"; }}
-valid_stage() {{ return 1; }}
 codex() {{ cat >/dev/null; printf 'usage limit reached\\n'; return 1; }}
 {model_function()}
 {function("builder")}
@@ -1258,7 +1325,6 @@ printf 'unreachable\\n'
             script = f"""set -uo pipefail
 ROOT={root}; STATE={root}; PROMPTS={root}/prompts; REQUEST_STAGE=; REQUEST_REASON=
 log() {{ printf '%s\\n' "$*"; }}
-valid_stage() {{ return 1; }}
 write_report() {{ printf 'report written\\n'; }}
 codex() {{ cat >/dev/null; printf 'bound=%s\\n' "$MODEL_SECONDS"; return 3; }}
 {model_function()}
@@ -1295,7 +1361,6 @@ inbox() {{ :; }}
 next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
 score_of() {{ jq -r '.score // 0' "$1"; }}
 record() {{ printf '%s\\t%s\\t%s\\t%s\\t%s\\t%s\\n' "$1" "$2" "$3" "$4" "$5" "$6" >> "$STATE/records.tsv"; }}
-valid_stage() {{ return 1; }}
 spatial_validate() {{ return 0; }}
 codex() {{
   local output= previous= build file
@@ -1335,15 +1400,11 @@ printf 'rc=%s\\n' "$?"
             (state / "records.tsv").write_text("")
             script = f"""set -uo pipefail
 ROOT={root}; STATE={state}; PROMPTS={prompts}; INPUT=photo.jpg; ATTEMPT_SEQ=0; REQUEST_STAGE=; REQUEST_REASON=; BUILDER_GOTOS=0; CRITIC_GOTOS=0
-STAGES=(floorplan blockout identify detail integrate materials)
-VALID_STAGE_TEXT="floorplan blockout identify detail integrate materials"
-declare -A INVALID_RETRIES=()
 log() {{ printf '%s\\n' "$*"; }}
 inbox() {{ :; }}
 next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
 score_of() {{ jq -r '.score // 0' "$1"; }}
 record() {{ printf '%s\\t%s\\t%s\\n' "$1" "$2" "$3" >> "$STATE/records.tsv"; }}
-valid_stage() {{ return 1; }}
 codex() {{
   local previous= critic=0
   for arg in "$@"; do [ "$previous" = -o ] && critic=1; previous=$arg; done
@@ -1393,7 +1454,6 @@ inbox() {{ :; }}
 next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
 score_of() {{ jq -r '.score // 0' "$1"; }}
 record() {{ printf '%s\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\n' "$1" "$2" "$3" "$4" "$5" "$6" "${{7:-}}" >> "$STATE/records.tsv"; }}
-valid_stage() {{ return 1; }}
 codex() {{ cat >/dev/null; printf 'new' > "$ASSETS/one.py"; }}
 {model_function()}
 {function("builder")}
@@ -1495,7 +1555,6 @@ inbox() {{ :; }}
 next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
 score_of() {{ jq -r '.score // 0' "$1"; }}
 record() {{ printf '%s\\t%s\\t%s\\t%s\\t%s\\t%s\\n' "$MODE" "$1" "$2" "$3" "$5" "$6" >> "$STATE/records.tsv"; }}
-valid_stage() {{ return 1; }}
 # Drive retry policy synchronously; watchdog timing is covered by model-call tests.
 SCHEMA=schema.json; MODEL_FAILURE=
 model() {{
@@ -1559,7 +1618,6 @@ inbox() {{ :; }}
 next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
 score_of() {{ jq -r '.score // 0' "$1"; }}
 record() {{ printf '%s\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\n' "$1" "$2" "$3" "$4" "$5" "$6" "${{7:-}}" >> "$STATE/records.tsv"; }}
-valid_stage() {{ [ "$1" = blockout ]; }}
 verify_detail() {{ return 0; }}
 codex() {{
   local call

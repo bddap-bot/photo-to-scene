@@ -31,7 +31,11 @@ Stages 1, 2, 5, and each final evaluation permit up to three attempts; identific
 
 ## GOTO and correction rules
 
-Builders and critics may assign a defect to `floorplan`, `blockout`, `identify`, `detail`, `object:<id>`, `integrate`, or `materials`. An object target is valid only when its identifier exists in `objects.json`. An invalid target is rejected without consuming the GOTO allowances; the originating stage receives one correction opportunity, and a second invalid request is ignored.
+Builders and critics may assign a defect to `floorplan`, `blockout`, `identify`, `detail`, `object:<id>`, `integrate`, or `materials`. An object target is valid only when its identifier exists in `objects.json`. The driver renders that target set, each object with its inventory label, from the current `objects.json` and supplies it to every critic and to every builder whose prompt offers a GOTO.
+
+A builder GOTO is `state/goto.json` holding exactly `{"stage": "<target>", "reason": "<why>"}`. A malformed file or unknown target is rejected without consuming the GOTO allowances; the builder is called again with a correction naming the missing, unexpected, or invalid field, and a second rejected request is ignored.
+
+A critic's `top_stage` is constrained by a verdict schema whose enum is that target set. A verdict naming any other target re-asks only the critic, never the builder, including after a stage's final build attempt; a second invalid route keeps the verdict on the critic's own stage.
 
 After integration or materials, a score below 8 may return to the stage named by the highest-priority correction. Forward execution then resumes from the repaired contract.
 

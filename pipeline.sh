@@ -15,10 +15,8 @@ ARTIFACTS=${BOTQ_ARTIFACTS_DIR:-$ROOT/artifacts}
 mkdir -p "$STATE/crops" "$STATE/verdicts" "$STATE/attempts" "$ASSETS" "$TEXTURES" "$ARTIFACTS"
 [ -f "$ASSETS/generic.py" ] || cp "$PIPELINE_DIR/builders/generic.py" "$ASSETS/generic.py"
 touch "$ROOT/log.md" "$STATE/records.tsv" "$STATE/progress.md"
-STAGES=(floorplan blockout identify detail)
-[ ! -f "$STATE/objects.json" ] || while IFS= read -r stage_id; do STAGES+=("object:$stage_id"); done < <(jq -r '.[].id' "$STATE/objects.json")
-STAGES+=(integrate materials)
-VALID_STAGE_TEXT="floorplan blockout identify detail object:<id> integrate materials"
+STAGE_NAMES=(floorplan blockout identify detail integrate materials)
+GOTO_FORMAT='{"stage": "<target>", "reason": "<why>"}'
 GOTO_LIMIT=5
 LEGACY_GOTOS=$(cat "$STATE/goto_count" 2>/dev/null || printf 0)
 BUILDER_GOTOS=$(cat "$STATE/builder_goto_count" 2>/dev/null || printf '%s' "$LEGACY_GOTOS")
@@ -26,7 +24,6 @@ CRITIC_GOTOS=$(cat "$STATE/critic_goto_count" 2>/dev/null || printf 0)
 BEST_S6=$(cat "$STATE/best_s6_score" 2>/dev/null || printf '%s' -1)
 [ -n "$BEST_S6" ] || BEST_S6=-1
 ATTEMPT_SEQ=$(cat "$STATE/attempt_seq" 2>/dev/null || printf 0)
-declare -A INVALID_RETRIES=()
 MODEL_SECONDS=2100
 MODEL_IDLE_SECONDS=1500
 MODEL_BUSY_CPU_TICKS=10
@@ -36,7 +33,10 @@ inbox() { command -v botq >/dev/null 2>&1 && botq inbox | tee -a "$ROOT/log.md" 
 next_attempt() { ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); printf '%s' "$ATTEMPT_SEQ" > "$STATE/attempt_seq"; }
 score_of() { jq -r '.score // 0' "$1"; }
 record() { printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$1" "$2" "$3" "$4" "$5" "$6" "${7:-}" "${8:-}" >> "$STATE/records.tsv"; }
-valid_stage() { local candidate=$1 known id; for known in "${STAGES[@]}"; do [ "$candidate" = "$known" ] && return 0; done; case "$candidate" in object:*) id=${candidate#object:}; [ -f "$STATE/objects.json" ] && jq -e --arg id "$id" 'any(.id == $id)' "$STATE/objects.json" >/dev/null ;; *) return 1 ;; esac; }
+goto_targets() { printf '%s\t\n' "${STAGE_NAMES[@]}"; [ ! -f "$STATE/objects.json" ] || jq -r 'arrays | .[] | objects | select(.id | type == "string") | ["object:" + .id, (.final_label // .label // "" | tostring)] | @tsv' "$STATE/objects.json" 2>/dev/null; }
+goto_target_text() { printf 'Valid GOTO targets, each object with its inventory label:\n'; goto_targets | awk -F '\t' '{print "- " $1 ($2 == "" ? "" : " (" $2 ")")}'; }
+valid_stage() { goto_targets | cut -f1 | grep -xF -- "$1" >/dev/null; }
+goto_shape_error() { jq -rs 'if length != 1 or (.[0] | type) != "object" then "it must hold one JSON object" else .[0] | [(["stage", "reason"] - keys)[] | "missing field `\(.)`"] + [(keys - ["stage", "reason"])[] | "unexpected field `\(.)`"] + [to_entries[] | select((.key == "stage" or .key == "reason") and (.value | type) != "string") | "field `\(.key)` is not a string"] | join("; ") end' "$1" 2>/dev/null || printf 'it is not valid JSON'; }
 goto_available() {
   local origin=$1 used=$BUILDER_GOTOS
   GOTO_RESERVE=
@@ -138,37 +138,62 @@ model() {
   return 1
 }
 builder() {
-  local prompt=$1 feedback=${2:-} invalid_retry=0 cap_retry=0
+  local prompt=$1 feedback=${2:-} invalid_retry=0 cap_retry=0 goto_error
   shift 2
   while :; do
     rm -f "$STATE/goto.json"
-    model "$@" - < <(cat "$PROMPTS/$prompt"; if [ -n "$feedback" ]; then printf '\nOne-reentry correction context follows:\n%s\n' "$feedback"; fi) || return 0
+    model "$@" - < <(cat "$PROMPTS/$prompt"; if grep -q 'state/goto\.json' "$PROMPTS/$prompt"; then printf '\nA GOTO is state/goto.json holding exactly %s.\n' "$GOTO_FORMAT"; goto_target_text; fi; if [ -n "$feedback" ]; then printf '\nOne-reentry correction context follows:\n%s\n' "$feedback"; fi) || return 0
     if [ -n "${INPUT_REF:-}" ]; then input_reference normalize || exit 1; fi
     if [ -f "$STATE/goto.json" ]; then
-      REQUEST_STAGE=$(jq -r '.stage // ""' "$STATE/goto.json")
-      REQUEST_REASON=$(jq -r '.reason // ""' "$STATE/goto.json")
+      REQUEST_STAGE=
+      REQUEST_REASON=
+      goto_error=$(goto_shape_error "$STATE/goto.json")
+      if [ -z "$goto_error" ]; then
+        REQUEST_STAGE=$(jq -r '.stage' "$STATE/goto.json")
+        REQUEST_REASON=$(jq -r '.reason' "$STATE/goto.json")
+        valid_stage "$REQUEST_STAGE" || goto_error="field \`stage\` names $REQUEST_STAGE, which is not a valid target"
+      fi
       rm -f "$STATE/goto.json"
       if [ "$cap_retry" -eq 1 ]; then
-        if valid_stage "$REQUEST_STAGE"; then log "GOTO cap request ignored origin=builder requested=$REQUEST_STAGE reason=$REQUEST_REASON"; else log "GOTO rejected origin=builder requested=$REQUEST_STAGE reason=cap fallback target is not in canonical stage set"; fi
+        if [ -z "$goto_error" ]; then log "GOTO cap request ignored origin=builder requested=$REQUEST_STAGE reason=$REQUEST_REASON"; else log "GOTO rejected origin=builder requested=$REQUEST_STAGE reason=cap fallback $goto_error"; fi
         return 0
       fi
-      if valid_stage "$REQUEST_STAGE"; then
+      if [ -z "$goto_error" ]; then
         if goto_available builder; then return 42; fi
         log "GOTO cap reached origin=builder requested=$REQUEST_STAGE reason=$REQUEST_REASON"
         cap_retry=1
         feedback="${feedback:+$feedback$'\n'}The builder GOTO cap is reached. Do not write state/goto.json. Complete within the existing spatial contract, retaining a contract-valid artifact when available so this attempt can be recorded."
         continue
       fi
-      log "GOTO rejected origin=builder requested=$REQUEST_STAGE reason=target is not in canonical stage set"
-      if [ "$invalid_retry" -eq 1 ]; then log "GOTO rejected origin=builder requested=$REQUEST_STAGE reason=second invalid target from same stage ignored"; return 0; fi
+      log "GOTO rejected origin=builder requested=$REQUEST_STAGE reason=$goto_error"
+      if [ "$invalid_retry" -eq 1 ]; then log "GOTO rejected origin=builder requested=$REQUEST_STAGE reason=second invalid GOTO from same stage ignored"; return 0; fi
       invalid_retry=1
-      feedback="${feedback:+$feedback$'\n'}Your GOTO target $REQUEST_STAGE is not a stage. Valid stages: $VALID_STAGE_TEXT. Re-raise with a valid one or continue."
+      feedback="${feedback:+$feedback$'\n'}Your state/goto.json was rejected: $goto_error. Rewrite it as $GOTO_FORMAT or continue without it."$'\n'"$(goto_target_text)"
       continue
     fi
     return 0
   done
 }
-critic() { local output=$1 stage=$2; shift 2; [ -n "$MODEL_FAILURE" ] || model --output-schema "$SCHEMA" -o "$output" "$@" -; [ -z "$MODEL_FAILURE" ] || write_stage_check_verdict "$output" "$stage" "$MODEL_FAILURE"; }
+critic() {
+  local output=$1 stage=$2 schema="$STATE/verdict.schema.json" prompt route
+  shift 2
+  prompt=$(cat; printf '\n'; goto_target_text)
+  if [ -z "$MODEL_FAILURE" ]; then
+    jq --argjson targets "$(goto_targets | cut -f1 | jq -Rsc 'split("\n")[:-1]')" '.properties.top_stage.enum = $targets' "$SCHEMA" > "$schema"
+    model --output-schema "$schema" -o "$output" "$@" - <<< "$prompt"
+    route=$(jq -r '.top_stage' "$output" 2>/dev/null)
+    if [ -z "$MODEL_FAILURE" ] && ! valid_stage "$route"; then
+      log "CRITIC route rejected stage=$stage requested=$route; asking the critic again"
+      model --output-schema "$schema" -o "$output" "$@" - <<< "$prompt"$'\n'"Your previous verdict set top_stage to $route, which is not a valid target. Choose top_stage from the list above."
+      route=$(jq -r '.top_stage' "$output" 2>/dev/null)
+      if [ -z "$MODEL_FAILURE" ] && ! valid_stage "$route"; then
+        log "CRITIC route rejected twice stage=$stage requested=$route; keeping the verdict on its own stage"
+        jq --arg stage "$stage" '.top_stage = $stage' "$output" > "$output.next" && mv "$output.next" "$output"
+      fi
+    fi
+  fi
+  [ -z "$MODEL_FAILURE" ] || write_stage_check_verdict "$output" "$stage" "$MODEL_FAILURE"
+}
 detail_attempts() { awk -F '\t' -v stage="object:$1" -v contract="$2" '$1==stage && $7==contract {n++} END {print n+0}' "$STATE/records.tsv"; }
 detail_best() { awk -F '\t' -v stage="object:$1" -v contract="$2" '$1==stage && $7==contract && $3+0>best {best=$3+0} END {print best+0}' "$STATE/records.tsv"; }
 integrate_attempts() { awk -F '\t' '$1=="integrate" {n++} END {print n+0}' "$STATE/records.tsv"; }
@@ -212,7 +237,7 @@ run_tier_critic() {
       builder tier_builder.md "Tier: $tier. Object ids: $(awk -F '\t' -v tier="$tier" '$2==tier {printf "%s ",$1}' "$STATE/object_tiers.tsv")${feedback:+$'\n'$feedback}" -i "$INPUT" || return $?
       [ -n "$MODEL_FAILURE" ] || rendered=1
     fi
-    critic "$verdict" detail -i "$INPUT" "$STATE/tier_${tier}.png" < <(cat "$PROMPTS/tier_critic.md"; printf '\n%s\n' "$feedback")
+    critic "$verdict" "tier:$tier" -i "$INPUT" "$STATE/tier_${tier}.png" < <(cat "$PROMPTS/tier_critic.md"; printf '\n%s\n' "$feedback")
     score=$(score_of "$verdict"); record "tier:$tier" "$a" "$score" "$(( $(date +%s)-start ))" "${feedback:-Integrated footprint tier before descending.}" "$verdict" "" "$tier"; log "SCORE tier:$tier attempt=$a score=$score"
     if [ -n "$MODEL_FAILURE" ]; then feedback=$MODEL_FAILURE; continue; fi
     [ "$score" -lt 8 ] || { inbox; return 0; }
@@ -349,7 +374,6 @@ while :; do
   case "$current" in floorplan) run_floorplan "$feedback"; rc=$?; next=blockout ;; blockout) run_blockout "$feedback"; rc=$?; next=identify ;; identify) run_identify "$feedback"; rc=$?; next=detail ;; detail) run_detail "" "$feedback"; rc=$?; next=integrate ;; object:*) run_detail "$current" "$feedback"; rc=$?; next=integrate ;; integrate) run_integrate "$feedback"; rc=$?; next=materials ;; materials) run_materials "$feedback"; rc=$?; next='done' ;; *) log "FAIL invalid current stage=$current"; exit 2 ;; esac
   if [ "$rc" -eq 42 ] || [ "$rc" -eq 43 ]; then
     origin=$([ "$rc" -eq 42 ] && printf builder || printf critic)
-    if ! valid_stage "$REQUEST_STAGE"; then key="$origin:$ACTIVE_STAGE"; log "GOTO rejected origin=$origin requested=$REQUEST_STAGE reason=target is not in canonical stage set"; if [ "${INVALID_RETRIES[$key]:-0}" -eq 0 ]; then INVALID_RETRIES[$key]=1; feedback="Your GOTO target $REQUEST_STAGE is not a stage. Valid stages: $VALID_STAGE_TEXT. Re-raise with a valid one or continue."; continue; fi; log "GOTO rejected origin=$origin requested=$REQUEST_STAGE reason=second invalid target from same stage ignored"; current=$next; feedback=; continue; fi
     if ! goto_available "$origin"; then log "GOTO cap reached origin=$origin requested=$REQUEST_STAGE reason=$REQUEST_REASON"; log "GOTO cap request ignored origin=$origin requested=$REQUEST_STAGE reason=$REQUEST_REASON"; current=$next; feedback=; [ "$current" = 'done' ] && break; continue; fi
     [ -z "$GOTO_RESERVE" ] || printf 'used\n' > "$GOTO_RESERVE" || exit 1
     if [ "$origin" = builder ]; then BUILDER_GOTOS=$((BUILDER_GOTOS+1)); printf '%s' "$BUILDER_GOTOS" > "$STATE/builder_goto_count"; count=$BUILDER_GOTOS; else CRITIC_GOTOS=$((CRITIC_GOTOS+1)); printf '%s' "$CRITIC_GOTOS" > "$STATE/critic_goto_count"; count=$CRITIC_GOTOS; fi
