@@ -134,11 +134,15 @@ class SupportDeclarationTest(unittest.TestCase):
         self.assertIn("item: observed supported_by floor", errors[0])
 
 
-def validate(objects):
+def validate(objects, observed=None):
     with tempfile.TemporaryDirectory() as directory:
         path, output = Path(directory, 'objects.json'), Path(directory, 'validation.json')
         path.write_text(objects if isinstance(objects, str) else json.dumps(objects))
-        result = subprocess.run([sys.executable, str(Path(__file__).with_name('spatial-contract.py')), str(path), '--output', str(output)], capture_output=True, text=True)
+        extra = []
+        if observed is not None:
+            Path(directory, 'observed.json').write_text(json.dumps(observed))
+            extra = ['--observed', str(Path(directory, 'observed.json'))]
+        result = subprocess.run([sys.executable, str(Path(__file__).with_name('spatial-contract.py')), str(path), '--output', str(output), *extra], capture_output=True, text=True)
         return result, json.loads(output.read_text()) if output.exists() else None
 
 
@@ -159,6 +163,12 @@ class InventoryShapeTest(unittest.TestCase):
                 self.assertNotIn("Traceback", result.stderr)
                 self.assertFalse(validation["valid"])
                 self.assertTrue(any(message in error for error in validation["errors"]), validation["errors"])
+
+    def test_declaration_errors_skip_the_observed_round_trip(self):
+        result, validation = validate([{"id": "floor"}], observed={})
+        self.assertEqual(result.returncode, 1)
+        self.assertNotIn("Traceback", result.stderr)
+        self.assertEqual(validation["errors"], ["floor: missing spatial_contract"])
 
     def test_every_entry_is_checked(self):
         result, validation = validate(list(resting(0).values()))

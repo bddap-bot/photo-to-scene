@@ -205,7 +205,7 @@ def main():
     ids = list(entries)
     for ident in ids:
         check_contract(entries[ident], entries, args.tolerance, errors)
-    if args.observed and entries:
+    if args.observed and not errors:
         check_observed(entries, json.loads(Path(args.observed).read_text()), ids, args.tolerance, errors)
     digest = lambda path: hashlib.sha256(Path(path).read_bytes()).hexdigest()
     result = {'valid': not errors, 'ids': ids, 'errors': errors, 'observed': bool(args.observed), 'objects_sha256': digest(args.objects)}
