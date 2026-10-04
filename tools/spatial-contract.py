@@ -181,25 +181,31 @@ def check_observed(entries, observed, ids, tolerance, errors):
                 errors.append(f'{ident}: observed {relation["type"]} {other_id}: {error}')
 
 
+def inventory_errors(data):
+    if not isinstance(data, list):
+        return [f'objects.json: top level must be an array of object entries, got {type(data).__name__}']
+    errors = [f'objects.json[{index}]: entry must be an object with a string id' for index, entry in enumerate(data) if not isinstance(entry, dict) or not isinstance(entry.get('id'), str)]
+    ids = [entry['id'] for entry in data if isinstance(entry, dict) and isinstance(entry.get('id'), str)]
+    errors += [f'objects.json: duplicate id {ident}' for ident in sorted({ident for ident in ids if ids.count(ident) > 1})]
+    return errors
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('objects')
-    parser.add_argument('--ids', required=True)
     parser.add_argument('--observed')
     parser.add_argument('--tolerance', type=float, default=.03)
     parser.add_argument('--output')
     args = parser.parse_args()
     data = json.loads(Path(args.objects).read_text())
-    entries = {entry['id']: entry for entry in data}
-    ids = args.ids.split(',')
-    errors = []
-    for ident in ids:
-        if ident not in entries:
-            errors.append(f'{ident}: missing object entry')
-        else:
+    errors = inventory_errors(data)
+    ids = [] if errors else [entry['id'] for entry in data]
+    if not errors:
+        entries = {entry['id']: entry for entry in data}
+        for ident in ids:
             check_contract(entries[ident], entries, args.tolerance, errors)
-    if args.observed:
-        check_observed(entries, json.loads(Path(args.observed).read_text()), ids, args.tolerance, errors)
+        if args.observed:
+            check_observed(entries, json.loads(Path(args.observed).read_text()), ids, args.tolerance, errors)
     digest = lambda path: hashlib.sha256(Path(path).read_bytes()).hexdigest()
     result = {'valid': not errors, 'ids': ids, 'errors': errors, 'observed': bool(args.observed), 'objects_sha256': digest(args.objects)}
     if args.observed:

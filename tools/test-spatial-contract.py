@@ -1,3 +1,7 @@
+import json
+import subprocess
+import sys
+import tempfile
 import unittest
 import importlib.util
 from pathlib import Path
@@ -128,6 +132,36 @@ class SupportDeclarationTest(unittest.TestCase):
         errors = observed_errors(resting(.06))
         self.assertEqual(len(errors), 1)
         self.assertIn("item: observed supported_by floor", errors[0])
+
+
+def validate(objects):
+    with tempfile.TemporaryDirectory() as directory:
+        path, output = Path(directory, 'objects.json'), Path(directory, 'validation.json')
+        path.write_text(json.dumps(objects))
+        result = subprocess.run([sys.executable, str(Path(__file__).with_name('spatial-contract.py')), str(path), '--output', str(output)], capture_output=True, text=True)
+        return result, json.loads(output.read_text()) if output.exists() else None
+
+
+class InventoryShapeTest(unittest.TestCase):
+    def test_malformed_inventory_writes_shape_error(self):
+        cases = (
+            ({"objects": [{"id": "floor"}]}, "top level must be an array"),
+            ([{"id": "floor"}, "floor"], "objects.json[1]: entry must be an object"),
+            ([{"label": "floor"}], "objects.json[0]: entry must be an object with a string id"),
+            ([{"id": "floor"}, {"id": "floor"}], "duplicate id floor"),
+        )
+        for objects, message in cases:
+            with self.subTest(objects=objects):
+                result, validation = validate(objects)
+                self.assertEqual(result.returncode, 1)
+                self.assertNotIn("Traceback", result.stderr)
+                self.assertFalse(validation["valid"])
+                self.assertTrue(any(message in error for error in validation["errors"]), validation["errors"])
+
+    def test_every_entry_is_checked(self):
+        result, validation = validate(list(resting(0).values()))
+        self.assertEqual(result.returncode, 0, validation)
+        self.assertEqual(validation["ids"], ["floor", "item"])
 
 
 if __name__ == '__main__':

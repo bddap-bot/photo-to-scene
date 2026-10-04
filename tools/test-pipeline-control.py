@@ -386,7 +386,7 @@ STATE={state!s}; INPUT=input.jpg; ATTEMPT_SEQ=0; BEST_S6=-1; REQUEST_STAGE=; REQ
 next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
 log() {{ printf '%s\n' "$*"; }}
 builder() {{ return 0; }}
-spatial_validate() {{ printf '%s\n' '{{"valid":false,"errors":["one: material footprint mismatch"]}}' > "$3"; return 1; }}
+spatial_validate() {{ printf '%s\n' '{{"valid":false,"errors":["one: material footprint mismatch"]}}' > "$2"; return 1; }}
 critic() {{ return 99; }}
 score_of() {{ jq -r '.score // 0' "$1"; }}
 record() {{ printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$1" "$2" "$3" "$4" "$5" "$6" "${{7:-}}" >> "$STATE/records.tsv"; }}
@@ -427,7 +427,7 @@ REQUEST_REASON=
 next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
 log() {{ printf '%s\n' "$*"; }}
 builder() {{ return 0; }}
-spatial_validate() {{ printf '%s\n' '{{"valid":false,"errors":["one: footprint did not round-trip"]}}' > "$3"; return 1; }}
+spatial_validate() {{ printf '%s\n' '{{"valid":false,"errors":["one: footprint did not round-trip"]}}' > "$2"; return 1; }}
 critic() {{ return 99; }}
 score_of() {{ jq -r '.score // 0' "$1"; }}
 record() {{ printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$1" "$2" "$3" "$4" "$5" "$6" "${{7:-}}" >> "$STATE/records.tsv"; }}
@@ -457,7 +457,7 @@ STATE={state!s}; PROMPTS={state!s}; INPUT=input.jpg; ATTEMPT_SEQ=0; MODEL_FAILUR
 next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
 log() {{ printf '%s\n' "$*"; }}
 builder() {{ printf '%s\n' "$2" > "$STATE/feedback_$ATTEMPT_SEQ"; printf '[{{"id":"attempt%s"}}]\n' "$ATTEMPT_SEQ" > "$STATE/objects.json"; for name in blockout.py blockout.png blockout_overlay.png; do : > "$STATE/$name"; done; }}
-spatial_validate() {{ [ "$ATTEMPT_SEQ" = "{valid}" ] && return 0; printf '%s\n' '{{"valid":false,"errors":["item: declared supported_by floor: raised"]}}' > "$3"; return 1; }}
+spatial_validate() {{ [ "$ATTEMPT_SEQ" = "{valid}" ] && return 0; printf '%s\n' '{{"valid":false,"errors":["item: declared supported_by floor: raised"]}}' > "$2"; return 1; }}
 critic() {{ printf '%s\n' '{{"score":5,"corrections":["sharpen edges"]}}' > "$1"; }}
 score_of() {{ jq -r '.score // 0' "$1"; }}
 record() {{ printf '%s\t%s\t%s\n' "$1" "$2" "$3" >> "$STATE/records.tsv"; }}
@@ -470,6 +470,31 @@ printf 'rc=%s scores=%s kept=%s\n' "$rc" "$(cut -f3 "$STATE/records.tsv" | paste
                 self.assertIn(expected, result.stdout, result.stderr)
                 self.assertIn("FAIL blockout spatial contract declaration invalid attempt=1", result.stdout)
                 self.assertEqual((state / "feedback_2").read_text().strip(), "item: declared supported_by floor: raised")
+
+    def test_malformed_inventory_shape_reaches_the_next_blockout_builder(self):
+        functions = "\n".join(function(name) for name in ("spatial_validate", "write_stage_check_verdict", "write_spatial_check_verdict", "run_blockout"))
+        with tempfile.TemporaryDirectory() as directory:
+            state = Path(directory) / "state"
+            (state / "verdicts").mkdir(parents=True)
+            (state / "records.tsv").write_text("")
+            script = f'''set -uo pipefail
+STATE={state!s}; PROMPTS={state!s}; PIPELINE_DIR={Path(__file__).parents[1]!s}; INPUT=input.jpg; ATTEMPT_SEQ=0; MODEL_FAILURE=
+next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
+log() {{ printf '%s\n' "$*"; }}
+builder() {{ printf '%s\n' "$2" > "$STATE/feedback_$ATTEMPT_SEQ"; printf '%s\n' '{{"objects":[{{"id":"floor"}}]}}' > "$STATE/objects.json"; for name in blockout.py blockout.png blockout_overlay.png; do : > "$STATE/$name"; done; }}
+critic() {{ printf 'critic ran\n'; }}
+score_of() {{ jq -r '.score // 0' "$1"; }}
+record() {{ printf '%s\t%s\t%s\n' "$1" "$2" "$3" >> "$STATE/records.tsv"; }}
+inbox() {{ :; }}
+{functions}
+run_blockout; printf 'rc=%s scores=%s\n' "$?" "$(cut -f3 "$STATE/records.tsv" | paste -sd, -)"
+'''
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=300)
+            self.assertIn("rc=1 scores=0,0,0", result.stdout, result.stderr)
+            self.assertNotIn("critic ran", result.stdout)
+            self.assertNotIn("Traceback", result.stderr)
+            for attempt in (2, 3):
+                self.assertEqual((state / f"feedback_{attempt}").read_text().strip(), "objects.json: top level must be an array of object entries, got dict")
 
     def test_integration_attempt_budget_resumes_from_records(self):
         run_integrate = function("run_integrate")
@@ -489,7 +514,7 @@ STATE={state!s}; INPUT=input.jpg; ATTEMPT_SEQ=9; REQUEST_STAGE=; REQUEST_REASON=
 next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
 log() {{ :; }}
 builder() {{ return 0; }}
-spatial_validate() {{ printf '%s\n' '{{"valid":false,"errors":["one: resumed mismatch"]}}' > "$3"; return 1; }}
+spatial_validate() {{ printf '%s\n' '{{"valid":false,"errors":["one: resumed mismatch"]}}' > "$2"; return 1; }}
 critic() {{ return 99; }}
 score_of() {{ jq -r '.score // 0' "$1"; }}
 record() {{ printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$1" "$2" "$3" "$4" "$5" "$6" "${{7:-}}" >> "$STATE/records.tsv"; }}
