@@ -1,5 +1,7 @@
 # Wilson House worked example
 
+The [combined-fixes rerun](combined-fixes/report.md) is published separately: 81/81 contracts finalized, zero final observed errors, and a 6/10 in-run materials score. It required supervised finalization after an expired-budget redirect. The original baseline below is preserved.
+
 The workflow reconstructed the Library of Congress photograph of the Woodrow Wilson House living room end to end: 99 detailed objects, integration, materials, and a final Cycles render. The final scene failed the observed spatial-contract gate with 68 errors, so no scene-level critic ran inside the run. The workflow's own materials critic, run once on the final render afterwards, scored it 7/10.
 
 ![Reference photograph (left) and final render (right)](renders/side-by-side.jpg)

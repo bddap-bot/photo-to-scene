@@ -1,0 +1,19 @@
+{
+  "source_image": "input/reference.jpg",
+  "reference_image": "input/reference.jpg",
+  "input_scene": "state/best_materials.blend",
+  "output_image": "state/best_render.png",
+  "engine": "CYCLES",
+  "device": "CPU",
+  "samples": 256,
+  "denoising": true,
+  "resolution": [
+    1920,
+    1521
+  ],
+  "camera": "Contract camera",
+  "view_transform": "AgX",
+  "look": "AgX - Medium High Contrast",
+  "exposure": -0.25,
+  "gamma": 1.0
+}

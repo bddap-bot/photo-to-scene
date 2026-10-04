@@ -1,0 +1,667 @@
+{
+  "stage": "S1_FLOORPLAN",
+  "input-photo": {
+    "image": "input/reference.jpg"
+  },
+  "source_image": "input/reference.jpg",
+  "reference_image": "input/reference.jpg",
+  "units": "metres; angles in degrees",
+  "coordinate_convention": {
+    "origin": "Floor at the original front-left corner; the recessed rear-left bay extends to x=-0.52 m.",
+    "x": "Right along the window wall",
+    "y": "From camera side toward the window wall",
+    "z": "Up; finished floor is z=0",
+    "polygon_order": "Counterclockwise viewed from above",
+    "image_paths": "All image paths resolve from the run root, including paths in nested contracts."
+  },
+  "interpretation": "Historic sitting room with a projecting fireplace section and an inferred recessed rear-left wall bay. Camera and level floor retained; rear wall recession reconciles floor-supported bookcase and globe corrections.",
+  "room": {
+    "polygon": [
+      [
+        0,
+        0
+      ],
+      [
+        6.4,
+        0
+      ],
+      [
+        6.4,
+        7
+      ],
+      [
+        -0.52,
+        7
+      ],
+      [
+        -0.52,
+        4.95
+      ],
+      [
+        0,
+        4.95
+      ]
+    ],
+    "floor_z": 0,
+    "wall_height": 4.54,
+    "dimensions": {
+      "width": {
+        "value": 6.4,
+        "evidence": "Wide curtained window group plus corner wall pier, scaled against approximately 0.8 m wide armchairs.",
+        "uncertainty": "Low confidence; approximately +/-1.0 m; right wall not visible"
+      },
+      "depth": {
+        "value": 7.0,
+        "evidence": "Foreground sofa, central seating, and rear furniture require several overlapping depth layers.",
+        "uncertainty": "Low confidence; approximately +/-1.2 m; front boundary not visible"
+      },
+      "height": {
+        "value": 4.54,
+        "evidence": "Retain current blockout shell height and its applied junction correction.",
+        "uncertainty": "Medium-low confidence; approximately +/-0.5 m"
+      },
+      "wall_thickness": {
+        "value": 0.22,
+        "evidence": "Diagram/model envelope convention; photograph does not expose wall thickness.",
+        "uncertainty": "Unconstrained"
+      },
+      "rear_width": {
+        "value": 6.92,
+        "evidence": "6.40 m original width plus inferred 0.52 m rear-left recess.",
+        "uncertainty": "Low confidence; not independently calibrated."
+      },
+      "rear_recess": {
+        "value": 0.52,
+        "evidence": "Visible fireplace projection and return support a recessed side wall. Required lower bound is 0.475919 m from H envelope; 0.52 m leaves 0.044081 m clearance. Return begins at the existing chimney end y=4.95 m.",
+        "uncertainty": "Depth is correction-derived, not a measured photographic distance; approximately +/-0.20 m."
+      }
+    },
+    "walls": [
+      {
+        "id": "W1",
+        "name": "Fireplace wall with rear recess",
+        "start": [
+          0,
+          0
+        ],
+        "end": [
+          -0.52,
+          7
+        ],
+        "polyline": [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            4.95
+          ],
+          [
+            -0.52,
+            4.95
+          ],
+          [
+            -0.52,
+            7
+          ]
+        ],
+        "height": 4.54,
+        "visibility": "Fireplace section and rear wall visible; recess depth inferred"
+      },
+      {
+        "id": "W2",
+        "name": "Window wall",
+        "start": [
+          -0.52,
+          7
+        ],
+        "end": [
+          6.4,
+          7
+        ],
+        "height": 4.54,
+        "visibility": "Visible; right end extrapolated"
+      },
+      {
+        "id": "W3",
+        "name": "Right closure",
+        "start": [
+          6.4,
+          7
+        ],
+        "end": [
+          6.4,
+          0
+        ],
+        "height": 4.54,
+        "visibility": "Unseen, inferred"
+      },
+      {
+        "id": "W4",
+        "name": "Front closure",
+        "start": [
+          6.4,
+          0
+        ],
+        "end": [
+          0,
+          0
+        ],
+        "height": 4.54,
+        "visibility": "Unseen, inferred"
+      }
+    ]
+  },
+  "scale_anchor": {
+    "object": "Central upholstered armchair",
+    "seat_height": 0.46,
+    "overall_width": 0.82,
+    "overall_height": 1.12,
+    "evidence": "Plausible adult chair dimensions; compare its seat to mantel, window sill, and neighboring rocking chair. No measured dimension is supplied.",
+    "confidence": "Low to medium; global scale is ambiguous from a single photograph"
+  },
+  "openings": [
+    {
+      "id": "O1",
+      "wall": "W2",
+      "type": "Broad window group obscured by lace and three principal rust drapery falls",
+      "start": [
+        1.45,
+        7
+      ],
+      "end": [
+        6.25,
+        7
+      ],
+      "sill_height": 0.973088,
+      "head_height": 3.48,
+      "width": 4.8,
+      "evidence": "Bright lace-covered region on the right, extending behind portraits and table. Curtain folds imply multiple bays, but exact sash divisions and outer right jamb are hidden. Sill retains the applied current-blockout upward correction.",
+      "dimension_uncertainty": "Width +/-0.7 m; sill +/-0.15 m; head +/-0.35 m",
+      "subdivision": "Do not infer an exterior view or a verified count of individual sashes."
+    }
+  ],
+  "fixed_features": [
+    {
+      "id": "F1",
+      "name": "Fireplace and carved mantel",
+      "wall": "W1",
+      "footprint": [
+        [
+          0,
+          2.55
+        ],
+        [
+          0.4,
+          2.55
+        ],
+        [
+          0.4,
+          4.75
+        ],
+        [
+          0,
+          4.75
+        ]
+      ],
+      "height": 1.52,
+      "opening_width": 1.35,
+      "opening_height": 1.03,
+      "opening_center": [
+        0.13,
+        3.65,
+        0.575
+      ],
+      "evidence": "Prominent left-wall fireplace; carved surround, dark marble inset, and shallow projecting shelf. Width estimated at roughly 2.7 central-chair widths.",
+      "dimension_uncertainty": "Width +/-0.3 m; height +/-0.2 m; projection +/-0.12 m"
+    },
+    {
+      "id": "F2",
+      "name": "Large framed portrait",
+      "wall": "W1",
+      "center": [
+        0.075,
+        3.65,
+        2.62
+      ],
+      "width_along_wall": 1.3,
+      "height": 1.92,
+      "depth": 0.07,
+      "evidence": "Centered above mantel; portrait frame is narrower than shelf, with a small gap above the clock.",
+      "dimension_uncertainty": "Width +/-0.2 m; height +/-0.3 m"
+    },
+    {
+      "id": "F3",
+      "name": "Double wall sconce",
+      "wall": "W1",
+      "center": [
+        -0.3235789473684214,
+        6.2243859649122815,
+        2.211974572880393
+      ],
+      "width_along_wall": 0.3710175438596492,
+      "height": 0.5237894736842106,
+      "evidence": "Remount on the recessed W1 using a camera-centered uniform scale of the complete current sconce. This preserves every projected point, including its already-applied 25-pixel upward correction; transform its mount and all regions together.",
+      "dimension_uncertainty": "Position +/-0.3 m; size +/-0.1 m"
+    },
+    {
+      "id": "F4",
+      "name": "Continuous cornice and wall panels",
+      "walls": [
+        "W1",
+        "W2"
+      ],
+      "cornice_bottom": 4.27,
+      "cornice_depth": 0.16,
+      "panel_trim_depth": 0.025,
+      "baseboard_height": 0.23,
+      "evidence": "Strong stepped cornice follows both visible walls; large rectangular moulding panels and low base trim visible. Follow the revised W1 polyline continuously; retain existing perimeter ownership.",
+      "dimension_uncertainty": "Cornice height +/-0.3 m; moulding sizes approximate"
+    },
+    {
+      "id": "F5",
+      "name": "Curtain pelmet and drapery",
+      "wall": "W2",
+      "center": [
+        3.85,
+        6.82,
+        3.48
+      ],
+      "width": 4.95,
+      "top_height": 3.65,
+      "bottom_height": 0.55,
+      "depth": 0.25,
+      "evidence": "Dark gilded pelmet above rust drapes; lace spans bright window. Central ornament projects above pelmet.",
+      "dimension_uncertainty": "Width +/-0.7 m; vertical bounds +/-0.25 m"
+    },
+    {
+      "id": "F6",
+      "name": "Projecting chimney breast",
+      "wall": "W1",
+      "footprint": [
+        [
+          0.0,
+          2.35
+        ],
+        [
+          0.22,
+          2.35
+        ],
+        [
+          0.22,
+          4.95
+        ],
+        [
+          0.0,
+          4.95
+        ]
+      ],
+      "height": 4.54,
+      "evidence": "Retain current blockout chimney footprint; its rear end defines y=4.95 return. Adjacent wall recess is newly inferred.",
+      "dimension_uncertainty": "Existing projection 0.22 m; additional rear recession 0.52 m is low confidence."
+    }
+  ],
+  "furniture_zones": [
+    {
+      "id": "A",
+      "name": "Foreground sofa",
+      "center": [
+        3.2,
+        2.05
+      ],
+      "size": [
+        3.15,
+        1.02
+      ],
+      "height": 0.95,
+      "rotation_z": -8,
+      "facing_xy": [
+        0,
+        1
+      ],
+      "evidence": "Large striped sofa back occludes lower fireplace and rug; seating faces inward.",
+      "uncertainty": "Position +/-0.6 m; width +/-0.4 m",
+      "placement_evidence": "Shift right and deeper so the sofa back spans the lower frame while the near end remains cropped; preserves separation from writing table B."
+    },
+    {
+      "id": "B",
+      "name": "Foreground writing table",
+      "center": [
+        1,
+        2.2
+      ],
+      "size": [
+        1.55,
+        0.85
+      ],
+      "height": 0.78,
+      "rotation_z": 90,
+      "evidence": "Dark tabletop with papers and green bowl at bottom left, behind sofa.",
+      "uncertainty": "Cropped footprint; +/-0.4 m",
+      "placement_evidence": "Long axis follows fireplace wall; moving deeper exposes the source-visible tabletop in the lower-left camera frame while clearing sofa A."
+    },
+    {
+      "id": "C",
+      "name": "Central patterned armchair",
+      "center": [
+        1.75,
+        4.42
+      ],
+      "size": [
+        0.82,
+        0.85
+      ],
+      "height": 1.12,
+      "rotation_z": 0,
+      "facing_xy": [
+        0,
+        -1
+      ],
+      "evidence": "Unoccluded front-facing upholstered chair in front of bookcase.",
+      "uncertainty": "Position +/-0.35 m; footprint +/-0.12 m"
+    },
+    {
+      "id": "D",
+      "name": "Cane rocking chair",
+      "center": [
+        3.65,
+        4.35
+      ],
+      "size": [
+        0.78,
+        1.35
+      ],
+      "height": 1.1,
+      "rotation_z": -20,
+      "facing_xy": [
+        -0.342,
+        -0.94
+      ],
+      "evidence": "Dark open-work rocking chair sits closer to camera than rear red chair; curved runners span a long footprint.",
+      "uncertainty": "Position +/-0.4 m; yaw +/-15 degrees",
+      "placement_evidence": "Shift right to separate its projected back from central chair C while retaining overlap with the rear window furnishings."
+    },
+    {
+      "id": "E",
+      "name": "Rear red armchair",
+      "center": [
+        2.3,
+        5.65
+      ],
+      "size": [
+        0.88,
+        0.88
+      ],
+      "height": 1.13,
+      "rotation_z": 0,
+      "facing_xy": [
+        0,
+        -1
+      ],
+      "evidence": "Red chair behind small pedestal table, left of the rocker.",
+      "uncertainty": "Position +/-0.4 m"
+    },
+    {
+      "id": "F",
+      "name": "Right orange armchair",
+      "center": [
+        4,
+        5.68
+      ],
+      "size": [
+        1.02,
+        0.98
+      ],
+      "height": 1.1,
+      "rotation_z": 0,
+      "facing_xy": [
+        0,
+        -1
+      ],
+      "evidence": "Broad orange chair cropped by right edge; small footstool in front.",
+      "uncertainty": "Position +/-0.6 m; right edge hidden",
+      "placement_evidence": "Place forward of window table G, clear of rocker D, with partial right-edge camera cropping as photographed."
+    },
+    {
+      "id": "G",
+      "name": "Window display table",
+      "center": [
+        3.28,
+        6.52
+      ],
+      "size": [
+        1.65,
+        0.62
+      ],
+      "height": 0.78,
+      "rotation_z": 0,
+      "evidence": "Cloth-covered table below window holds two framed photographs and central statue.",
+      "uncertainty": "Position +/-0.4 m; width +/-0.25 m"
+    },
+    {
+      "id": "H",
+      "name": "Revolving bookcase",
+      "center": [
+        -0.1459178104434944,
+        6.222291280818902
+      ],
+      "size": [
+        0.66,
+        0.66
+      ],
+      "height": 1.39185016957032,
+      "rotation_z": 0,
+      "evidence": "Dark open-sided bookcase behind patterned armchair, underneath wall sconce.",
+      "uncertainty": "Rear wall recess and depth remain low confidence; validate architecture in the next blockout.",
+      "floor_z": 0,
+      "placement_evidence": "Backproject the existing floor-anchor projection upward 27 pixels at 1019 x 807 onto z=0; fit top-center height to the same vertical shift. Rear W1 recess provides floor clearance. This is a constrained inference, not a surveyed dimension."
+    },
+    {
+      "id": "I",
+      "name": "Globe on stand",
+      "center": [
+        -0.07339397588259278,
+        5.236500874575703
+      ],
+      "size": [
+        0.44,
+        0.44
+      ],
+      "height": 1.179757520047908,
+      "rotation_z": 0,
+      "evidence": "Small globe between fireplace pier and bookcase.",
+      "uncertainty": "Rear wall recess and depth remain low confidence; validate architecture in the next blockout.",
+      "floor_z": 0,
+      "placement_evidence": "Backproject the existing floor-anchor projection upward 27 pixels at 1019 x 807 onto z=0; fit top-center height to the same vertical shift. Rear W1 recess provides floor clearance. This is a constrained inference, not a surveyed dimension."
+    },
+    {
+      "id": "J",
+      "name": "Round pedestal table",
+      "center": [
+        2.35,
+        4.95
+      ],
+      "size": [
+        0.66,
+        0.66
+      ],
+      "height": 0.73,
+      "rotation_z": 0,
+      "evidence": "Small round table with red box in front of rear red chair.",
+      "uncertainty": "Position +/-0.25 m"
+    },
+    {
+      "id": "K",
+      "name": "Rear desk and lamp",
+      "center": [
+        1.52,
+        6.07
+      ],
+      "size": [
+        1.0,
+        0.52
+      ],
+      "height": 0.77,
+      "rotation_z": 0,
+      "lamp_top_height": 1.65,
+      "evidence": "Partly hidden desk with pale lampshade behind central chair, to left of red chair.",
+      "uncertainty": "Heavily occluded; footprint +/-0.3 m"
+    },
+    {
+      "id": "L",
+      "name": "Small footstool",
+      "center": [
+        4.65,
+        4.95
+      ],
+      "size": [
+        0.68,
+        0.42
+      ],
+      "height": 0.29,
+      "rotation_z": 12,
+      "evidence": "Low dark stool with patterned top in front of orange chair.",
+      "uncertainty": "Position +/-0.35 m",
+      "placement_evidence": "Place forward/right of orange chair F, clear of rocker runners."
+    }
+  ],
+  "floor_covering": {
+    "name": "Large Persian-style rug",
+    "center": [
+      3.48,
+      3.47
+    ],
+    "size": [
+      5.0,
+      4.95
+    ],
+    "rotation_z": 0,
+    "evidence": "Dense red/blue patterned rug fills seating foreground; wood border visible beside right chair.",
+    "dimension_uncertainty": "Cropped near edge; +/-0.7 m"
+  },
+  "camera": {
+    "position": [
+      5.7,
+      0.55,
+      1.62
+    ],
+    "target": [
+      1.05,
+      5.05,
+      1.82
+    ],
+    "up": [
+      0,
+      0,
+      1
+    ],
+    "focal_length_mm": 30,
+    "sensor_width_mm": 36,
+    "sensor_fit": "HORIZONTAL",
+    "resolution": [
+      6114,
+      4842
+    ],
+    "projection": "perspective",
+    "horizontal_fov_degrees": 61.93,
+    "evidence": "Diagonal view shows fireplace wall on left, window wall on right, ceiling and extensive rug. Near vertical architectural lines suggest a nearly level camera; rear corner lies slightly right of image center.",
+    "uncertainty": "Initial geometric estimate, not a calibrated camera; position +/-0.6 m, focal length approximately 27\u201336 mm",
+    "frustum_diagram_length": 7.0,
+    "framing_assessment": "Retain current contracted pose, focal length and image dimensions. W1 now follows its polyline rather than a single plane x=0. The recessed rear junction shifts in projection and requires downstream visual review; no whole-scene camera calibration is claimed."
+  },
+  "occlusion_constraints": [
+    "Sofa is in front of fireplace lower area and rug.",
+    "Bookcase and desk are behind central patterned armchair.",
+    "Round pedestal table is in front of rear red chair.",
+    "Rocking chair overlaps window table and rear red chair in projection.",
+    "Window table and orange chair obscure lower window."
+  ],
+  "limits": [
+    "Single-view reconstruction; dimensions are estimates, not survey measurements.",
+    "No doorway is visibly established; none added.",
+    "Window sash layout behind lace is unresolved.",
+    "Unseen room boundaries close the model but are not photographic observations.",
+    "No exterior scene or hidden room content inferred."
+  ],
+  "render_constraints": {
+    "engine": "CYCLES",
+    "device": "CPU"
+  },
+  "diagram_image": "state/floorplan.png",
+  "reconciliation": {
+    "reference_image": "input/reference.jpg",
+    "status": "Floorplan geometry resolved; downstream blockout rebuild and visual review required.",
+    "measurements": {
+      "H": {
+        "old_base_xyz": [
+          0.65,
+          5.45,
+          0
+        ],
+        "new_base_xyz": [
+          -0.1459178104434944,
+          6.222291280818902,
+          2.220446049250313e-16
+        ],
+        "translation_xy_m": [
+          -0.7959178104434944,
+          0.7722912808189015
+        ],
+        "height_m": 1.39185016957032,
+        "z_scale": 1.1598751413086001,
+        "base_shift_px": [
+          0.0,
+          -27.0
+        ],
+        "top_shift_px": [
+          -5.809877563933696e-06,
+          -26.999999999999943
+        ],
+        "wall_clearance_m": 0.04408218955650561,
+        "return_clearance_m": 0.9422912808189015
+      },
+      "I": {
+        "old_base_xyz": [
+          0.65,
+          4.65,
+          0
+        ],
+        "new_base_xyz": [
+          -0.07339397588259278,
+          5.236500874575703,
+          0.0
+        ],
+        "translation_xy_m": [
+          -0.7233939758825928,
+          0.5865008745757025
+        ],
+        "height_m": 1.179757520047908,
+        "z_scale": 1.1453956505319496,
+        "base_shift_px": [
+          5.684341886080802e-14,
+          -27.0
+        ],
+        "top_shift_px": [
+          0.00035901774884905535,
+          -27.0
+        ],
+        "wall_clearance_m": 0.22660602411740727,
+        "return_clearance_m": 0.06650087457570297
+      }
+    },
+    "wall_rule": "W1 polyline is authoritative. Replace the old rear x=0 wall segment; do not leave two walls. Extend floor and ceiling to the room polygon and join W2 at x=-0.52. Follow W1 with panels, baseboard, cornice and paired trim using their existing owners.",
+    "support_rule": "For H and all books and instrument it supports, translate XY by H translation_xy_m and scale world Z by H z_scale about z=0. Transform geometry, frames, bounds, shelf/support regions and attachments together. Apply I transform to the complete globe/stand assembly. Base remains z=0; do not float either object.",
+    "sconce_rule": {
+      "transform": "p_new = camera_position + scale * (p_old-camera_position)",
+      "scale": 1.0912280701754387,
+      "reason": "Maps old mounting plane x=0 onto x=-0.52 with identical image projection. Preserves applied sconce correction."
+    },
+    "preserve": "Retain current sofa geometry including the applied right-arm correction; retain all unrelated source-driven blockout corrections. Existing current blockout overrides supersede older unchanged furniture-zone estimates.",
+    "limits": [
+      "Top-center horizontal residual is reported; fitting both center heights does not imply a rigid silhouette translation.",
+      "Recess depth is low confidence. Do not claim a new rendered alignment score from this plan.",
+      "Current objects.json and blockout images still describe the prior shell until downstream rebuilding."
+    ]
+  }
+}
