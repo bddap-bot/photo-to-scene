@@ -22,6 +22,8 @@ def function(name):
         result = f"{name}() {{" + definition.split("\n}\n", 1)[0] + "\n}"
     if name == "run_one_detail":
         result = function("detail_contract_hash") + "\n" + function("reuse_detail_records") + "\n" + result
+    if name.startswith("run_") and name != "run_detail":
+        result = function("stage_builder") + "\n" + result
     if name in ("builder", "run_detail"):
         result = goto_policy() + "\n" + result
     if name in ("builder", "critic"):
@@ -636,6 +638,7 @@ printf 'new_attempts=%s records=%s\n' "$((ATTEMPT_SEQ-9))" "$(awk -F '\t' '$1==\
             verdict = state / "exact.json"
             missing = state / "missing.json"
             verdict.write_text('{"score":7,"summary":"exact verdict"}')
+            (state / "redirects.tsv").write_text("")
             (state / "records.tsv").write_text(
                 f"integrate\t1\t7\t4\t\t{verdict}\t\n"
                 f"materials\t1\t0\t2\t\t{missing}\t\n"
@@ -1447,6 +1450,69 @@ done
         self.assertIn("FAIL floorplan no attempt completed its model calls", result.stdout)
         self.assertIn("FAIL stage=floorplan rc=1", result.stdout)
         self.assertNotIn("blockout reached", result.stdout)
+    def test_builder_goto_leaves_a_timed_redirect_row_and_keeps_scored_budgets(self):
+        for stage in ("blockout", "object:one"):
+            with self.subTest(stage=stage), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                state = root / "state"
+                prompts = root / "prompts"
+                (state / "attempts").mkdir(parents=True)
+                (state / "verdicts").mkdir()
+                (state / "crops").mkdir()
+                prompts.mkdir()
+                for name in ("blockout", "detail"):
+                    (prompts / f"{name}_builder.md").write_text("build")
+                (state / "objects.json").write_text('[{"id":"one","spatial_contract":{}}]')
+                (state / "progress.md").write_text("")
+                for suffix, content in (("py", "best"), ("png", "best render"), ("json", '{"id":"one","spatial_contract":{},"final_label":"best"}')):
+                    (state / "attempts" / f"object_one_1.{suffix}").write_text(content)
+                (state / "verdicts" / "object_one_1.json").write_text('{"score":6,"corrections":["sharpen"]}')
+                (state / "best_materials_verdict.json").write_text('{"top_stage":"materials"}')
+                (state / "best_s6_score").write_text("6")
+                (state / "floorplan.json").write_text("{}")
+                (root / "log.md").write_text("")
+                (state / "redirects.tsv").write_text("")
+                command = "run_blockout" if stage == "blockout" else "run_one_detail one '' 1"
+                script = f"""set -uo pipefail
+ROOT={root}; STATE={state}; PROMPTS={prompts}; ASSETS={root}; INPUT=photo.jpg; ATTEMPT_SEQ=1; REQUEST_STAGE=; REQUEST_REASON=; BUILDER_GOTOS=0; CRITIC_GOTOS=0; MODEL_FAILURE=
+hash=$(printf '{{"contract":{{}},"material_note":null}}\\n' | sha256sum | cut -d ' ' -f1)
+printf 'object:one\\t1\\t6\\t5\\t\\t%s\\t%s\\n' "$STATE/verdicts/object_one_1.json" "$hash" > "$STATE/records.tsv"
+log() {{ printf '%s\\n' "$*"; }}
+inbox() {{ :; }}
+next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
+score_of() {{ jq -r '.score // 0' "$1"; }}
+record() {{ printf '%s\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\n' "$1" "$2" "$3" "$4" "$5" "$6" "${{7:-}}" >> "$STATE/records.tsv"; }}
+critic() {{ printf 'critic ran\\n'; }}
+codex() {{ cat >/dev/null; printf 'partial' > "$ASSETS/one.py"; printf '%s\\n' '{{"stage":"identify","reason":"needs | rework"}}' > "$STATE/goto.json"; }}
+{model_function()}
+{function("builder")}
+{function("detail_attempts")}
+{function("detail_best")}
+{function("restore_detail")}
+{function("run_blockout")}
+{function("run_one_detail")}
+{function("parse_record")}
+{function("write_report")}
+{command}
+printf 'rc=%s attempts=%s best=%s asset=%s\\n' "$?" "$(detail_attempts one "$hash")" "$(detail_best one "$hash")" "$(cat "$ASSETS/one.py")"
+write_report
+"""
+                result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=60)
+                redirects = [line.split("\t") for line in (state / "redirects.tsv").read_text().splitlines()]
+                records = (state / "records.tsv").read_text().splitlines()
+                report = (state / "scores.md").read_text()
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertNotIn("critic ran", result.stdout)
+                self.assertEqual(len(records), 1)
+                self.assertEqual(len(redirects), 1)
+                row_stage, attempt, sequence, seconds, target, reason = redirects[0]
+                self.assertEqual((row_stage, attempt, sequence, target, reason), (stage, "1" if stage == "blockout" else "2", "2", "identify", "needs | rework"))
+                self.assertGreaterEqual(int(seconds), 1)
+                expected_asset = "partial" if stage == "blockout" else "best"
+                self.assertIn(f"rc=42 attempts=1 best=6 asset={expected_asset}\n", result.stdout)
+                self.assertIn(f"| {stage} | {attempt} | 2 | {seconds} | identify | needs \\| rework |", report)
+                self.assertIn(f"Scored attempts took 5 s; redirected builder attempts took {seconds} s; together {5 + int(seconds)} s.", report)
+
     def test_reentry_best_ignores_attempts_without_a_snapshot(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
