@@ -223,21 +223,19 @@ def check_contract(entry, entries, tolerance, errors):
 def observed_shape_error(ident, actual):
     if not isinstance(actual, dict):
         return f'{ident}: observed record must be an object'
+    if isinstance(actual.get('error'), str):
+        return f'{ident}: {actual["error"]}'
     if not is_footprint(actual.get('footprint_xy')) or not is_vector(actual.get('front_xy'), 2):
         return f'{ident}: observed record needs footprint_xy (at least three [x, y] points) and front_xy [x, y]'
     regions = actual.get('regions', [])
     if not isinstance(regions, list) or not all(isinstance(region, dict) and isinstance(region.get('id'), str) and is_box(region.get('bbox')) for region in regions):
         return f'{ident}: observed regions must be a list of {{"id": string, "bbox": {BOX}}}'
-    owned = actual.get('owned_ids', [ident])
-    if not isinstance(owned, list) or not all(isinstance(item, str) for item in owned):
-        return f'{ident}: observed owned_ids must be a list of strings'
     if not is_number(actual.get('aperture_luminance', 0.0)):
         return f'{ident}: observed aperture_luminance must be a number'
     return None
 
 
 def check_observed(entries, observed, ids, tolerance, errors):
-    seen = {}
     valid = set()
     for ident in ids:
         expected = entries[ident]['spatial_contract']
@@ -261,12 +259,6 @@ def check_observed(entries, observed, ids, tolerance, errors):
                 errors.append(f'{ident}: missing region {region["id"]}')
             elif bbox_error(region['bbox'], actual_regions[region['id']]) > tolerance / max(region.get('confidence', 1), .25):
                 errors.append(f'{ident}: region {region["id"]} did not round-trip')
-        for owned in actual.get('owned_ids', [ident]):
-            if owned in seen:
-                errors.append(f'{ident}: geometry ownership duplicates {owned} from {seen[owned]}')
-            seen[owned] = ident
-        if expected['ownership']['children'] == 'external' and set(actual.get('owned_ids', [ident])) != {ident}:
-            errors.append(f'{ident}: external child geometry was duplicated')
         appearance = expected.get('appearance')
         if appearance and actual.get('aperture_luminance', 0) < appearance['minimum_luminance']:
             errors.append(f'{ident}: source-visible aperture is black')

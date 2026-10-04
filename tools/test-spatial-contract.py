@@ -18,7 +18,7 @@ class PolygonDistanceTest(unittest.TestCase):
     def test_low_confidence_region_uses_wider_tolerance(self):
         contract = {"footprint_xy": [[0, 0], [1, 0], [1, 1], [0, 1]], "front_xy": [0, 1], "regions": [{"id": "hidden", "bbox": {"min": [0, 0, 0], "max": [1, 1, 1]}, "confidence": .25}], "relationships": [], "ownership": {"children": "external"}}
         entries = {"one": {"id": "one", "spatial_contract": contract}}
-        observed = {"one": {"footprint_xy": contract["footprint_xy"], "front_xy": [0, 1], "regions": [{"id": "hidden", "bbox": {"min": [0, 0, 0], "max": [1.3, 1, 1]}}], "owned_ids": ["one"]}}
+        observed = {"one": {"footprint_xy": contract["footprint_xy"], "front_xy": [0, 1], "regions": [{"id": "hidden", "bbox": {"min": [0, 0, 0], "max": [1.3, 1, 1]}}]}}
         errors = []
         check_observed(entries, observed, ["one"], .1, errors)
         self.assertEqual(errors, [])
@@ -65,7 +65,7 @@ def declaration_errors(entries, tolerance=.03):
 
 
 def observed_errors(entries):
-    observed = {ident: {**entry["spatial_contract"], "owned_ids": [ident]} for ident, entry in entries.items()}
+    observed = {ident: entry["spatial_contract"] for ident, entry in entries.items()}
     errors = []
     check_observed(entries, observed, list(entries), .03, errors)
     return errors
@@ -282,7 +282,7 @@ class FieldShapeTest(unittest.TestCase):
 
     def test_malformed_observed_file_writes_named_error(self):
         entries = list(resting(0).values())
-        good = {entry["id"]: {**entry["spatial_contract"], "owned_ids": [entry["id"]]} for entry in entries}
+        good = {entry["id"]: entry["spatial_contract"] for entry in entries}
         cases = (
             (None, "observed.json: not valid JSON"),
             ("{", "observed.json: not valid JSON"),
@@ -290,7 +290,7 @@ class FieldShapeTest(unittest.TestCase):
             (dict(good, item=[1]), "item: observed record must be an object"),
             (dict(good, item=dict(good["item"], footprint_xy=5)), "item: observed record needs footprint_xy"),
             (dict(good, item=dict(good["item"], regions=[{"id": "body"}])), "item: observed regions must be"),
-            (dict(good, item=dict(good["item"], owned_ids="item")), "item: observed owned_ids must be"),
+            (dict(good, item={"error": "placed geometry projects to 2 disjoint parts"}), "item: placed geometry projects to 2 disjoint parts"),
             (dict(good, floor=dict(good["floor"], front_xy=None)), "floor: observed record needs"),
             ('{"item": {"front_xy": [0, 1' + '9' * 5000 + ']}}', "item: observed record needs"),
             ('[' * 100000 + ']' * 100000, "observed.json: not valid JSON"),
@@ -310,7 +310,7 @@ class FieldShapeTest(unittest.TestCase):
 
     def test_well_formed_observed_round_trip_passes(self):
         entries = list(resting(0).values())
-        observed = {entry["id"]: {**entry["spatial_contract"], "owned_ids": [entry["id"]]} for entry in entries}
+        observed = {entry["id"]: entry["spatial_contract"] for entry in entries}
         result, validation = validate(entries, observed=observed)
         self.assertEqual(result.returncode, 0, validation)
 

@@ -21,7 +21,7 @@ def function(name):
     else:
         result = f"{name}() {{" + definition.split("\n}\n", 1)[0] + "\n}"
     if name == "run_one_detail":
-        result = function("run_inferred_detail") + "\n" + function("detail_neighbors") + "\n" + function("reuse_detail_records") + "\n" + result
+        result = function("run_inferred_detail") + "\n" + function("place_command") + "\n" + function("preview_command") + "\n" + function("detail_neighbors") + "\n" + function("reuse_detail_records") + "\n" + result
     if name in ("run_one_detail", "restore_selected_details"):
         result = function("detail_contract_hash") + "\n" + function("detail_bestseq") + "\n" + function("restore_detail") + "\n" + result
     if name == "restore_detail":
@@ -30,6 +30,8 @@ def function(name):
         result = 'TEXTURES=${TEXTURES:-$STATE/textures}\n' + result
     if name == "stage_builder":
         result = function("restore_selected_details") + "\n" + result
+    if name == "run_integrate":
+        result = 'ROOT=${ROOT:-$STATE}\nplace_tool() { [ "$1 $2 $3" = "place $ROOT $STATE/placed.blend" ] && printf placed > "$3"; }\n' + result
     if name.startswith("run_") and name != "run_detail":
         result = function("stage_builder") + "\n" + result
     if name in ("builder", "run_detail"):
@@ -495,17 +497,12 @@ printf '%s %s\n' "$(wc -m < "$STATE/entry_dense.json")" "$(cat "$STATE/request_c
                 (textures / "lace.png").write_bytes(b"shared")
                 (textures / "rug" / "weave.png").write_bytes(b"own")
                 (state / "entry_rug.json").write_text('{"id":"rug"}')
-                marker = state / "detail_rug_1.started"
-                render = state / "detail_rug.png"
-                marker.write_text("")
-                render.write_text("render")
-                os.utime(marker, (1, 1))
-                os.utime(render, (2, 2))
                 script = f'''set -uo pipefail
 ROOT={shlex.quote(str(root))}; ASSETS=$ROOT/assets; STATE=$ROOT/state; TEXTURES=$ROOT/textures
 {fake_blender(root / "stub")}
 {function("verify_detail")}
-if verify_detail rug "$STATE/detail_rug_1.started"; then printf 'PASS\\n'; else printf 'FAIL: %s\\n' "$DETAIL_FAILURE"; fi
+place_tool() {{ [ "$1 $3" = "preview rug" ] && printf render > "$4"; }}
+if verify_detail rug; then printf 'PASS\\n'; else printf 'FAIL: %s\\n' "$DETAIL_FAILURE"; fi
 '''
                 result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=30)
                 self.assertEqual(result.returncode, 0, result.stderr)
@@ -520,13 +517,14 @@ if verify_detail rug "$STATE/detail_rug_1.started"; then printf 'PASS\\n'; else 
             (state / "objects.json").write_text('[{"id":"one"}]')
             (state / "spatial_observed.json").write_text("{}")
             (state / "materials.png").write_text("render")
-            (state / "materials.blend").write_text("scene")
+            (state / "materials.blend").write_text("stale scene")
+            (state / "aperture_luminance.json").write_text('{"one": 1}')
             (state / "records.tsv").write_text("")
             script = f'''set -uo pipefail
 STATE={state!s}; INPUT=input.jpg; ATTEMPT_SEQ=0; BEST_S6=-1; REQUEST_STAGE=; REQUEST_REASON=; MODEL_FAILURE=
 next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
 log() {{ printf '%s\n' "$*"; }}
-builder() {{ return 0; }}
+builder() {{ [ -e "$STATE/materials.blend" ] || [ -e "$STATE/aperture_luminance.json" ] || printf scene > "$STATE/materials.blend"; }}
 spatial_validate() {{ printf '%s\n' '{{"valid":false,"errors":["one: material footprint mismatch"]}}' > "$2"; return 1; }}
 critic() {{ return 99; }}
 score_of() {{ jq -r '.score // 0' "$1"; }}
@@ -554,6 +552,7 @@ printf 'score=%s best=%s png=%s blend=%s error=%s\n' "$(cut -f3 "$STATE/records.
             (state / "verdicts").mkdir()
             (state / "objects.json").write_text('[{"id":"one"}]')
             (state / "assemble.py").write_text("")
+            (state / "integrate.blend").write_text("stale scene")
             (state / "integrate.png").write_text("")
             (state / "integrate_overlay.png").write_text("")
             (state / "spatial_observed.json").write_text("{}")
@@ -567,7 +566,7 @@ REQUEST_STAGE=
 REQUEST_REASON=
 next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
 log() {{ printf '%s\n' "$*"; }}
-builder() {{ return 0; }}
+builder() {{ [ -f "$STATE/placed.blend" ] && [ ! -e "$STATE/integrate.blend" ] && rm "$STATE/placed.blend" && printf scene > "$STATE/integrate.blend"; }}
 spatial_validate() {{ printf '%s\n' '{{"valid":false,"errors":["one: footprint did not round-trip"]}}' > "$2"; return 1; }}
 critic() {{ return 99; }}
 score_of() {{ jq -r '.score // 0' "$1"; }}
@@ -1769,6 +1768,7 @@ codex() {{
 {function("critic")}
 {function("write_stage_check_verdict")}
 {function("verify_detail")}
+place_tool() {{ [ "$1" = preview ] && printf 'render %s' "$(grep -o '# [0-9]' "$ASSETS/$3.py" | cut -c 3-)" > "$4"; }}
 {function("detail_attempts")}
 {function("detail_best")}
 {function("restore_detail")}
