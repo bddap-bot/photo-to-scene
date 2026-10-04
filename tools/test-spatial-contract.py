@@ -196,7 +196,7 @@ class ClosedContractTest(unittest.TestCase):
     def test_source_visible_aperture_is_the_whole_appearance_contract(self):
         cases = (
             ({"aperture_background": "source_visible", "minimum_luminance": .2}, None),
-            ({}, None),
+            ({}, "appearance must be"),
             ({"aperture_background": "source_visible"}, "appearance must be"),
             ({"aperture_background": {"visibility": "not_observed"}, "minimum_luminance": .2}, "appearance must be"),
             ({"aperture_background": "source_visible", "minimum_luminance": 2}, "appearance must be"),
@@ -233,7 +233,13 @@ class FieldShapeTest(unittest.TestCase):
             (lambda e, c: c["regions"][0].update(bbox={"min": [0, 0], "max": [1, 1]}), "item: spatial_contract.regions must be"),
             (lambda e, c: c.update(relationships={"with": "floor"}), "item: spatial_contract.relationships must be"),
             (lambda e, c: c.update(relationships=[{"type": "minimum_xy_clearance", "with": "floor"}]), "item: spatial_contract.relationships must be"),
-            (lambda e, c: c.update(ownership="external"), "item: spatial_contract.ownership.children must be"),
+            (lambda e, c: c.update(relationships=[{"type": "minimum_xy_clearance", "with": "floor", "metres": -1}]), "item: spatial_contract.relationships must be"),
+            (lambda e, c: c["relationships"][0].update(gap_m=0, evidence=["silhouette"]), "item: spatial_contract.relationships must be"),
+            (lambda e, c: c["relationships"][0].update(type="mounted_to"), "item: spatial_contract.relationships must be"),
+            (lambda e, c: c["ownership"].update(child_ids=["floor"]), "item: spatial_contract.ownership must be"),
+            (lambda e, c: c["regions"][0].update(id=""), "item: spatial_contract.regions must be"),
+            (lambda e, c: c["frame"].update(size_xyz=[1, 1, 1e400]), "item: spatial_contract.frame must be"),
+            (lambda e, c: c.update(ownership="external"), "item: spatial_contract.ownership must be"),
             (lambda e, c: c.update(source_evidence="photo"), "item: spatial_contract.source_evidence must be"),
         )
         for change, message in cases:
@@ -256,6 +262,8 @@ class FieldShapeTest(unittest.TestCase):
             (dict(good, item=dict(good["item"], regions=[{"id": "body"}])), "item: observed regions must be"),
             (dict(good, item=dict(good["item"], owned_ids="item")), "item: observed owned_ids must be"),
             (dict(good, floor=dict(good["floor"], front_xy=None)), "floor: observed record needs"),
+            ('{"item": {"front_xy": [0, 1' + '9' * 5000 + ']}}', "item: observed record needs"),
+            ('[' * 100000 + ']' * 100000, "observed.json: not valid JSON"),
         )
         for observed, message in cases:
             with self.subTest(observed=observed):

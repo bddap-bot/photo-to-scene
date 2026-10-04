@@ -1385,7 +1385,7 @@ done
             (state / "progress.md").write_text("")
             script = f"""set -uo pipefail
 ROOT={root}; STATE={state}; PROMPTS={prompts}; ASSETS={root}; INPUT=photo.jpg; ATTEMPT_SEQ=6; REQUEST_STAGE=; REQUEST_REASON=; BUILDER_GOTOS=0
-hash=$(printf '{{}}\\n' | sha256sum | cut -d ' ' -f1)
+hash=$(printf '{{"contract":{{}},"material_note":null}}\\n' | sha256sum | cut -d ' ' -f1)
 printf 'integrate\\t1\\t0\\t1\\t\\t%s\\t\\nintegrate\\t2\\t0\\t1\\t\\t%s\\t\\n' "$STATE/verdicts/integrate_5.json" "$STATE/verdicts/integrate_6.json" > "$STATE/records.tsv"
 printf 'object:one\\t1\\t5\\t1\\t\\t%s\\t%s\\nobject:one\\t2\\t5\\t1\\t\\t%s\\t%s\\n' "$STATE/verdicts/object_one_3.json" "$hash" "$STATE/verdicts/object_one_4.json" "$hash" >> "$STATE/records.tsv"
 log() {{ printf '%s\\n' "$*"; }}
