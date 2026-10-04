@@ -28,9 +28,14 @@ MODEL_SECONDS=2100
 MODEL_IDLE_SECONDS=1500
 MODEL_BUSY_CPU_TICKS=10
 MODEL_FAILURE=
+S56_START=
 log() { printf '%s %s\n' "$(date -Is)" "$*" | tee -a "$ROOT/log.md"; }
 inbox() { command -v botq >/dev/null 2>&1 && botq inbox | tee -a "$ROOT/log.md" || true; }
-next_attempt() { ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); printf '%s' "$ATTEMPT_SEQ" > "$STATE/attempt_seq"; }
+next_attempt() {
+  case "${ACTIVE_STAGE:-}" in integrate|materials) S56_START=${S56_START:-$(date +%s)} ;; esac
+  if [ -n "$S56_START" ] && [ "$(( $(date +%s) - S56_START ))" -ge 12600 ] && [ -f "$STATE/best_materials.blend" ]; then log 'WALLCLOCK cap reached; finalizing best S6'; finalize; fi
+  ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); printf '%s' "$ATTEMPT_SEQ" > "$STATE/attempt_seq"
+}
 score_of() { jq -r '.score // 0' "$1"; }
 record() { printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$1" "$2" "$3" "$4" "$5" "$6" "${7:-}" "${8:-}" >> "$STATE/records.tsv"; }
 goto_targets() { printf '%s\t\n' "${STAGE_NAMES[@]}"; [ ! -f "$STATE/objects.json" ] || jq -r 'arrays | .[] | objects | select(.id | type == "string") | ["object:" + .id, (.final_label // .label // "" | tostring)] | @tsv' "$STATE/objects.json" 2>/dev/null; }
@@ -412,7 +417,6 @@ run_detail() {
 }
 run_integrate() {
   local feedback=${1:-} best bestseq start score a verdict validation completed
-  [ -f "$STATE/integrate_start_epoch" ] || date +%s > "$STATE/integrate_start_epoch"
   completed=$(integrate_attempts); read -r best bestseq <<< "$(integrate_best)"
   for ((a=completed+1; a<=3; a++)); do next_attempt; start=$(date +%s); log "ENTER integrate attempt=$a sequence=$ATTEMPT_SEQ"; rm -f "$STATE/integrate.blend" "$STATE/aperture_luminance.json"; restore_selected_details integrate; place_tool place "$ROOT" "$STATE/placed.blend" > "$STATE/place.log" 2>&1 || { log "FAIL integrate could not place the assets: $(tail -c 1500 "$STATE/place.log")"; return 1; }; stage_builder integrate "$a" "$start" integrate_builder.md "$feedback" -i "$INPUT" || return $?; verdict="$STATE/verdicts/integrate_${ATTEMPT_SEQ}.json"; validation="$STATE/verdicts/integrate_${ATTEMPT_SEQ}_validation.json"; if [ -n "$MODEL_FAILURE" ] || spatial_validate "$STATE/integrate.blend" "$validation"; then critic "$verdict" integrate -i "$INPUT" "$STATE/integrate.png" "$STATE/integrate_overlay.png" < "$PROMPTS/integrate_critic.md"; else log "FAIL integrate spatial contract did not round-trip attempt=$a"; write_spatial_check_verdict "$verdict" integrate "$validation"; fi; score=$(score_of "$verdict"); record integrate "$a" "$score" "$(( $(date +%s)-start ))" "$feedback" "$verdict"; log "SCORE integrate attempt=$a score=$score"; [ -n "$MODEL_FAILURE" ] || { mkdir -p "$STATE/attempts/integrate_${ATTEMPT_SEQ}"; cp "$STATE/assemble.py" "$STATE/integrate.blend" "$STATE/integrate.png" "$STATE/integrate_overlay.png" "$STATE/spatial_observed.json" "$STATE/attempts/integrate_${ATTEMPT_SEQ}/"; [ ! -f "$STATE/aperture_luminance.json" ] || cp "$STATE/aperture_luminance.json" "$STATE/attempts/integrate_${ATTEMPT_SEQ}/"; }; if [ -z "$MODEL_FAILURE" ] && [ "$score" -gt "$best" ]; then best=$score; bestseq=$ATTEMPT_SEQ; fi; [ "$score" -ge 8 ] && break; REQUEST_STAGE=$(jq -r '.top_stage // "integrate"' "$verdict"); REQUEST_REASON=$(jq -r '.corrections[0] // ""' "$verdict"); [ "$REQUEST_STAGE" != integrate ] && return 43; feedback=$(jq -r '.corrections | join("; ")' "$verdict"); done
   [ -n "$bestseq" ] || { log "FAIL integrate no attempt completed its model calls"; return 1; }; cp "$STATE/attempts/integrate_${bestseq}/"* "$STATE/"; inbox
@@ -423,7 +427,6 @@ run_materials() {
   if [ -z "$MODEL_FAILURE" ] && [ "$score" -gt "$BEST_S6" ]; then BEST_S6=$score; printf '%s' "$score" > "$STATE/best_s6_score"; cp "$STATE/materials.png" "$STATE/best_materials.png"; cp "$STATE/materials.blend" "$STATE/best_materials.blend"; cp "$verdict" "$STATE/best_materials_verdict.json"; fi
   if [ "$score" -lt 8 ]; then REQUEST_STAGE=$(jq -r '.top_stage // "materials"' "$verdict"); REQUEST_REASON=$(jq -r '.corrections[0] // ""' "$verdict"); [ "$REQUEST_STAGE" != materials ] && return 43; fi; inbox
 }
-within_s56_budget() { [ ! -f "$STATE/integrate_start_epoch" ] && return 0; [ "$(( $(date +%s) - $(cat "$STATE/integrate_start_epoch") ))" -lt 12600 ]; }
 write_report() {
   local report="$STATE/scores.md" row stage attempt score seconds changed verdict contract_hash tier binding scored redirected inferred gate
   binding=$(jq -r '.top_stage // "unknown"' "$STATE/best_materials_verdict.json")
@@ -431,6 +434,19 @@ write_report() {
   inferred=$(awk -F '\t' '$3 == "-" {s += $4} END {print s + 0}' "$STATE/records.tsv")
   redirected=$(awk -F '\t' '{s += $4} END {print s + 0}' "$STATE/redirects.tsv")
   { printf '# Staged reconstruction report\n\n| Stage | Tier | Attempt | Score | Seconds | What changed |\n|---|---|---:|---:|---:|---|\n'; while IFS= read -r row; do parse_record "$row"; [ "$score" != - ] || continue; tier=${row##*$'\t'}; changed=${changed//$'\n'/ }; changed=${changed//|/\\|}; [ -n "$changed" ] || changed='Initial stage entry or forward rebuild from accepted contracts.'; printf '| %s | %s | %s | %s/10 | %s | %s |\n' "$stage" "${tier:-—}" "$attempt" "$score" "$seconds" "$changed"; done < "$STATE/records.tsv"; printf '\n## Redirected builder attempts\n\n'; if [ -s "$STATE/redirects.tsv" ]; then printf '| Stage | Attempt | Sequence | Seconds | Requested | Reason |\n|---|---:|---:|---:|---|---|\n'; awk -F '\t' '{reason=$6; gsub(/\|/, "\\|", reason); printf "| %s | %s | %s | %s | %s | %s |\n", $1, $2, $3, $4, $5, reason}' "$STATE/redirects.tsv"; else printf 'No builder attempt was redirected.\n'; fi; printf '\n## Unscored inferred structure\n\n'; if awk -F '\t' '$3 == "-" {found=1} END {exit !found}' "$STATE/records.tsv"; then printf 'Built from the contract without a source observation; only the detail asset gate checked these attempts.\n\n| Stage | Attempt | Seconds | Asset gate |\n|---|---:|---:|---|\n'; while IFS= read -r row; do parse_record "$row"; [ "$score" = - ] || continue; gate=$(jq -r '.summary' "$verdict" 2>/dev/null || printf 'gate result absent'); gate=${gate//$'\n'/ }; printf '| %s | %s | %s | %s |\n' "$stage" "$attempt" "$seconds" "${gate//|/\\|}"; done < "$STATE/records.tsv"; else printf 'No inferred structure was built.\n'; fi; printf '\nScored attempts took %s s; inferred structure took %s s; redirected builder attempts took %s s; together %s s.\n' "$scored" "$inferred" "$redirected" "$((scored + inferred + redirected))"; printf '\n## GOTO history\n\n'; grep ' GOTO ' "$ROOT/log.md" 2>/dev/null || printf 'No GOTO was taken.\n'; printf '\n## Scale contract\n\n- Anchor: %s\n- Assumed television width: %s m\n' "$(jq -r '.scale_anchor.description // .scale_anchor // "recorded visual anchor"' "$STATE/floorplan.json")" "$(jq -r '.assumed_tv_width_m // .scale_anchor.width_m // "not used"' "$STATE/floorplan.json")"; printf '\n## Critic verdicts, verbatim\n\n'; while IFS= read -r row; do parse_record "$row"; [ "$score" != - ] || continue; printf '### %s attempt %s\n\n' "$stage" "$attempt"; if [ ! -f "$verdict" ]; then printf "Verdict absent: \`%s\`\n\n" "$verdict"; continue; fi; printf '```json\n'; cat "$verdict"; printf '\n```\n\n'; done < "$STATE/records.tsv"; printf '## Honest assessment\n\nThe final score was %s/10. The binding stage was %s, identified by the best final critic as the source of its highest-priority remaining defect.\n' "$(cat "$STATE/best_s6_score")" "$binding"; } > "$report"
+}
+finalize() {
+  if [ ! -f "$STATE/best_materials.blend" ]; then log 'FAIL no S6 scene exists'; exit 1; fi
+  restore_selected_details final
+  MODEL_SECONDS=4800 builder final_builder.md "" || exit $?
+  [ -z "$MODEL_FAILURE" ] || { log "FAIL final $MODEL_FAILURE"; exit 1; }
+  write_report
+  cp "$STATE/best_render.png" "$STATE/side_by_side.png" "$STATE/objects_sheet.png" "$STATE/scores.md" "$STATE/floorplan.json" "$STATE/objects.json" "$PIPELINE_DIR/pipeline.sh" "$ROOT/input.json" "$ARTIFACTS/"
+  if [ "$(realpath "$ARTIFACTS")" != "$ROOT" ]; then mkdir -p "$ARTIFACTS/input"; cp "$INPUT" "$ARTIFACTS/$INPUT_REF"; fi
+  cp "$STATE/floorplan.json" "$ROOT/floorplan.json"
+  cp "$STATE/objects.json" "$ROOT/objects.json"
+  log "COMPLETE artifacts=$ARTIFACTS"
+  exit 0
 }
 feedback=
 current=${PHOTO_TO_SCENE_STAGE:-floorplan}
@@ -441,7 +457,6 @@ while :; do
   REQUEST_STAGE=
   REQUEST_REASON=
   ACTIVE_STAGE=$current
-  if ! within_s56_budget && [ -f "$STATE/best_materials.blend" ]; then log 'WALLCLOCK cap reached; finalizing best S6'; break; fi
   case "$current" in floorplan) run_floorplan "$feedback"; rc=$?; next=blockout ;; blockout) run_blockout "$feedback"; rc=$?; next=identify ;; identify) run_identify "$feedback"; rc=$?; next=detail ;; detail) run_detail "" "$feedback"; rc=$?; next=integrate ;; object:*) run_detail "$current" "$feedback"; rc=$?; next=integrate ;; integrate) run_integrate "$feedback"; rc=$?; next=materials ;; materials) run_materials "$feedback"; rc=$?; next='done' ;; *) log "FAIL invalid current stage=$current"; exit 2 ;; esac
   if [ "$rc" -eq 42 ] || [ "$rc" -eq 43 ]; then
     origin=$([ "$rc" -eq 42 ] && printf builder || printf critic)
@@ -456,13 +471,4 @@ while :; do
   current=$next
   feedback=
 done
-if [ ! -f "$STATE/best_materials.blend" ]; then log 'FAIL no S6 scene exists'; exit 1; fi
-restore_selected_details final
-MODEL_SECONDS=4800 builder final_builder.md "" || exit $?
-[ -z "$MODEL_FAILURE" ] || { log "FAIL final $MODEL_FAILURE"; exit 1; }
-write_report
-cp "$STATE/best_render.png" "$STATE/side_by_side.png" "$STATE/objects_sheet.png" "$STATE/scores.md" "$STATE/floorplan.json" "$STATE/objects.json" "$PIPELINE_DIR/pipeline.sh" "$ROOT/input.json" "$ARTIFACTS/"
-if [ "$(realpath "$ARTIFACTS")" != "$ROOT" ]; then mkdir -p "$ARTIFACTS/input"; cp "$INPUT" "$ARTIFACTS/$INPUT_REF"; fi
-cp "$STATE/floorplan.json" "$ROOT/floorplan.json"
-cp "$STATE/objects.json" "$ROOT/objects.json"
-log "COMPLETE artifacts=$ARTIFACTS"
+finalize

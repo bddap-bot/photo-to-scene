@@ -51,7 +51,7 @@ def goto_policy():
 
 
 def main_loop():
-    return goto_policy() + "\ncurrent=" + PIPELINE.split("\nfeedback=\ncurrent=", 1)[1].split("done\nif [ ! -f", 1)[0]
+    return goto_policy() + "\ncurrent=" + PIPELINE.split("\nfeedback=\ncurrent=", 1)[1].split("done\nfinalize\n", 1)[0]
 
 
 def model_function(seconds: int = 60, idle: int = 2) -> str:
@@ -209,7 +209,6 @@ verify_detail() {{ DETAIL_FAILURE="asset check failed: no contract-valid asset";
 write_tiers() {{ printf 'one\tlarge\n' > "$STATE/object_tiers.tsv"; }}
 run_tier_critic() {{ :; }}
 {run_detail}
-within_s56_budget() {{ return 0; }}
 integrate_calls=0
 run_floorplan() {{ return 0; }}
 run_blockout() {{ return 0; }}
@@ -249,7 +248,6 @@ log() {{ :; }}
 codex() {{ local call; cat >/dev/null; call=$(( $(cat "$calls") + 1 )); printf '%s' "$call" > "$calls"; if [ "$call" -eq 1 ]; then printf '%s\n' '{{"target":"blockout","reason":"invalid field"}}' > "$STATE/goto.json"; else printf '%s\n' '{{"stage":"blockout","reason":"valid retry"}}' > "$STATE/goto.json"; fi; }}
 {model_function()}
 {builder}
-within_s56_budget() {{ return 0; }}
 run_floorplan() {{ return 0; }}
 run_blockout() {{ printf 'blockout=1 detail_records=%s builder_gotos=%s calls=%s\n' "$(cat "$STATE/detail_records")" "$BUILDER_GOTOS" "$(cat "$calls")"; exit 0; }}
 run_identify() {{ return 0; }}
@@ -832,7 +830,6 @@ whole_scene() {{
 }}
 run_integrate() {{ whole_scene {integrate_origin} "$1" {target}; }}
 run_materials() {{ whole_scene {materials_origin} "$1" blockout; }}
-within_s56_budget() {{ return 0; }}
 PHOTO_TO_SCENE_STAGE=detail
 feedback=
 ''' + main_loop() + '\ndone\n'
@@ -912,44 +909,100 @@ feedback=
 
     def test_expired_budget_finalizes_saved_s6_before_redirect(self):
         run_materials = function("run_materials")
-        budget = function("within_s56_budget")
+        next_attempt = function("next_attempt")
         loop = main_loop()
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             state = root / "state"
             (state / "verdicts").mkdir(parents=True)
             (state / "objects.json").write_text('[{"id":"one"}]')
-            (state / "integrate_start_epoch").write_text(str(int(time.time()) - 12601))
+            (state / "records.tsv").touch()
             (root / "materials_critic.md").write_text("critique")
             script = f'''set -uo pipefail
 ROOT={root!s}; STATE={state!s}; PROMPTS={root!s}; INPUT=photo.png; MODEL_FAILURE=; ATTEMPT_SEQ=0; BEST_S6=-1
+S56_START=
 BUILDER_GOTOS=0; CRITIC_GOTOS=0; REQUEST_STAGE=; REQUEST_REASON=
 builds=0
 log() {{ printf '%s\n' "$*"; }}
 inbox() {{ :; }}
-next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
+{next_attempt}
+date() {{ if [ "${{1:-}}" = +%s ]; then printf '%s\n' "$(( $(command date +%s) + (builds > 0 ? 12601 : 0) ))"; else command date "$@"; fi; }}
+finalize() {{ printf 'builds=%s critic_gotos=%s best=%s\n' "$builds" "$CRITIC_GOTOS" "$([ -f "$STATE/best_materials.blend" ] && printf saved || printf absent)"; exit 0; }}
 score_of() {{ jq -r '.score // 0' "$1"; }}
 record() {{ :; }}
 builder() {{ builds=$((builds+1)); touch "$STATE/materials.png" "$STATE/materials.blend"; }}
 spatial_validate() {{ return 0; }}
 critic() {{ printf '%s\n' '{{"score":6,"top_stage":"floorplan","corrections":["rebuild floorplan"]}}' > "$1"; }}
 {run_materials}
-{budget}
-run_floorplan() {{ builder; }}
-run_blockout() {{ builder; }}
-run_identify() {{ builder; }}
-run_detail() {{ builder; }}
-run_integrate() {{ builder; }}
+run_floorplan() {{ next_attempt; builder; }}
 PHOTO_TO_SCENE_STAGE=materials
 feedback=
 {loop}
 done
-printf 'builds=%s critic_gotos=%s best=%s\n' "$builds" "$CRITIC_GOTOS" "$([ -f "$STATE/best_materials.blend" ] && printf saved || printf absent)"
+finalize
 '''
             result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=10)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("WALLCLOCK cap reached; finalizing best S6", result.stdout)
         self.assertIn("builds=1 critic_gotos=1 best=saved", result.stdout)
+
+    def s56_run(self, root: Path, clock: int, advance: int, score: int) -> subprocess.CompletedProcess[str]:
+        functions = "\n".join(function(name) for name in ("run_integrate", "run_materials", "integrate_attempts", "integrate_best", "next_attempt"))
+        state = root / "state"
+        (state / "verdicts").mkdir(parents=True, exist_ok=True)
+        (state / "clock").write_text(str(clock))
+        (state / "records.tsv").touch()
+        for name in ("integrate_critic.md", "materials_critic.md"):
+            (root / name).write_text("critique")
+        script = f'''set -uo pipefail
+ROOT={root!s}; STATE={state!s}; PROMPTS={root!s}; INPUT=photo.png; MODEL_FAILURE=; ATTEMPT_SEQ=0; BEST_S6=-1; S56_START=
+BUILDER_GOTOS=0; CRITIC_GOTOS=0; REQUEST_STAGE=; REQUEST_REASON=
+builds=0; placed=0
+date() {{ if [ "${{1:-}}" = +%s ]; then cat "$STATE/clock"; else command date "$@"; fi; }}
+log() {{ printf '%s\n' "$*"; }}
+inbox() {{ :; }}
+score_of() {{ jq -r '.score // 0' "$1"; }}
+record() {{ printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$1" "$2" "$3" "$4" "$5" "$6" "${{7:-}}" >> "$STATE/records.tsv"; }}
+{functions}
+finalize() {{ printf 'builds=%s placed=%s best=%s\n' "$builds" "$placed" "$([ -f "$STATE/best_materials.blend" ] && printf saved || printf absent)"; exit 0; }}
+place_tool() {{ placed=$((placed+1)); }}
+restore_selected_details() {{ :; }}
+builder() {{ builds=$((builds+1)); printf '%s' "$(( $(cat "$STATE/clock") + {advance} ))" > "$STATE/clock"; for name in assemble.py integrate.blend integrate.png integrate_overlay.png spatial_observed.json materials.blend materials.png; do printf '{{}}' > "$STATE/$name"; done; }}
+spatial_validate() {{ return 0; }}
+critic() {{ printf '{{"score":{score},"top_stage":"%s","corrections":["again"]}}\n' "$2" > "$1"; }}
+run_floorplan() {{ builder; }}
+run_blockout() {{ builder; }}
+run_identify() {{ builder; }}
+run_detail() {{ builder; }}
+PHOTO_TO_SCENE_STAGE=integrate
+feedback=
+{main_loop()}
+done
+finalize
+'''
+        return subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=30)
+
+    def test_expired_budget_stops_further_integrate_attempts(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "state").mkdir()
+            (root / "state" / "best_materials.blend").write_text("{}")
+            result = self.s56_run(root, int(time.time()), 12601, 5)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("WALLCLOCK cap reached; finalizing best S6", result.stdout)
+        self.assertIn("builds=1 placed=1 best=saved", result.stdout)
+
+    def test_reused_run_root_starts_a_fresh_budget(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            now = int(time.time())
+            first = self.s56_run(root, now - 12601, 0, 9)
+            second = self.s56_run(root, now, 0, 9)
+        self.assertEqual(first.returncode, 0, first.stderr)
+        self.assertIn("builds=2 placed=1 best=saved", first.stdout)
+        self.assertEqual(second.returncode, 0, second.stderr)
+        self.assertNotIn("WALLCLOCK", second.stdout)
+        self.assertIn("builds=2 placed=1 best=saved", second.stdout)
 
     def test_critic_budget_is_independent(self):
         loop = main_loop()
@@ -964,7 +1017,6 @@ REQUEST_REASON=
 calls=0
 critic_sent=0
 log() {{ printf '%s\n' "$*" >> "$STATE/log"; }}
-within_s56_budget() {{ return 0; }}
 run_floorplan() {{ return 0; }}
 run_blockout() {{ return 0; }}
 run_identify() {{ return 0; }}
@@ -1207,7 +1259,6 @@ codex() {{
 {function("critic")}
 {function("write_stage_check_verdict")}
 {function("run_floorplan")}
-within_s56_budget() {{ return 0; }}
 run_blockout() {{ printf 'blockout reached after %s calls\\n' "$(cat "$STATE/calls")"; exit 0; }}
 PHOTO_TO_SCENE_STAGE=floorplan
 feedback=
@@ -1377,7 +1428,7 @@ printf 'unreachable\\n'
         self.assertNotIn("unreachable", result.stdout)
 
     def test_failed_final_build_stops_before_the_report(self):
-        final = "if [ ! -f" + PIPELINE.split("done\nif [ ! -f", 1)[1]
+        final = function("finalize") + "\nfinalize"
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             (root / "prompts").mkdir()
@@ -1478,7 +1529,6 @@ codex() {{
 {function("critic")}
 {function("write_stage_check_verdict")}
 {function("run_floorplan")}
-within_s56_budget() {{ return 0; }}
 run_blockout() {{ printf 'blockout reached\\n'; exit 0; }}
 PHOTO_TO_SCENE_STAGE=floorplan
 feedback=
@@ -1815,7 +1865,7 @@ printf 'final=%s,%s,%s,%s\\n' "$(cat "$TEXTURES/one/weave.png")" "$(cat "$ASSETS
 """
             result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=30)
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn('restore_selected_details final\nMODEL_SECONDS=4800 builder final_builder.md', PIPELINE)
+        self.assertIn('  restore_selected_details final\n  MODEL_SECONDS=4800 builder final_builder.md', PIPELINE)
         self.assertEqual(result.stdout, "seed=,\ndetail_builder.md=clobbered,clobbered\ndetail_builder.md=selected,selected\nintegrate_builder.md=selected,selected\nfinal=selected,selected,[\"rug\",\"lamp\"],inferred 3\n")
 
     def test_detail_object_without_a_completed_attempt_keeps_no_asset(self):

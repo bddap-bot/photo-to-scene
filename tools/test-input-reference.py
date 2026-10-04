@@ -66,7 +66,7 @@ else:
             prefix = (REPO / 'pipeline.sh').read_text().split('\nfeedback=\ncurrent=', 1)[0]
             prefix = prefix.replace('PIPELINE_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)',
                                     f'PIPELINE_DIR={shlex.quote(str(REPO))}')
-            export = (REPO / 'pipeline.sh').read_text().split('\ncp "$STATE/best_render.png"', 1)[1]
+            export = (REPO / 'pipeline.sh').read_text().split('\n  cp "$STATE/best_render.png"', 1)[1].split('\n  exit 0\n}\n', 1)[0]
             driver.write_text(prefix + '\nbuilder floorplan_builder.md "" -i "$INPUT"\n'
                               + 'touch "$STATE/best_render.png" "$STATE/side_by_side.png" '
                               + '"$STATE/objects_sheet.png" "$STATE/scores.md"\n'
