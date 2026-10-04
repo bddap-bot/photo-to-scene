@@ -137,7 +137,7 @@ class SupportDeclarationTest(unittest.TestCase):
 def validate(objects):
     with tempfile.TemporaryDirectory() as directory:
         path, output = Path(directory, 'objects.json'), Path(directory, 'validation.json')
-        path.write_text(json.dumps(objects))
+        path.write_text(objects if isinstance(objects, str) else json.dumps(objects))
         result = subprocess.run([sys.executable, str(Path(__file__).with_name('spatial-contract.py')), str(path), '--output', str(output)], capture_output=True, text=True)
         return result, json.loads(output.read_text()) if output.exists() else None
 
@@ -145,7 +145,9 @@ def validate(objects):
 class InventoryShapeTest(unittest.TestCase):
     def test_malformed_inventory_writes_shape_error(self):
         cases = (
-            ({"objects": [{"id": "floor"}]}, "top level must be an array"),
+            ('[{"id": "floor"', "not valid JSON"),
+            ({"objects": [{"id": "floor"}]}, "top level must be a nonempty array"),
+            ([], "got []"),
             ([{"id": "floor"}, "floor"], "objects.json[1]: entry must be an object"),
             ([{"label": "floor"}], "objects.json[0]: entry must be an object with a string id"),
             ([{"id": "floor"}, {"id": "floor"}], "duplicate id floor"),

@@ -181,13 +181,17 @@ def check_observed(entries, observed, ids, tolerance, errors):
                 errors.append(f'{ident}: observed {relation["type"]} {other_id}: {error}')
 
 
-def inventory_errors(data):
-    if not isinstance(data, list):
-        return [f'objects.json: top level must be an array of object entries, got {type(data).__name__}']
+def load_inventory(path):
+    try:
+        data = json.loads(Path(path).read_text())
+    except json.JSONDecodeError as error:
+        return {}, [f'objects.json: not valid JSON: {error}']
+    if not isinstance(data, list) or not data:
+        return {}, [f'objects.json: top level must be a nonempty array of object entries, got {json.dumps(data) if data == [] else type(data).__name__}']
     errors = [f'objects.json[{index}]: entry must be an object with a string id' for index, entry in enumerate(data) if not isinstance(entry, dict) or not isinstance(entry.get('id'), str)]
     ids = [entry['id'] for entry in data if isinstance(entry, dict) and isinstance(entry.get('id'), str)]
     errors += [f'objects.json: duplicate id {ident}' for ident in sorted({ident for ident in ids if ids.count(ident) > 1})]
-    return errors
+    return ({}, errors) if errors else ({entry['id']: entry for entry in data}, [])
 
 
 def main():
@@ -197,15 +201,12 @@ def main():
     parser.add_argument('--tolerance', type=float, default=.03)
     parser.add_argument('--output')
     args = parser.parse_args()
-    data = json.loads(Path(args.objects).read_text())
-    errors = inventory_errors(data)
-    ids = [] if errors else [entry['id'] for entry in data]
-    if not errors:
-        entries = {entry['id']: entry for entry in data}
-        for ident in ids:
-            check_contract(entries[ident], entries, args.tolerance, errors)
-        if args.observed:
-            check_observed(entries, json.loads(Path(args.observed).read_text()), ids, args.tolerance, errors)
+    entries, errors = load_inventory(args.objects)
+    ids = list(entries)
+    for ident in ids:
+        check_contract(entries[ident], entries, args.tolerance, errors)
+    if args.observed and entries:
+        check_observed(entries, json.loads(Path(args.observed).read_text()), ids, args.tolerance, errors)
     digest = lambda path: hashlib.sha256(Path(path).read_bytes()).hexdigest()
     result = {'valid': not errors, 'ids': ids, 'errors': errors, 'observed': bool(args.observed), 'objects_sha256': digest(args.objects)}
     if args.observed:

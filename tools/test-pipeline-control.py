@@ -494,7 +494,7 @@ run_blockout; printf 'rc=%s scores=%s\n' "$?" "$(cut -f3 "$STATE/records.tsv" | 
             self.assertNotIn("critic ran", result.stdout)
             self.assertNotIn("Traceback", result.stderr)
             for attempt in (2, 3):
-                self.assertEqual((state / f"feedback_{attempt}").read_text().strip(), "objects.json: top level must be an array of object entries, got dict")
+                self.assertEqual((state / f"feedback_{attempt}").read_text().strip(), "objects.json: top level must be a nonempty array of object entries, got dict")
 
     def test_integration_attempt_budget_resumes_from_records(self):
         run_integrate = function("run_integrate")
