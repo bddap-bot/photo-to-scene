@@ -203,6 +203,7 @@ detail_best() { awk -F '\t' -v stage="object:$1" -v contract="$2" '$1==stage && 
 integrate_attempts() { awk -F '\t' '$1=="integrate" {n++} END {print n+0}' "$STATE/records.tsv"; }
 integrate_best() { awk -F '\t' -v prefix="$STATE/attempts/integrate_" '$1=="integrate" {seq=$6; sub(/^.*_/,"",seq); sub(/\.json$/,"",seq); if ((!seen || $3+0>=best) && system("test -d \"" prefix seq "\"") == 0) {seen=1; best=$3+0; path=seq}} END {if (seen) print best " " path; else print "-1 "}' "$STATE/records.tsv"; }
 parse_record() { local row=$1; stage=${row%%$'\t'*}; row=${row#*$'\t'}; attempt=${row%%$'\t'*}; row=${row#*$'\t'}; score=${row%%$'\t'*}; row=${row#*$'\t'}; seconds=${row%%$'\t'*}; row=${row#*$'\t'}; changed=${row%%$'\t'*}; row=${row#*$'\t'}; verdict=${row%%$'\t'*}; contract_hash=${row#*$'\t'}; }
+protect_textures() { find "$TEXTURES" -path "$TEXTURES/$1" -prune -o -type f -perm /222 -exec chmod a-w {} +; [ ! -d "$TEXTURES/$1" ] || chmod -R u+w "$TEXTURES/$1"; }
 verify_detail() {
   local id=$1 marker=$2 asset="$ASSETS/$1.py" other ref
   DETAIL_FAILURE=
@@ -283,6 +284,8 @@ run_tier_critic() {
 restore_detail() {
   local id=$1 bestseq=$2 entry="$STATE/entry_$1.json"
   rm -f "$ASSETS/$id.py" "$STATE/detail_$id.png"
+  rm -rf "${TEXTURES:?}/${id:?}"
+  [ -n "$bestseq" ] && [ -d "$STATE/attempts/object_${id}_${bestseq}.textures" ] && cp -a "$STATE/attempts/object_${id}_${bestseq}.textures" "$TEXTURES/$id"
   [ -n "$bestseq" ] && [ -f "$STATE/attempts/object_${id}_${bestseq}.py" ] && cp "$STATE/attempts/object_${id}_${bestseq}.py" "$ASSETS/$id.py"
   [ -n "$bestseq" ] && [ -f "$STATE/attempts/object_${id}_${bestseq}.png" ] && cp "$STATE/attempts/object_${id}_${bestseq}.png" "$STATE/detail_$id.png"
   if [ -n "$bestseq" ] && [ -f "$STATE/attempts/object_${id}_${bestseq}.json" ]; then cp "$STATE/attempts/object_${id}_${bestseq}.json" "$entry"; jq --slurpfile reviewed "$entry" --arg id "$id" 'map(if .id == $id then . + {proposed_label:$reviewed[0].proposed_label,final_label:$reviewed[0].final_label,label:$reviewed[0].final_label,label_reason:$reviewed[0].label_reason} else . end)' "$STATE/objects.json" > "$STATE/objects.json.next" && mv "$STATE/objects.json.next" "$STATE/objects.json"; fi
@@ -304,17 +307,17 @@ run_one_detail() {
   contract_hash=$(detail_contract_hash "$entry")
   reuse_detail_records "$id" "$contract_hash"
   attempts=$(detail_attempts "$id" "$contract_hash"); best=$(detail_best "$id" "$contract_hash")
-  if [ "$force" -eq 0 ] && { [ "$best" -ge 8 ] || [ "$attempts" -ge 2 ]; }; then printf '%s best=%s attempts=%s\n' "$id" "$best" "$attempts" >> "$STATE/progress.md"; inbox; return 0; fi
+  bestseq=$(awk -F '\t' -v stage="object:$id" -v contract="$contract_hash" -v prefix="$STATE/attempts/object_${id}_" '$1==stage && $7==contract && (path=="" || $3+0>best) {seq=$6; sub(/^.*_/,"",seq); sub(/\.json$/,"",seq); if (system("test -e \"" prefix seq ".py\" -o -e \"" prefix seq ".png\" -o -e \"" prefix seq ".json\"") == 0) {best=$3+0; path=seq}} END {print path}' "$STATE/records.tsv")
+  if [ "$force" -eq 0 ] && { [ "$best" -ge 8 ] || [ "$attempts" -ge 2 ]; }; then restore_detail "$id" "$bestseq"; printf '%s best=%s attempts=%s\n' "$id" "$best" "$attempts" >> "$STATE/progress.md"; inbox; return 0; fi
   if [ "$attempts" -gt 0 ] && [ -z "$feedback" ]; then
     local latest_verdict
     latest_verdict=$(awk -F '\t' -v stage="object:$id" -v contract="$contract_hash" '$1==stage && $7==contract {path=$6} END {print path}' "$STATE/records.tsv")
     [ -f "$latest_verdict" ] && feedback=$(jq -r '.corrections | join("; ")' "$latest_verdict")
   fi
-  bestseq=$(awk -F '\t' -v stage="object:$id" -v contract="$contract_hash" -v prefix="$STATE/attempts/object_${id}_" '$1==stage && $7==contract && $3+0>=best {seq=$6; sub(/^.*_/,"",seq); sub(/\.json$/,"",seq); if (system("test -e \"" prefix seq ".py\" -o -e \"" prefix seq ".png\" -o -e \"" prefix seq ".json\"") == 0) {best=$3+0; path=seq}} END {print path}' "$STATE/records.tsv")
   limit=2; [ "$force" -eq 1 ] && limit=$((attempts+2))
   for ((a=attempts+1; a<=limit; a++)); do
     ACTIVE_STAGE="object:$id"
-    next_attempt; start=$(date +%s); marker="$STATE/detail_${id}_${ATTEMPT_SEQ}.started"; touch "$marker"; log "ENTER object:$id attempt=$a sequence=$ATTEMPT_SEQ"; [ -L "$ASSETS/$id.py" ] && unlink "$ASSETS/$id.py"
+    next_attempt; start=$(date +%s); marker="$STATE/detail_${id}_${ATTEMPT_SEQ}.started"; touch "$marker"; protect_textures "$id"; log "ENTER object:$id attempt=$a sequence=$ATTEMPT_SEQ"; [ -L "$ASSETS/$id.py" ] && unlink "$ASSETS/$id.py"
     printf -v detail_context 'Object entry file: state/entry_%s.json\nRead the complete JSON file before editing.' "$id"
     [ -z "$feedback" ] || detail_context+=$'\n'"$feedback"
     stage_builder "object:$id" "$a" "$start" detail_builder.md "$detail_context" -i "$STATE/crops/$id.png" -i "${INPUT:-$STATE/crops/$id.png}" || { rc=$?; restore_detail "$id" "$bestseq"; return "$rc"; }
@@ -322,7 +325,7 @@ run_one_detail() {
     verdict="$STATE/verdicts/object_${id}_${ATTEMPT_SEQ}.json"
     if [ -n "$MODEL_FAILURE" ] || { [ -z "$ID_FAILURE" ] && verify_detail "$id" "$marker"; }; then critic "$verdict" "object:$id" -i "$STATE/crops/$id.png" "$STATE/detail_$id.png" "$INPUT" < <(cat "$PROMPTS/detail_critic.md"; printf '\nThe supplied object stage tag is object:%s.\n' "$id"); else write_stage_check_verdict "$verdict" "object:$id" "${ID_FAILURE:-$DETAIL_FAILURE}"; fi
     score=$(score_of "$verdict"); record "object:$id" "$a" "$score" "$(( $(date +%s)-start ))" "$feedback" "$verdict" "$contract_hash" "${ACTIVE_TIER:-}"; log "SCORE object:$id attempt=$a score=$score contract=$contract_hash tier=${ACTIVE_TIER:-none}"
-    [ -n "$MODEL_FAILURE" ] || { [ -f "$ASSETS/$id.py" ] && cp "$ASSETS/$id.py" "$STATE/attempts/object_${id}_${ATTEMPT_SEQ}.py"; [ -f "$STATE/detail_$id.png" ] && cp "$STATE/detail_$id.png" "$STATE/attempts/object_${id}_${ATTEMPT_SEQ}.png"; [ -z "$ID_FAILURE" ] && cp "$entry" "$STATE/attempts/object_${id}_${ATTEMPT_SEQ}.json"; }
+    [ -n "$MODEL_FAILURE" ] || { [ -f "$ASSETS/$id.py" ] && cp "$ASSETS/$id.py" "$STATE/attempts/object_${id}_${ATTEMPT_SEQ}.py"; [ -f "$STATE/detail_$id.png" ] && cp "$STATE/detail_$id.png" "$STATE/attempts/object_${id}_${ATTEMPT_SEQ}.png"; [ -d "$TEXTURES/$id" ] && cp -a "$TEXTURES/$id" "$STATE/attempts/object_${id}_${ATTEMPT_SEQ}.textures"; [ -z "$ID_FAILURE" ] && cp "$entry" "$STATE/attempts/object_${id}_${ATTEMPT_SEQ}.json"; }
     if [ -z "$MODEL_FAILURE" ] && { [ "$score" -gt "$best" ] || [ -z "$bestseq" ]; }; then best=$score; bestseq=$ATTEMPT_SEQ; fi
     [ "$score" -ge 8 ] && break; feedback=$(jq -r '.corrections | join("; ")' "$verdict")
   done

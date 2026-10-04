@@ -4,6 +4,8 @@ Review the proposed label using both images. Update the entry file with non-empt
 
 `assets/<id>.py` and `state/detail_<id>.png` must pass the detail asset gate for existence, distinct content, a `build` definition, local texture paths, and render freshness; repair and rerun this object stage, or write `state/goto.json` targeting `blockout` when pose, size, facing, footprint, regions, relationships, ownership, or other spatial evidence conflicts with the crop. [Gate: detail asset gate; Recourse: repair object stage or GOTO blockout]
 
+Generated textures belong under `textures/<id>/`, which is kept with each attempt; every other file in `textures/` is read-only, so save new downloads under new names.
+
 You are encouraged to:
 
 - expose `build(entry, collection=None)` and return its created objects, model within x=-0.5..0.5, y=-0.5..0.5, z=0..1 with +Y as front, and let integration apply the contracted frame once instead of sizing from a world bounding box;

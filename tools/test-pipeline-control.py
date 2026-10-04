@@ -21,7 +21,9 @@ def function(name):
     else:
         result = f"{name}() {{" + definition.split("\n}\n", 1)[0] + "\n}"
     if name == "run_one_detail":
-        result = function("detail_contract_hash") + "\n" + function("reuse_detail_records") + "\n" + result
+        result = function("detail_contract_hash") + "\n" + function("reuse_detail_records") + "\n" + function("protect_textures") + "\n" + result
+    if name in ("run_one_detail", "restore_detail"):
+        result = 'TEXTURES=${TEXTURES:-$STATE/textures}\n' + result
     if name.startswith("run_") and name != "run_detail":
         result = function("stage_builder") + "\n" + result
     if name in ("builder", "run_detail"):
@@ -693,6 +695,7 @@ cat "$STATE/scores.md"
                         with tempfile.TemporaryDirectory() as directory:
                             state = Path(directory)
                             (state / "attempts").mkdir()
+                            (state / "textures").mkdir()
                             saved = state / "attempts" / "object_one_1.json"
                             saved.write_text(json.dumps({"id": "one", "material_note": "plaster", "spatial_contract": original}))
                             current = {"id": "one", "material_note": "plaster", "spatial_contract": original}
@@ -1673,6 +1676,111 @@ done
         self.assertIn("retry rc=43 request=detail reason=move the sofa calls=3\n", result.stdout)
         self.assertIn("tier:large review unaccepted after one retry; descending without a GOTO\nfail rc=0 request= reason= calls=2\n", result.stdout)
         self.assertEqual([verdict["corrections"] for verdict in verdicts[2:]], [[failure], [failure]])
+
+    def test_best_detail_restores_its_own_textures_after_a_later_overwrite_and_resume(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            state = root / "state"
+            prompts = root / "prompts"
+            assets = root / "assets"
+            textures = root / "textures"
+            for path in (state / "attempts", state / "verdicts", state / "crops", prompts, assets, textures):
+                path.mkdir(parents=True)
+            (textures / "lace.png").write_bytes(b"downloaded")
+            (prompts / "detail_builder.md").write_text("build object")
+            (prompts / "detail_critic.md").write_text("criticize object")
+            (state / "objects.json").write_text('[{"id":"one","spatial_contract":{}}]')
+            (state / "records.tsv").write_text("")
+            (state / "progress.md").write_text("")
+            script = f"""set -uo pipefail
+ROOT={root}; STATE={state}; PROMPTS={prompts}; ASSETS={assets}; TEXTURES={textures}; INPUT=photo.jpg; ATTEMPT_SEQ=0; REQUEST_STAGE=; REQUEST_REASON=; BUILDER_GOTOS=0
+printf 0 > "$STATE/calls"
+log() {{ :; }}
+inbox() {{ :; }}
+next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
+score_of() {{ jq -r '.score // 0' "$1"; }}
+record() {{ printf '%s\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\n' "$1" "$2" "$3" "$4" "$5" "$6" "${{7:-}}" >> "$STATE/records.tsv"; }}
+verify_detail() {{ return 0; }}
+codex() {{
+  local call output= previous=
+  for arg in "$@"; do [ "$previous" = -o ] && output=$arg; previous=$arg; done
+  call=$(( $(cat "$STATE/calls") + 1 )); printf '%s' "$call" > "$STATE/calls"
+  cat >/dev/null
+  case "$call" in
+    1|3)
+      jq '. + {{proposed_label:"rug",final_label:"rug",label_reason:"crop"}}' "$STATE/entry_one.json" > "$STATE/entry.next" && mv "$STATE/entry.next" "$STATE/entry_one.json"
+      mkdir -p "$TEXTURES/one"; printf 'weave %s' "$call" > "$TEXTURES/one/weave.png"
+      printf 'overwritten %s' "$call" 2>/dev/null > "$TEXTURES/lace.png" || true
+      printf 'def build(entry, collection=None): pass  # %s\\n' "$call" > "$ASSETS/one.py"; printf 'render %s' "$call" > "$STATE/detail_one.png" ;;
+    *) printf '%s\\n' '{{"score":7,"summary":"close","corrections":["refine"],"top_stage":"object:one","wrong_labels":[],"missing_objects":[]}}' > "$output" ;;
+  esac
+}}
+{model_function()}
+{function("builder")}
+{function("critic")}
+{function("write_stage_check_verdict")}
+{function("detail_attempts")}
+{function("detail_best")}
+{function("restore_detail")}
+{function("run_one_detail")}
+run_one_detail one
+printf 'after_run=%s|%s|%s\\n' "$(cat "$TEXTURES/one/weave.png")" "$(cat "$STATE/detail_one.png")" "$(grep -o '# [0-9]' "$ASSETS/one.py")"
+printf 'interrupted' > "$TEXTURES/one/weave.png"; printf 'stray' > "$TEXTURES/one/stray.png"
+run_one_detail one
+printf 'after_resume=%s|%s|%s\\n' "$(cat "$TEXTURES/one/weave.png")" "$(ls "$TEXTURES/one" | paste -sd, -)" "$(cat "$STATE/calls")"
+"""
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=60)
+            shared = (textures / "lace.png").read_text()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("after_run=weave 1|render 1|# 1\n", result.stdout)
+        self.assertIn("after_resume=weave 1|weave.png|4\n", result.stdout)
+        self.assertEqual(shared, "downloaded")
+
+    def test_detail_builder_can_write_only_its_own_and_new_textures(self):
+        with tempfile.TemporaryDirectory() as directory:
+            textures = Path(directory) / "textures"
+            (textures / "sheer").mkdir(parents=True)
+            (textures / "other").mkdir()
+            (textures / "lace.png").write_bytes(b"downloaded")
+            (textures / "other" / "bark.png").write_bytes(b"neighbour")
+            (textures / "sheer" / "weave.png").write_bytes(b"own")
+            (textures / "sheer" / "weave.png").chmod(0o444)
+            script = f'''set -uo pipefail
+TEXTURES={shlex.quote(str(textures))}
+{function("protect_textures")}
+protect_textures sheer
+for path in lace.png other/bark.png sheer/weave.png fetched.png; do
+  if printf x 2>/dev/null > "$TEXTURES/$path"; then printf '%s writable\\n' "$path"; else printf '%s read-only\\n' "$path"; fi
+done
+'''
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=30)
+            unchanged = [(textures / name).read_bytes() for name in ("lace.png", "other/bark.png")]
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout, "lace.png read-only\nother/bark.png read-only\nsheer/weave.png writable\nfetched.png writable\n")
+        self.assertEqual(unchanged, [b"downloaded", b"neighbour"])
+
+    def test_cached_read_only_polyhaven_texture_is_reused_without_download(self):
+        import contextlib, hashlib, io, runpy, urllib.request
+        from unittest import mock
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "textures").mkdir()
+            cached = root / "textures" / "wood_diff_2k.jpg"
+            cached.write_bytes(b"cached")
+            cached.chmod(0o444)
+            manifest = {"Diffuse": {"2k": {"jpg": {"url": "https://dl.example/wood_diff_2k.jpg", "md5": hashlib.md5(b"cached").hexdigest()}}}}
+            fetched = []
+            def urlopen(url):
+                fetched.append(url)
+                if url.endswith("/files/wood"):
+                    return io.BytesIO(json.dumps(manifest).encode())
+                raise AssertionError(f"downloaded {url}")
+            out = io.StringIO()
+            with mock.patch.object(urllib.request, "urlopen", urlopen), mock.patch.object(sys, "argv", ["fetch-polyhaven.py", "wood", "Diffuse.2k.jpg", "--root", str(root)]), contextlib.redirect_stdout(out):
+                runpy.run_path(str(Path(__file__).with_name("fetch-polyhaven.py")), run_name="__main__")
+            self.assertEqual(cached.read_bytes(), b"cached")
+        self.assertEqual(fetched, ["https://api.polyhaven.com/files/wood"])
+        self.assertEqual(out.getvalue(), f"{cached}\n")
 
     def test_detail_object_without_a_completed_attempt_keeps_no_asset(self):
         for mode, expected_rc in (("stopped", "0"), ("goto", "42")):
