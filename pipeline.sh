@@ -230,9 +230,9 @@ run_blockout() {
 run_identify() {
   local feedback=${1:-} best=-1 bestdir='' start score a verdict
   for a in 1 2; do next_attempt; start=$(date +%s); log "ENTER identify attempt=$a sequence=$ATTEMPT_SEQ"; stage_builder identify "$a" "$start" identify_builder.md "$feedback" -i "$INPUT" || return $?; verdict="$STATE/verdicts/identify_${ATTEMPT_SEQ}.json"; critic "$verdict" identify -i "$INPUT" "$STATE/objects_sheet.png" < "$PROMPTS/identify_critic.md"; score=$(score_of "$verdict"); record identify "$a" "$score" "$(( $(date +%s)-start ))" "$feedback" "$verdict"; log "SCORE identify attempt=$a score=$score"; mkdir -p "$STATE/attempts/identify_${ATTEMPT_SEQ}"; cp "$STATE/objects.json" "$STATE/objects_sheet.png" "$STATE/attempts/identify_${ATTEMPT_SEQ}/"; if [ -z "$MODEL_FAILURE" ] && [ "$score" -gt "$best" ]; then best=$score; bestdir=$ATTEMPT_SEQ; fi; [ "$score" -ge 8 ] && break; feedback=$(jq -r '((.corrections + .wrong_labels + .missing_objects) | join("; "))' "$verdict"); done
-  [ -n "$bestdir" ] || { log "FAIL identify no attempt completed its model calls"; return 1; }; cp "$STATE/attempts/identify_${bestdir}/objects.json" "$STATE/objects.json"; jq 'map(. + {proposed_label: .label, final_label: .label, label_reason: "Root proposal awaiting object review."})' "$STATE/objects.json" > "$STATE/objects.json.next"; mv "$STATE/objects.json.next" "$STATE/objects.json"; cp "$STATE/attempts/identify_${bestdir}/objects_sheet.png" "$STATE/objects_sheet.png"; command -v botq >/dev/null 2>&1 && botq notify-hub "photo-to-scene: objects sheet ready $STATE/objects_sheet.png" || true; inbox
+  [ -n "$bestdir" ] || { log "FAIL identify no attempt completed its model calls"; return 1; }; cp "$STATE/attempts/identify_${bestdir}/objects.json" "$STATE/objects.json"; jq 'map(. + {proposed_label: .label, final_label: .label, label_reason: (if .spatial_contract.inferred then "Inferred structure without a source observation; never reviewed." else "Root proposal awaiting object review." end)})' "$STATE/objects.json" > "$STATE/objects.json.next"; mv "$STATE/objects.json.next" "$STATE/objects.json"; cp "$STATE/attempts/identify_${bestdir}/objects_sheet.png" "$STATE/objects_sheet.png"; command -v botq >/dev/null 2>&1 && botq notify-hub "photo-to-scene: objects sheet ready $STATE/objects_sheet.png" || true; inbox
 }
-write_tiers() { jq -r 'sort_by(-((.spatial_contract.frame.size_xyz[0] // 0) * (.spatial_contract.frame.size_xyz[1] // 0))) | length as $n | to_entries[] | [.value.id, (if .key < (($n + 2) / 3 | floor) then "large" elif .key < ((2 * $n + 2) / 3 | floor) then "medium" else "small" end)] | @tsv' "$STATE/objects.json" > "$STATE/object_tiers.tsv"; }
+write_tiers() { jq -r 'map(select(.spatial_contract.inferred | not)) | sort_by(-((.spatial_contract.frame.size_xyz[0] // 0) * (.spatial_contract.frame.size_xyz[1] // 0))) | length as $n | to_entries[] | [.value.id, (if .key < (($n + 2) / 3 | floor) then "large" elif .key < ((2 * $n + 2) / 3 | floor) then "medium" else "small" end)] | @tsv' "$STATE/objects.json" > "$STATE/object_tiers.tsv"; }
 run_tier_critic() {
   local tier=$1 verdict start score a feedback='' rendered='' calibration='' baseline
   for a in 1 2; do
@@ -302,9 +302,33 @@ reuse_detail_records() {
     awk -F '\t' -v OFS='\t' -v stage="object:$id" -v old="$old_hash" -v hash="$hash" '$1==stage && $7==old {$7=hash} {print}' "$STATE/records.tsv" > "$STATE/records.tsv.next" && mv "$STATE/records.tsv.next" "$STATE/records.tsv"
   done < <(awk -F '\t' -v stage="object:$id" -v hash="$hash" '$1==stage && $7!=hash {print $6 "\t" $7}' "$STATE/records.tsv")
 }
+run_inferred_detail() {
+  local id=$1 feedback=${2:-} force=${3:-0} entry="$STATE/entry_$1.json" bestseq start a rc verdict failure attempts marker limit contract_hash
+  contract_hash=$(detail_contract_hash "$entry")
+  reuse_detail_records "$id" "$contract_hash"
+  attempts=$(detail_attempts "$id" "$contract_hash")
+  bestseq=$(awk -F '\t' -v stage="object:$id" -v contract="$contract_hash" -v prefix="$STATE/attempts/object_${id}_" '$1==stage && $7==contract {seq=$6; sub(/^.*_/,"",seq); sub(/\.json$/,"",seq); if (system("test -e \"" prefix seq ".py\"") == 0) path=seq} END {print path}' "$STATE/records.tsv")
+  if [ "$force" -eq 0 ] && { [ -n "$bestseq" ] || [ "$attempts" -ge 2 ]; }; then restore_detail "$id" "$bestseq"; printf '%s inferred attempts=%s\n' "$id" "$attempts" >> "$STATE/progress.md"; inbox; return 0; fi
+  verdict=$(awk -F '\t' -v stage="object:$id" -v contract="$contract_hash" '$1==stage && $7==contract {path=$6} END {print path}' "$STATE/records.tsv")
+  [ -n "$feedback" ] || [ ! -f "$verdict" ] || feedback=$(jq -r '.corrections // [] | join("; ")' "$verdict")
+  limit=2; [ "$force" -eq 1 ] && limit=$((attempts+2))
+  for ((a=attempts+1; a<=limit; a++)); do
+    ACTIVE_STAGE="object:$id"
+    next_attempt; start=$(date +%s); marker="$STATE/detail_${id}_${ATTEMPT_SEQ}.started"; touch "$marker"; protect_textures "$id"; log "ENTER object:$id attempt=$a sequence=$ATTEMPT_SEQ inferred"; [ -L "$ASSETS/$id.py" ] && unlink "$ASSETS/$id.py"
+    stage_builder "object:$id" "$a" "$start" detail_builder.md "Object entry file: state/entry_$id.json"$'\n'"This entry is inferred structure the photograph does not show: no crop is attached, the entry file is not read back, and no critic scores it.${feedback:+$'\n'$feedback}" -i "$INPUT" || { rc=$?; restore_detail "$id" "$bestseq"; return "$rc"; }
+    verdict="$STATE/verdicts/object_${id}_${ATTEMPT_SEQ}.json"; failure=
+    if [ -n "$MODEL_FAILURE" ] || ! verify_detail "$id" "$marker"; then failure=${MODEL_FAILURE:-$DETAIL_FAILURE}; write_stage_check_verdict "$verdict" "object:$id" "$failure"; else jq -n '{summary: "passed"}' > "$verdict"; fi
+    record "object:$id" "$a" - "$(( $(date +%s)-start ))" "$feedback" "$verdict" "$contract_hash"; log "GATE object:$id attempt=$a ${failure:-passed} contract=$contract_hash"
+    if [ -z "$failure" ]; then cp "$ASSETS/$id.py" "$STATE/attempts/object_${id}_${ATTEMPT_SEQ}.py"; cp "$STATE/detail_$id.png" "$STATE/attempts/object_${id}_${ATTEMPT_SEQ}.png"; [ -d "$TEXTURES/$id" ] && cp -a "$TEXTURES/$id" "$STATE/attempts/object_${id}_${ATTEMPT_SEQ}.textures"; bestseq=$ATTEMPT_SEQ; break; fi
+    feedback=$(jq -r '.corrections | join("; ")' "$verdict")
+  done
+  restore_detail "$id" "$bestseq"
+  printf '%s inferred attempts=%s contract=%s\n' "$id" "$(detail_attempts "$id" "$contract_hash")" "$contract_hash" >> "$STATE/progress.md"; inbox
+}
 run_one_detail() {
   local id=$1 feedback=${2:-} force=${3:-0} entry="$STATE/entry_$1.json" best bestseq start score a rc verdict attempts marker limit contract_hash detail_context neighbors
   jq --arg id "$id" '.[] | select(.id==$id)' "$STATE/objects.json" > "$entry"
+  if jq -e '.spatial_contract.inferred' "$entry" >/dev/null; then run_inferred_detail "$@"; return; fi
   neighbors="Other inventory entries whose crops overlap this crop; each owns its own components: $(detail_neighbors "$id")"
   contract_hash=$(detail_contract_hash "$entry")
   reuse_detail_records "$id" "$contract_hash"
@@ -340,6 +364,8 @@ run_detail() {
   local -a detail_ids=()
   if [[ "$only" == object:* ]]; then run_one_detail "${only#object:}" "${2:-}" 1; return $?; fi
   write_tiers
+  mapfile -t detail_ids < <(jq -r '.[] | select(.spatial_contract.inferred) | .id' "$STATE/objects.json")
+  for id in "${detail_ids[@]}"; do run_one_detail "$id" || return $?; done
   for tier in large medium small; do
     mapfile -t detail_ids < <(awk -F '\t' -v tier="$tier" '$2==tier {print $1}' "$STATE/object_tiers.tsv")
     for id in "${detail_ids[@]}"; do ACTIVE_TIER=$tier run_one_detail "$id" || return $?; done
@@ -367,11 +393,12 @@ run_materials() {
 }
 within_s56_budget() { [ ! -f "$STATE/integrate_start_epoch" ] && return 0; [ "$(( $(date +%s) - $(cat "$STATE/integrate_start_epoch") ))" -lt 12600 ]; }
 write_report() {
-  local report="$STATE/scores.md" row stage attempt score seconds changed verdict contract_hash tier binding scored redirected
+  local report="$STATE/scores.md" row stage attempt score seconds changed verdict contract_hash tier binding scored redirected inferred gate
   binding=$(jq -r '.top_stage // "unknown"' "$STATE/best_materials_verdict.json")
-  scored=$(awk -F '\t' '{s += $4} END {print s + 0}' "$STATE/records.tsv")
+  scored=$(awk -F '\t' '$3 != "-" {s += $4} END {print s + 0}' "$STATE/records.tsv")
+  inferred=$(awk -F '\t' '$3 == "-" {s += $4} END {print s + 0}' "$STATE/records.tsv")
   redirected=$(awk -F '\t' '{s += $4} END {print s + 0}' "$STATE/redirects.tsv")
-  { printf '# Staged reconstruction report\n\n| Stage | Tier | Attempt | Score | Seconds | What changed |\n|---|---|---:|---:|---:|---|\n'; while IFS= read -r row; do parse_record "$row"; tier=${row##*$'\t'}; changed=${changed//$'\n'/ }; changed=${changed//|/\\|}; [ -n "$changed" ] || changed='Initial stage entry or forward rebuild from accepted contracts.'; printf '| %s | %s | %s | %s/10 | %s | %s |\n' "$stage" "${tier:-—}" "$attempt" "$score" "$seconds" "$changed"; done < "$STATE/records.tsv"; printf '\n## Redirected builder attempts\n\n'; if [ -s "$STATE/redirects.tsv" ]; then printf '| Stage | Attempt | Sequence | Seconds | Requested | Reason |\n|---|---:|---:|---:|---|---|\n'; awk -F '\t' '{reason=$6; gsub(/\|/, "\\|", reason); printf "| %s | %s | %s | %s | %s | %s |\n", $1, $2, $3, $4, $5, reason}' "$STATE/redirects.tsv"; else printf 'No builder attempt was redirected.\n'; fi; printf '\nScored attempts took %s s; redirected builder attempts took %s s; together %s s.\n' "$scored" "$redirected" "$((scored + redirected))"; printf '\n## GOTO history\n\n'; grep ' GOTO ' "$ROOT/log.md" 2>/dev/null || printf 'No GOTO was taken.\n'; printf '\n## Scale contract\n\n- Anchor: %s\n- Assumed television width: %s m\n' "$(jq -r '.scale_anchor.description // .scale_anchor // "recorded visual anchor"' "$STATE/floorplan.json")" "$(jq -r '.assumed_tv_width_m // .scale_anchor.width_m // "not used"' "$STATE/floorplan.json")"; printf '\n## Critic verdicts, verbatim\n\n'; while IFS= read -r row; do parse_record "$row"; printf '### %s attempt %s\n\n' "$stage" "$attempt"; if [ ! -f "$verdict" ]; then printf "Verdict absent: \`%s\`\n\n" "$verdict"; continue; fi; printf '```json\n'; cat "$verdict"; printf '\n```\n\n'; done < "$STATE/records.tsv"; printf '## Honest assessment\n\nThe final score was %s/10. The binding stage was %s, identified by the best final critic as the source of its highest-priority remaining defect.\n' "$(cat "$STATE/best_s6_score")" "$binding"; } > "$report"
+  { printf '# Staged reconstruction report\n\n| Stage | Tier | Attempt | Score | Seconds | What changed |\n|---|---|---:|---:|---:|---|\n'; while IFS= read -r row; do parse_record "$row"; [ "$score" != - ] || continue; tier=${row##*$'\t'}; changed=${changed//$'\n'/ }; changed=${changed//|/\\|}; [ -n "$changed" ] || changed='Initial stage entry or forward rebuild from accepted contracts.'; printf '| %s | %s | %s | %s/10 | %s | %s |\n' "$stage" "${tier:-—}" "$attempt" "$score" "$seconds" "$changed"; done < "$STATE/records.tsv"; printf '\n## Redirected builder attempts\n\n'; if [ -s "$STATE/redirects.tsv" ]; then printf '| Stage | Attempt | Sequence | Seconds | Requested | Reason |\n|---|---:|---:|---:|---|---|\n'; awk -F '\t' '{reason=$6; gsub(/\|/, "\\|", reason); printf "| %s | %s | %s | %s | %s | %s |\n", $1, $2, $3, $4, $5, reason}' "$STATE/redirects.tsv"; else printf 'No builder attempt was redirected.\n'; fi; printf '\n## Unscored inferred structure\n\n'; if awk -F '\t' '$3 == "-" {found=1} END {exit !found}' "$STATE/records.tsv"; then printf 'Built from the contract without a source observation; only the detail asset gate checked these attempts.\n\n| Stage | Attempt | Seconds | Asset gate |\n|---|---:|---:|---|\n'; while IFS= read -r row; do parse_record "$row"; [ "$score" = - ] || continue; gate=$(jq -r '.summary' "$verdict" 2>/dev/null || printf 'gate result absent'); gate=${gate//$'\n'/ }; printf '| %s | %s | %s | %s |\n' "$stage" "$attempt" "$seconds" "${gate//|/\\|}"; done < "$STATE/records.tsv"; else printf 'No inferred structure was built.\n'; fi; printf '\nScored attempts took %s s; inferred structure took %s s; redirected builder attempts took %s s; together %s s.\n' "$scored" "$inferred" "$redirected" "$((scored + inferred + redirected))"; printf '\n## GOTO history\n\n'; grep ' GOTO ' "$ROOT/log.md" 2>/dev/null || printf 'No GOTO was taken.\n'; printf '\n## Scale contract\n\n- Anchor: %s\n- Assumed television width: %s m\n' "$(jq -r '.scale_anchor.description // .scale_anchor // "recorded visual anchor"' "$STATE/floorplan.json")" "$(jq -r '.assumed_tv_width_m // .scale_anchor.width_m // "not used"' "$STATE/floorplan.json")"; printf '\n## Critic verdicts, verbatim\n\n'; while IFS= read -r row; do parse_record "$row"; [ "$score" != - ] || continue; printf '### %s attempt %s\n\n' "$stage" "$attempt"; if [ ! -f "$verdict" ]; then printf "Verdict absent: \`%s\`\n\n" "$verdict"; continue; fi; printf '```json\n'; cat "$verdict"; printf '\n```\n\n'; done < "$STATE/records.tsv"; printf '## Honest assessment\n\nThe final score was %s/10. The binding stage was %s, identified by the best final critic as the source of its highest-priority remaining defect.\n' "$(cat "$STATE/best_s6_score")" "$binding"; } > "$report"
 }
 feedback=
 current=${PHOTO_TO_SCENE_STAGE:-floorplan}

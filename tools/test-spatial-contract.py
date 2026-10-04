@@ -50,7 +50,7 @@ def box_entry(ident, lo, hi, relationships=()):
         "relationships": list(relationships),
         "ownership": {"children": "external"},
     }
-    return {"id": ident, "bbox": {"min": list(lo), "max": list(hi)}, "spatial_contract": contract}
+    return {"id": ident, "crop_bbox": [0, 0, 10, 10], "bbox": {"min": list(lo), "max": list(hi)}, "spatial_contract": contract}
 
 
 def resting(bottom, x=1.0, **relation):
@@ -206,6 +206,34 @@ class ClosedContractTest(unittest.TestCase):
             with self.subTest(appearance=appearance):
                 entries = resting(0)
                 entries["item"]["spatial_contract"]["appearance"] = appearance
+                errors = declaration_errors(entries)
+                if message is None:
+                    self.assertEqual(errors, [])
+                else:
+                    self.assertEqual(len(errors), 1, errors)
+                    self.assertIn(message, errors[0])
+
+
+class InferredStructureTest(unittest.TestCase):
+    def test_entry_has_a_crop_exactly_when_not_inferred(self):
+        crop = "item: crop_bbox must be source pixels [x, y, width, height] with positive size"
+        cases = (
+            ({"inferred": True}, None),
+            ({"crop_bbox": [0, 0, 10, 10]}, None),
+            ({}, crop),
+            ({"crop_bbox": [0, 0, 10, 0]}, crop),
+            ({"crop_bbox": [0, 0, 10]}, crop),
+            ({"inferred": True, "crop_bbox": [0, 0, 10, 10]}, "item: spatial_contract.inferred marks structure the photograph does not show, so the entry has no crop_bbox"),
+            ({"inferred": False, "crop_bbox": [0, 0, 10, 10]}, "item: spatial_contract.inferred must be true when present"),
+        )
+        for fields, message in cases:
+            with self.subTest(fields=fields):
+                entries = resting(0)
+                del entries["item"]["crop_bbox"]
+                if "inferred" in fields:
+                    entries["item"]["spatial_contract"]["inferred"] = fields["inferred"]
+                if "crop_bbox" in fields:
+                    entries["item"]["crop_bbox"] = fields["crop_bbox"]
                 errors = declaration_errors(entries)
                 if message is None:
                     self.assertEqual(errors, [])

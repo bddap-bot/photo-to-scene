@@ -2,6 +2,8 @@ You are a fresh S4 DETAIL builder. The available inputs are the attached object 
 
 Review the proposed label using both images. Update the entry file with non-empty `proposed_label`, `final_label`, and `label_reason`; preserve the proposal verbatim, set the final label to your confirmed or corrected identification, and explain the visual evidence. These fields must pass the identification check before the attempt can score; repair the entry in this object stage. [Gate: object identification check; Recourse: repair object entry]
 
+An entry whose `spatial_contract.inferred` is true has no source observation: no crop is attached, its label is kept because the entry file is not read back, and only the detail asset gate checks it, so build it from its contract alone.
+
 Each listed overlapping entry owns its own components. A label or asset that includes one of them scores 0; leave them out of both.
 
 `assets/<id>.py` and `state/detail_<id>.png` must pass the detail asset gate for existence, distinct content, a `build` definition, local texture paths, and render freshness; repair and rerun this object stage, or write `state/goto.json` targeting `blockout` when pose, size, facing, footprint, regions, relationships, ownership, or other spatial evidence conflicts with the crop. [Gate: detail asset gate; Recourse: repair object stage or GOTO blockout]

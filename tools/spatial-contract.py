@@ -96,6 +96,7 @@ def relationship_error(relation, own, other, tolerance):
 
 CONTRACT_FIELDS = ('source_evidence', 'frame', 'footprint_xy', 'front_xy', 'regions', 'relationships', 'ownership')
 APPEARANCE_FIELDS = ('aperture_background', 'minimum_luminance')
+OPTIONAL_FIELDS = ('appearance', 'inferred')
 VECTOR3 = '[x, y, z] numbers'
 BOX = '{"min": [x, y, z], "max": [x, y, z]}'
 
@@ -134,9 +135,16 @@ def contract_shape_errors(entry):
     if not contract:
         return [f'{ident}: missing spatial_contract']
     if not isinstance(contract, dict):
-        return [f'{ident}: spatial_contract must be an object with fields {list(CONTRACT_FIELDS)} and optional appearance']
+        return [f'{ident}: spatial_contract must be an object with fields {list(CONTRACT_FIELDS)} and optional {list(OPTIONAL_FIELDS)}']
     errors = [f'{ident}: missing spatial_contract.{field}' for field in CONTRACT_FIELDS if field not in contract]
-    errors += [f'{ident}: spatial_contract.{field} is not a contract field; allowed: {list(CONTRACT_FIELDS) + ["appearance"]}' for field in contract if field not in CONTRACT_FIELDS + ('appearance',)]
+    errors += [f'{ident}: spatial_contract.{field} is not a contract field; allowed: {list(CONTRACT_FIELDS) + list(OPTIONAL_FIELDS)}' for field in contract if field not in CONTRACT_FIELDS + OPTIONAL_FIELDS]
+    if 'inferred' in contract:
+        if contract['inferred'] is not True:
+            errors.append(f'{ident}: spatial_contract.inferred must be true when present; omit it for an observed entry')
+        elif 'crop_bbox' in entry:
+            errors.append(f'{ident}: spatial_contract.inferred marks structure the photograph does not show, so the entry has no crop_bbox; remove crop_bbox, or remove inferred when the crop shows this object')
+    elif not (is_vector(entry.get('crop_bbox'), 4) and entry['crop_bbox'][2] > 0 and entry['crop_bbox'][3] > 0):
+        errors.append(f'{ident}: crop_bbox must be source pixels [x, y, width, height] with positive size; an entry the photograph does not show sets spatial_contract.inferred to true instead')
     if not is_box(entry.get('bbox')):
         errors.append(f'{ident}: bbox must be {BOX}')
     if 'source_evidence' in contract and not (isinstance(contract['source_evidence'], dict) and contract['source_evidence']):

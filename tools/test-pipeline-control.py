@@ -21,7 +21,7 @@ def function(name):
     else:
         result = f"{name}() {{" + definition.split("\n}\n", 1)[0] + "\n}"
     if name == "run_one_detail":
-        result = function("detail_neighbors") + "\n" + function("detail_contract_hash") + "\n" + function("reuse_detail_records") + "\n" + function("protect_textures") + "\n" + result
+        result = function("run_inferred_detail") + "\n" + function("detail_neighbors") + "\n" + function("detail_contract_hash") + "\n" + function("reuse_detail_records") + "\n" + function("protect_textures") + "\n" + result
     if name in ("run_one_detail", "restore_detail"):
         result = 'TEXTURES=${TEXTURES:-$STATE/textures}\n' + result
     if name.startswith("run_") and name != "run_detail":
@@ -1515,7 +1515,7 @@ write_report
                 expected_asset = "partial" if stage == "blockout" else "best"
                 self.assertIn(f"rc=42 attempts=1 best=6 asset={expected_asset}\n", result.stdout)
                 self.assertIn(f"| {stage} | {attempt} | 2 | {seconds} | identify | needs \\| rework |", report)
-                self.assertIn(f"Scored attempts took 5 s; redirected builder attempts took {seconds} s; together {5 + int(seconds)} s.", report)
+                self.assertIn(f"Scored attempts took 5 s; inferred structure took 0 s; redirected builder attempts took {seconds} s; together {5 + int(seconds)} s.", report)
 
     def test_reentry_best_ignores_attempts_without_a_snapshot(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -1941,6 +1941,95 @@ run_one_detail {target}
         self.assertEqual(run["scores"], ["0", "0"])
         self.assertEqual(run["assets"], ["2", "2"])
         self.assertEqual(run["objects"]["firebox"]["final_label"], "Dark fireplace inset")
+
+    def test_inferred_closure_gets_no_crop_or_critic_and_is_reported_apart(self):
+        def contract(width, **fields):
+            return {"frame": {"size_xyz": [width, 1, 1]}, "ownership": {"children": "external"}, **fields}
+        objects = [
+            {"id": "window", "label": "Window", "crop_bbox": [10, 10, 100, 100], "spatial_contract": contract(1)},
+            {"id": "closure", "label": "Right closing wall", "spatial_contract": contract(7, inferred=True)},
+        ]
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            state = root / "state"
+            prompts = root / "prompts"
+            assets = root / "assets"
+            for path in (state / "attempts", state / "verdicts", state / "crops", state / "textures", prompts, assets):
+                path.mkdir(parents=True)
+            (prompts / "detail_builder.md").write_text("build object")
+            (prompts / "detail_critic.md").write_text("criticize object")
+            (state / "objects.json").write_text(json.dumps([{**entry, "proposed_label": entry["label"], "final_label": entry["label"], "label_reason": "root"} for entry in objects]))
+            for name in ("records.tsv", "redirects.tsv", "progress.md"):
+                (state / name).write_text("")
+            (state / "best_materials_verdict.json").write_text('{"top_stage":"materials"}')
+            (state / "best_s6_score").write_text("8")
+            (state / "floorplan.json").write_text("{}")
+            (root / "log.md").write_text("")
+            script = f"""set -uo pipefail
+ROOT={root}; STATE={state}; PROMPTS={prompts}; ASSETS={assets}; SCHEMA={Path(__file__).parents[1] / "verdict.schema.json"}; INPUT=photo.jpg; ATTEMPT_SEQ=0; REQUEST_STAGE=; REQUEST_REASON=; BUILDER_GOTOS=0; CRITIC_GOTOS=0
+log() {{ :; }}
+inbox() {{ :; }}
+next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
+score_of() {{ jq -r '.score // 0' "$1"; }}
+record() {{ printf '%s\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\n' "$1" "$2" "$3" "$4" "$5" "$6" "${{7:-}}" "${{8:-}}" >> "$STATE/records.tsv"; }}
+verify_detail() {{ return 0; }}
+run_tier_critic() {{ printf '%s\\n' "$1" >> "$STATE/tier_critics"; }}
+codex() {{
+  local output= previous= id prompt
+  for arg in "$@"; do [ "$previous" = -o ] && output=$arg; previous=$arg; done
+  prompt=$(cat)
+  if [ -n "$output" ]; then
+    id=$(grep -o 'stage tag is object:[a-z]*' <<< "$prompt" | cut -d: -f2)
+    printf '%s\\n' "$@" > "$STATE/critic_args_$id"
+    jq -n --arg stage "object:$id" '{{scene_change:null,score:9,summary:"close",corrections:["none"],top_stage:$stage,wrong_labels:[],missing_objects:[]}}' > "$output"
+  else
+    id=$(grep -o 'state/entry_[a-z]*' <<< "$prompt" | cut -d_ -f2)
+    printf '%s\\n' "$@" > "$STATE/builder_args_$id"; printf '%s' "$prompt" > "$STATE/builder_input_$id"
+    printf x >> "$STATE/builds_$id"
+    printf 'def build(entry, collection=None): pass  # %s %s\\n' "$id" "$(wc -c < "$STATE/builds_$id")" > "$ASSETS/$id.py"; printf 'render %s' "$id" > "$STATE/detail_$id.png"
+  fi
+}}
+{model_function()}
+{function("builder")}
+{function("critic")}
+{function("write_stage_check_verdict")}
+{function("detail_attempts")}
+{function("detail_best")}
+{function("restore_detail")}
+{function("write_tiers")}
+{function("run_one_detail")}
+{function("run_detail")}
+{function("parse_record")}
+{function("write_report")}
+run_detail || exit $?
+run_detail || exit $?
+cp "$ASSETS/closure.py" "$STATE/closure_after_resume"
+run_detail object:closure "make the wall taller" || exit $?
+write_report
+"""
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=60)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            def builder_images(ident):
+                args = (state / f"builder_args_{ident}").read_text().splitlines()
+                return [image for flag, image in zip(args, args[1:]) if flag == "-i"]
+            self.assertEqual(builder_images("closure"), ["photo.jpg"])
+            self.assertIn("inferred structure the photograph does not show", (state / "builder_input_closure").read_text())
+            self.assertFalse((state / "critic_args_closure").exists())
+            self.assertEqual(builder_images("window"), [f"{state}/crops/window.png", "photo.jpg"])
+            self.assertIn(f"{state}/crops/window.png", (state / "critic_args_window").read_text().splitlines())
+            self.assertEqual((state / "tier_critics").read_text().split(), ["large", "medium", "small"] * 2)
+            rows = [line.split("\t") for line in (state / "records.tsv").read_text().splitlines()]
+            self.assertEqual([(row[0], row[2], row[7]) for row in rows], [("object:closure", "-", ""), ("object:window", "9", "large"), ("object:closure", "-", "")])
+            self.assertEqual((state / "closure_after_resume").read_text().split("# ")[-1].strip(), "closure 1")
+            self.assertEqual((assets / "closure.py").read_text().split("# ")[-1].strip(), "closure 2")
+            self.assertIn("make the wall taller", (state / "builder_input_closure").read_text())
+            self.assertEqual(json.loads((state / "objects.json").read_text())[1]["final_label"], "Right closing wall")
+            report = (state / "scores.md").read_text()
+        scored, inferred = report.split("## Unscored inferred structure", 1)
+        self.assertIn("| object:window | large | 1 | 9/10 |", scored)
+        self.assertNotIn("object:closure", scored)
+        self.assertRegex(inferred.split("## GOTO history")[0], r"\| object:closure \| 1 \| \d+ \| passed \|")
+        self.assertNotIn("### object:closure", report)
 
 if __name__ == "__main__":
     if sys.argv[1:] == ["benchmark"]:

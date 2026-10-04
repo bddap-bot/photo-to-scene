@@ -8,7 +8,7 @@ All measurements use metres. The room coordinate origin is a floor corner, with 
 
 `floorplan.json` describes the room polygon, wall heights, openings, fixed architectural features, camera pose and optics, a scale anchor, and the derivation of inferred dimensions.
 
-`objects.json` is an exhaustive array of visible objects. Each entry carries a stable identifier, proposed and object-reviewed labels, the reason for any confirmation or correction, a source-image crop rectangle, room-space bounding box, contact relationship, material observation, confidence, and a source-grounded spatial contract. The contract fixes one local-to-room frame, facing, footprint, confidence-aware semantic regions, relationships, ownership, and applicable aperture visibility.
+`objects.json` is an exhaustive array of visible objects plus any structure the scene needs that the photograph does not show. Each entry carries a stable identifier, proposed and object-reviewed labels, the reason for any confirmation or correction, a source-image crop rectangle, room-space bounding box, contact relationship, material observation, confidence, and a source-grounded spatial contract. The contract fixes one local-to-room frame, facing, footprint, confidence-aware semantic regions, relationships, ownership, and applicable aperture visibility. An entry for unshown structure, such as a room closure outside the frame, is marked `inferred` and carries no crop rectangle; the declaration gate requires a crop rectangle on every other entry and rejects one on an inferred entry.
 
 `assets/<id>.py` exposes `build(entry, collection=None)`. It creates recognisable geometry and material in one normalized local frame and returns the Blender objects it creates. Integration applies the contracted frame once and rejects any measured invariant that does not round-trip.
 
@@ -22,8 +22,8 @@ Prompts distinguish checked facts and hand-off invariants from encouraged method
 
 1. **Floorplan** estimates room geometry, fixed features, scale, and camera, then renders a top-down diagram.
 2. **Blockout** inventories every visible object and renders neutral primitives plus a 50% reference overlay. This stage evaluates projection and placement without material distractions.
-3. **Identify** produces an enlarged labelled crop for every object and a contact sheet, then corrects labels and omissions.
-4. **Detail** sorts objects by contracted footprint into large, medium, and small tiers. Each fresh builder receives one crop, the whole photograph, and one object entry; it confirms or corrects the proposed label, then renders the asset alone. After each tier, a fresh critic reviews a cumulative composition before the next tier starts.
+3. **Identify** produces an enlarged labelled crop for every observed object and a contact sheet, then corrects labels and omissions.
+4. **Detail** sorts objects by contracted footprint into large, medium, and small tiers. Each fresh builder receives one crop, the whole photograph, and one object entry; it confirms or corrects the proposed label, then renders the asset alone. After each tier, a fresh critic reviews a cumulative composition before the next tier starts. Inferred entries are built first, from their contract and the whole photograph alone; only the detail asset gate checks them, their labels stay as declared, and the report lists them as unscored inferred structure apart from the scored detail.
 5. **Integrate** assembles the shell and all asset builders, resolves contact relationships, and evaluates placement, intersections, floating geometry, gaps, and camera fit.
 6. **Materials** preserves asset materials while adding shell materials, lighting, colour management, and a final photographic render.
 
