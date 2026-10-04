@@ -8,7 +8,7 @@ You are encouraged to:
 - give each entry `id`, `label`, source-pixel `crop_bbox` as `[x,y,width,height]`, room-metre `bbox` with minimum and maximum xyz, `contact`, `material_note`, `confidence`, and `spatial_contract`;
 - give the contract named source-image evidence; a room-space `frame` with `origin_xyz`, orthonormal `x_axis_xy` and `y_axis_xy`, and positive `size_xyz`; an ordered room-space `footprint_xy`; unit `front_xy` equal to the frame y axis; named regions with room-space bounding boxes and a `confidence` from 0 to 1; numeric relationships, each `supported_by` naming its resting `region` and the target's `support_region`; and `ownership.children` set to `external` or `included`;
 - use lower region confidence for boundaries inferred behind occluders or outside the image, so critics can distinguish uncertain topology from observed edges;
-- name image points that determine facing or handedness and, when the source shows an exterior through an opening, describe `appearance.aperture_background` as `source_visible` with a minimum luminance;
+- name image points that determine facing or handedness and, when the source shows an exterior through an opening, set `appearance` to `{"aperture_background": "source_visible", "minimum_luminance": 0..1}`; the contract holds only the fields named here, so dimensions live in regions and material in `material_note`;
 - avoid yaw, since it does not define a local front axis;
 - build the shell and entries as legible neutral geometry in `state/blockout.py` and render the contracted camera to `state/blockout.png` at the source aspect ratio;
 - use a modest Cycles render and create `state/blockout_overlay.png` as a 50% blend with the reference.

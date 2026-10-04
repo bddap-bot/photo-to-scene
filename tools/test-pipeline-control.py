@@ -583,6 +583,7 @@ cat "$STATE/scores.md"
             "ownership": ("ownership", {"children": "included"}, True),
             "relationship": ("relationships", [{"type": "below", "with": "floor"}], True),
             "appearance": ("appearance", dict(original["appearance"], minimum_luminance=0.4), True),
+            "material": ("material_note", "dark walnut", True),
         }
         for legacy in (False, True):
             for name, (field, value, changed) in variants.items():
@@ -592,9 +593,13 @@ cat "$STATE/scores.md"
                             state = Path(directory)
                             (state / "attempts").mkdir()
                             saved = state / "attempts" / "object_one_1.json"
-                            saved.write_text(json.dumps({"id": "one", "spatial_contract": original}))
-                            (state / "objects.json").write_text(json.dumps([
-                                {"id": "one", "spatial_contract": dict(original, **{field: value})}]))
+                            saved.write_text(json.dumps({"id": "one", "material_note": "plaster", "spatial_contract": original}))
+                            current = {"id": "one", "material_note": "plaster", "spatial_contract": original}
+                            if field == "material_note":
+                                current[field] = value
+                            else:
+                                current["spatial_contract"] = dict(original, **{field: value})
+                            (state / "objects.json").write_text(json.dumps([current]))
                             asset = state / "one.py"
                             asset.write_text("accepted asset")
                             functions = "\n".join(function(n) for n in (

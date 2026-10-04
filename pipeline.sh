@@ -258,7 +258,7 @@ restore_detail() {
   [ -n "$bestseq" ] && [ -f "$STATE/attempts/object_${id}_${bestseq}.png" ] && cp "$STATE/attempts/object_${id}_${bestseq}.png" "$STATE/detail_$id.png"
   if [ -n "$bestseq" ] && [ -f "$STATE/attempts/object_${id}_${bestseq}.json" ]; then cp "$STATE/attempts/object_${id}_${bestseq}.json" "$entry"; jq --slurpfile reviewed "$entry" --arg id "$id" 'map(if .id == $id then . + {proposed_label:$reviewed[0].proposed_label,final_label:$reviewed[0].final_label,label:$reviewed[0].final_label,label_reason:$reviewed[0].label_reason} else . end)' "$STATE/objects.json" > "$STATE/objects.json.next" && mv "$STATE/objects.json.next" "$STATE/objects.json"; fi
 }
-detail_contract_hash() { jq -cS '.spatial_contract | del(.source_evidence, .regions[]?.confidence)' "$1" | sha256sum | cut -d ' ' -f1; }
+detail_contract_hash() { jq -cS '{contract: (.spatial_contract | del(.source_evidence, .regions[]?.confidence)), material_note}' "$1" | sha256sum | cut -d ' ' -f1; }
 reuse_detail_records() {
   local id=$1 hash=$2 verdict old_hash snapshot
   while IFS=$'\t' read -r verdict old_hash; do

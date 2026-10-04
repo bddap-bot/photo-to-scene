@@ -118,7 +118,7 @@ class SupportDeclarationTest(unittest.TestCase):
                     entries["floor"]["spatial_contract"] = None
                 errors = declaration_errors(entries)
                 self.assertEqual(len(errors), 1)
-                self.assertIn("support_region one of []", errors[0])
+                self.assertIn("relationship target floor has an invalid contract: floor: missing spatial_contract", errors[0])
 
     def test_malformed_target_footprint_is_rejected(self):
         entries = resting(0)
@@ -174,6 +174,107 @@ class InventoryShapeTest(unittest.TestCase):
         result, validation = validate(list(resting(0).values()))
         self.assertEqual(result.returncode, 0, validation)
         self.assertEqual(validation["ids"], ["floor", "item"])
+
+
+class ClosedContractTest(unittest.TestCase):
+    def test_unchecked_appearance_fields_are_rejected_by_name(self):
+        for field, value in (("line_width_m", .008), ("detail_correction", {"request": "Preserve the 0.008 m width"}), ("material_note", "plaster")):
+            with self.subTest(field=field):
+                entries = resting(0)
+                entries["item"]["spatial_contract"]["appearance"] = {field: value}
+                errors = declaration_errors(entries)
+                self.assertEqual(len(errors), 1, errors)
+                self.assertIn(f"item: spatial_contract.appearance.{field} is not a machine-checked appearance field", errors[0])
+
+    def test_unknown_contract_field_is_rejected_by_name(self):
+        entries = resting(0)
+        entries["item"]["spatial_contract"]["blockout_shell_override"] = {"ceiling_z_m": 4.5}
+        errors = declaration_errors(entries)
+        self.assertEqual(len(errors), 1, errors)
+        self.assertIn("item: spatial_contract.blockout_shell_override is not a contract field", errors[0])
+
+    def test_source_visible_aperture_is_the_whole_appearance_contract(self):
+        cases = (
+            ({"aperture_background": "source_visible", "minimum_luminance": .2}, None),
+            ({}, None),
+            ({"aperture_background": "source_visible"}, "appearance must be"),
+            ({"aperture_background": {"visibility": "not_observed"}, "minimum_luminance": .2}, "appearance must be"),
+            ({"aperture_background": "source_visible", "minimum_luminance": 2}, "appearance must be"),
+            ("source_visible", "appearance must be an object"),
+        )
+        for appearance, message in cases:
+            with self.subTest(appearance=appearance):
+                entries = resting(0)
+                entries["item"]["spatial_contract"]["appearance"] = appearance
+                errors = declaration_errors(entries)
+                if message is None:
+                    self.assertEqual(errors, [])
+                else:
+                    self.assertEqual(len(errors), 1, errors)
+                    self.assertIn(message, errors[0])
+
+
+class FieldShapeTest(unittest.TestCase):
+    def test_malformed_entry_fields_write_named_errors(self):
+        def mutated(change):
+            entries = resting(0)
+            change(entries["item"], entries["item"]["spatial_contract"])
+            return list(entries.values())
+        cases = (
+            (lambda e, c: e.pop("bbox"), "item: bbox must be"),
+            (lambda e, c: e.update(bbox=[0, 1]), "item: bbox must be"),
+            (lambda e, c: e.update(spatial_contract={"x": 1}), "item: missing spatial_contract.frame"),
+            (lambda e, c: e.update(spatial_contract=[1]), "item: spatial_contract must be an object"),
+            (lambda e, c: c.update(footprint_xy={"a": 1}), "item: spatial_contract.footprint_xy must be"),
+            (lambda e, c: c.update(front_xy="north"), "item: spatial_contract.front_xy must be"),
+            (lambda e, c: c.update(frame=[0, 0, 0]), "item: spatial_contract.frame must be"),
+            (lambda e, c: c["frame"].update(size_xyz=[1, "1", 1]), "item: spatial_contract.frame must be"),
+            (lambda e, c: c.update(regions=["body"]), "item: spatial_contract.regions must be"),
+            (lambda e, c: c["regions"][0].update(bbox={"min": [0, 0], "max": [1, 1]}), "item: spatial_contract.regions must be"),
+            (lambda e, c: c.update(relationships={"with": "floor"}), "item: spatial_contract.relationships must be"),
+            (lambda e, c: c.update(relationships=[{"type": "minimum_xy_clearance", "with": "floor"}]), "item: spatial_contract.relationships must be"),
+            (lambda e, c: c.update(ownership="external"), "item: spatial_contract.ownership.children must be"),
+            (lambda e, c: c.update(source_evidence="photo"), "item: spatial_contract.source_evidence must be"),
+        )
+        for change, message in cases:
+            with self.subTest(message=message):
+                result, validation = validate(mutated(change))
+                self.assertEqual(result.returncode, 1)
+                self.assertNotIn("Traceback", result.stderr)
+                self.assertFalse(validation["valid"])
+                self.assertTrue(any(message in error for error in validation["errors"]), validation["errors"])
+
+    def test_malformed_observed_file_writes_named_error(self):
+        entries = list(resting(0).values())
+        good = {entry["id"]: {**entry["spatial_contract"], "owned_ids": [entry["id"]]} for entry in entries}
+        cases = (
+            (None, "observed.json: not valid JSON"),
+            ("{", "observed.json: not valid JSON"),
+            ([], "observed.json: top level must be an object keyed by object id, got list"),
+            (dict(good, item=[1]), "item: observed record must be an object"),
+            (dict(good, item=dict(good["item"], footprint_xy=5)), "item: observed record needs footprint_xy"),
+            (dict(good, item=dict(good["item"], regions=[{"id": "body"}])), "item: observed regions must be"),
+            (dict(good, item=dict(good["item"], owned_ids="item")), "item: observed owned_ids must be"),
+            (dict(good, floor=dict(good["floor"], front_xy=None)), "floor: observed record needs"),
+        )
+        for observed, message in cases:
+            with self.subTest(observed=observed):
+                with tempfile.TemporaryDirectory() as directory:
+                    objects, output, path = Path(directory, 'objects.json'), Path(directory, 'validation.json'), Path(directory, 'observed.json')
+                    objects.write_text(json.dumps(entries))
+                    if observed is not None:
+                        path.write_text(observed if isinstance(observed, str) else json.dumps(observed))
+                    result = subprocess.run([sys.executable, str(Path(__file__).with_name('spatial-contract.py')), str(objects), '--observed', str(path), '--output', str(output)], capture_output=True, text=True)
+                    validation = json.loads(output.read_text()) if output.exists() else None
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertNotIn("Traceback", result.stderr)
+                self.assertTrue(any(message in error for error in validation["errors"]), validation["errors"])
+
+    def test_well_formed_observed_round_trip_passes(self):
+        entries = list(resting(0).values())
+        observed = {entry["id"]: {**entry["spatial_contract"], "owned_ids": [entry["id"]]} for entry in entries}
+        result, validation = validate(entries, observed=observed)
+        self.assertEqual(result.returncode, 0, validation)
 
 
 if __name__ == '__main__':

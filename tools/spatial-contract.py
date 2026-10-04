@@ -94,63 +94,146 @@ def relationship_error(relation, own, other, tolerance):
     return None
 
 
-def check_contract(entry, entries, tolerance, errors):
+CONTRACT_FIELDS = ('source_evidence', 'frame', 'footprint_xy', 'front_xy', 'regions', 'relationships', 'ownership')
+APPEARANCE_FIELDS = ('aperture_background', 'minimum_luminance')
+VECTOR3 = '[x, y, z] numbers'
+BOX = '{"min": [x, y, z], "max": [x, y, z]}'
+
+
+def is_vector(value, size):
+    return isinstance(value, list) and len(value) == size and all(isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v) for v in value)
+
+
+def is_box(value):
+    return isinstance(value, dict) and set(value) == {'min', 'max'} and is_vector(value['min'], 3) and is_vector(value['max'], 3)
+
+
+def is_footprint(value):
+    return isinstance(value, list) and len(value) >= 3 and all(is_vector(point, 2) for point in value)
+
+
+def is_fraction(value):
+    return is_vector([value], 1) and 0 <= value <= 1
+
+
+def contract_shape_errors(entry):
     ident = entry['id']
     contract = entry.get('spatial_contract')
     if not contract:
-        errors.append(f'{ident}: missing spatial_contract')
+        return [f'{ident}: missing spatial_contract']
+    if not isinstance(contract, dict):
+        return [f'{ident}: spatial_contract must be an object with fields {list(CONTRACT_FIELDS)} and optional appearance']
+    errors = [f'{ident}: missing spatial_contract.{field}' for field in CONTRACT_FIELDS if field not in contract]
+    errors += [f'{ident}: spatial_contract.{field} is not a contract field; allowed: {list(CONTRACT_FIELDS) + ["appearance"]}' for field in contract if field not in CONTRACT_FIELDS + ('appearance',)]
+    if not is_box(entry.get('bbox')):
+        errors.append(f'{ident}: bbox must be {BOX}')
+    if 'source_evidence' in contract and not (isinstance(contract['source_evidence'], dict) and contract['source_evidence']):
+        errors.append(f'{ident}: spatial_contract.source_evidence must be a nonempty object')
+    frame = contract.get('frame', {})
+    if not (isinstance(frame, dict) and set(frame) == {'origin_xyz', 'x_axis_xy', 'y_axis_xy', 'size_xyz'} and is_vector(frame['origin_xyz'], 3) and is_vector(frame['size_xyz'], 3) and is_vector(frame['x_axis_xy'], 2) and is_vector(frame['y_axis_xy'], 2)):
+        errors.append(f'{ident}: spatial_contract.frame must be {{"origin_xyz": {VECTOR3}, "size_xyz": {VECTOR3}, "x_axis_xy": [x, y], "y_axis_xy": [x, y]}}')
+    if 'footprint_xy' in contract and not is_footprint(contract['footprint_xy']):
+        errors.append(f'{ident}: spatial_contract.footprint_xy must be at least three [x, y] number points')
+    if 'front_xy' in contract and not is_vector(contract['front_xy'], 2):
+        errors.append(f'{ident}: spatial_contract.front_xy must be [x, y] numbers')
+    regions = contract.get('regions', [])
+    if not isinstance(regions, list) or not all(isinstance(region, dict) and set(region) <= {'id', 'bbox', 'confidence'} and isinstance(region.get('id'), str) and is_box(region.get('bbox')) and is_fraction(region.get('confidence', 1)) for region in regions):
+        errors.append(f'{ident}: spatial_contract.regions must be a list of {{"id": string, "bbox": {BOX}, "confidence": optional 0..1}}')
+    relationships = contract.get('relationships', [])
+    if not isinstance(relationships, list) or not all(isinstance(relation, dict) and isinstance(relation.get('type'), str) and isinstance(relation.get('with'), str) and (relation['type'] != 'minimum_xy_clearance' or is_vector([relation.get('metres')], 1)) for relation in relationships):
+        errors.append(f'{ident}: spatial_contract.relationships must be a list of objects with string type and with; minimum_xy_clearance also needs numeric metres')
+    ownership = contract.get('ownership', {})
+    if not isinstance(ownership, dict) or ownership.get('children') not in ('external', 'included'):
+        errors.append(f'{ident}: spatial_contract.ownership.children must be "external" or "included"')
+    if 'appearance' not in contract:
+        return errors
+    appearance = contract['appearance']
+    if not isinstance(appearance, dict):
+        errors.append(f'{ident}: spatial_contract.appearance must be an object')
+        return errors
+    errors += [f'{ident}: spatial_contract.appearance.{field} is not a machine-checked appearance field; allowed: {list(APPEARANCE_FIELDS)}. Dimensions belong in regions, material in the entry material_note, corrections in feedback' for field in appearance if field not in APPEARANCE_FIELDS]
+    if set(appearance) & set(APPEARANCE_FIELDS) and (appearance.get('aperture_background') != 'source_visible' or not is_fraction(appearance.get('minimum_luminance'))):
+        errors.append(f'{ident}: spatial_contract.appearance must be {{"aperture_background": "source_visible", "minimum_luminance": 0..1}} when the source shows an exterior through an opening, otherwise absent')
+    return errors
+
+
+def check_contract(entry, entries, tolerance, errors):
+    ident = entry['id']
+    shape = contract_shape_errors(entry)
+    if shape:
+        errors += shape
         return
-    for field in ('source_evidence', 'frame', 'footprint_xy', 'front_xy', 'regions', 'relationships', 'ownership'):
-        if field not in contract:
-            errors.append(f'{ident}: missing spatial_contract.{field}')
-    footprint = contract.get('footprint_xy', [])
-    if len(footprint) < 3:
-        errors.append(f'{ident}: footprint_xy needs at least three points')
+    contract = entry['spatial_contract']
     lo = entry['bbox']['min']
     hi = entry['bbox']['max']
-    for point in footprint:
-        if len(point) != 2 or not lo[0] - 1e-6 <= point[0] <= hi[0] + 1e-6 or not lo[1] - 1e-6 <= point[1] <= hi[1] + 1e-6:
+    for point in contract['footprint_xy']:
+        if not lo[0] - 1e-6 <= point[0] <= hi[0] + 1e-6 or not lo[1] - 1e-6 <= point[1] <= hi[1] + 1e-6:
             errors.append(f'{ident}: footprint point outside bbox')
-    front = contract.get('front_xy', [])
-    if len(front) != 2 or abs(math.hypot(*front) - 1) > .01:
+    front = contract['front_xy']
+    if abs(math.hypot(*front) - 1) > .01:
         errors.append(f'{ident}: front_xy must be a unit vector')
-    frame = contract.get('frame', {})
-    axes = [frame.get(name, []) for name in ('x_axis_xy', 'y_axis_xy')]
-    if len(frame.get('origin_xyz', [])) != 3 or len(frame.get('size_xyz', [])) != 3 or any(value <= 0 for value in frame.get('size_xyz', [0])):
-        errors.append(f'{ident}: frame needs positive size_xyz and origin_xyz')
-    elif any(len(axis) != 2 or abs(math.hypot(*axis) - 1) > .01 for axis in axes) or abs(sum(a * b for a, b in zip(*axes))) > .01:
+    frame = contract['frame']
+    axes = [frame['x_axis_xy'], frame['y_axis_xy']]
+    if any(value <= 0 for value in frame['size_xyz']):
+        errors.append(f'{ident}: frame needs positive size_xyz')
+    elif any(abs(math.hypot(*axis) - 1) > .01 for axis in axes) or abs(sum(a * b for a, b in zip(*axes))) > .01:
         errors.append(f'{ident}: frame axes must be orthonormal')
     elif sum(a * b for a, b in zip(frame['y_axis_xy'], front)) < .999:
         errors.append(f'{ident}: frame y axis must equal front_xy')
     ids = region_ids(contract)
     if not ids or len(ids) != len(set(ids)):
         errors.append(f'{ident}: regions must be nonempty and unique')
-    for region in contract.get('regions', []):
-        box = region.get('bbox', {})
-        if set(box) != {'min', 'max'} or any(box['min'][i] < lo[i] - 1e-6 or box['max'][i] > hi[i] + 1e-6 or box['min'][i] >= box['max'][i] for i in range(3)):
-            errors.append(f'{ident}: invalid region {region.get("id")}')
-    for relation in contract.get('relationships', []):
-        other = entries.get(relation.get('with'))
+    for region in contract['regions']:
+        box = region['bbox']
+        if any(box['min'][i] < lo[i] - 1e-6 or box['max'][i] > hi[i] + 1e-6 or box['min'][i] >= box['max'][i] for i in range(3)):
+            errors.append(f'{ident}: invalid region {region["id"]}')
+    for relation in contract['relationships']:
+        other = entries.get(relation['with'])
         if not other:
-            errors.append(f'{ident}: unknown relationship target {relation.get("with")}')
+            errors.append(f'{ident}: unknown relationship target {relation["with"]}')
             continue
-        error = relationship_error(relation, contract, other.get('spatial_contract') or {}, tolerance)
+        target = contract_shape_errors(other)
+        if target:
+            errors.append(f'{ident}: relationship target {other["id"]} has an invalid contract: {"; ".join(target)}')
+            continue
+        error = relationship_error(relation, contract, other['spatial_contract'], tolerance)
         if error:
             errors.append(f'{ident}: declared {relation["type"]} {other["id"]}: {error}')
 
 
+def observed_shape_error(ident, actual):
+    if not isinstance(actual, dict):
+        return f'{ident}: observed record must be an object'
+    if not is_footprint(actual.get('footprint_xy')) or not is_vector(actual.get('front_xy'), 2):
+        return f'{ident}: observed record needs footprint_xy (at least three [x, y] points) and front_xy [x, y]'
+    regions = actual.get('regions', [])
+    if not isinstance(regions, list) or not all(isinstance(region, dict) and isinstance(region.get('id'), str) and is_box(region.get('bbox')) for region in regions):
+        return f'{ident}: observed regions must be a list of {{"id": string, "bbox": {BOX}}}'
+    owned = actual.get('owned_ids', [ident])
+    if not isinstance(owned, list) or not all(isinstance(item, str) for item in owned):
+        return f'{ident}: observed owned_ids must be a list of strings'
+    if not is_vector([actual.get('aperture_luminance', 0)], 1):
+        return f'{ident}: observed aperture_luminance must be a number'
+    return None
+
+
 def check_observed(entries, observed, ids, tolerance, errors):
     seen = {}
+    valid = set()
     for ident in ids:
         expected = entries[ident]['spatial_contract']
         actual = observed.get(ident)
         if not actual:
             errors.append(f'{ident}: missing observed invariant record')
             continue
-        if polygon_error(expected['footprint_xy'], actual.get('footprint_xy', [])) > tolerance:
+        shape = observed_shape_error(ident, actual)
+        if shape:
+            errors.append(shape)
+            continue
+        valid.add(ident)
+        if polygon_error(expected['footprint_xy'], actual['footprint_xy']) > tolerance:
             errors.append(f'{ident}: footprint did not round-trip')
-        front = actual.get('front_xy', [0, 0])
-        dot = sum(a * b for a, b in zip(expected['front_xy'], front))
+        dot = sum(a * b for a, b in zip(expected['front_xy'], actual['front_xy']))
         if dot < .98:
             errors.append(f'{ident}: facing did not round-trip')
         actual_regions = {r['id']: r['bbox'] for r in actual.get('regions', [])}
@@ -163,29 +246,37 @@ def check_observed(entries, observed, ids, tolerance, errors):
             if owned in seen:
                 errors.append(f'{ident}: geometry ownership duplicates {owned} from {seen[owned]}')
             seen[owned] = ident
-        if expected.get('ownership', {}).get('children') == 'external' and set(actual.get('owned_ids', [ident])) != {ident}:
+        if expected['ownership']['children'] == 'external' and set(actual.get('owned_ids', [ident])) != {ident}:
             errors.append(f'{ident}: external child geometry was duplicated')
-        appearance = expected.get('appearance', {})
-        if appearance.get('aperture_background') == 'source_visible' and actual.get('aperture_luminance', 0) < appearance.get('minimum_luminance', 0):
+        appearance = expected.get('appearance')
+        if appearance and actual.get('aperture_luminance', 0) < appearance['minimum_luminance']:
             errors.append(f'{ident}: source-visible aperture is black')
     for ident in ids:
-        if ident not in observed or ident not in entries:
+        if ident not in valid:
             continue
-        for relation in entries[ident]['spatial_contract'].get('relationships', []):
-            other_id = relation.get('with')
+        for relation in entries[ident]['spatial_contract']['relationships']:
+            other_id = relation['with']
             if other_id not in observed:
                 errors.append(f'{ident}: relationship target {other_id} was not observed')
+                continue
+            if other_id not in valid:
                 continue
             error = relationship_error(relation, observed[ident], observed[other_id], tolerance)
             if error:
                 errors.append(f'{ident}: observed {relation["type"]} {other_id}: {error}')
 
 
-def load_inventory(path):
+def load_json(path):
     try:
-        data = json.loads(Path(path).read_text())
-    except json.JSONDecodeError as error:
-        return {}, [f'objects.json: not valid JSON: {error}']
+        return json.loads(Path(path).read_text()), None
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as error:
+        return None, f'{Path(path).name}: not valid JSON: {error}'
+
+
+def load_inventory(path):
+    data, error = load_json(path)
+    if error:
+        return {}, [error]
     if not isinstance(data, list) or not data:
         return {}, [f'objects.json: top level must be a nonempty array of object entries, got {json.dumps(data) if data == [] else type(data).__name__}']
     errors = [f'objects.json[{index}]: entry must be an object with a string id' for index, entry in enumerate(data) if not isinstance(entry, dict) or not isinstance(entry.get('id'), str)]
@@ -206,8 +297,12 @@ def main():
     for ident in ids:
         check_contract(entries[ident], entries, args.tolerance, errors)
     if args.observed and not errors:
-        check_observed(entries, json.loads(Path(args.observed).read_text()), ids, args.tolerance, errors)
-    digest = lambda path: hashlib.sha256(Path(path).read_bytes()).hexdigest()
+        observed, error = load_json(args.observed)
+        if error or not isinstance(observed, dict):
+            errors.append(error or f'{Path(args.observed).name}: top level must be an object keyed by object id, got {type(observed).__name__}')
+        else:
+            check_observed(entries, observed, ids, args.tolerance, errors)
+    digest = lambda path: hashlib.sha256(Path(path).read_bytes()).hexdigest() if Path(path).is_file() else None
     result = {'valid': not errors, 'ids': ids, 'errors': errors, 'observed': bool(args.observed), 'objects_sha256': digest(args.objects)}
     if args.observed:
         result['observed_sha256'] = digest(args.observed)
