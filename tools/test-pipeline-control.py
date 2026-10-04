@@ -21,7 +21,7 @@ def function(name):
     else:
         result = f"{name}() {{" + definition.split("\n}\n", 1)[0] + "\n}"
     if name == "run_one_detail":
-        result = function("detail_contract_hash") + "\n" + function("reuse_detail_records") + "\n" + function("protect_textures") + "\n" + result
+        result = function("detail_neighbors") + "\n" + function("detail_contract_hash") + "\n" + function("reuse_detail_records") + "\n" + function("protect_textures") + "\n" + result
     if name in ("run_one_detail", "restore_detail"):
         result = 'TEXTURES=${TEXTURES:-$STATE/textures}\n' + result
     if name.startswith("run_") and name != "run_detail":
@@ -1246,7 +1246,8 @@ run_one_detail one
         self.assertEqual([(row[0], row[1], row[2]) for row in records], [("object:one", "1", "0"), ("object:one", "2", "9")])
         self.assertEqual(first_verdict["corrections"], [idle_failure(2)])
         self.assertEqual(first_verdict["top_stage"], "object:one")
-        self.assertTrue(critic_prompt.startswith("criticize object\nThe supplied object stage tag is object:one.\n\nValid GOTO targets"))
+        self.assertTrue(critic_prompt.startswith("criticize object\nThe supplied object stage tag is object:one.\nObject entry: "))
+        self.assertIn("each owns its own components: []\n\nValid GOTO targets", critic_prompt)
 
     def test_failed_build_skips_the_stage_gate_and_is_never_best(self):
         failure = "model call exited with status 1"
@@ -1838,6 +1839,108 @@ printf 'rc=%s request=%s\\n' "$?" "$REQUEST_STAGE"
                 self.assertEqual(len(records), 2 if mode == "stopped" else 1)
                 self.assertFalse(asset_left)
                 self.assertFalse(render_left)
+
+    def detail_ownership_run(self, objects, target, critic_verdicts, builder_labels):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            state = root / "state"
+            prompts = root / "prompts"
+            assets = root / "assets"
+            for path in (state / "attempts", state / "verdicts", state / "crops", state / "textures", prompts, assets):
+                path.mkdir(parents=True)
+            (prompts / "detail_builder.md").write_text("build object")
+            (prompts / "detail_critic.md").write_text("criticize object")
+            (state / "objects.json").write_text(json.dumps(objects))
+            (state / "records.tsv").write_text("")
+            (state / "progress.md").write_text("")
+            for number, verdict in enumerate(critic_verdicts, 1):
+                (state / f"critic_{number}.json").write_text(json.dumps({"scene_change": None, "summary": "", "top_stage": f"object:{target}", "missing_objects": [], **verdict}))
+            for number, label in enumerate(builder_labels, 1):
+                (state / f"label_{number}").write_text(label)
+            script = f"""set -uo pipefail
+ROOT={root}; STATE={state}; PROMPTS={prompts}; ASSETS={assets}; SCHEMA={Path(__file__).parents[1] / "verdict.schema.json"}; INPUT=photo.jpg; ATTEMPT_SEQ=0; REQUEST_STAGE=; REQUEST_REASON=; BUILDER_GOTOS=0
+printf 0 > "$STATE/calls"; printf 0 > "$STATE/builds"; printf 0 > "$STATE/critiques"
+log() {{ :; }}
+inbox() {{ :; }}
+next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
+score_of() {{ jq -r '.score // 0' "$1"; }}
+record() {{ printf '%s\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\n' "$1" "$2" "$3" "$4" "$5" "$6" "${{7:-}}" >> "$STATE/records.tsv"; }}
+verify_detail() {{ return 0; }}
+codex() {{
+  local output= previous= n
+  for arg in "$@"; do [ "$previous" = -o ] && output=$arg; previous=$arg; done
+  if [ -n "$output" ]; then
+    n=$(( $(cat "$STATE/critiques") + 1 )); printf '%s' "$n" > "$STATE/critiques"
+    cat > "$STATE/critic_input_$n"; cp "$STATE/critic_$n.json" "$output"
+  else
+    n=$(( $(cat "$STATE/builds") + 1 )); printf '%s' "$n" > "$STATE/builds"
+    cat > "$STATE/builder_input_$n"
+    jq --arg label "$(cat "$STATE/label_$n")" '. + {{proposed_label:.label,final_label:$label,label_reason:"crop"}}' "$STATE/entry_{target}.json" > "$STATE/entry.next" && mv "$STATE/entry.next" "$STATE/entry_{target}.json"
+    printf 'def build(entry, collection=None): pass  # %s\\n' "$n" > "$ASSETS/{target}.py"; printf 'render %s' "$n" > "$STATE/detail_{target}.png"
+  fi
+}}
+{model_function()}
+{function("builder")}
+{function("critic")}
+{function("write_stage_check_verdict")}
+{function("detail_attempts")}
+{function("detail_best")}
+{function("restore_detail")}
+{function("run_one_detail")}
+run_one_detail {target}
+[ ! -f "$ASSETS/{target}.py" ] || cp "$ASSETS/{target}.py" "$STATE/asset_after_run"
+run_one_detail {target}
+[ ! -f "$ASSETS/{target}.py" ] || cp "$ASSETS/{target}.py" "$STATE/asset_after_resume"
+"""
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=60)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            read = lambda pattern: [path.read_text() for path in sorted(state.glob(pattern))]
+            return {
+                "assets": [(state / name).read_text().split("# ")[-1].strip() if (state / name).exists() else None for name in ("asset_after_run", "asset_after_resume")],
+                "builder_inputs": read("builder_input_*"),
+                "critic_inputs": read("critic_input_*"),
+                "objects": {entry["id"]: entry for entry in json.loads((state / "objects.json").read_text())},
+                "scores": [line.split("\t")[2] for line in (state / "records.tsv").read_text().splitlines()],
+                "verdicts": [json.loads(path.read_text()) for path in sorted((state / "verdicts").glob("*.json"))],
+            }
+
+    def test_detail_builder_and_critic_receive_overlapping_owners(self):
+        external = {"children": "external"}
+        run = self.detail_ownership_run([
+            {"id": "ceiling", "label": "Ceiling slab", "crop_bbox": [0, 0, 400, 60], "spatial_contract": {"ownership": external}},
+            {"id": "cornice_rear", "label": "Rear cornice", "crop_bbox": [0, 50, 400, 20], "spatial_contract": {"ownership": external}},
+            {"id": "rug", "label": "Rug", "crop_bbox": [0, 400, 400, 60], "spatial_contract": {"ownership": external}},
+            {"id": "lamp", "label": "Lamp", "crop_bbox": [400, 0, 50, 60], "spatial_contract": {"ownership": external}},
+            {"id": "hidden", "label": "Hidden closure", "spatial_contract": {"ownership": external}},
+        ], "ceiling", [{"score": 9, "corrections": ["none"], "wrong_labels": []}], ["Ceiling slab"])
+        owner = '{"id":"cornice_rear","label":"Rear cornice","ownership":{"children":"external"}}'
+        for prompt in (run["builder_inputs"][0], run["critic_inputs"][0]):
+            self.assertIn(f"Other inventory entries whose crops overlap this crop; each owns its own components: [{owner}]\n", prompt)
+        self.assertIn('Object entry: {"id":"ceiling","label":"Ceiling slab",', run["critic_inputs"][0])
+        self.assertIn('"final_label":"Ceiling slab"', run["critic_inputs"][0])
+
+    def test_relabel_claiming_a_neighbors_component_fails_identification(self):
+        included = {"children": "included"}
+        objects = [
+            {"id": "firebox", "label": "Dark fireplace inset", "crop_bbox": [100, 200, 180, 120], "spatial_contract": {"ownership": included}},
+            {"id": "firescreen", "label": "Fireplace screen", "crop_bbox": [110, 210, 150, 110], "spatial_contract": {"ownership": included}},
+        ]
+        claim = {"score": 7, "corrections": ["sharpen the mesh"], "wrong_labels": ["firescreen: mesh panels, rail and pulls"]}
+        clean = {"score": 5, "corrections": ["deepen the inset"], "wrong_labels": []}
+        run = self.detail_ownership_run(objects, "firebox", [claim, clean], ["Dark inset with mesh screen panels", "Dark fireplace inset"])
+        self.assertEqual(run["scores"], ["0", "5"])
+        self.assertIn("identification check failed: the detail claims separately owned geometry: firescreen: mesh panels, rail and pulls", run["builder_inputs"][1])
+        self.assertEqual(run["objects"]["firebox"]["final_label"], "Dark fireplace inset")
+        self.assertEqual(run["assets"], ["2", "2"])
+        self.assertEqual(run["objects"]["firescreen"], objects[1])
+        run = self.detail_ownership_run(objects, "firebox", [claim, claim], ["Dark inset with mesh screen panels", "Dark inset with mesh screen panels"])
+        self.assertEqual(run["scores"], ["0", "0"])
+        self.assertEqual(run["objects"]["firebox"], objects[0])
+        self.assertEqual(run["assets"], [None, None])
+        run = self.detail_ownership_run(objects, "firebox", [claim, {**clean, "score": 0}], ["Dark inset with mesh screen panels", "Dark fireplace inset"])
+        self.assertEqual(run["scores"], ["0", "0"])
+        self.assertEqual(run["assets"], ["2", "2"])
+        self.assertEqual(run["objects"]["firebox"]["final_label"], "Dark fireplace inset")
 
 if __name__ == "__main__":
     if sys.argv[1:] == ["benchmark"]:

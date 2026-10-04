@@ -290,6 +290,7 @@ restore_detail() {
   [ -n "$bestseq" ] && [ -f "$STATE/attempts/object_${id}_${bestseq}.png" ] && cp "$STATE/attempts/object_${id}_${bestseq}.png" "$STATE/detail_$id.png"
   if [ -n "$bestseq" ] && [ -f "$STATE/attempts/object_${id}_${bestseq}.json" ]; then cp "$STATE/attempts/object_${id}_${bestseq}.json" "$entry"; jq --slurpfile reviewed "$entry" --arg id "$id" 'map(if .id == $id then . + {proposed_label:$reviewed[0].proposed_label,final_label:$reviewed[0].final_label,label:$reviewed[0].final_label,label_reason:$reviewed[0].label_reason} else . end)' "$STATE/objects.json" > "$STATE/objects.json.next" && mv "$STATE/objects.json.next" "$STATE/objects.json"; fi
 }
+detail_neighbors() { jq -c --arg id "$1" 'def box: select(type == "array" and length == 4 and all(.[]; type == "number")); def overlaps($a; $b): $a[0] < $b[0] + $b[2] and $b[0] < $a[0] + $a[2] and $a[1] < $b[1] + $b[3] and $b[1] < $a[1] + $a[3]; [.[] | select(.id == $id) | .crop_bbox | box] as $own | [.[] | select(.id != $id) | . as $other | select(any($own[]; . as $c | $other.crop_bbox | box | overlaps(.; $c))) | {id, label, ownership: .spatial_contract.ownership}]' "$STATE/objects.json"; }
 detail_contract_hash() { jq -cS '{contract: (.spatial_contract | del(.source_evidence, .regions[]?.confidence)), material_note}' "$1" | sha256sum | cut -d ' ' -f1; }
 reuse_detail_records() {
   local id=$1 hash=$2 verdict old_hash snapshot
@@ -302,8 +303,9 @@ reuse_detail_records() {
   done < <(awk -F '\t' -v stage="object:$id" -v hash="$hash" '$1==stage && $7!=hash {print $6 "\t" $7}' "$STATE/records.tsv")
 }
 run_one_detail() {
-  local id=$1 feedback=${2:-} force=${3:-0} entry="$STATE/entry_$1.json" best bestseq start score a rc verdict attempts marker limit contract_hash detail_context
+  local id=$1 feedback=${2:-} force=${3:-0} entry="$STATE/entry_$1.json" best bestseq start score a rc verdict attempts marker limit contract_hash detail_context neighbors
   jq --arg id "$id" '.[] | select(.id==$id)' "$STATE/objects.json" > "$entry"
+  neighbors="Other inventory entries whose crops overlap this crop; each owns its own components: $(detail_neighbors "$id")"
   contract_hash=$(detail_contract_hash "$entry")
   reuse_detail_records "$id" "$contract_hash"
   attempts=$(detail_attempts "$id" "$contract_hash"); best=$(detail_best "$id" "$contract_hash")
@@ -319,14 +321,15 @@ run_one_detail() {
     ACTIVE_STAGE="object:$id"
     next_attempt; start=$(date +%s); marker="$STATE/detail_${id}_${ATTEMPT_SEQ}.started"; touch "$marker"; protect_textures "$id"; log "ENTER object:$id attempt=$a sequence=$ATTEMPT_SEQ"; [ -L "$ASSETS/$id.py" ] && unlink "$ASSETS/$id.py"
     printf -v detail_context 'Object entry file: state/entry_%s.json\nRead the complete JSON file before editing.' "$id"
+    detail_context+=$'\n'"$neighbors"
     [ -z "$feedback" ] || detail_context+=$'\n'"$feedback"
     stage_builder "object:$id" "$a" "$start" detail_builder.md "$detail_context" -i "$STATE/crops/$id.png" -i "${INPUT:-$STATE/crops/$id.png}" || { rc=$?; restore_detail "$id" "$bestseq"; return "$rc"; }
     ID_FAILURE=; if ! jq -e '.proposed_label | type == "string" and length > 0' "$entry" >/dev/null || ! jq -e '.final_label | type == "string" and length > 0' "$entry" >/dev/null || ! jq -e '.label_reason | type == "string" and length > 0' "$entry" >/dev/null; then ID_FAILURE="identification check failed: proposed_label, final_label, and label_reason are required"; fi
     verdict="$STATE/verdicts/object_${id}_${ATTEMPT_SEQ}.json"
-    if [ -n "$MODEL_FAILURE" ] || { [ -z "$ID_FAILURE" ] && verify_detail "$id" "$marker"; }; then critic "$verdict" "object:$id" -i "$STATE/crops/$id.png" "$STATE/detail_$id.png" "$INPUT" < <(cat "$PROMPTS/detail_critic.md"; printf '\nThe supplied object stage tag is object:%s.\n' "$id"); else write_stage_check_verdict "$verdict" "object:$id" "${ID_FAILURE:-$DETAIL_FAILURE}"; fi
+    if [ -n "$MODEL_FAILURE" ] || { [ -z "$ID_FAILURE" ] && verify_detail "$id" "$marker"; }; then critic "$verdict" "object:$id" -i "$STATE/crops/$id.png" "$STATE/detail_$id.png" "$INPUT" < <(cat "$PROMPTS/detail_critic.md"; printf '\nThe supplied object stage tag is object:%s.\nObject entry: %s\n%s\n' "$id" "$(jq -c . "$entry")" "$neighbors"); if [ -z "$MODEL_FAILURE" ] && jq -e '.wrong_labels | length > 0' "$verdict" >/dev/null; then ID_FAILURE="identification check failed: the detail claims separately owned geometry"; jq --arg failure "$ID_FAILURE" '.score = 0 | .corrections = [$failure + ": " + (.wrong_labels | join("; "))] + .corrections' "$verdict" > "$verdict.next" && mv "$verdict.next" "$verdict"; fi; else write_stage_check_verdict "$verdict" "object:$id" "${ID_FAILURE:-$DETAIL_FAILURE}"; fi
     score=$(score_of "$verdict"); record "object:$id" "$a" "$score" "$(( $(date +%s)-start ))" "$feedback" "$verdict" "$contract_hash" "${ACTIVE_TIER:-}"; log "SCORE object:$id attempt=$a score=$score contract=$contract_hash tier=${ACTIVE_TIER:-none}"
-    [ -n "$MODEL_FAILURE" ] || { [ -f "$ASSETS/$id.py" ] && cp "$ASSETS/$id.py" "$STATE/attempts/object_${id}_${ATTEMPT_SEQ}.py"; [ -f "$STATE/detail_$id.png" ] && cp "$STATE/detail_$id.png" "$STATE/attempts/object_${id}_${ATTEMPT_SEQ}.png"; [ -d "$TEXTURES/$id" ] && cp -a "$TEXTURES/$id" "$STATE/attempts/object_${id}_${ATTEMPT_SEQ}.textures"; [ -z "$ID_FAILURE" ] && cp "$entry" "$STATE/attempts/object_${id}_${ATTEMPT_SEQ}.json"; }
-    if [ -z "$MODEL_FAILURE" ] && { [ "$score" -gt "$best" ] || [ -z "$bestseq" ]; }; then best=$score; bestseq=$ATTEMPT_SEQ; fi
+    [ -n "$MODEL_FAILURE$ID_FAILURE" ] || { [ -f "$ASSETS/$id.py" ] && cp "$ASSETS/$id.py" "$STATE/attempts/object_${id}_${ATTEMPT_SEQ}.py"; [ -f "$STATE/detail_$id.png" ] && cp "$STATE/detail_$id.png" "$STATE/attempts/object_${id}_${ATTEMPT_SEQ}.png"; [ -d "$TEXTURES/$id" ] && cp -a "$TEXTURES/$id" "$STATE/attempts/object_${id}_${ATTEMPT_SEQ}.textures"; cp "$entry" "$STATE/attempts/object_${id}_${ATTEMPT_SEQ}.json"; }
+    if [ -z "$MODEL_FAILURE$ID_FAILURE" ] && { [ "$score" -gt "$best" ] || [ -z "$bestseq" ]; }; then best=$score; bestseq=$ATTEMPT_SEQ; fi
     [ "$score" -ge 8 ] && break; feedback=$(jq -r '.corrections | join("; ")' "$verdict")
   done
   restore_detail "$id" "$bestseq"
