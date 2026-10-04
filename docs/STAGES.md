@@ -37,7 +37,7 @@ After integration or materials, a score below 8 may return to the stage named by
 
 Builders and critics each have an ordinary allowance of five accepted GOTOs. Once an origin's allowance is exhausted, integration and materials each retain one blockout-only GOTO, shared by builder and critic. Neither early stages nor integration can spend materials' reserve. Counts and reserve use persist across resume; old checkpoints keep their spent counts and gain the two reserves. A fresh run therefore accepts at most 12 GOTOs, independent of object count. Exhausted builder requests receive one bounded fallback call with correction context; exhausted critic requests advance.
 
-The integration/materials portion also has a 3.5-hour cap, after which the best saved materials scene is finalized. While normal stage execution and that budget permit, each reserve provides one repair opportunity; it does not guarantee a successful repair. See the [focused control-flow measurement](../experiments/goto-reserve/README.md).
+A 3.5-hour cap starts at the first integration entry; once it has expired and a materials scene is saved, the run finalizes that scene before entering any further stage, including an earlier stage requested by a GOTO. While normal stage execution and that budget permit, each reserve provides one repair opportunity; it does not guarantee a successful repair. See the [focused control-flow measurement](../experiments/goto-reserve/README.md).
 
 All spatial corrections return to blockout, the sole spatial authority. Detail may refine geometry and materials but cannot mutate pose, dimensions, facing, footprint, semantic regions, relationships, or ownership.
 

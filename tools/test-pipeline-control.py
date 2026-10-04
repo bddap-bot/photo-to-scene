@@ -738,6 +738,51 @@ feedback=
             self.assertNotIn("GOTO count=", result.stdout)
             self.assertFalse((state / "repairs").exists())
 
+    def test_expired_budget_finalizes_saved_s6_before_redirect(self):
+        run_materials = function("run_materials")
+        budget = function("within_s56_budget")
+        loop = main_loop()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            state = root / "state"
+            (state / "verdicts").mkdir(parents=True)
+            (state / "objects.json").write_text('[{"id":"one"}]')
+            (state / "integrate_start_epoch").write_text(str(int(time.time()) - 12601))
+            (root / "materials_critic.md").write_text("critique")
+            script = f'''set -uo pipefail
+ROOT={root!s}; STATE={state!s}; PROMPTS={root!s}; INPUT=photo.png; MODEL_FAILURE=; ATTEMPT_SEQ=0; BEST_S6=-1
+STAGES=(floorplan blockout identify detail integrate materials)
+VALID_STAGE_TEXT="floorplan blockout identify detail integrate materials"
+BUILDER_GOTOS=0; CRITIC_GOTOS=0; REQUEST_STAGE=; REQUEST_REASON=
+declare -A INVALID_RETRIES=()
+builds=0
+log() {{ printf '%s\n' "$*"; }}
+inbox() {{ :; }}
+next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
+score_of() {{ jq -r '.score // 0' "$1"; }}
+record() {{ :; }}
+valid_stage() {{ local value=$1 item; for item in "${{STAGES[@]}}"; do [ "$value" = "$item" ] && return 0; done; return 1; }}
+builder() {{ builds=$((builds+1)); touch "$STATE/materials.png" "$STATE/materials.blend"; }}
+spatial_validate() {{ return 0; }}
+critic() {{ printf '%s\n' '{{"score":6,"top_stage":"floorplan","corrections":["rebuild floorplan"]}}' > "$1"; }}
+{run_materials}
+{budget}
+run_floorplan() {{ builder; }}
+run_blockout() {{ builder; }}
+run_identify() {{ builder; }}
+run_detail() {{ builder; }}
+run_integrate() {{ builder; }}
+PHOTO_TO_SCENE_STAGE=materials
+feedback=
+{loop}
+done
+printf 'builds=%s critic_gotos=%s best=%s\n' "$builds" "$CRITIC_GOTOS" "$([ -f "$STATE/best_materials.blend" ] && printf saved || printf absent)"
+'''
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=10)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("WALLCLOCK cap reached; finalizing best S6", result.stdout)
+        self.assertIn("builds=1 critic_gotos=1 best=saved", result.stdout)
+
     def test_critic_budget_is_independent(self):
         loop = main_loop()
         with tempfile.TemporaryDirectory() as directory:
