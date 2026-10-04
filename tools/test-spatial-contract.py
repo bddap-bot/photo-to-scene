@@ -236,6 +236,8 @@ class FieldShapeTest(unittest.TestCase):
             (lambda e, c: c.update(relationships=[{"type": "minimum_xy_clearance", "with": "floor", "metres": -1}]), "item: spatial_contract.relationships must be"),
             (lambda e, c: c["relationships"][0].update(gap_m=0, evidence=["silhouette"]), "item: spatial_contract.relationships must be"),
             (lambda e, c: c["relationships"][0].update(type="mounted_to"), "item: spatial_contract.relationships must be"),
+            (lambda e, c: c["relationships"][0].update(type=[]), "item: spatial_contract.relationships must be"),
+            (lambda e, c: c["relationships"][0].update(region=[[[]]]), "item: spatial_contract.relationships must be"),
             (lambda e, c: c["ownership"].update(child_ids=["floor"]), "item: spatial_contract.ownership must be"),
             (lambda e, c: c["regions"][0].update(id=""), "item: spatial_contract.regions must be"),
             (lambda e, c: c["frame"].update(size_xyz=[1, 1, 1e400]), "item: spatial_contract.frame must be"),

@@ -124,8 +124,8 @@ def is_fraction(value):
 
 
 def is_relationship(relation):
-    fields = isinstance(relation, dict) and RELATIONSHIP_FIELDS.get(relation.get('type'))
-    return bool(fields) and set(relation) <= fields and isinstance(relation.get('with'), str) and (relation['type'] != 'minimum_xy_clearance' or (is_number(relation.get('metres')) and relation['metres'] >= 0))
+    fields = isinstance(relation, dict) and isinstance(relation.get('type'), str) and RELATIONSHIP_FIELDS.get(relation['type'])
+    return bool(fields) and set(relation) <= fields and all(isinstance(relation.get(key, ''), str) for key in ('with', 'region', 'support_region')) and 'with' in relation and (relation['type'] != 'minimum_xy_clearance' or (is_number(relation.get('metres')) and relation['metres'] >= 0))
 
 
 def contract_shape_errors(entry):

@@ -569,7 +569,7 @@ cat "$STATE/scores.md"
             "front_xy": [0, -1],
             "regions": [{"id": "body", "bbox": {"min": [0, 0, 0], "max": [1, 1, 1]}}],
             "ownership": {"children": "external"},
-            "relationships": [{"type": "above", "with": "floor"}],
+            "relationships": [{"type": "supported_by", "with": "floor", "region": "body", "support_region": "top"}],
             "appearance": {"aperture_background": "source_visible", "minimum_luminance": 0.2},
         }
         variants = {
@@ -581,7 +581,7 @@ cat "$STATE/scores.md"
             "bbox": ("regions", [{"id": "body", "bbox": {"min": [0, 0, 0], "max": [2, 1, 1]}}], True),
             "region_id": ("regions", [dict(original["regions"][0], id="seat")], True),
             "ownership": ("ownership", {"children": "included"}, True),
-            "relationship": ("relationships", [{"type": "below", "with": "floor"}], True),
+            "relationship": ("relationships", [{"type": "supported_by", "with": "floor", "region": "body", "support_region": "deck"}], True),
             "appearance": ("appearance", dict(original["appearance"], minimum_luminance=0.4), True),
             "material": ("material_note", "dark walnut", True),
         }
