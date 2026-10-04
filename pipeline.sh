@@ -177,6 +177,7 @@ builder() {
 stage_builder() {
   local stage=$1 attempt=$2 start=$3 rc
   shift 3
+  restore_selected_details "$stage"
   builder "$@"
   rc=$?
   [ "$rc" -ne 42 ] || printf '%s\t%s\t%s\t%s\t%s\t%s\n' "$stage" "$attempt" "$ATTEMPT_SEQ" "$(( $(date +%s)-start ))" "$REQUEST_STAGE" "${REQUEST_REASON//[$'\t\n']/ }" >> "$STATE/redirects.tsv"
@@ -200,20 +201,23 @@ critic() {
 }
 detail_attempts() { awk -F '\t' -v stage="object:$1" -v contract="$2" '$1==stage && $7==contract {n++} END {print n+0}' "$STATE/records.tsv"; }
 detail_best() { awk -F '\t' -v stage="object:$1" -v contract="$2" '$1==stage && $7==contract && $3+0>best {best=$3+0} END {print best+0}' "$STATE/records.tsv"; }
+detail_bestseq() { awk -F '\t' -v stage="object:$1" -v contract="$2" -v prefix="$STATE/attempts/object_${1}_" '$1==stage && $7==contract && (path=="" || $3=="-" || $3+0>best) {seq=$6; sub(/^.*_/,"",seq); sub(/\.json$/,"",seq); if (system("test -e \"" prefix seq ".py\" -o -e \"" prefix seq ".png\" -o -e \"" prefix seq ".json\"") == 0) {best=$3+0; path=seq}} END {print path}' "$STATE/records.tsv"; }
 integrate_attempts() { awk -F '\t' '$1=="integrate" {n++} END {print n+0}' "$STATE/records.tsv"; }
 integrate_best() { awk -F '\t' -v prefix="$STATE/attempts/integrate_" '$1=="integrate" {seq=$6; sub(/^.*_/,"",seq); sub(/\.json$/,"",seq); if ((!seen || $3+0>=best) && system("test -d \"" prefix seq "\"") == 0) {seen=1; best=$3+0; path=seq}} END {if (seen) print best " " path; else print "-1 "}' "$STATE/records.tsv"; }
 parse_record() { local row=$1; stage=${row%%$'\t'*}; row=${row#*$'\t'}; attempt=${row%%$'\t'*}; row=${row#*$'\t'}; score=${row%%$'\t'*}; row=${row#*$'\t'}; seconds=${row%%$'\t'*}; row=${row#*$'\t'}; changed=${row%%$'\t'*}; row=${row#*$'\t'}; verdict=${row%%$'\t'*}; contract_hash=${row#*$'\t'}; }
-protect_textures() { find "$TEXTURES" -path "$TEXTURES/$1" -prune -o -type f -perm /222 -exec chmod a-w {} +; [ ! -d "$TEXTURES/$1" ] || chmod -R u+w "$TEXTURES/$1"; }
 verify_detail() {
-  local id=$1 marker=$2 asset="$ASSETS/$1.py" other ref
+  local id=$1 marker=$2 asset="$ASSETS/$1.py" other loads blender_log
   DETAIL_FAILURE=
   if [ ! -f "$asset" ]; then DETAIL_FAILURE="asset check failed: assets/$id.py does not exist"; return 1; fi
   if cmp -s "$asset" "$ASSETS/generic.py"; then DETAIL_FAILURE="asset check failed: assets/$id.py is byte-identical to generic.py"; return 1; fi
   while IFS= read -r other; do [ "$other" = "$asset" ] && continue; [ "$other" = "$ASSETS/generic.py" ] && continue; if cmp -s "$asset" "$other"; then DETAIL_FAILURE="asset check failed: assets/$id.py is byte-identical to ${other##*/}"; return 1; fi; done < <(find "$ASSETS" -maxdepth 1 \( -type f -o -type l \) -name '*.py' | sort)
   if ! grep -Eq '^def[[:space:]]+build\(' "$asset"; then DETAIL_FAILURE="asset check failed: assets/$id.py does not define build(entry, collection=None)"; return 1; fi
-  if grep -Eq '(/home/|/Users/)|(^|[^A-Za-z])\.\./' "$asset"; then DETAIL_FAILURE="asset check failed: texture reference escapes ROOT/textures"; return 1; fi
-  while IFS= read -r ref; do case "$ref" in "$TEXTURES"/*) ;; *) DETAIL_FAILURE="asset check failed: texture reference $ref is outside ROOT/textures"; return 1 ;; esac; done < <(grep -Eo '["'"'"']/[^"'"'"'[:space:]]+\.(jpg|jpeg|png|exr|hdr|tif|tiff)' "$asset" | cut -c 2- || true)
   if [ ! -f "$STATE/detail_$id.png" ] || [ ! "$STATE/detail_$id.png" -nt "$marker" ]; then DETAIL_FAILURE="asset check failed: state/detail_$id.png is not a fresh render from this builder attempt"; return 1; fi
+  loads="${marker%.started}.texture-loads.json"; blender_log="${marker%.started}.blender.log"; rm -f "$loads"
+  (cd "$ROOT" && nix-shell -p blender --run "$(printf '%q ' timeout 600 blender -b --factory-startup --python "$PIPELINE_DIR/tools/texture-loads.py" -- "$asset" "$STATE/entry_$id.json" "$TEXTURES/$id" "$loads")") > "$blender_log" 2>&1
+  if [ ! -f "$loads" ]; then DETAIL_FAILURE="asset check failed: Blender could not run assets/$id.py; see state/${blender_log##*/}"; return 1; fi
+  if jq -e '.error' "$loads" >/dev/null; then DETAIL_FAILURE="asset check failed: building assets/$id.py in Blender failed: $(jq -r '.error' "$loads")"; return 1; fi
+  if jq -e '.outside | length > 0' "$loads" >/dev/null; then DETAIL_FAILURE="asset check failed: assets/$id.py loads images outside textures/$id/ or by relative path: $(jq -r '.outside | join(", ")' "$loads")"; return 1; fi
 }
 write_stage_check_verdict() { local path=$1 stage=$2 failure=$3; jq -n --arg summary "$failure" --arg stage "$stage" '{scene_change:null,score:0,summary:$summary,corrections:[$summary],top_stage:$stage,wrong_labels:[],missing_objects:[]}' > "$path"; }
 write_spatial_check_verdict() { local path=$1 stage=$2 validation=$3 failure="$2 spatial contract gate failed"; if jq -e '.errors | type == "array" and length > 0' "$validation" >/dev/null 2>&1; then jq --arg stage "$stage" '{scene_change:null,score:0,summary:($stage + " spatial contract gate failed: " + ((.errors | length) | tostring) + " validation error(s)"),corrections:.errors,top_stage:$stage,wrong_labels:[],missing_objects:[]}' "$validation" > "$path"; else write_stage_check_verdict "$path" "$stage" "$failure"; fi; }
@@ -281,14 +285,27 @@ run_tier_critic() {
   log "tier:$tier review unaccepted after one retry; descending without a GOTO"
   return 0
 }
-restore_detail() {
-  local id=$1 bestseq=$2 entry="$STATE/entry_$1.json"
+restore_detail_files() {
+  local id=$1 bestseq=$2
   rm -f "$ASSETS/$id.py" "$STATE/detail_$id.png"
   rm -rf "${TEXTURES:?}/${id:?}"
   [ -n "$bestseq" ] && [ -d "$STATE/attempts/object_${id}_${bestseq}.textures" ] && cp -a "$STATE/attempts/object_${id}_${bestseq}.textures" "$TEXTURES/$id"
   [ -n "$bestseq" ] && [ -f "$STATE/attempts/object_${id}_${bestseq}.py" ] && cp "$STATE/attempts/object_${id}_${bestseq}.py" "$ASSETS/$id.py"
   [ -n "$bestseq" ] && [ -f "$STATE/attempts/object_${id}_${bestseq}.png" ] && cp "$STATE/attempts/object_${id}_${bestseq}.png" "$STATE/detail_$id.png"
+}
+restore_detail() {
+  local id=$1 bestseq=$2 entry="$STATE/entry_$1.json"
+  restore_detail_files "$id" "$bestseq"
   if [ -n "$bestseq" ] && [ -f "$STATE/attempts/object_${id}_${bestseq}.json" ]; then cp "$STATE/attempts/object_${id}_${bestseq}.json" "$entry"; jq --slurpfile reviewed "$entry" --arg id "$id" 'map(if .id == $id then . + {proposed_label:$reviewed[0].proposed_label,final_label:$reviewed[0].final_label,label:$reviewed[0].final_label,label_reason:$reviewed[0].label_reason} else . end)' "$STATE/objects.json" > "$STATE/objects.json.next" && mv "$STATE/objects.json.next" "$STATE/objects.json"; fi
+}
+restore_selected_details() {
+  local current=$1 id bestseq
+  [ -f "$STATE/objects.json" ] || return 0
+  while IFS= read -r id; do
+    [ "object:$id" = "$current" ] && continue
+    bestseq=$(detail_bestseq "$id" "$(detail_contract_hash <(jq --arg id "$id" '.[] | select(.id == $id)' "$STATE/objects.json"))")
+    [ -z "$bestseq" ] || restore_detail_files "$id" "$bestseq"
+  done < <(jq -r '.[].id' "$STATE/objects.json")
 }
 detail_neighbors() { jq -c --arg id "$1" 'def box: select(type == "array" and length == 4 and all(.[]; type == "number")); def overlaps($a; $b): $a[0] < $b[0] + $b[2] and $b[0] < $a[0] + $a[2] and $a[1] < $b[1] + $b[3] and $b[1] < $a[1] + $a[3]; [.[] | select(.id == $id) | .crop_bbox | box] as $own | [.[] | select(.id != $id) | . as $other | select(any($own[]; . as $c | $other.crop_bbox | box | overlaps(.; $c))) | {id, label, ownership: .spatial_contract.ownership}]' "$STATE/objects.json"; }
 detail_contract_hash() { jq -cS '{contract: (.spatial_contract | del(.source_evidence, .regions[]?.confidence)), material_note}' "$1" | sha256sum | cut -d ' ' -f1; }
@@ -307,14 +324,14 @@ run_inferred_detail() {
   contract_hash=$(detail_contract_hash "$entry")
   reuse_detail_records "$id" "$contract_hash"
   attempts=$(detail_attempts "$id" "$contract_hash")
-  bestseq=$(awk -F '\t' -v stage="object:$id" -v contract="$contract_hash" -v prefix="$STATE/attempts/object_${id}_" '$1==stage && $7==contract {seq=$6; sub(/^.*_/,"",seq); sub(/\.json$/,"",seq); if (system("test -e \"" prefix seq ".py\"") == 0) path=seq} END {print path}' "$STATE/records.tsv")
+  bestseq=$(detail_bestseq "$id" "$contract_hash")
   if [ "$force" -eq 0 ] && { [ -n "$bestseq" ] || [ "$attempts" -ge 2 ]; }; then restore_detail "$id" "$bestseq"; printf '%s inferred attempts=%s\n' "$id" "$attempts" >> "$STATE/progress.md"; inbox; return 0; fi
   verdict=$(awk -F '\t' -v stage="object:$id" -v contract="$contract_hash" '$1==stage && $7==contract {path=$6} END {print path}' "$STATE/records.tsv")
   [ -n "$feedback" ] || [ ! -f "$verdict" ] || feedback=$(jq -r '.corrections // [] | join("; ")' "$verdict")
   limit=2; [ "$force" -eq 1 ] && limit=$((attempts+2))
   for ((a=attempts+1; a<=limit; a++)); do
     ACTIVE_STAGE="object:$id"
-    next_attempt; start=$(date +%s); marker="$STATE/detail_${id}_${ATTEMPT_SEQ}.started"; touch "$marker"; protect_textures "$id"; log "ENTER object:$id attempt=$a sequence=$ATTEMPT_SEQ inferred"; [ -L "$ASSETS/$id.py" ] && unlink "$ASSETS/$id.py"
+    next_attempt; start=$(date +%s); marker="$STATE/detail_${id}_${ATTEMPT_SEQ}.started"; touch "$marker"; log "ENTER object:$id attempt=$a sequence=$ATTEMPT_SEQ inferred"; [ -L "$ASSETS/$id.py" ] && unlink "$ASSETS/$id.py"
     stage_builder "object:$id" "$a" "$start" detail_builder.md "Object entry file: state/entry_$id.json"$'\n'"This entry is inferred structure the photograph does not show: no crop is attached, the entry file is not read back, and no critic scores it.${feedback:+$'\n'$feedback}" -i "$INPUT" || { rc=$?; restore_detail "$id" "$bestseq"; return "$rc"; }
     verdict="$STATE/verdicts/object_${id}_${ATTEMPT_SEQ}.json"; failure=
     if [ -n "$MODEL_FAILURE" ] || ! verify_detail "$id" "$marker"; then failure=${MODEL_FAILURE:-$DETAIL_FAILURE}; write_stage_check_verdict "$verdict" "object:$id" "$failure"; else jq -n '{summary: "passed"}' > "$verdict"; fi
@@ -333,7 +350,7 @@ run_one_detail() {
   contract_hash=$(detail_contract_hash "$entry")
   reuse_detail_records "$id" "$contract_hash"
   attempts=$(detail_attempts "$id" "$contract_hash"); best=$(detail_best "$id" "$contract_hash")
-  bestseq=$(awk -F '\t' -v stage="object:$id" -v contract="$contract_hash" -v prefix="$STATE/attempts/object_${id}_" '$1==stage && $7==contract && (path=="" || $3+0>best) {seq=$6; sub(/^.*_/,"",seq); sub(/\.json$/,"",seq); if (system("test -e \"" prefix seq ".py\" -o -e \"" prefix seq ".png\" -o -e \"" prefix seq ".json\"") == 0) {best=$3+0; path=seq}} END {print path}' "$STATE/records.tsv")
+  bestseq=$(detail_bestseq "$id" "$contract_hash")
   if [ "$force" -eq 0 ] && { [ "$best" -ge 8 ] || [ "$attempts" -ge 2 ]; }; then restore_detail "$id" "$bestseq"; printf '%s best=%s attempts=%s\n' "$id" "$best" "$attempts" >> "$STATE/progress.md"; inbox; return 0; fi
   if [ "$attempts" -gt 0 ] && [ -z "$feedback" ]; then
     local latest_verdict
@@ -343,17 +360,17 @@ run_one_detail() {
   limit=2; [ "$force" -eq 1 ] && limit=$((attempts+2))
   for ((a=attempts+1; a<=limit; a++)); do
     ACTIVE_STAGE="object:$id"
-    next_attempt; start=$(date +%s); marker="$STATE/detail_${id}_${ATTEMPT_SEQ}.started"; touch "$marker"; protect_textures "$id"; log "ENTER object:$id attempt=$a sequence=$ATTEMPT_SEQ"; [ -L "$ASSETS/$id.py" ] && unlink "$ASSETS/$id.py"
+    next_attempt; start=$(date +%s); marker="$STATE/detail_${id}_${ATTEMPT_SEQ}.started"; touch "$marker"; log "ENTER object:$id attempt=$a sequence=$ATTEMPT_SEQ"; [ -L "$ASSETS/$id.py" ] && unlink "$ASSETS/$id.py"
     printf -v detail_context 'Object entry file: state/entry_%s.json\nRead the complete JSON file before editing.' "$id"
     detail_context+=$'\n'"$neighbors"
     [ -z "$feedback" ] || detail_context+=$'\n'"$feedback"
     stage_builder "object:$id" "$a" "$start" detail_builder.md "$detail_context" -i "$STATE/crops/$id.png" -i "${INPUT:-$STATE/crops/$id.png}" || { rc=$?; restore_detail "$id" "$bestseq"; return "$rc"; }
-    ID_FAILURE=; if ! jq -e '.proposed_label | type == "string" and length > 0' "$entry" >/dev/null || ! jq -e '.final_label | type == "string" and length > 0' "$entry" >/dev/null || ! jq -e '.label_reason | type == "string" and length > 0' "$entry" >/dev/null; then ID_FAILURE="identification check failed: proposed_label, final_label, and label_reason are required"; fi
+    ID_FAILURE=; DETAIL_FAILURE=; if ! jq -e '.proposed_label | type == "string" and length > 0' "$entry" >/dev/null || ! jq -e '.final_label | type == "string" and length > 0' "$entry" >/dev/null || ! jq -e '.label_reason | type == "string" and length > 0' "$entry" >/dev/null; then ID_FAILURE="identification check failed: proposed_label, final_label, and label_reason are required"; fi
     verdict="$STATE/verdicts/object_${id}_${ATTEMPT_SEQ}.json"
     if [ -n "$MODEL_FAILURE" ] || { [ -z "$ID_FAILURE" ] && verify_detail "$id" "$marker"; }; then critic "$verdict" "object:$id" -i "$STATE/crops/$id.png" "$STATE/detail_$id.png" "$INPUT" < <(cat "$PROMPTS/detail_critic.md"; printf '\nThe supplied object stage tag is object:%s.\nObject entry: %s\n%s\n' "$id" "$(jq -c . "$entry")" "$neighbors"); if [ -z "$MODEL_FAILURE" ] && jq -e '.wrong_labels | length > 0' "$verdict" >/dev/null; then ID_FAILURE="identification check failed: the detail claims separately owned geometry"; jq --arg failure "$ID_FAILURE" '.score = 0 | .corrections = [$failure + ": " + (.wrong_labels | join("; "))] + .corrections' "$verdict" > "$verdict.next" && mv "$verdict.next" "$verdict"; fi; else write_stage_check_verdict "$verdict" "object:$id" "${ID_FAILURE:-$DETAIL_FAILURE}"; fi
     score=$(score_of "$verdict"); record "object:$id" "$a" "$score" "$(( $(date +%s)-start ))" "$feedback" "$verdict" "$contract_hash" "${ACTIVE_TIER:-}"; log "SCORE object:$id attempt=$a score=$score contract=$contract_hash tier=${ACTIVE_TIER:-none}"
-    [ -n "$MODEL_FAILURE$ID_FAILURE" ] || { [ -f "$ASSETS/$id.py" ] && cp "$ASSETS/$id.py" "$STATE/attempts/object_${id}_${ATTEMPT_SEQ}.py"; [ -f "$STATE/detail_$id.png" ] && cp "$STATE/detail_$id.png" "$STATE/attempts/object_${id}_${ATTEMPT_SEQ}.png"; [ -d "$TEXTURES/$id" ] && cp -a "$TEXTURES/$id" "$STATE/attempts/object_${id}_${ATTEMPT_SEQ}.textures"; cp "$entry" "$STATE/attempts/object_${id}_${ATTEMPT_SEQ}.json"; }
-    if [ -z "$MODEL_FAILURE$ID_FAILURE" ] && { [ "$score" -gt "$best" ] || [ -z "$bestseq" ]; }; then best=$score; bestseq=$ATTEMPT_SEQ; fi
+    [ -n "$MODEL_FAILURE$ID_FAILURE$DETAIL_FAILURE" ] || { [ -f "$ASSETS/$id.py" ] && cp "$ASSETS/$id.py" "$STATE/attempts/object_${id}_${ATTEMPT_SEQ}.py"; [ -f "$STATE/detail_$id.png" ] && cp "$STATE/detail_$id.png" "$STATE/attempts/object_${id}_${ATTEMPT_SEQ}.png"; [ -d "$TEXTURES/$id" ] && cp -a "$TEXTURES/$id" "$STATE/attempts/object_${id}_${ATTEMPT_SEQ}.textures"; cp "$entry" "$STATE/attempts/object_${id}_${ATTEMPT_SEQ}.json"; }
+    if [ -z "$MODEL_FAILURE$ID_FAILURE$DETAIL_FAILURE" ] && { [ "$score" -gt "$best" ] || [ -z "$bestseq" ]; }; then best=$score; bestseq=$ATTEMPT_SEQ; fi
     [ "$score" -ge 8 ] && break; feedback=$(jq -r '.corrections | join("; ")' "$verdict")
   done
   restore_detail "$id" "$bestseq"
@@ -425,6 +442,7 @@ while :; do
   feedback=
 done
 if [ ! -f "$STATE/best_materials.blend" ]; then log 'FAIL no S6 scene exists'; exit 1; fi
+restore_selected_details final
 MODEL_SECONDS=4800 builder final_builder.md "" || exit $?
 [ -z "$MODEL_FAILURE" ] || { log "FAIL final $MODEL_FAILURE"; exit 1; }
 write_report

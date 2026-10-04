@@ -29,13 +29,10 @@ for selector in args.selectors:
     record = nested(manifest, selector)
     url = record["url"]
     target = texture_dir / pathlib.PurePosixPath(url).name
-    expected = record.get("md5")
-    if target.exists() and (not expected or hashlib.md5(target.read_bytes()).hexdigest() == expected):
-        print(target)
-        continue
     with urllib.request.urlopen(url) as response, target.open("wb") as output:
         while chunk := response.read(1024 * 1024):
             output.write(chunk)
+    expected = record.get("md5")
     if expected and hashlib.md5(target.read_bytes()).hexdigest() != expected:
         target.unlink()
         raise SystemExit(f"checksum mismatch: {target}")

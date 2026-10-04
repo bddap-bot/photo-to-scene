@@ -21,9 +21,15 @@ def function(name):
     else:
         result = f"{name}() {{" + definition.split("\n}\n", 1)[0] + "\n}"
     if name == "run_one_detail":
-        result = function("run_inferred_detail") + "\n" + function("detail_neighbors") + "\n" + function("detail_contract_hash") + "\n" + function("reuse_detail_records") + "\n" + function("protect_textures") + "\n" + result
-    if name in ("run_one_detail", "restore_detail"):
+        result = function("run_inferred_detail") + "\n" + function("detail_neighbors") + "\n" + function("reuse_detail_records") + "\n" + result
+    if name in ("run_one_detail", "restore_selected_details"):
+        result = function("detail_contract_hash") + "\n" + function("detail_bestseq") + "\n" + function("restore_detail") + "\n" + result
+    if name == "restore_detail":
+        result = function("restore_detail_files") + "\n" + result
+    if name == "restore_detail_files":
         result = 'TEXTURES=${TEXTURES:-$STATE/textures}\n' + result
+    if name == "stage_builder":
+        result = function("restore_selected_details") + "\n" + result
     if name.startswith("run_") and name != "run_detail":
         result = function("stage_builder") + "\n" + result
     if name in ("builder", "run_detail"):
@@ -101,6 +107,22 @@ printf 'unreachable\\n'
 
 def call_seconds(line: str) -> int:
     return int(line.split(" seconds=", 1)[1].split(" ", 1)[0])
+
+
+def fake_blender(stub: Path) -> str:
+    (stub / "bin").mkdir(parents=True)
+    (stub / "bpy.py").write_text(
+        "import types\n"
+        "class Images(list):\n"
+        "    def load(self, filepath):\n"
+        "        self.append(types.SimpleNamespace(filepath=filepath, source='FILE', library=None))\n"
+        "data = types.SimpleNamespace(images=Images([types.SimpleNamespace(filepath='', source='VIEWER', library=None)]))\n"
+    )
+    (stub / "bin" / "blender").write_text(f"#!/usr/bin/env bash\nwhile [ \"$1\" != --python ]; do shift; done\nscript=$2; shift 2\nPYTHONPATH={stub} exec {sys.executable} \"$script\" \"$@\"\n")
+    (stub / "bin" / "blender").chmod(0o755)
+    return f'''PIPELINE_DIR={shlex.quote(str(Path(__file__).parents[1]))}
+PATH={shlex.quote(str(stub / "bin"))}:$PATH
+nix-shell() {{ [ "$1 $2 $3" = "-p blender --run" ] || return 127; bash -c "$4"; }}'''
 
 
 WALL_BOUNDS = {
@@ -433,44 +455,61 @@ printf '%s %s\n' "$(wc -m < "$STATE/entry_dense.json")" "$(cat "$STATE/request_c
         )
         self.assertNotIn(dense_contract, request)
 
-    def test_detail_gate_accepts_composed_workspace_texture_path(self):
-        verify_detail = function("verify_detail")
-        with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
-            assets = root / "assets"
-            state = root / "state"
-            textures = root / "textures"
-            assets.mkdir()
-            state.mkdir()
-            textures.mkdir()
-            (assets / "generic.py").write_text("def build(entry, collection=None): return []\n")
-            (assets / "sheer.py").write_text(
-                "from pathlib import Path\n"
-                "def build(entry, collection=None):\n"
-                "    return bpy.data.images.load(str(Path(__file__).resolve().parents[1] / 'textures/lace.png'))\n"
-            )
-            (textures / "lace.png").write_bytes(b"texture")
-            marker = state / "detail_sheer_1.started"
-            render = state / "detail_sheer.png"
-            marker.write_text("")
-            render.write_text("render")
-            os.utime(marker, (1, 1))
-            os.utime(render, (2, 2))
-            script = f'''set -uo pipefail
-PIPELINE_DIR={shlex.quote(str(Path(__file__).parents[1]))}
-ASSETS={shlex.quote(str(assets))}
-STATE={shlex.quote(str(state))}
-TEXTURES={shlex.quote(str(textures))}
-{verify_detail}
-if verify_detail sheer "$STATE/detail_sheer_1.started"; then
-  printf 'PASS\\n'
-else
-  printf 'FAIL: %s\\n' "$DETAIL_FAILURE"
-fi
+    def test_detail_gate_accepts_only_images_loaded_from_the_objects_texture_directory(self):
+        loads = {
+            "own": "bpy.data.images.load(str(Path(__file__).resolve().parents[1] / ('tex' + 'tures') / 'rug' / 'weave.png'))",
+            "asset_relative": "bpy.data.images.load(str(Path(__file__).resolve().parent / 'textures/rug_albedo.png'))",
+            "shared": "bpy.data.images.load(str(Path(__file__).resolve().parents[1] / 'textures/lace.png'))",
+            "symlink": "bpy.data.images.load(str(Path(__file__).resolve().parents[1] / 'textures/rug/link.png'))",
+            "python_read": "(Path(__file__).resolve().parent / 'textures/rug_albedo.png').read_bytes()",
+            "directory_symlink": "bpy.data.images.load(str(Path(__file__).resolve().parents[1] / 'textures/rug/rug_albedo.png'))",
+            "relative": "bpy.data.images.load('textures/rug/weave.png')",
+            "broken": "1 / 0",
+            "exits": "raise SystemExit(3)",
+        }
+        expected = {
+            "own": "PASS",
+            "asset_relative": "FAIL: asset check failed: assets/rug.py loads images outside textures/rug/ or by relative path: {root}/assets/textures/rug_albedo.png",
+            "shared": "FAIL: asset check failed: assets/rug.py loads images outside textures/rug/ or by relative path: {root}/textures/lace.png",
+            "symlink": "FAIL: asset check failed: assets/rug.py loads images outside textures/rug/ or by relative path: {root}/textures/rug/link.png",
+            "python_read": "FAIL: asset check failed: assets/rug.py loads images outside textures/rug/ or by relative path: {root}/assets/textures/rug_albedo.png",
+            "directory_symlink": "FAIL: asset check failed: assets/rug.py loads images outside textures/rug/ or by relative path: {root}/textures/rug/rug_albedo.png",
+            "relative": "FAIL: asset check failed: assets/rug.py loads images outside textures/rug/ or by relative path: textures/rug/weave.png",
+            "broken": "FAIL: asset check failed: building assets/rug.py in Blender failed: ZeroDivisionError: division by zero",
+            "exits": "FAIL: asset check failed: building assets/rug.py in Blender failed: SystemExit: 3",
+        }
+        for case, load in loads.items():
+            with self.subTest(case=case), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory).resolve()
+                assets, state, textures = root / "assets", root / "state", root / "textures"
+                for path in (assets / "textures", state, textures):
+                    path.mkdir(parents=True)
+                if case == "directory_symlink":
+                    (textures / "rug").symlink_to(assets / "textures")
+                else:
+                    (textures / "rug").mkdir()
+                    (textures / "rug" / "link.png").symlink_to(assets / "textures" / "rug_albedo.png")
+                (assets / "generic.py").write_text("def build(entry, collection=None): return []\n")
+                (assets / "rug.py").write_text(f"from pathlib import Path\nimport bpy\ndef build(entry, collection=None):\n    {load}\n    return []\n")
+                (assets / "textures" / "rug_albedo.png").write_bytes(b"mutable")
+                (textures / "lace.png").write_bytes(b"shared")
+                (textures / "rug" / "weave.png").write_bytes(b"own")
+                (state / "entry_rug.json").write_text('{"id":"rug"}')
+                marker = state / "detail_rug_1.started"
+                render = state / "detail_rug.png"
+                marker.write_text("")
+                render.write_text("render")
+                os.utime(marker, (1, 1))
+                os.utime(render, (2, 2))
+                script = f'''set -uo pipefail
+ROOT={shlex.quote(str(root))}; ASSETS=$ROOT/assets; STATE=$ROOT/state; TEXTURES=$ROOT/textures
+{fake_blender(root / "stub")}
+{function("verify_detail")}
+if verify_detail rug "$STATE/detail_rug_1.started"; then printf 'PASS\\n'; else printf 'FAIL: %s\\n' "$DETAIL_FAILURE"; fi
 '''
-            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=30)
-        self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual(result.stdout, "PASS\n")
+                result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=30)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(result.stdout, expected[case].format(root=root) + "\n")
 
     def test_materials_gate_failure_is_scored_and_saved(self):
         run_materials = function("run_materials")
@@ -1678,48 +1717,58 @@ done
         self.assertIn("tier:large review unaccepted after one retry; descending without a GOTO\nfail rc=0 request= reason= calls=2\n", result.stdout)
         self.assertEqual([verdict["corrections"] for verdict in verdicts[2:]], [[failure], [failure]])
 
-    def test_best_detail_restores_its_own_textures_after_a_later_overwrite_and_resume(self):
-        with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
-            state = root / "state"
-            prompts = root / "prompts"
-            assets = root / "assets"
-            textures = root / "textures"
-            for path in (state / "attempts", state / "verdicts", state / "crops", prompts, assets, textures):
-                path.mkdir(parents=True)
-            (textures / "lace.png").write_bytes(b"downloaded")
-            (prompts / "detail_builder.md").write_text("build object")
-            (prompts / "detail_critic.md").write_text("criticize object")
-            (state / "objects.json").write_text('[{"id":"one","spatial_contract":{}}]')
-            (state / "records.tsv").write_text("")
-            (state / "progress.md").write_text("")
-            script = f"""set -uo pipefail
+    def test_selected_detail_keeps_its_texture_bytes_when_a_later_attempt_writes_anywhere(self):
+        own = "Path(__file__).resolve().parents[1] / 'textures/one/weave.png'"
+        beside = "Path(__file__).resolve().parent / 'textures/weave.png'"
+        scenarios = {
+            "later_rejected": (own, beside, 7, "1"),
+            "earlier_rejected": (beside, own, 0, "2"),
+        }
+        for scenario, (first, second, score, kept) in scenarios.items():
+            with self.subTest(scenario=scenario), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory).resolve()
+                state = root / "state"
+                prompts = root / "prompts"
+                assets = root / "assets"
+                textures = root / "textures"
+                for path in (state / "attempts", state / "verdicts", state / "crops", prompts, assets, textures):
+                    path.mkdir(parents=True)
+                (prompts / "detail_builder.md").write_text("build object")
+                (prompts / "detail_critic.md").write_text("criticize object")
+                (assets / "generic.py").write_text("def build(entry, collection=None): return []\n")
+                (state / "objects.json").write_text('[{"id":"one","spatial_contract":{}}]')
+                (state / "records.tsv").write_text("")
+                (state / "progress.md").write_text("")
+                (state / "load_1").write_text(first)
+                (state / "load_2").write_text(second)
+                script = f"""set -uo pipefail
 ROOT={root}; STATE={state}; PROMPTS={prompts}; ASSETS={assets}; TEXTURES={textures}; INPUT=photo.jpg; ATTEMPT_SEQ=0; REQUEST_STAGE=; REQUEST_REASON=; BUILDER_GOTOS=0
-printf 0 > "$STATE/calls"
+{fake_blender(root / "stub")}
+printf 0 > "$STATE/calls"; printf 0 > "$STATE/builds"
 log() {{ :; }}
 inbox() {{ :; }}
 next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
 score_of() {{ jq -r '.score // 0' "$1"; }}
 record() {{ printf '%s\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\n' "$1" "$2" "$3" "$4" "$5" "$6" "${{7:-}}" >> "$STATE/records.tsv"; }}
-verify_detail() {{ return 0; }}
 codex() {{
   local call output= previous=
   for arg in "$@"; do [ "$previous" = -o ] && output=$arg; previous=$arg; done
-  call=$(( $(cat "$STATE/calls") + 1 )); printf '%s' "$call" > "$STATE/calls"
+  printf '%s' "$(( $(cat "$STATE/calls") + 1 ))" > "$STATE/calls"
   cat >/dev/null
-  case "$call" in
-    1|3)
-      jq '. + {{proposed_label:"rug",final_label:"rug",label_reason:"crop"}}' "$STATE/entry_one.json" > "$STATE/entry.next" && mv "$STATE/entry.next" "$STATE/entry_one.json"
-      mkdir -p "$TEXTURES/one"; printf 'weave %s' "$call" > "$TEXTURES/one/weave.png"
-      printf 'overwritten %s' "$call" 2>/dev/null > "$TEXTURES/lace.png" || true
-      printf 'def build(entry, collection=None): pass  # %s\\n' "$call" > "$ASSETS/one.py"; printf 'render %s' "$call" > "$STATE/detail_one.png" ;;
-    *) printf '%s\\n' '{{"score":7,"summary":"close","corrections":["refine"],"top_stage":"object:one","wrong_labels":[],"missing_objects":[]}}' > "$output" ;;
-  esac
+  if [ -z "$output" ]; then
+    call=$(( $(cat "$STATE/builds") + 1 )); printf '%s' "$call" > "$STATE/builds"
+    jq '. + {{proposed_label:"rug",final_label:"rug",label_reason:"crop"}}' "$STATE/entry_one.json" > "$STATE/entry.next" && mv "$STATE/entry.next" "$STATE/entry_one.json"
+    mkdir -p "$TEXTURES/one" "$ASSETS/textures"; printf 'weave %s' "$call" > "$TEXTURES/one/weave.png"; printf 'weave %s' "$call" > "$ASSETS/textures/weave.png"
+    printf 'from pathlib import Path\\nimport bpy\\ndef build(entry, collection=None):\\n    bpy.data.images.load(str(%s))  # %s\\n' "$(cat "$STATE/load_$call")" "$call" > "$ASSETS/one.py"; printf 'render %s' "$call" > "$STATE/detail_one.png"
+  else
+    printf '%s\\n' '{{"score":{score},"summary":"close","corrections":["refine"],"top_stage":"object:one","wrong_labels":[],"missing_objects":[]}}' > "$output"
+  fi
 }}
 {model_function()}
 {function("builder")}
 {function("critic")}
 {function("write_stage_check_verdict")}
+{function("verify_detail")}
 {function("detail_attempts")}
 {function("detail_best")}
 {function("restore_detail")}
@@ -1730,58 +1779,44 @@ printf 'interrupted' > "$TEXTURES/one/weave.png"; printf 'stray' > "$TEXTURES/on
 run_one_detail one
 printf 'after_resume=%s|%s|%s\\n' "$(cat "$TEXTURES/one/weave.png")" "$(ls "$TEXTURES/one" | paste -sd, -)" "$(cat "$STATE/calls")"
 """
-            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=60)
-            shared = (textures / "lace.png").read_text()
-        self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("after_run=weave 1|render 1|# 1\n", result.stdout)
-        self.assertIn("after_resume=weave 1|weave.png|4\n", result.stdout)
-        self.assertEqual(shared, "downloaded")
+                result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=60)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertIn(f"after_run=weave {kept}|render {kept}|# {kept}\n", result.stdout)
+                self.assertIn(f"after_resume=weave {kept}|weave.png|3\n", result.stdout)
 
-    def test_detail_builder_can_write_only_its_own_and_new_textures(self):
-        with tempfile.TemporaryDirectory() as directory:
-            textures = Path(directory) / "textures"
-            (textures / "sheer").mkdir(parents=True)
-            (textures / "other").mkdir()
-            (textures / "lace.png").write_bytes(b"downloaded")
-            (textures / "other" / "bark.png").write_bytes(b"neighbour")
-            (textures / "sheer" / "weave.png").write_bytes(b"own")
-            (textures / "sheer" / "weave.png").chmod(0o444)
-            script = f'''set -uo pipefail
-TEXTURES={shlex.quote(str(textures))}
-{function("protect_textures")}
-protect_textures sheer
-for path in lace.png other/bark.png sheer/weave.png fetched.png; do
-  if printf x 2>/dev/null > "$TEXTURES/$path"; then printf '%s writable\\n' "$path"; else printf '%s read-only\\n' "$path"; fi
-done
-'''
-            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=30)
-            unchanged = [(textures / name).read_bytes() for name in ("lace.png", "other/bark.png")]
-        self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual(result.stdout, "lace.png read-only\nother/bark.png read-only\nsheer/weave.png writable\nfetched.png writable\n")
-        self.assertEqual(unchanged, [b"downloaded", b"neighbour"])
-
-    def test_cached_read_only_polyhaven_texture_is_reused_without_download(self):
-        import contextlib, hashlib, io, runpy, urllib.request
-        from unittest import mock
+    def test_every_other_builder_starts_from_the_selected_detail_candidates(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            (root / "textures").mkdir()
-            cached = root / "textures" / "wood_diff_2k.jpg"
-            cached.write_bytes(b"cached")
-            cached.chmod(0o444)
-            manifest = {"Diffuse": {"2k": {"jpg": {"url": "https://dl.example/wood_diff_2k.jpg", "md5": hashlib.md5(b"cached").hexdigest()}}}}
-            fetched = []
-            def urlopen(url):
-                fetched.append(url)
-                if url.endswith("/files/wood"):
-                    return io.BytesIO(json.dumps(manifest).encode())
-                raise AssertionError(f"downloaded {url}")
-            out = io.StringIO()
-            with mock.patch.object(urllib.request, "urlopen", urlopen), mock.patch.object(sys, "argv", ["fetch-polyhaven.py", "wood", "Diffuse.2k.jpg", "--root", str(root)]), contextlib.redirect_stdout(out):
-                runpy.run_path(str(Path(__file__).with_name("fetch-polyhaven.py")), run_name="__main__")
-            self.assertEqual(cached.read_bytes(), b"cached")
-        self.assertEqual(fetched, ["https://api.polyhaven.com/files/wood"])
-        self.assertEqual(out.getvalue(), f"{cached}\n")
+            state, assets, textures = root / "state", root / "assets", root / "textures"
+            for path in (state / "attempts" / "object_one_1.textures", state / "verdicts", assets, textures / "one"):
+                path.mkdir(parents=True)
+            (state / "objects.json").write_text('[{"id":"one","label":"rug","spatial_contract":{}},{"id":"two","label":"lamp","spatial_contract":{}}]')
+            (state / "attempts" / "object_one_1.py").write_text("selected")
+            (state / "attempts" / "object_one_1.png").write_text("selected render")
+            (state / "attempts" / "object_one_1.json").write_text('{"id":"one","proposed_label":"rug","final_label":"mat","label_reason":"crop","spatial_contract":{}}')
+            (state / "attempts" / "object_one_1.textures" / "weave.png").write_text("selected")
+            for seq in (2, 3):
+                (state / "attempts" / f"object_two_{seq}.py").write_text(f"inferred {seq}")
+                (state / "attempts" / f"object_two_{seq}.png").write_text(f"inferred render {seq}")
+            script = f"""set -uo pipefail
+STATE={state}; ASSETS={assets}; TEXTURES={textures}; ATTEMPT_SEQ=1
+{function("stage_builder")}
+hash=$(detail_contract_hash <(jq '.[0]' "$STATE/objects.json"))
+printf 'object:one\\t1\\t7\\t1\\t\\t%s\\t%s\\n' "$STATE/verdicts/object_one_1.json" "$hash" > "$STATE/records.tsv"
+two=$(detail_contract_hash <(jq '.[1]' "$STATE/objects.json"))
+for seq in 2 3; do printf 'object:two\\t%s\\t-\\t1\\t\\t%s\\t%s\\n' "$seq" "$STATE/verdicts/object_two_$seq.json" "$two" >> "$STATE/records.tsv"; done
+builder() {{ printf '%s=%s,%s\\n' "$1" "$(cat "$TEXTURES/one/weave.png")" "$(cat "$ASSETS/one.py")"; printf 'clobbered' > "$TEXTURES/one/weave.png"; printf 'clobbered' > "$ASSETS/one.py"; }}
+builder seed
+stage_builder object:one 2 0 detail_builder.md
+stage_builder object:two 1 0 detail_builder.md
+stage_builder integrate 1 0 integrate_builder.md
+restore_selected_details final
+printf 'final=%s,%s,%s,%s\\n' "$(cat "$TEXTURES/one/weave.png")" "$(cat "$ASSETS/one.py")" "$(jq -c '[.[] | .label]' "$STATE/objects.json")" "$(cat "$ASSETS/two.py")"
+"""
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=30)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('restore_selected_details final\nMODEL_SECONDS=4800 builder final_builder.md', PIPELINE)
+        self.assertEqual(result.stdout, "seed=,\ndetail_builder.md=clobbered,clobbered\ndetail_builder.md=selected,selected\nintegrate_builder.md=selected,selected\nfinal=selected,selected,[\"rug\",\"lamp\"],inferred 3\n")
 
     def test_detail_object_without_a_completed_attempt_keeps_no_asset(self):
         for mode, expected_rc in (("stopped", "0"), ("goto", "42")):
