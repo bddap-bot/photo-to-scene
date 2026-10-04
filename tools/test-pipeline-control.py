@@ -31,7 +31,7 @@ def function(name):
 
 def goto_targets():
     constants = "\n".join(re.search(rf"^{name}=.*$", PIPELINE, re.M).group(0) for name in ("STAGE_NAMES", "GOTO_FORMAT"))
-    return constants + "\n" + "\n".join(function(name) for name in ("goto_targets", "goto_target_text", "valid_stage", "goto_shape_error"))
+    return constants + "\n" + "\n".join(function(name) for name in ("goto_targets", "goto_target_text", "valid_target", "goto_shape_error"))
 
 
 def goto_policy():
@@ -238,18 +238,27 @@ done
         self.assertIn("blockout=1 detail_records=0 builder_gotos=5 calls=2", result.stdout)
 
     def test_builder_goto_correction_names_the_field_then_follows_goto_policy(self):
-        for gotos, rc, calls, log in ((0, 42, 2, "GOTO count"), (5, 0, 3, "GOTO cap reached origin=builder requested=blockout reason=fixed")):
-            with self.subTest(gotos=gotos), tempfile.TemporaryDirectory() as directory:
+        target_shaped = ["missing field `stage`", "unexpected field `target`"]
+        unknown = ["field `stage` names object:foreground_bowl, which is not a valid target"]
+        cases = (
+            ({"target": "blockout", "reason": "fixed"}, 0, 42, 2, target_shaped),
+            ({"target": "blockout", "reason": "fixed"}, 5, 0, 3, target_shaped),
+            ({"stage": "object:foreground_bowl", "reason": "fixed"}, 0, 42, 2, unknown),
+            ({"stage": "bogus\nblockout", "reason": "fixed"}, 0, 42, 2, ["which is not a valid target"]),
+        )
+        for first_goto, gotos, rc, calls, corrections in cases:
+            with self.subTest(first_goto=first_goto, gotos=gotos), tempfile.TemporaryDirectory() as directory:
                 root = Path(directory)
                 state = root / "state"
                 state.mkdir()
                 (state / "objects.json").write_text('[{"id":"bowl","label":"wooden bowl"}]')
                 (root / "builder.md").write_text("Write state/goto.json targeting blockout when the contract conflicts.")
+                (state / "first_goto.json").write_text(json.dumps(first_goto))
                 script = f'''set -uo pipefail
 ROOT={root!s}; STATE={state!s}; PROMPTS={root!s}; REQUEST_STAGE=; REQUEST_REASON=; BUILDER_GOTOS={gotos}; CRITIC_GOTOS=0; ACTIVE_STAGE=object:bowl
 printf 0 > "$STATE/calls"
 log() {{ printf '%s\\n' "$*"; }}
-codex() {{ local call; call=$(( $(cat "$STATE/calls") + 1 )); printf '%s' "$call" > "$STATE/calls"; cat > "$STATE/prompt_$call"; case "$call" in 1) printf '%s\\n' '{{"target":"blockout","reason":"fixed"}}' > "$STATE/goto.json" ;; 2) printf '%s\\n' '{{"stage":"blockout","reason":"fixed"}}' > "$STATE/goto.json" ;; esac; }}
+codex() {{ local call; call=$(( $(cat "$STATE/calls") + 1 )); printf '%s' "$call" > "$STATE/calls"; cat > "$STATE/prompt_$call"; case "$call" in 1) cp "$STATE/first_goto.json" "$STATE/goto.json" ;; 2) printf '%s\\n' '{{"stage":"blockout","reason":"fixed"}}' > "$STATE/goto.json" ;; esac; }}
 {model_function()}
 {function("builder")}
 rc=0
@@ -262,17 +271,23 @@ printf 'rc=%s calls=%s stage=%s\\n' "$rc" "$(cat "$STATE/calls")" "$REQUEST_STAG
             self.assertIn(f"rc={rc} calls={calls} stage=blockout", result.stdout)
             self.assertIn('state/goto.json holding exactly {"stage": "<target>", "reason": "<why>"}', first)
             self.assertIn("- object:bowl (wooden bowl)", first)
-            self.assertIn("missing field `stage`", second)
-            self.assertIn("unexpected field `target`", second)
+            for correction in corrections:
+                self.assertIn(correction, second)
+            self.assertEqual(second.count("- object:bowl (wooden bowl)"), 2)
             if gotos:
-                self.assertIn(log, result.stdout)
+                self.assertIn("GOTO cap reached origin=builder requested=blockout reason=fixed", result.stdout)
 
     def test_scene_critic_invalid_route_reasks_only_the_critic_after_final_attempt(self):
         run_integrate = function("run_integrate")
         helpers = "\n".join(function(name) for name in ("critic", "write_stage_check_verdict", "write_spatial_check_verdict", "integrate_attempts", "integrate_best"))
         schema = Path(__file__).parents[1].joinpath("verdict.schema.json")
-        for second_route, rc, final_route in (("object:bowl", 43, "object:bowl"), ("object:rocking_chair", 0, "integrate")):
-            with self.subTest(second_route=second_route), tempfile.TemporaryDirectory() as directory:
+        cases = (
+            ("object:foreground_bowl", "object:bowl", 43, 2, "object:bowl"),
+            ("object:foreground_bowl", "object:rocking_chair", 0, 2, "integrate"),
+            ("object:D", "object:bowl", 43, 1, "object:D"),
+        )
+        for first_route, second_route, rc, calls, final_route in cases:
+            with self.subTest(first_route=first_route, second_route=second_route), tempfile.TemporaryDirectory() as directory:
                 root = Path(directory)
                 state = root / "state"
                 (state / "verdicts").mkdir(parents=True)
@@ -297,7 +312,7 @@ codex() {{
   for arg in "$@"; do [ "$previous" = -o ] && output=$arg; [ "$previous" = --output-schema ] && schema=$arg; previous=$arg; done
   call=$(( $(cat "$STATE/calls") + 1 )); printf '%s' "$call" > "$STATE/calls"
   cat > "$STATE/prompt_$call"; cp "$schema" "$STATE/schema_$call"
-  route=object:foreground_bowl; [ "$call" -eq 1 ] || route={second_route}
+  route={first_route}; [ "$call" -eq 1 ] || route={second_route}
   jq -n --arg route "$route" '{{scene_change:null,score:7,summary:"close",corrections:["shrink the bowl"],top_stage:$route,wrong_labels:[],missing_objects:[]}}' > "$output"
 }}
 {model_function()}
@@ -311,18 +326,19 @@ printf 'rc=%s builds=%s critic_calls=%s request=%s\\n' "$rc" "$builds" "$(cat "$
                 result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=30)
                 enum = json.loads((state / "schema_1").read_text())["properties"]["top_stage"]["enum"]
                 prompt = (state / "prompt_1").read_text()
-                retry = (state / "prompt_2").read_text()
+                retry = (state / "prompt_2").read_text() if calls == 2 else ""
                 verdict = json.loads((state / "verdicts" / "integrate_3.json").read_text())
             self.assertEqual(result.returncode, 0, result.stderr)
-            self.assertIn(f"rc={rc} builds=1 critic_calls=2", result.stdout)
-            self.assertIn("CRITIC route rejected stage=integrate requested=object:foreground_bowl", result.stdout)
+            self.assertIn(f"rc={rc} builds=1 critic_calls={calls}", result.stdout)
             self.assertEqual(verdict["top_stage"], final_route)
             if rc:
-                self.assertIn("request=object:bowl", result.stdout)
-            self.assertEqual(enum, ["floorplan", "blockout", "identify", "detail", "integrate", "materials", "object:bowl", "object:D"])
+                self.assertIn(f"request={final_route}", result.stdout)
+            self.assertEqual(set(enum), {"floorplan", "blockout", "identify", "detail", "integrate", "materials", "object:bowl", "object:D"})
             self.assertIn("- object:bowl (foreground bowl)", prompt)
             self.assertIn("- object:D (rocking chair)", prompt)
-            self.assertIn("top_stage to object:foreground_bowl, which is not a valid target", retry)
+            if calls == 2:
+                self.assertIn("CRITIC route rejected try=1 stage=integrate requested=object:foreground_bowl", result.stdout)
+                self.assertIn("top_stage to object:foreground_bowl, which is not a valid target", retry)
 
     def test_second_invalid_builder_goto_is_ignored(self):
         builder = function("builder")

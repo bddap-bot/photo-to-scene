@@ -35,7 +35,7 @@ score_of() { jq -r '.score // 0' "$1"; }
 record() { printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$1" "$2" "$3" "$4" "$5" "$6" "${7:-}" "${8:-}" >> "$STATE/records.tsv"; }
 goto_targets() { printf '%s\t\n' "${STAGE_NAMES[@]}"; [ ! -f "$STATE/objects.json" ] || jq -r 'arrays | .[] | objects | select(.id | type == "string") | ["object:" + .id, (.final_label // .label // "" | tostring)] | @tsv' "$STATE/objects.json" 2>/dev/null; }
 goto_target_text() { printf 'Valid GOTO targets, each object with its inventory label:\n'; goto_targets | awk -F '\t' '{print "- " $1 ($2 == "" ? "" : " (" $2 ")")}'; }
-valid_stage() { goto_targets | cut -f1 | grep -xF -- "$1" >/dev/null; }
+valid_target() { local target; while IFS=$'\t' read -r target _; do [ "$target" != "$1" ] || return 0; done < <(goto_targets); return 1; }
 goto_shape_error() { jq -rs 'if length != 1 or (.[0] | type) != "object" then "it must hold one JSON object" else .[0] | [(["stage", "reason"] - keys)[] | "missing field `\(.)`"] + [(keys - ["stage", "reason"])[] | "unexpected field `\(.)`"] + [to_entries[] | select((.key == "stage" or .key == "reason") and (.value | type) != "string") | "field `\(.key)` is not a string"] | join("; ") end' "$1" 2>/dev/null || printf 'it is not valid JSON'; }
 goto_available() {
   local origin=$1 used=$BUILDER_GOTOS
@@ -151,7 +151,7 @@ builder() {
       if [ -z "$goto_error" ]; then
         REQUEST_STAGE=$(jq -r '.stage' "$STATE/goto.json")
         REQUEST_REASON=$(jq -r '.reason' "$STATE/goto.json")
-        valid_stage "$REQUEST_STAGE" || goto_error="field \`stage\` names $REQUEST_STAGE, which is not a valid target"
+        valid_target "$REQUEST_STAGE" || goto_error="field \`stage\` names $REQUEST_STAGE, which is not a valid target"
       fi
       rm -f "$STATE/goto.json"
       if [ "$cap_retry" -eq 1 ]; then
@@ -175,23 +175,19 @@ builder() {
   done
 }
 critic() {
-  local output=$1 stage=$2 schema="$STATE/verdict.schema.json" prompt route
+  local output=$1 stage=$2 schema="$STATE/verdict.schema.json" prompt route try
   shift 2
   prompt=$(cat; printf '\n'; goto_target_text)
-  if [ -z "$MODEL_FAILURE" ]; then
-    jq --argjson targets "$(goto_targets | cut -f1 | jq -Rsc 'split("\n")[:-1]')" '.properties.top_stage.enum = $targets' "$SCHEMA" > "$schema"
-    model --output-schema "$schema" -o "$output" "$@" - <<< "$prompt"
+  jq --argjson targets "$(goto_targets | cut -f1 | jq -Rsc 'split("\n")[:-1]')" '.properties.top_stage.enum = $targets' "$SCHEMA" > "$schema"
+  for try in 1 2; do
+    [ -z "$MODEL_FAILURE" ] || break
+    model --output-schema "$schema" -o "$output" "$@" - <<< "$prompt" || break
     route=$(jq -r '.top_stage' "$output" 2>/dev/null)
-    if [ -z "$MODEL_FAILURE" ] && ! valid_stage "$route"; then
-      log "CRITIC route rejected stage=$stage requested=$route; asking the critic again"
-      model --output-schema "$schema" -o "$output" "$@" - <<< "$prompt"$'\n'"Your previous verdict set top_stage to $route, which is not a valid target. Choose top_stage from the list above."
-      route=$(jq -r '.top_stage' "$output" 2>/dev/null)
-      if [ -z "$MODEL_FAILURE" ] && ! valid_stage "$route"; then
-        log "CRITIC route rejected twice stage=$stage requested=$route; keeping the verdict on its own stage"
-        jq --arg stage "$stage" '.top_stage = $stage' "$output" > "$output.next" && mv "$output.next" "$output"
-      fi
-    fi
-  fi
+    valid_target "$route" && break
+    log "CRITIC route rejected try=$try stage=$stage requested=$route"
+    if [ "$try" -eq 1 ]; then prompt+=$'\n'"Your previous verdict set top_stage to $route, which is not a valid target. Choose top_stage from the list above."
+    else jq --arg stage "$stage" '.top_stage = $stage' "$output" > "$output.next" && mv "$output.next" "$output"; fi
+  done
   [ -z "$MODEL_FAILURE" ] || write_stage_check_verdict "$output" "$stage" "$MODEL_FAILURE"
 }
 detail_attempts() { awk -F '\t' -v stage="object:$1" -v contract="$2" '$1==stage && $7==contract {n++} END {print n+0}' "$STATE/records.tsv"; }
