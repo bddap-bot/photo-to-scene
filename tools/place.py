@@ -10,6 +10,9 @@ import numpy
 from mathutils import Matrix, Vector
 
 GEOMETRY_TYPES = {'MESH', 'CURVE', 'SURFACE', 'META', 'FONT'}
+CELL = .005
+CHUNK = 1 << 20
+SHIFT = 1 << 32
 
 
 def frame_matrix(frame):
@@ -96,11 +99,54 @@ def geometry(anchor, depsgraph):
             yield owner, local.reshape(-1, 3) @ matrix[:3, :3].T + matrix[:3, 3], corners.reshape(-1, 3)
 
 
+def merge(runs):
+    key = runs[:, 0] * SHIFT + SHIFT // 2
+    start, end = key + runs[:, 1], key + runs[:, 2]
+    order = numpy.argsort(start, kind='stable')
+    start, end = start[order], end[order]
+    reach = numpy.maximum.accumulate(end)
+    first = numpy.flatnonzero(numpy.concatenate([[True], start[1:] > reach[:-1] + 1]))
+    start, end = start[first], numpy.maximum.reduceat(end, first)
+    row = start // SHIFT
+    return numpy.stack([row, start - row * SHIFT - SHIFT // 2, end - row * SHIFT - SHIFT // 2], axis=1)
+
+
+def cover(triangles):
+    rows = numpy.floor(triangles[:, :, 1] / CELL).astype(numpy.int64)
+    low, counts = rows.min(axis=1), rows.max(axis=1) - rows.min(axis=1) + 1
+    runs = numpy.empty((0, 3), dtype=numpy.int64)
+    ends = numpy.cumsum(counts)
+    begin = 0
+    while begin < len(triangles):
+        stop = max(begin + 1, int(numpy.searchsorted(ends, (ends[begin - 1] if begin else 0) + CHUNK, side='right')))
+        part, count = triangles[begin:stop], counts[begin:stop]
+        which = numpy.repeat(numpy.arange(len(part)), count)
+        row = low[begin:stop][which] + numpy.arange(len(which)) - numpy.repeat(numpy.cumsum(count) - count, count)
+        bottom, top = row * CELL, (row + 1) * CELL
+        xmin, xmax = numpy.full(len(row), numpy.inf), numpy.full(len(row), -numpy.inf)
+        for a, b in ((0, 1), (1, 2), (2, 0)):
+            p, q = part[which, a], part[which, b]
+            p, q = numpy.where(p[:, 1:] <= q[:, 1:], p, q), numpy.where(p[:, 1:] <= q[:, 1:], q, p)
+            lo, hi = numpy.maximum(bottom, p[:, 1]), numpy.minimum(top, q[:, 1])
+            rise = q[:, 1] - p[:, 1]
+            flat = rise <= 0
+            safe = numpy.where(flat, 1, rise)
+            for y, default in ((lo, 0), (hi, 1)):
+                x = p[:, 0] + numpy.where(flat, default, numpy.clip((y - p[:, 1]) / safe, 0, 1)) * (q[:, 0] - p[:, 0])
+                x = numpy.where(lo <= hi, x, numpy.nan)
+                xmin, xmax = numpy.fmin(xmin, x), numpy.fmax(xmax, x)
+        found = numpy.stack([row, numpy.floor(xmin / CELL).astype(numpy.int64), numpy.floor(xmax / CELL).astype(numpy.int64)], axis=1)
+        runs = merge(numpy.concatenate([runs, found]))
+        begin = stop
+    return runs
+
+
 def measure(anchor, depsgraph):
-    triangles = []
+    runs = numpy.empty((0, 3), dtype=numpy.int64)
     boxes = {}
     for owner, world, corners in geometry(anchor, depsgraph):
-        triangles += world[corners][:, :, :2].reshape(-1, 6).round(6).tolist()
+        if len(corners):
+            runs = merge(numpy.concatenate([runs, cover(world[corners][:, :, :2])]))
         region = region_of(owner)
         if region is not None:
             lo, hi = world.min(axis=0), world.max(axis=0)
@@ -111,7 +157,7 @@ def measure(anchor, depsgraph):
     return {
         'front_xy': [round(front.x, 6), round(front.y, 6)],
         'regions': [{'id': region, 'bbox': {'min': lo.round(6).tolist(), 'max': hi.round(6).tolist()}} for region, (lo, hi) in boxes.items()],
-        'triangles': triangles,
+        'coverage': {'cell': CELL, 'runs': runs.tolist()},
     }
 
 

@@ -115,6 +115,25 @@ RING = PARTS_ASSET % """    for lo, hi in (((-.5, -.5, 0), (.5, -.3, 1)), ((-.5,
         bpy.context.scene.collection.objects.link(part(str(lo), lo, hi, bpy.context.collection))"""
 
 
+DRAPE = """import bpy
+def sheet(name, x0, x1, y0, y1, frame, count):
+    size, origin = frame['size_xyz'], frame['origin_xyz']
+    xs = [x0 + (x1 - x0) * i / count for i in range(count + 1)]
+    ys = [y0 + (y1 - y0) * j / count for j in range(count + 1)]
+    vertices = [((x - origin[0]) / size[0], (y - origin[1]) / size[1], (-.12 * ((i + j) % 2) - origin[2]) / size[2]) for j, y in enumerate(ys) for i, x in enumerate(xs)]
+    faces = [(j * (count + 1) + i, j * (count + 1) + i + 1, (j + 1) * (count + 1) + i + 1, (j + 1) * (count + 1) + i) for j in range(count) for i in range(count)]
+    mesh = bpy.data.meshes.new(name)
+    mesh.from_pydata(vertices, [], faces)
+    part = bpy.data.objects.new(name, mesh)
+    part['spatial_region'] = name
+    bpy.context.collection.objects.link(part)
+def build(entry, collection=None):
+    frame = entry['spatial_contract']['frame']
+    sheet('main', 0, 6.47119043, 0, 7.65596894, frame, 360)
+    sheet('rear_recess', -0.52, 0, 4.95, 7.65596894, frame, 120)
+"""
+
+
 UNIT_CUBE = '''import bpy
 def build(entry, collection=None):
     bpy.ops.mesh.primitive_cube_add(size=1, location=(0, 0, .5))
@@ -144,11 +163,12 @@ class PlacementTest(unittest.TestCase):
         root = cls.root = Path(cls.directory.name)
         (root / 'state').mkdir()
         (root / 'assets').mkdir()
-        cls.entries = {entry['id']: entry for entry in (floor_entry('floor'), floor_entry('filled'), floor_entry('split'), chair_entry(), square_entry('stand'), square_entry('ring'))}
+        cls.entries = {entry['id']: entry for entry in (floor_entry('floor'), floor_entry('filled'), floor_entry('split'), floor_entry('drape'), chair_entry(), square_entry('stand'), square_entry('ring'))}
         (root / 'state' / 'objects.json').write_text(json.dumps(list(cls.entries.values())))
         (root / 'assets' / 'floor.py').write_text(BOX_ASSET.format(extra={}))
         (root / 'assets' / 'filled.py').write_text(BOX_ASSET.format(extra={'strip': box([-0.52, 0, -0.12], [0, 4.95, 0])}))
         (root / 'assets' / 'split.py').write_text(BOX_ASSET.format(extra={}).replace("boxes.update(EXTRA)", "boxes['main'] = {'min': [0.5, 0, -0.12], 'max': [6.47119043, 7.65596894, 0]}"))
+        (root / 'assets' / 'drape.py').write_text(DRAPE)
         (root / 'assets' / 'chair.py').write_text(UNIT_CUBE)
         (root / 'assets' / 'stand.py').write_text(INSTANCED_HALF)
         (root / 'assets' / 'ring.py').write_text(RING)
@@ -169,6 +189,10 @@ class PlacementTest(unittest.TestCase):
 
     def test_geometry_filling_the_recess_strip_fails(self):
         self.assertEqual(self.errors_for('filled'), ['filled: footprint did not round-trip'])
+
+    def test_finely_tessellated_concave_asset_measures_its_outline_not_its_triangles(self):
+        self.assertEqual(self.errors_for('drape'), [])
+        self.assertLess(len(json.dumps(self.placed['drape'])), 100_000)
 
     def test_disjoint_parts_are_rejected_explicitly(self):
         errors = self.errors_for('split')
