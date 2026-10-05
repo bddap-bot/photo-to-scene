@@ -322,13 +322,13 @@ restore_selected_details() {
   done < <(jq -r '.[].id' "$STATE/objects.json")
 }
 detail_neighbors() { jq -c --arg id "$1" 'def box: select(type == "array" and length == 4 and all(.[]; type == "number")); def overlaps($a; $b): $a[0] < $b[0] + $b[2] and $b[0] < $a[0] + $a[2] and $a[1] < $b[1] + $b[3] and $b[1] < $a[1] + $a[3]; [.[] | select(.id == $id) | .crop_bbox | box] as $own | [.[] | select(.id != $id) | . as $other | select(any($own[]; . as $c | $other.crop_bbox | box | overlaps(.; $c))) | {id, label, ownership: .spatial_contract.ownership}]' "$STATE/objects.json"; }
-detail_contract_hash() { jq -cS '{contract: (.spatial_contract | del(.source_evidence, .regions[]?.confidence)), material_note}' "$1" | sha256sum | cut -d ' ' -f1; }
+detail_entry() { jq -S 'def pick($keys): with_entries(select(.key as $k | any($keys[]; . == $k))); pick(["id", "proposed_label", "material_note", "spatial_contract"]) | .spatial_contract |= (pick(["frame", "footprint_xy", "regions", "relationships", "ownership", "appearance", "inferred"]) | if has("regions") then .regions |= map({id, bbox}) else . end)' "$@"; }
+detail_contract_hash() { detail_entry "$1" | sha256sum | cut -d ' ' -f1; }
 reuse_detail_records() {
   local id=$1 hash=$2 verdict old_hash snapshot
   while IFS=$'\t' read -r verdict old_hash; do
     snapshot="$STATE/attempts/$(basename "$verdict")"
     [ -f "$snapshot" ] || continue
-    [ "$(jq -cS '.spatial_contract' "$snapshot" | sha256sum | cut -d ' ' -f1)" = "$old_hash" ] || continue
     [ "$(detail_contract_hash "$snapshot")" = "$hash" ] || continue
     awk -F '\t' -v OFS='\t' -v stage="object:$id" -v old="$old_hash" -v hash="$hash" '$1==stage && $7==old {$7=hash} {print}' "$STATE/records.tsv" > "$STATE/records.tsv.next" && mv "$STATE/records.tsv.next" "$STATE/records.tsv"
   done < <(awk -F '\t' -v stage="object:$id" -v hash="$hash" '$1==stage && $7!=hash {print $6 "\t" $7}' "$STATE/records.tsv")
@@ -358,7 +358,7 @@ run_inferred_detail() {
 }
 run_one_detail() {
   local id=$1 feedback=${2:-} force=${3:-0} entry="$STATE/entry_$1.json" best bestseq start score a rc verdict attempts limit contract_hash detail_context neighbors
-  jq --arg id "$id" '.[] | select(.id==$id)' "$STATE/objects.json" > "$entry"
+  jq --arg id "$id" '.[] | select(.id==$id)' "$STATE/objects.json" | detail_entry > "$entry"
   if jq -e '.spatial_contract.inferred' "$entry" >/dev/null; then run_inferred_detail "$@"; return; fi
   neighbors="Other inventory entries whose crops overlap this crop; each owns its own components: $(detail_neighbors "$id")"
   contract_hash=$(detail_contract_hash "$entry")

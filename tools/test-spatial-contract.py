@@ -18,7 +18,7 @@ ROOM = [[0, 0], [4, 0], [4, 4], [0, 4]]
 
 class PolygonDistanceTest(unittest.TestCase):
     def test_low_confidence_region_uses_wider_tolerance(self):
-        contract = {"footprint_xy": [[0, 0], [1, 0], [1, 1], [0, 1]], "front_xy": [0, 1], "regions": [{"id": "hidden", "bbox": {"min": [0, 0, 0], "max": [1, 1, 1]}, "confidence": .25}], "relationships": [], "ownership": {"children": "external"}}
+        contract = {"frame": {"y_axis_xy": [0, 1]}, "footprint_xy": [[0, 0], [1, 0], [1, 1], [0, 1]], "regions": [{"id": "hidden", "bbox": {"min": [0, 0, 0], "max": [1, 1, 1]}, "confidence": .25}], "relationships": [], "ownership": {"children": "external"}}
         entries = {"one": {"id": "one", "spatial_contract": contract}}
         observed = {"one": {"footprint_xy": contract["footprint_xy"], "front_xy": [0, 1], "regions": [{"id": "hidden", "bbox": {"min": [0, 0, 0], "max": [1.3, 1, 1]}}]}}
         errors = []
@@ -47,7 +47,6 @@ def box_entry(ident, lo, hi, relationships=()):
         "source_evidence": {"synthetic": True},
         "frame": {"origin_xyz": [(lo[0] + hi[0]) / 2, (lo[1] + hi[1]) / 2, lo[2]], "x_axis_xy": [1, 0], "y_axis_xy": [0, 1], "size_xyz": [hi[i] - lo[i] for i in range(3)]},
         "footprint_xy": footprint,
-        "front_xy": [0, 1],
         "regions": [{"id": "body", "bbox": {"min": list(lo), "max": list(hi)}}],
         "relationships": list(relationships),
         "ownership": {"children": "external"},
@@ -66,8 +65,12 @@ def declaration_errors(entries, tolerance=.03):
     return errors
 
 
+def as_observed(contract):
+    return dict(contract, front_xy=contract["frame"]["y_axis_xy"])
+
+
 def observed_errors(entries):
-    observed = {ident: entry["spatial_contract"] for ident, entry in entries.items()}
+    observed = {ident: as_observed(entry["spatial_contract"]) for ident, entry in entries.items()}
     errors = []
     check_observed(entries, observed, list(entries), .03, errors)
     return errors
@@ -257,7 +260,7 @@ class FieldShapeTest(unittest.TestCase):
             (lambda e, c: e.update(spatial_contract={"x": 1}), "item: missing spatial_contract.frame"),
             (lambda e, c: e.update(spatial_contract=[1]), "item: spatial_contract must be an object"),
             (lambda e, c: c.update(footprint_xy={"a": 1}), "item: spatial_contract.footprint_xy must be"),
-            (lambda e, c: c.update(front_xy="north"), "item: spatial_contract.front_xy must be"),
+            (lambda e, c: c.update(front_xy=[0, 1]), "item: spatial_contract.front_xy is not a contract field"),
             (lambda e, c: c.update(frame=[0, 0, 0]), "item: spatial_contract.frame must be"),
             (lambda e, c: c["frame"].update(size_xyz=[1, "1", 1]), "item: spatial_contract.frame must be"),
             (lambda e, c: c.update(regions=["body"]), "item: spatial_contract.regions must be"),
@@ -285,7 +288,7 @@ class FieldShapeTest(unittest.TestCase):
 
     def test_malformed_observed_file_writes_named_error(self):
         entries = list(resting(0).values())
-        good = {entry["id"]: entry["spatial_contract"] for entry in entries}
+        good = {entry["id"]: as_observed(entry["spatial_contract"]) for entry in entries}
         cases = (
             (None, "observed.json: not valid JSON"),
             ("{", "observed.json: not valid JSON"),
@@ -314,7 +317,7 @@ class FieldShapeTest(unittest.TestCase):
 
     def test_well_formed_observed_round_trip_passes(self):
         entries = list(resting(0).values())
-        observed = {entry["id"]: entry["spatial_contract"] for entry in entries}
+        observed = {entry["id"]: as_observed(entry["spatial_contract"]) for entry in entries}
         result, validation = validate(entries, observed=observed)
         self.assertEqual(result.returncode, 0, validation)
 
@@ -330,7 +333,6 @@ def framed(ident, origin, x_axis, size, relationships=()):
         "source_evidence": {"synthetic": True},
         "frame": {"origin_xyz": list(origin), "x_axis_xy": list(x_axis), "y_axis_xy": y_axis, "size_xyz": list(size)},
         "footprint_xy": footprint,
-        "front_xy": y_axis,
         "regions": [{"id": "body", "bbox": {"min": lo, "max": hi}}],
         "relationships": list(relationships),
         "ownership": {"children": "external"},
@@ -356,7 +358,7 @@ ON_TOP = {"type": "supported_by", "region": "body", "support_region": "body"}
 
 def turned(entry, front):
     contract = entry["spatial_contract"]
-    contract["front_xy"] = contract["frame"]["y_axis_xy"] = list(front)
+    contract["frame"]["y_axis_xy"] = list(front)
     contract["frame"]["x_axis_xy"] = [front[1], -front[0]]
     return entry
 
@@ -385,29 +387,29 @@ class FacingTest(unittest.TestCase):
         for ident, origin, x_axis, wrong, wall in cases:
             with self.subTest(ident=ident):
                 self.assertEqual(facing_errors(room(framed(ident, origin, x_axis, [4, .2, 3]))), [])
-                self.assert_one_facing_error(room(turned(framed(ident, origin, x_axis, [4, .2, 3]), wrong)), f"{ident}: front_xy {wrong} does not face into the room", wall)
+                self.assert_one_facing_error(room(turned(framed(ident, origin, x_axis, [4, .2, 3]), wrong)), f"{ident}: frame.y_axis_xy {wrong} does not face into the room", wall)
 
     def test_wall_parallel_entry_declared_along_the_wall_is_rejected(self):
         cornice = lambda: framed("west_cornice", [0, 4, 2.8], [0, -1], [4, .2, .2])
         self.assertEqual(facing_errors(room(cornice())), [])
-        self.assert_one_facing_error(room(turned(cornice(), [0, 1])), "west_cornice: front_xy [0, 1] does not face into the room: its footprint lies 4.000 m along floorplan wall", "set front_xy and frame.y_axis_xy to [1.0, 0.0]")
+        self.assert_one_facing_error(room(turned(cornice(), [0, 1])), "west_cornice: frame.y_axis_xy [0, 1] does not face into the room: its footprint lies 4.000 m along floorplan wall", "set frame.y_axis_xy to [1.0, 0.0] with x_axis_xy perpendicular to it")
 
     def test_wall_mounted_fixture_faces_away_from_its_wall(self):
         sconce = lambda: framed("wall_sconce", [0, 3, 1.8], [0, -1], [.3, .25, .5])
         self.assertEqual(facing_errors(room(sconce())), [])
-        self.assert_one_facing_error(room(turned(sconce(), [0, 1])), "wall_sconce: front_xy [0, 1]")
+        self.assert_one_facing_error(room(turned(sconce(), [0, 1])), "wall_sconce: frame.y_axis_xy [0, 1]")
 
     def test_entry_on_a_wall_backed_support_faces_the_room(self):
         self.assertEqual(facing_errors(fireplace()), [])
         self.assertEqual(facing_errors(fireplace((.8660254037844386, .5))), [])
-        self.assert_one_facing_error(fireplace((0, 1)), "mantel_clock: front_xy [0, 1] does not face into the room: it is supported_by mantel, which faces [1, 0]")
+        self.assert_one_facing_error(fireplace((0, 1)), "mantel_clock: frame.y_axis_xy [0, 1] does not face into the room: it is supported_by mantel, which faces [1, 0]")
 
     def test_front_of_a_wall_backed_entry_counts_as_wall(self):
         entries = fireplace()
         turned(entries["mantel"], [0, 1])
         errors = facing_errors(entries)
         self.assertEqual(len(errors), 1, errors)
-        self.assertIn("mantel: front_xy [0, 1] does not face into the room: its footprint lies 1.600 m along front of chimney_breast", errors[0])
+        self.assertIn("mantel: frame.y_axis_xy [0, 1] does not face into the room: its footprint lies 1.600 m along front of chimney_breast", errors[0])
 
     def test_free_standing_and_room_spanning_entries_are_unconstrained(self):
         self.assertEqual(facing_errors(room(framed("rocker", [2, 2, 0], [.6, .8], [.6, .8, .7]))), [])
@@ -429,7 +431,7 @@ class FacingTest(unittest.TestCase):
     def test_gate_reports_wrong_facing(self):
         result, validation = validate(list(fireplace((0, 1)).values()))
         self.assertEqual(result.returncode, 1)
-        self.assertTrue(validation["errors"][0].startswith("mantel_clock: front_xy"), validation["errors"])
+        self.assertTrue(validation["errors"][0].startswith("mantel_clock: frame.y_axis_xy"), validation["errors"])
 
 
 if __name__ == '__main__':

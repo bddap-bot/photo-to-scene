@@ -94,7 +94,7 @@ def relationship_error(relation, own, other, tolerance):
     return None
 
 
-CONTRACT_FIELDS = ('source_evidence', 'frame', 'footprint_xy', 'front_xy', 'regions', 'relationships', 'ownership')
+CONTRACT_FIELDS = ('source_evidence', 'frame', 'footprint_xy', 'regions', 'relationships', 'ownership')
 APPEARANCE_FIELDS = ('aperture_background', 'minimum_luminance')
 OPTIONAL_FIELDS = ('appearance', 'inferred')
 VECTOR3 = '[x, y, z] numbers'
@@ -154,8 +154,6 @@ def contract_shape_errors(entry):
         errors.append(f'{ident}: spatial_contract.frame must be {{"origin_xyz": {VECTOR3}, "size_xyz": {VECTOR3}, "x_axis_xy": [x, y], "y_axis_xy": [x, y]}}')
     if 'footprint_xy' in contract and not is_footprint(contract['footprint_xy']):
         errors.append(f'{ident}: spatial_contract.footprint_xy must be at least three [x, y] number points')
-    if 'front_xy' in contract and not is_vector(contract['front_xy'], 2):
-        errors.append(f'{ident}: spatial_contract.front_xy must be [x, y] numbers')
     regions = contract.get('regions', [])
     if not isinstance(regions, list) or not all(isinstance(region, dict) and set(region) <= {'id', 'bbox', 'confidence'} and isinstance(region.get('id'), str) and region['id'] and is_box(region.get('bbox')) and is_fraction(region.get('confidence', 1)) for region in regions):
         errors.append(f'{ident}: spatial_contract.regions must be a list of {{"id": nonempty string, "bbox": {BOX}, "confidence": optional 0..1}}')
@@ -188,17 +186,12 @@ def check_contract(entry, entries, tolerance, errors):
     for point in contract['footprint_xy']:
         if not lo[0] - 1e-6 <= point[0] <= hi[0] + 1e-6 or not lo[1] - 1e-6 <= point[1] <= hi[1] + 1e-6:
             errors.append(f'{ident}: footprint point outside bbox')
-    front = contract['front_xy']
-    if abs(math.hypot(*front) - 1) > .01:
-        errors.append(f'{ident}: front_xy must be a unit vector')
     frame = contract['frame']
     axes = [frame['x_axis_xy'], frame['y_axis_xy']]
     if any(value <= 0 for value in frame['size_xyz']):
         errors.append(f'{ident}: frame needs positive size_xyz')
     elif any(abs(math.hypot(*axis) - 1) > .01 for axis in axes) or abs(sum(a * b for a, b in zip(*axes))) > .01:
         errors.append(f'{ident}: frame axes must be orthonormal')
-    elif sum(a * b for a, b in zip(frame['y_axis_xy'], front)) < .999:
-        errors.append(f'{ident}: frame y axis must equal front_xy')
     ids = region_ids(contract)
     if not ids or len(ids) != len(set(ids)):
         errors.append(f'{ident}: regions must be nonempty and unique')
@@ -265,7 +258,7 @@ def required_facing(entries, walls, tolerance):
     while True:
         surfaces = list(walls)
         for ident, (normals, threshold, _) in required.items():
-            front = entries[ident]['spatial_contract']['front_xy']
+            front = entries[ident]['spatial_contract']['frame']['y_axis_xy']
             if threshold == ALONG_WALL and faces(front, normals, threshold):
                 box = entries[ident]['bbox']
                 surfaces.append((*front_face(entries[ident]['spatial_contract']), front, [box['min'][2], box['max'][2]], f'front of {ident}'))
@@ -295,9 +288,9 @@ def required_facing(entries, walls, tolerance):
 
 def check_facing(entries, room, tolerance, errors):
     for ident, (normals, threshold, reason) in required_facing(entries, room_walls(room), tolerance).items():
-        front = entries[ident]['spatial_contract']['front_xy']
+        front = entries[ident]['spatial_contract']['frame']['y_axis_xy']
         if not faces(front, normals, threshold):
-            errors.append(f'{ident}: front_xy {front} does not face into the room: {reason}; set front_xy and frame.y_axis_xy to {normals[0]}, or GOTO floorplan if that wall is wrong')
+            errors.append(f'{ident}: frame.y_axis_xy {front} does not face into the room: {reason}; set frame.y_axis_xy to {normals[0]} with x_axis_xy perpendicular to it, or GOTO floorplan if that wall is wrong')
 
 
 def load_room(path):
@@ -341,7 +334,7 @@ def check_observed(entries, observed, ids, tolerance, errors):
         valid.add(ident)
         if polygon_error(expected['footprint_xy'], actual['footprint_xy']) > tolerance:
             errors.append(f'{ident}: footprint did not round-trip')
-        dot = sum(a * b for a, b in zip(expected['front_xy'], actual['front_xy']))
+        dot = sum(a * b for a, b in zip(expected['frame']['y_axis_xy'], actual['front_xy']))
         if dot < .98:
             errors.append(f'{ident}: facing did not round-trip')
         actual_regions = {r['id']: r['bbox'] for r in actual.get('regions', [])}

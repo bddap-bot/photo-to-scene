@@ -51,7 +51,6 @@ def floor_entry(ident):
             'source_evidence': {'synthetic': True},
             'frame': {'origin_xyz': [(lo[0] + hi[0]) / 2, (lo[1] + hi[1]) / 2, lo[2]], 'x_axis_xy': [1, 0], 'y_axis_xy': [0, 1], 'size_xyz': [hi[i] - lo[i] for i in range(3)]},
             'footprint_xy': FLOOR_FOOTPRINT,
-            'front_xy': [0, 1],
             'regions': [{'id': 'main', 'bbox': box([0, 0, -0.12], [6.47119043, 7.65596894, 0])}, {'id': 'rear_recess', 'bbox': box([-0.52, 4.95, -0.12], [0, 7.65596894, 0])}],
             'relationships': [], 'ownership': {'children': 'external'},
         },
@@ -68,7 +67,7 @@ def chair_entry():
         'spatial_contract': {
             'source_evidence': {'synthetic': True},
             'frame': {'origin_xyz': origin, 'x_axis_xy': x_axis, 'y_axis_xy': y_axis, 'size_xyz': size},
-            'footprint_xy': corners, 'front_xy': y_axis,
+            'footprint_xy': corners,
             'regions': [{'id': 'body', 'bbox': box(lo, hi)}],
             'relationships': [], 'ownership': {'children': 'external'},
         },
@@ -82,7 +81,7 @@ def square_entry(ident):
         'spatial_contract': {
             'source_evidence': {'synthetic': True},
             'frame': {'origin_xyz': [4.5, 1.5, 0], 'x_axis_xy': [1, 0], 'y_axis_xy': [0, 1], 'size_xyz': [1, 1, .5]},
-            'footprint_xy': [[4, 1], [5, 1], [5, 2], [4, 2]], 'front_xy': [0, 1],
+            'footprint_xy': [[4, 1], [5, 1], [5, 2], [4, 2]],
             'regions': [{'id': 'body', 'bbox': box(lo, hi)}],
             'relationships': [], 'ownership': {'children': 'external'},
         },

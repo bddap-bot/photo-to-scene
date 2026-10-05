@@ -23,7 +23,7 @@ def function(name):
     if name == "run_one_detail":
         result = function("run_inferred_detail") + "\n" + function("place_command") + "\n" + function("preview_command") + "\n" + function("detail_neighbors") + "\n" + function("reuse_detail_records") + "\n" + result
     if name in ("run_one_detail", "restore_selected_details"):
-        result = function("detail_contract_hash") + "\n" + function("detail_bestseq") + "\n" + function("restore_detail") + "\n" + result
+        result = function("detail_entry") + "\n" + function("detail_contract_hash") + "\n" + function("detail_bestseq") + "\n" + function("restore_detail") + "\n" + result
     if name == "restore_detail":
         result = function("restore_detail_files") + "\n" + result
     if name == "restore_detail_files":
@@ -451,9 +451,9 @@ printf 'rc=%s calls=%s\n' "$rc" "$(cat "$calls")"
             (prompts / "detail_builder.md").write_text(detail_prompt)
             dense_contract = "x" * 1_100_000
             (state / "objects.json").write_text(
-                '[{"id":"dense","crop_bbox":[0,0,1,1],"spatial_contract":{"mesh":"'
+                '[{"id":"dense","crop_bbox":[0,0,1,1],"spatial_contract":{"regions":[{"id":"'
                 + dense_contract
-                + '"}}]'
+                + '"}]}}]'
             )
             (state / "records.tsv").write_text("")
             (state / "progress.md").write_text("")
@@ -788,7 +788,6 @@ cat "$STATE/scores.md"
             "frame": {"origin_xyz": [0, 0, 0], "size_xyz": [1, 1, 1],
                       "x_axis_xy": [1, 0], "y_axis_xy": [0, 1]},
             "footprint_xy": [[0, 0], [1, 0], [1, 1]],
-            "front_xy": [0, -1],
             "regions": [{"id": "body", "bbox": {"min": [0, 0, 0], "max": [1, 1, 1]}}],
             "ownership": {"children": "external"},
             "relationships": [{"type": "supported_by", "with": "floor", "region": "body", "support_region": "top"}],
@@ -799,14 +798,19 @@ cat "$STATE/scores.md"
             "evidence": ("source_evidence", {"note": "revised annotation"}, False),
             "frame": ("frame", dict(original["frame"], size_xyz=[2, 1, 1]), True),
             "footprint": ("footprint_xy", [[0, 0], [2, 0], [1, 1]], True),
-            "facing": ("front_xy", [1, 0], True),
+            "facing": ("frame", dict(original["frame"], x_axis_xy=[0, -1], y_axis_xy=[1, 0]), True),
             "bbox": ("regions", [{"id": "body", "bbox": {"min": [0, 0, 0], "max": [2, 1, 1]}}], True),
             "region_id": ("regions", [dict(original["regions"][0], id="seat")], True),
             "ownership": ("ownership", {"children": "included"}, True),
             "relationship": ("relationships", [{"type": "supported_by", "with": "floor", "region": "body", "support_region": "deck"}], True),
             "appearance": ("appearance", dict(original["appearance"], minimum_luminance=0.4), True),
             "material": ("material_note", "dark walnut", True),
+            "proposal": ("proposed_label", "stool", True),
+            "review": ("final_label", "armchair", False),
+            "entry_prose": ("detail_notes", "the seat is 0.9 m deep", False),
+            "entry_parts": ("geometry", [{"part": "seat", "size_m": [0.9, 0.9, 0.1]}], False),
         }
+        entry_fields = {"material_note", "proposed_label", "final_label", "detail_notes", "geometry"}
         for legacy in (False, True):
             for name, (field, value, changed) in variants.items():
                 for score, attempts in ((8, 1), (6, 2)):
@@ -816,9 +820,9 @@ cat "$STATE/scores.md"
                             (state / "attempts").mkdir()
                             (state / "textures").mkdir()
                             saved = state / "attempts" / "object_one_1.json"
-                            saved.write_text(json.dumps({"id": "one", "material_note": "plaster", "spatial_contract": original}))
-                            current = {"id": "one", "material_note": "plaster", "spatial_contract": original}
-                            if field == "material_note":
+                            saved.write_text(json.dumps({"id": "one", "proposed_label": "chair", "material_note": "plaster", "spatial_contract": original}))
+                            current = {"id": "one", "proposed_label": "chair", "material_note": "plaster", "spatial_contract": original}
+                            if field in entry_fields:
                                 current[field] = value
                             else:
                                 current["spatial_contract"] = dict(original, **{field: value})
@@ -853,6 +857,56 @@ printf 'REUSED best=%s attempts=%s\n' "$(detail_best one "$(detail_contract_hash
                         self.assertEqual(result.returncode, 43 if changed else 0, result.stderr)
                         self.assertEqual(result.stdout, "REBUILD\n" if changed else
                                          f"REUSED best={score} attempts={attempts}\n")
+
+    def test_detail_entry_holds_only_the_projection_the_reuse_hash_covers(self):
+        prose = "the seat is 0.9 m deep"
+        contract = {
+            "source_evidence": {"seat": prose},
+            "frame": {"origin_xyz": [0, 0, 0], "size_xyz": [1, 1, 1], "x_axis_xy": [1, 0], "y_axis_xy": [0, 1]},
+            "footprint_xy": [[0, 0], [1, 0], [1, 1]],
+            "regions": [{"id": "body", "bbox": {"min": [0, 0, 0], "max": [1, 1, 1]}, "confidence": 0.5}],
+            "relationships": [],
+            "ownership": {"children": "external"},
+        }
+        entry = {
+            "id": "one", "label": "chair", "proposed_label": "chair", "final_label": "chair",
+            "label_reason": "Root proposal awaiting object review.", "crop_bbox": [0, 0, 1, 1],
+            "bbox": {"min": [0, 0, 0], "max": [1, 1, 1]}, "contact": "floor", "confidence": 0.8,
+            "shape": "box", "material_note": "oak", "detail_notes": prose,
+            "geometry": [{"part": "seat", "depth": prose}], "spatial_contract": contract,
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            state = Path(directory)
+            for name in ("attempts", "textures", "crops"):
+                (state / name).mkdir()
+            (state / "objects.json").write_text(json.dumps([entry]))
+            (state / "records.tsv").write_text("")
+            script = f"""set -euo pipefail
+STATE={directory}; ASSETS={directory}; ATTEMPT_SEQ=0
+{chr(10).join(function(n) for n in ("detail_attempts", "detail_best", "run_one_detail"))}
+inbox() {{ :; }}
+log() {{ :; }}
+next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
+builder() {{ cp "$STATE/entry_one.json" "$STATE/handoff.json"; return 43; }}
+restore_detail() {{ :; }}
+run_one_detail one || [ $? -eq 43 ]
+detail_contract_hash "$STATE/handoff.json"
+detail_contract_hash <(jq '.[0]' "$STATE/objects.json")
+"""
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=10)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            handoff = (state / "handoff.json").read_text()
+        self.assertNotIn(prose, handoff)
+        self.assertEqual(json.loads(handoff), {
+            "id": "one", "proposed_label": "chair", "material_note": "oak",
+            "spatial_contract": {
+                "frame": contract["frame"], "footprint_xy": contract["footprint_xy"],
+                "regions": [{"id": "body", "bbox": {"min": [0, 0, 0], "max": [1, 1, 1]}}],
+                "relationships": [], "ownership": {"children": "external"},
+            },
+        })
+        handoff_hash, entry_hash = result.stdout.split()
+        self.assertEqual(handoff_hash, entry_hash)
 
     def test_detail_budget_is_keyed_to_contract(self):
         functions = "\n".join(function(name) for name in ("detail_attempts", "detail_best"))
@@ -1626,7 +1680,9 @@ done
                 target = "floorplan" if stage == "blockout" else "identify"
                 script = f"""set -uo pipefail
 ROOT={root}; STATE={state}; PROMPTS={prompts}; ASSETS={root}; INPUT=photo.jpg; ATTEMPT_SEQ=1; REQUEST_STAGE=; REQUEST_REASON=; MODEL_FAILURE=
-hash=$(printf '{{"contract":{{}},"material_note":null}}\\n' | sha256sum | cut -d ' ' -f1)
+{function("detail_entry")}
+{function("detail_contract_hash")}
+hash=$(detail_contract_hash <(jq '.[0]' "$STATE/objects.json"))
 printf 'object:one\\t1\\t6\\t5\\t\\t%s\\t%s\\n' "$STATE/verdicts/object_one_1.json" "$hash" > "$STATE/records.tsv"
 log() {{ printf '%s\\n' "$*"; }}
 inbox() {{ :; }}
@@ -1760,7 +1816,9 @@ printf 'calls=%s route=%s\\n' "$(cat "$STATE/calls")" "$(jq -r .top_stage "$STAT
             (state / "progress.md").write_text("")
             script = f"""set -uo pipefail
 ROOT={root}; STATE={state}; PROMPTS={prompts}; ASSETS={root}; INPUT=photo.jpg; ATTEMPT_SEQ=6; REQUEST_STAGE=; REQUEST_REASON=
-hash=$(printf '{{"contract":{{}},"material_note":null}}\\n' | sha256sum | cut -d ' ' -f1)
+{function("detail_entry")}
+{function("detail_contract_hash")}
+hash=$(detail_contract_hash <(jq '.[0]' "$STATE/objects.json"))
 printf 'integrate\\t1\\t0\\t1\\t\\t%s\\t\\nintegrate\\t2\\t0\\t1\\t\\t%s\\t\\n' "$STATE/verdicts/integrate_5.json" "$STATE/verdicts/integrate_6.json" > "$STATE/records.tsv"
 printf 'object:one\\t1\\t5\\t1\\t\\t%s\\t%s\\nobject:one\\t2\\t5\\t1\\t\\t%s\\t%s\\n' "$STATE/verdicts/object_one_3.json" "$hash" "$STATE/verdicts/object_one_4.json" "$hash" >> "$STATE/records.tsv"
 log() {{ printf '%s\\n' "$*"; }}
@@ -2075,7 +2133,7 @@ printf 'rc=%s request=%s\\n' "$?" "$REQUEST_STAGE"
                 path.mkdir(parents=True)
             (prompts / "detail_builder.md").write_text("build object")
             (prompts / "detail_critic.md").write_text("criticize object")
-            (state / "objects.json").write_text(json.dumps(objects))
+            (state / "objects.json").write_text(json.dumps([{"proposed_label": entry["label"], **entry} for entry in objects]))
             (state / "records.tsv").write_text("")
             (state / "progress.md").write_text("")
             for number, verdict in enumerate(critic_verdicts, 1):
@@ -2100,7 +2158,7 @@ codex() {{
   else
     n=$(( $(cat "$STATE/builds") + 1 )); printf '%s' "$n" > "$STATE/builds"
     cat > "$STATE/builder_input_$n"
-    jq --arg label "$(cat "$STATE/label_$n")" '. + {{proposed_label:.label,final_label:$label,label_reason:"crop"}}' "$STATE/entry_{target}.json" > "$STATE/entry.next" && mv "$STATE/entry.next" "$STATE/entry_{target}.json"
+    jq --arg label "$(cat "$STATE/label_$n")" '. + {{final_label:$label,label_reason:"crop"}}' "$STATE/entry_{target}.json" > "$STATE/entry.next" && mv "$STATE/entry.next" "$STATE/entry_{target}.json"
     printf 'def build(entry, collection=None): pass  # %s\\n' "$n" > "$ASSETS/{target}.py"; printf 'render %s' "$n" > "$STATE/detail_{target}.png"
   fi
 }}
@@ -2141,7 +2199,7 @@ run_one_detail {target}
         owner = '{"id":"cornice_rear","label":"Rear cornice","ownership":{"children":"external"}}'
         for prompt in (run["builder_inputs"][0], run["critic_inputs"][0]):
             self.assertIn(f"Other inventory entries whose crops overlap this crop; each owns its own components: [{owner}]\n", prompt)
-        self.assertIn('Object entry: {"id":"ceiling","label":"Ceiling slab",', run["critic_inputs"][0])
+        self.assertIn('Object entry: {"id":"ceiling","proposed_label":"Ceiling slab",', run["critic_inputs"][0])
         self.assertIn('"final_label":"Ceiling slab"', run["critic_inputs"][0])
 
     def test_relabel_claiming_a_neighbors_component_fails_identification(self):
@@ -2157,10 +2215,10 @@ run_one_detail {target}
         self.assertIn("identification check failed: the detail claims separately owned geometry: firescreen: mesh panels, rail and pulls", run["builder_inputs"][1])
         self.assertEqual(run["objects"]["firebox"]["final_label"], "Dark fireplace inset")
         self.assertEqual(run["assets"], ["2", "2"])
-        self.assertEqual(run["objects"]["firescreen"], objects[1])
+        self.assertEqual(run["objects"]["firescreen"], {"proposed_label": "Fireplace screen", **objects[1]})
         run = self.detail_ownership_run(objects, "firebox", [claim, claim], ["Dark inset with mesh screen panels", "Dark inset with mesh screen panels"])
         self.assertEqual(run["scores"], ["0", "0"])
-        self.assertEqual(run["objects"]["firebox"], objects[0])
+        self.assertEqual(run["objects"]["firebox"], {"proposed_label": "Dark fireplace inset", **objects[0]})
         self.assertEqual(run["assets"], [None, None])
         run = self.detail_ownership_run(objects, "firebox", [claim, {**clean, "score": 0}], ["Dark inset with mesh screen panels", "Dark fireplace inset"])
         self.assertEqual(run["scores"], ["0", "0"])
@@ -2210,6 +2268,7 @@ codex() {{
   else
     id=$(grep -o 'state/entry_[a-z]*' <<< "$prompt" | cut -d_ -f2)
     printf '%s\\n' "$@" > "$STATE/builder_args_$id"; printf '%s' "$prompt" > "$STATE/builder_input_$id"
+    jq '. + {{final_label:.proposed_label,label_reason:"crop"}}' "$STATE/entry_$id.json" > "$STATE/entry.next" && mv "$STATE/entry.next" "$STATE/entry_$id.json"
     printf x >> "$STATE/builds_$id"
     printf 'def build(entry, collection=None): pass  # %s %s\\n' "$id" "$(wc -c < "$STATE/builds_$id")" > "$ASSETS/$id.py"; printf 'render %s' "$id" > "$STATE/detail_$id.png"
   fi
