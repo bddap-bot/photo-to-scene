@@ -39,7 +39,7 @@ A builder GOTO is `state/goto.json` holding exactly `{"stage": "<target>", "reas
 
 A critic's `top_stage` is constrained by a verdict schema whose enum is that target set. A verdict naming any other target re-asks only the critic, never the builder, including after a stage's final build attempt; a second invalid route keeps the verdict on the critic's own stage.
 
-After integration or materials, a score below 8 may return to the stage named by the highest-priority correction. Forward execution then resumes from the repaired contract.
+After integration or materials, a score below 8 may return to the stage named by the highest-priority correction. Forward execution then resumes from the repaired contract. An `object:<id>` target rebuilds that object within its footprint tier and then resumes detail: objects already scoring at least 8 or at their attempt cap are reused, any other object is built, and a tier is reviewed again only when one of its objects was built after its last review.
 
 Builders and critics each have an ordinary allowance of five accepted GOTOs. Once an origin's allowance is exhausted, integration and materials each retain one blockout-only GOTO, shared by builder and critic. Neither early stages nor integration can spend materials' reserve. Counts and reserve use persist across resume; old checkpoints keep their spent counts and gain the two reserves. A fresh run therefore accepts at most 12 GOTOs, independent of object count. Exhausted builder requests receive one bounded fallback call with correction context; exhausted critic requests advance.
 

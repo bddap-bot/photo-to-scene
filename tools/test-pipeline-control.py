@@ -34,6 +34,8 @@ def function(name):
         result = 'ROOT=${ROOT:-$STATE}\nplace_tool() { [ "$1 $2 $3" = "place $ROOT $STATE/placed.blend" ] && printf placed > "$3"; }\n' + result
     if name.startswith("run_") and name != "run_detail":
         result = function("stage_builder") + "\n" + result
+    if name == "run_detail":
+        result = function("tier_review_due") + "\n" + result
     if name in ("builder", "run_detail"):
         result = goto_policy() + "\n" + result
     if name in ("builder", "critic"):
@@ -163,7 +165,9 @@ class PipelineControlTest(unittest.TestCase):
 STATE={directory}; BUILDER_GOTOS=5; CRITIC_GOTOS=5
 ACTIVE_STAGE=detail; REQUEST_STAGE=blockout
 log() {{ :; }}
-write_tiers() {{ : > "$STATE/object_tiers.tsv"; }}
+write_tiers() {{ printf 'a\\tlarge\\nb\\tmedium\\nc\\tsmall\\n' > "$STATE/object_tiers.tsv"; }}
+printf '[]' > "$STATE/objects.json"; : > "$STATE/records.tsv"
+run_one_detail() {{ printf 'object:%s\\n' "$1" >> "$STATE/records.tsv"; }}
 run_tier_critic() {{ printf '%s\\n' "$1"; return 43; }}
 {function("run_detail")}
 run_detail
@@ -171,6 +175,41 @@ run_detail
             result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=10)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stdout.splitlines(), ["large", "medium", "small"])
+
+    def test_object_reentry_resumes_detail_before_integration(self):
+        tiers = "sofa\tlarge\nchair\tmedium\nplinth\tsmall\nbowl\tsmall\ncup\tsmall\n"
+        cases = [
+            ("unfinished smaller tier", "object:plinth",
+             ["sofa", "chair", "tier:large", "tier:medium"],
+             ["plinth tier=small force=1", "bowl tier=small force=0", "cup tier=small force=0", "review small", "rc=0"]),
+            ("finished detail", "object:sofa",
+             ["sofa", "chair", "plinth", "bowl", "cup", "tier:large", "tier:medium", "tier:small"],
+             ["sofa tier=large force=1", "review large", "rc=0"]),
+        ]
+        for name, target, history, expected in cases:
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                (root / "objects.json").write_text("[]")
+                (root / "records.tsv").write_text("".join(
+                    f"{row if row.startswith('tier:') else 'object:' + row}\t1\t8\t1\t\tv\th\t\n" for row in history))
+                script = f"""set -uo pipefail
+STATE={root}; BUILDER_GOTOS=0; CRITIC_GOTOS=0
+log() {{ :; }}
+write_tiers() {{ printf '{tiers}' > "$STATE/object_tiers.tsv"; }}
+run_one_detail() {{
+  if [ "${{3:-0}}" -eq 1 ] || ! grep -q "^object:$1\t" "$STATE/records.tsv"; then
+    printf '%s tier=%s force=%s\\n' "$1" "${{ACTIVE_TIER:-none}}" "${{3:-0}}"
+    printf 'object:%s\\t1\\t8\\t1\\t\\tv\\th\\t%s\\n' "$1" "${{ACTIVE_TIER:-}}" >> "$STATE/records.tsv"
+  fi
+}}
+run_tier_critic() {{ printf 'review %s\\n' "$1"; printf 'tier:%s\\t1\\t8\\t1\\t\\tv\\t\\t%s\\n' "$1" "$1" >> "$STATE/records.tsv"; }}
+{function("run_detail")}
+run_detail {target} "move it"
+printf 'rc=%s\\n' "$?"
+"""
+                result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=10)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(result.stdout.splitlines(), expected)
 
     def test_capped_builder_goto_retries_within_same_stage_attempt(self):
         builder = function("builder")
@@ -2058,7 +2097,7 @@ next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
 score_of() {{ jq -r '.score // 0' "$1"; }}
 record() {{ printf '%s\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\n' "$1" "$2" "$3" "$4" "$5" "$6" "${{7:-}}" "${{8:-}}" >> "$STATE/records.tsv"; }}
 verify_detail() {{ return 0; }}
-run_tier_critic() {{ printf '%s\\n' "$1" >> "$STATE/tier_critics"; }}
+run_tier_critic() {{ printf '%s\\n' "$1" >> "$STATE/tier_critics"; record "tier:$1" 1 8 0 "" "" "" "$1"; }}
 codex() {{
   local output= previous= id prompt
   for arg in "$@"; do [ "$previous" = -o ] && output=$arg; previous=$arg; done
@@ -2102,8 +2141,8 @@ write_report
             self.assertFalse((state / "critic_args_closure").exists())
             self.assertEqual(builder_images("window"), [f"{state}/crops/window.png", "photo.jpg"])
             self.assertIn(f"{state}/crops/window.png", (state / "critic_args_window").read_text().splitlines())
-            self.assertEqual((state / "tier_critics").read_text().split(), ["large", "medium", "small"] * 2)
-            rows = [line.split("\t") for line in (state / "records.tsv").read_text().splitlines()]
+            self.assertEqual((state / "tier_critics").read_text().split(), ["large"])
+            rows = [line.split("\t") for line in (state / "records.tsv").read_text().splitlines() if line.startswith("object:")]
             self.assertEqual([(row[0], row[2], row[7]) for row in rows], [("object:closure", "-", ""), ("object:window", "9", "large"), ("object:closure", "-", "")])
             self.assertEqual((state / "closure_after_resume").read_text().split("# ")[-1].strip(), "closure 1")
             self.assertEqual((assets / "closure.py").read_text().split("# ")[-1].strip(), "closure 2")

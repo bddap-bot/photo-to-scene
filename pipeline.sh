@@ -396,16 +396,18 @@ run_one_detail() {
   restore_detail "$id" "$bestseq"
   attempts=$(detail_attempts "$id" "$contract_hash"); best=$(detail_best "$id" "$contract_hash"); printf '%s best=%s attempts=%s contract=%s\n' "$id" "$best" "$attempts" "$contract_hash" >> "$STATE/progress.md"; inbox
 }
+tier_review_due() { awk -F '\t' -v tier="$1" 'FILENAME==ARGV[1] {if ($2==tier) ids["object:" $1]=1; next} $1=="tier:" tier {reviewed=FNR} $1 in ids {built=FNR} END {exit !(built > reviewed)}' "$STATE/object_tiers.tsv" "$STATE/records.tsv"; }
 run_detail() {
   local only=${1:-} id tier tier_rc
   local -a detail_ids=()
-  if [[ "$only" == object:* ]]; then run_one_detail "${only#object:}" "${2:-}" 1; return $?; fi
   write_tiers
+  if [[ "$only" == object:* ]]; then ACTIVE_TIER=$(awk -F '\t' -v id="${only#object:}" '$1==id {print $2}' "$STATE/object_tiers.tsv") run_one_detail "${only#object:}" "${2:-}" 1 || return $?; fi
   mapfile -t detail_ids < <(jq -r '.[] | select(.spatial_contract.inferred) | .id' "$STATE/objects.json")
   for id in "${detail_ids[@]}"; do run_one_detail "$id" || return $?; done
   for tier in large medium small; do
     mapfile -t detail_ids < <(awk -F '\t' -v tier="$tier" '$2==tier {print $1}' "$STATE/object_tiers.tsv")
     for id in "${detail_ids[@]}"; do ACTIVE_TIER=$tier run_one_detail "$id" || return $?; done
+    tier_review_due "$tier" || continue
     run_tier_critic "$tier"
     tier_rc=$?
     if [ "$tier_rc" -eq 43 ] && ! goto_available critic; then
