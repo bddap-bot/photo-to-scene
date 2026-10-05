@@ -45,7 +45,7 @@ def function(name):
 
 def goto_targets():
     constants = "\n".join(re.search(rf"^{name}=.*$", PIPELINE, re.M).group(0) for name in ("STAGE_NAMES", "GOTO_FORMAT"))
-    return constants + "\n" + "\n".join(function(name) for name in ("goto_targets", "goto_target_text", "valid_target", "goto_shape_error"))
+    return constants + "\n" + "\n".join(function(name) for name in ("goto_rank", "goto_targets", "goto_target_text", "valid_target", "goto_shape_error"))
 
 
 def goto_policy():
@@ -320,7 +320,7 @@ done
                 (root / "builder.md").write_text("Write state/goto.json targeting blockout when the contract conflicts.")
                 (state / "first_goto.json").write_text(json.dumps(first_goto))
                 script = f'''set -uo pipefail
-ROOT={root!s}; STATE={state!s}; PROMPTS={root!s}; REQUEST_STAGE=; REQUEST_REASON=; BUILDER_GOTOS={gotos}; CRITIC_GOTOS=0; ACTIVE_STAGE=object:bowl
+ROOT={root!s}; STATE={state!s}; PROMPTS={root!s}; REQUEST_STAGE=; REQUEST_REASON=; BUILDER_GOTOS={gotos}; CRITIC_GOTOS=0; ACTIVE_STAGE=tier:large
 printf 0 > "$STATE/calls"
 log() {{ printf '%s\\n' "$*"; }}
 codex() {{ local call; call=$(( $(cat "$STATE/calls") + 1 )); printf '%s' "$call" > "$STATE/calls"; cat > "$STATE/prompt_$call"; case "$call" in 1) cp "$STATE/first_goto.json" "$STATE/goto.json" ;; 2) printf '%s\\n' '{{"stage":"blockout","reason":"fixed"}}' > "$STATE/goto.json" ;; esac; }}
@@ -398,7 +398,7 @@ printf 'rc=%s builds=%s critic_calls=%s request=%s\\n' "$rc" "$builds" "$(cat "$
             self.assertEqual(verdict["top_stage"], final_route)
             if rc:
                 self.assertIn(f"request={final_route}", result.stdout)
-            self.assertEqual(set(enum), {"floorplan", "blockout", "identify", "detail", "integrate", "materials", "object:bowl", "object:D"})
+            self.assertEqual(set(enum), {"floorplan", "blockout", "identify", "detail", "integrate", "object:bowl", "object:D"})
             self.assertIn("- object:bowl (foreground bowl)", prompt)
             self.assertIn("- object:D (rocking chair)", prompt)
             if calls == 2:
@@ -1604,6 +1604,7 @@ done
                 (root / "log.md").write_text("")
                 (state / "redirects.tsv").write_text("")
                 command = "run_blockout" if stage == "blockout" else "run_one_detail one '' 1"
+                target = "floorplan" if stage == "blockout" else "identify"
                 script = f"""set -uo pipefail
 ROOT={root}; STATE={state}; PROMPTS={prompts}; ASSETS={root}; INPUT=photo.jpg; ATTEMPT_SEQ=1; REQUEST_STAGE=; REQUEST_REASON=; BUILDER_GOTOS=0; CRITIC_GOTOS=0; MODEL_FAILURE=
 hash=$(printf '{{"contract":{{}},"material_note":null}}\\n' | sha256sum | cut -d ' ' -f1)
@@ -1614,7 +1615,7 @@ next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
 score_of() {{ jq -r '.score // 0' "$1"; }}
 record() {{ printf '%s\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\n' "$1" "$2" "$3" "$4" "$5" "$6" "${{7:-}}" >> "$STATE/records.tsv"; }}
 critic() {{ printf 'critic ran\\n'; }}
-codex() {{ cat >/dev/null; printf 'partial' > "$ASSETS/one.py"; printf '%s\\n' '{{"stage":"identify","reason":"needs | rework"}}' > "$STATE/goto.json"; }}
+codex() {{ cat >/dev/null; printf 'partial' > "$ASSETS/one.py"; printf '%s\\n' '{{"stage":"{target}","reason":"needs | rework"}}' > "$STATE/goto.json"; }}
 {model_function()}
 {function("builder")}
 {function("detail_attempts")}
@@ -1637,12 +1638,93 @@ write_report
                 self.assertEqual(len(records), 1)
                 self.assertEqual(len(redirects), 1)
                 row_stage, attempt, sequence, seconds, target, reason = redirects[0]
-                self.assertEqual((row_stage, attempt, sequence, target, reason), (stage, "1" if stage == "blockout" else "2", "2", "identify", "needs | rework"))
+                self.assertEqual((row_stage, attempt, sequence, target, reason), (stage, "1" if stage == "blockout" else "2", "2", target, "needs | rework"))
                 self.assertGreaterEqual(int(seconds), 1)
                 expected_asset = "partial" if stage == "blockout" else "best"
                 self.assertIn(f"rc=42 attempts=1 best=6 asset={expected_asset}\n", result.stdout)
-                self.assertIn(f"| {stage} | {attempt} | 2 | {seconds} | identify | needs \\| rework |", report)
+                self.assertIn(f"| {stage} | {attempt} | 2 | {seconds} | {target} | needs \\| rework |", report)
                 self.assertIn(f"Scored attempts took 5 s; inferred structure took 0 s; redirected builder attempts took {seconds} s; together {5 + int(seconds)} s.", report)
+
+    def test_builder_goto_to_its_own_or_a_later_stage_completes_the_stage_under_review(self):
+        for stage, target in (("blockout", "object:one"), ("blockout", "blockout"), ("blockout", "identify"), ("object:one", "object:one"), ("object:one", "object:two"), ("object:one", "detail")):
+            with self.subTest(stage=stage, target=target), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                state = root / "state"
+                prompts = root / "prompts"
+                (state / "attempts").mkdir(parents=True)
+                (state / "verdicts").mkdir()
+                (state / "crops").mkdir()
+                prompts.mkdir()
+                for name in ("blockout", "detail"):
+                    (prompts / f"{name}_builder.md").write_text("Write state/goto.json for an upstream defect.")
+                    (prompts / f"{name}_critic.md").write_text("critique")
+                (state / "objects.json").write_text('[{"id":"one","label":"cornice","spatial_contract":{}},{"id":"two","label":"bookcase","spatial_contract":{}}]')
+                for name in ("blockout.py", "blockout.png", "blockout_overlay.png", "progress.md", "records.tsv", "redirects.tsv"):
+                    (state / name).write_text("")
+                (state / "crops" / "one.png").write_text("")
+                command = "run_blockout" if stage == "blockout" else "run_one_detail one '' 1"
+                script = f"""set -uo pipefail
+ROOT={root}; STATE={state}; PROMPTS={prompts}; ASSETS={root}; INPUT=photo.jpg; ATTEMPT_SEQ=0; REQUEST_STAGE=; REQUEST_REASON=; BUILDER_GOTOS=0; CRITIC_GOTOS=0; MODEL_FAILURE=; ACTIVE_STAGE={stage}
+printf 0 > "$STATE/calls"
+log() {{ printf '%s\\n' "$*"; }}
+inbox() {{ :; }}
+next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
+score_of() {{ jq -r '.score // 0' "$1"; }}
+record() {{ printf '%s\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\n' "$1" "$2" "$3" "$4" "$5" "$6" "${{7:-}}" >> "$STATE/records.tsv"; }}
+spatial_validate() {{ return 0; }}
+verify_detail() {{ printf 'render' > "$STATE/detail_one.png"; }}
+critic() {{ printf 'critic ran stage=%s\\n' "$2"; jq -n --arg stage "$2" '{{score:9,summary:"ok",corrections:[],top_stage:$stage,wrong_labels:[]}}' > "$1"; }}
+codex() {{ local call; call=$(( $(cat "$STATE/calls") + 1 )); printf '%s' "$call" > "$STATE/calls"; cat > "$STATE/prompt_$call"; printf 'def build(entry, collection=None): pass' > "$ASSETS/one.py"; jq '. + {{proposed_label:"cornice",final_label:"cornice",label_reason:"seen"}}' "$STATE/entry_one.json" > "$STATE/entry.next" 2>/dev/null && mv "$STATE/entry.next" "$STATE/entry_one.json"; printf '%s\\n' '{{"stage":"{target}","reason":"hand-off forward"}}' > "$STATE/goto.json"; }}
+{model_function()}
+{function("builder")}
+{function("detail_attempts")}
+{function("detail_best")}
+{function("run_blockout")}
+{function("run_one_detail")}
+rc=0
+{command} || rc=$?
+printf 'rc=%s calls=%s request=%s gotos=%s\\n' "$rc" "$(cat "$STATE/calls")" "$REQUEST_STAGE" "$BUILDER_GOTOS"
+"""
+                result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=60)
+                prompt = (state / "prompt_1").read_text()
+                redirects = (state / "redirects.tsv").read_text()
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn(f"rc=0 calls=1 request={target} gotos=0\n", result.stdout)
+            self.assertIn(f"GOTO ignored origin=builder requested={target} reason=not upstream of {stage}", result.stdout)
+            self.assertIn(f"critic ran stage={stage}\n", result.stdout)
+            self.assertEqual(redirects, "")
+            targets = prompt.split("Valid GOTO targets", 1)[1]
+            self.assertIn("- floorplan\n", targets)
+            for later in (stage, target, "identify" if stage == "blockout" else "detail", "integrate", "materials", "object:"):
+                self.assertNotIn(f"- {later}", targets)
+
+    def test_critic_routes_only_to_its_own_stage_or_upstream(self):
+        cases = (
+            ("blockout", {"floorplan", "blockout"}),
+            ("object:one", {"floorplan", "blockout", "identify", "detail", "object:one"}),
+            ("tier:large", {"floorplan", "blockout", "identify", "detail", "object:one"}),
+            ("integrate", {"floorplan", "blockout", "identify", "detail", "object:one", "integrate"}),
+        )
+        schema = Path(__file__).parents[1].joinpath("verdict.schema.json")
+        for stage, expected in cases:
+            with self.subTest(stage=stage), tempfile.TemporaryDirectory() as directory:
+                state = Path(directory)
+                (state / "objects.json").write_text('[{"id":"one","label":"cornice"}]')
+                script = f"""set -uo pipefail
+ROOT={state}; STATE={state}; SCHEMA={schema}; MODEL_FAILURE=
+printf 0 > "$STATE/calls"
+log() {{ printf '%s\\n' "$*"; }}
+model() {{ local call output previous; for arg in "$@"; do [ "${{previous:-}}" = -o ] && output=$arg; previous=$arg; done; call=$(( $(cat "$STATE/calls") + 1 )); printf '%s' "$call" > "$STATE/calls"; cat >/dev/null; jq -n '{{score:5,top_stage:"materials"}}' > "$output"; }}
+{function("critic")}
+critic "$STATE/verdict.json" {stage} <<< critique
+printf 'calls=%s route=%s\\n' "$(cat "$STATE/calls")" "$(jq -r .top_stage "$STATE/verdict.json")"
+"""
+                result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=30)
+                enum = json.loads((state / "verdict.schema.json").read_text())["properties"]["top_stage"]["enum"]
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(set(enum), expected)
+            self.assertIn(f"CRITIC route rejected try=1 stage={stage} requested=materials", result.stdout)
+            self.assertIn(f"calls=2 route={stage}\n", result.stdout)
 
     def test_reentry_best_ignores_attempts_without_a_snapshot(self):
         with tempfile.TemporaryDirectory() as directory:

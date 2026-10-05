@@ -38,9 +38,15 @@ next_attempt() {
 }
 score_of() { jq -r '.score // 0' "$1"; }
 record() { printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$1" "$2" "$3" "$4" "$5" "$6" "${7:-}" "${8:-}" >> "$STATE/records.tsv"; }
-goto_targets() { printf '%s\t\n' "${STAGE_NAMES[@]}"; [ ! -f "$STATE/objects.json" ] || jq -r 'arrays | .[] | objects | select(.id | type == "string") | ["object:" + .id, (.final_label // .label // "" | tostring)] | @tsv' "$STATE/objects.json" 2>/dev/null; }
-goto_target_text() { printf 'Valid GOTO targets, each object with its inventory label:\n'; goto_targets | awk -F '\t' '{print "- " $1 ($2 == "" ? "" : " (" $2 ")")}'; }
-valid_target() { local target; while IFS=$'\t' read -r target _; do [ "$target" != "$1" ] || return 0; done < <(goto_targets); return 1; }
+goto_rank() { local i; for i in "${!STAGE_NAMES[@]}"; do case "${STAGE_NAMES[i]}:$1" in "$1:$1"|detail:object:*) printf '%s' $((2 * i)); return ;; detail:tier:*) printf '%s' $((2 * i + 1)); return ;; esac; done; printf '%s' $((2 * ${#STAGE_NAMES[@]})); }
+goto_targets() {
+  local limit i
+  limit=$(goto_rank "${1:-}"); [ "${2:-}" != critic ] || limit=$((limit + 1))
+  for i in "${!STAGE_NAMES[@]}"; do [ $((2 * i)) -ge "$limit" ] || printf '%s\t\n' "${STAGE_NAMES[i]}"; done
+  [ "$(goto_rank detail)" -ge "$limit" ] || [ ! -f "$STATE/objects.json" ] || jq -r 'arrays | .[] | objects | select(.id | type == "string") | ["object:" + .id, (.final_label // .label // "" | tostring)] | @tsv' "$STATE/objects.json" 2>/dev/null
+}
+goto_target_text() { printf 'Valid GOTO targets, each object with its inventory label:\n'; goto_targets "$@" | awk -F '\t' '{print "- " $1 ($2 == "" ? "" : " (" $2 ")")}'; }
+valid_target() { local target; while IFS=$'\t' read -r target _; do [ "$target" != "$1" ] || return 0; done < <(goto_targets "${@:2}"); return 1; }
 goto_shape_error() { jq -rs 'if length != 1 or (.[0] | type) != "object" then "it must hold one JSON object" else .[0] | [(["stage", "reason"] - keys)[] | "missing field `\(.)`"] + [(keys - ["stage", "reason"])[] | "unexpected field `\(.)`"] + [to_entries[] | select((.key == "stage" or .key == "reason") and (.value | type) != "string") | "field `\(.key)` is not a string"] | join("; ") end' "$1" 2>/dev/null || printf 'it is not valid JSON'; }
 goto_available() {
   local origin=$1 used=$BUILDER_GOTOS
@@ -159,7 +165,7 @@ builder() {
   shift 2
   while :; do
     rm -f "$STATE/goto.json"
-    model "$@" - < <(cat "$PROMPTS/$prompt"; if grep -q 'state/goto\.json' "$PROMPTS/$prompt"; then printf '\nA GOTO is state/goto.json holding exactly %s.\n' "$GOTO_FORMAT"; goto_target_text; fi; if [ -n "$feedback" ]; then printf '\nOne-reentry correction context follows:\n%s\n' "$feedback"; fi) || return 0
+    model "$@" - < <(cat "$PROMPTS/$prompt"; if grep -q 'state/goto\.json' "$PROMPTS/$prompt"; then printf '\nA GOTO is state/goto.json holding exactly %s.\n' "$GOTO_FORMAT"; goto_target_text "${ACTIVE_STAGE:-}"; fi; if [ -n "$feedback" ]; then printf '\nOne-reentry correction context follows:\n%s\n' "$feedback"; fi) || return 0
     if [ -n "${INPUT_REF:-}" ]; then input_reference normalize || exit 1; fi
     if [ -f "$STATE/goto.json" ]; then
       REQUEST_STAGE=
@@ -171,6 +177,7 @@ builder() {
         valid_target "$REQUEST_STAGE" || goto_error="field \`stage\` names $REQUEST_STAGE, which is not a valid target"
       fi
       rm -f "$STATE/goto.json"
+      if [ -z "$goto_error" ] && ! valid_target "$REQUEST_STAGE" "${ACTIVE_STAGE:-}"; then log "GOTO ignored origin=builder requested=$REQUEST_STAGE reason=not upstream of ${ACTIVE_STAGE:-}; completing the stage so its review runs"; return 0; fi
       if [ "$cap_retry" -eq 1 ]; then
         if [ -z "$goto_error" ]; then log "GOTO cap request ignored origin=builder requested=$REQUEST_STAGE reason=$REQUEST_REASON"; else log "GOTO rejected origin=builder requested=$REQUEST_STAGE reason=cap fallback $goto_error"; fi
         return 0
@@ -185,7 +192,7 @@ builder() {
       log "GOTO rejected origin=builder requested=$REQUEST_STAGE reason=$goto_error"
       if [ "$invalid_retry" -eq 1 ]; then log "GOTO rejected origin=builder requested=$REQUEST_STAGE reason=second invalid GOTO from same stage ignored"; return 0; fi
       invalid_retry=1
-      feedback="${feedback:+$feedback$'\n'}Your state/goto.json was rejected: $goto_error. Rewrite it as $GOTO_FORMAT or continue without it."$'\n'"$(goto_target_text)"
+      feedback="${feedback:+$feedback$'\n'}Your state/goto.json was rejected: $goto_error. Rewrite it as $GOTO_FORMAT or continue without it."$'\n'"$(goto_target_text "${ACTIVE_STAGE:-}")"
       continue
     fi
     return 0
@@ -194,6 +201,7 @@ builder() {
 stage_builder() {
   local stage=$1 attempt=$2 start=$3 rc
   shift 3
+  ACTIVE_STAGE=$stage
   restore_selected_details "$stage"
   builder "$@"
   rc=$?
@@ -203,13 +211,13 @@ stage_builder() {
 critic() {
   local output=$1 stage=$2 schema="$STATE/verdict.schema.json" prompt route try
   shift 2
-  prompt=$(cat; printf '\n'; goto_target_text)
-  jq --argjson targets "$(goto_targets | cut -f1 | jq -Rsc 'split("\n")[:-1]')" '.properties.top_stage.enum = $targets' "$SCHEMA" > "$schema"
+  prompt=$(cat; printf '\n'; goto_target_text "$stage" critic)
+  jq --argjson targets "$(goto_targets "$stage" critic | cut -f1 | jq -Rsc 'split("\n")[:-1]')" '.properties.top_stage.enum = $targets' "$SCHEMA" > "$schema"
   for try in 1 2; do
     [ -z "$MODEL_FAILURE" ] || break
     model --output-schema "$schema" -o "$output" "$@" - <<< "$prompt" || break
     route=$(jq -r '.top_stage' "$output" 2>/dev/null)
-    valid_target "$route" && break
+    valid_target "$route" "$stage" critic && break
     log "CRITIC route rejected try=$try stage=$stage requested=$route"
     if [ "$try" -eq 1 ]; then prompt+=$'\n'"Your previous verdict set top_stage to $route, which is not a valid target. Choose top_stage from the list above."
     else jq --arg stage "$stage" '.top_stage = $stage' "$output" > "$output.next" && mv "$output.next" "$output"; fi
