@@ -123,3 +123,20 @@ in-memory stage 5/6 clock.
 
 A complete measurement needs #51 and #52 fixed first. It will be a fresh run from an
 empty directory, with its workflow revision recorded here before it starts.
+
+## Second run: design recorded before execution
+
+The complete measurement is a fresh run on workflow
+`4d845833df4e084af59ff46f4fdf8c1647ddc6db`, which adds the fixes for #51 and #52 to `af4f3d5`.
+Everything else in the design above stays fixed: the same photograph, `gpt-6-astra` at
+reasoning effort `none` matching the combined-fixes run, an empty run directory, an
+exported workflow tree, and no tuning.
+
+Expected additional changes:
+
+| Fix | Expected observable change |
+|---|---|
+| #51 | A critic GOTO to an object resumes the detail stage. Every object is built and every tier review runs before integration; a reentered object keeps its tier. |
+| #52 | The observed footprint gate measures outline runs instead of triangles, so integration completes its gate and critic in bounded memory. No OOM interruption. |
+
+The first run's records remain in its archive; none of its state seeds the second run.
