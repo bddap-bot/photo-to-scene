@@ -2,6 +2,8 @@
 
 The [combined-fixes rerun](combined-fixes/report.md) is published separately: 81/81 contracts finalized, zero final observed errors, and a 6/10 in-run materials score. It required supervised finalization after an expired-budget redirect. The original baseline below is preserved.
 
+The [post-defects rerun](post-defects/report.md) is published separately: all 68 assets built, mean detail score 7.29 over 66 observed objects, and a normal driver exit with no supervised finalization. It failed the observed gate (20 errors at integration, 69 at materials on a stale assembly), so no in-run scene critic ran.
+
 COMPLETE: 99/99 detail objects finalized; integrate, materials, and the final render ran on `428a8fb`. 386 attempt records, latest sequence 431. Results are in [report.md](report.md).
 
 - Initial workflow: `05b4bad57d40f982c0ca4209af511e90c8f2454c`

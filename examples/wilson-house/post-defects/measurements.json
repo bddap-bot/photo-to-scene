@@ -1,0 +1,88 @@
+{
+  "workflow": "4d845833df4e084af59ff46f4fdf8c1647ddc6db",
+  "model": "gpt-6-astra",
+  "reasoning_effort": "none",
+  "model_calls": 587,
+  "model_calls_by_effort": {
+    "none": 587
+  },
+  "model_call_tokens": 14799395,
+  "model_call_tokens_by_stage": {
+    "floorplan": 159884,
+    "blockout": 1660720,
+    "identify": 361801,
+    "object": 12281464,
+    "integrate": 313887,
+    "materials": 21639
+  },
+  "scored_records": 270,
+  "inferred_records": 2,
+  "redirect_records": 7,
+  "known_sequences": 279,
+  "unrecorded_sequences": [],
+  "summed_scored_seconds": 54729,
+  "inferred_seconds": 189,
+  "redirect_seconds": 972,
+  "stages": {
+    "floorplan": {
+      "records": 3,
+      "seconds": 675,
+      "redirect_seconds": 0
+    },
+    "blockout": {
+      "records": 18,
+      "seconds": 7016,
+      "redirect_seconds": 150
+    },
+    "identify": {
+      "records": 6,
+      "seconds": 991,
+      "redirect_seconds": 0
+    },
+    "object": {
+      "records": 227,
+      "seconds": 40669,
+      "redirect_seconds": 239
+    },
+    "tier": {
+      "records": 14,
+      "seconds": 3657,
+      "redirect_seconds": 0
+    },
+    "integrate": {
+      "records": 3,
+      "seconds": 1407,
+      "redirect_seconds": 508
+    },
+    "materials": {
+      "records": 1,
+      "seconds": 503,
+      "redirect_seconds": 75
+    }
+  },
+  "objects": 68,
+  "inferred_objects": 2,
+  "objects_with_assets": 68,
+  "observed_objects_finalized": 66,
+  "mean_best_detail_score": 7.29,
+  "objects_at_least_8": 28,
+  "builder_gotos": 7,
+  "critic_gotos": 5,
+  "refused_builder_requests": 44,
+  "refused_critic_requests_within_tiers": 8,
+  "rejected_critic_routes": 0,
+  "model_call_failures": {
+    "count": 3,
+    "cause": "provider reported the model at capacity; recorded by the driver as model failures"
+  },
+  "integration_gate_errors": [
+    20,
+    20,
+    20
+  ],
+  "materials_gate_errors": 69,
+  "final_render_blender_seconds": 583.47,
+  "finalization": "normal driver COMPLETE (exit 0)",
+  "end_to_end_elapsed_seconds": 56613,
+  "infrastructure_interruptions": 0
+}

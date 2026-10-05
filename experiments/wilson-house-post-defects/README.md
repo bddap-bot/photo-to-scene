@@ -140,3 +140,38 @@ Expected additional changes:
 | #52 | The observed footprint gate measures outline runs instead of triangles, so integration completes its gate and critic in bounded memory. No OOM interruption. |
 
 The first run's records remain in its archive; none of its state seeds the second run.
+
+## Second run: results
+
+The second run started at an empty directory on `4d84583` and ended with a normal
+driver `COMPLETE` after 56,613 s. It had no infrastructure interruption and needed no
+supervised finalization. The [rerun report](../../examples/wilson-house/post-defects/report.md)
+holds the full table, per-stage time and tokens, renders and evidence.
+
+| Measure | Combined-fixes run | Post-defects second run |
+|---|---|---|
+| Workflow | `034bebf`, effort `none` | `4d84583`, effort `none` (587/587 calls) |
+| Finalization | Supervised, after an over-budget redirect | Normal driver exit |
+| Infrastructure interruptions | 4, plus a final-render wrapper stop | 0; 3 model calls failed on provider capacity |
+| Final observed spatial gate | Pass; 0 errors, 81 assets | Fail; 69 errors at materials on a stale assembly (#54); integration 20 on each attempt |
+| In-run scene critic | Integration 7/10; materials 6/10 | None: gate-rejected |
+| Detail objects | 81/81; mean 6.67; 13 at least 8 | 66/66 observed; mean 7.29; 28 at least 8; 2 inferred |
+| GOTO spend | 6 builder, 3 critic | 7 builder (4 facing repairs, 1 forward hand-off, 2 reserves); 5 critic, tier to object |
+| Refused repairs | 61 at caps; 26 invalid targets | 52 at caps; 0 invalid targets |
+| Summed attempt time | 99,501 s | 55,890 s (scored, inferred and redirected) |
+| End-to-end elapsed | 122,363 s | 56,613 s |
+
+Expected effects that held: no validator crash (#35, #49); no invalid target or
+invented critic ID (#39, #46); every redirect recorded with its time (#38); inferred
+structure unscored (#40); object reentries resuming detail with all assets built (#51);
+observed gates finishing without an OOM (#52); and a normal exit (#47, #48). The stage
+5/6 cap could not finalize until a saved materials scene existed, so upstream repair ran
+after it expired.
+
+Newly exposed defects, each filed separately:
+[#53](https://github.com/bddap-bot/photo-to-scene/issues/53), forward hand-offs spend
+repair GOTOs;
+[#54](https://github.com/bddap-bot/photo-to-scene/issues/54), integration skips its
+attempts after an upstream repair, leaving materials a stale assembly; and
+[#55](https://github.com/bddap-bot/photo-to-scene/issues/55), blockout facing is never
+checked against the room.

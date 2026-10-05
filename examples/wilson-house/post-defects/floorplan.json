@@ -1,0 +1,829 @@
+{
+  "schema_version": "1.0",
+  "stage": "S1_FLOORPLAN",
+  "input_photo": {
+    "image": "input/reference.jpg"
+  },
+  "source_image": "input/reference.jpg",
+  "reference_image": "input/reference.jpg",
+  "units": "metres; angles in degrees",
+  "coordinate_system": {
+    "handedness": "right-handed",
+    "origin": "inferred southwest interior floor corner",
+    "x_axis": "east, along window wall toward its cropped right end",
+    "y_axis": "north, toward window wall",
+    "z_axis": "up",
+    "plan_view": "north up, east right",
+    "bounds_convention": "[xmin, ymin, xmax, ymax], interior clear-face coordinates",
+    "orientation_note": "Cardinal directions are local labels; geographical orientation is unknown."
+  },
+  "room": {
+    "polygon_xy_m": [
+      [
+        0,
+        0
+      ],
+      [
+        6.4,
+        0
+      ],
+      [
+        6.4,
+        6.8
+      ],
+      [
+        0,
+        6.8
+      ]
+    ],
+    "wall_height_m": 3.65,
+    "wall_thickness_m": 0.22,
+    "evidence_ids": [
+      "room_width",
+      "room_depth",
+      "height",
+      "finish"
+    ],
+    "shape_status": "Rectangular completion of two visible perpendicular walls; unseen boundaries are provisional."
+  },
+  "walls": [
+    {
+      "id": "W",
+      "label": "Fireplace / paneled wall",
+      "start_xy_m": [
+        0,
+        0
+      ],
+      "end_xy_m": [
+        0,
+        6.8
+      ],
+      "height_m": 3.65,
+      "visibility": "partially visible",
+      "evidence_ids": [
+        "room_depth",
+        "height"
+      ]
+    },
+    {
+      "id": "N",
+      "label": "Curtained window wall",
+      "start_xy_m": [
+        0,
+        6.8
+      ],
+      "end_xy_m": [
+        6.4,
+        6.8
+      ],
+      "height_m": 3.65,
+      "visibility": "partially visible; east end cropped",
+      "evidence_ids": [
+        "room_width",
+        "height"
+      ]
+    },
+    {
+      "id": "E",
+      "label": "Unseen east wall",
+      "start_xy_m": [
+        6.4,
+        6.8
+      ],
+      "end_xy_m": [
+        6.4,
+        0
+      ],
+      "height_m": 3.65,
+      "visibility": "inferred only",
+      "evidence_ids": [
+        "room_depth",
+        "height"
+      ]
+    },
+    {
+      "id": "S",
+      "label": "Unseen south wall",
+      "start_xy_m": [
+        6.4,
+        0
+      ],
+      "end_xy_m": [
+        0,
+        0
+      ],
+      "height_m": 3.65,
+      "visibility": "inferred only",
+      "evidence_ids": [
+        "room_width",
+        "height"
+      ]
+    }
+  ],
+  "openings": [
+    {
+      "id": "window_bank",
+      "type": "window_bank",
+      "wall_id": "N",
+      "start_xy_m": [
+        1.45,
+        6.8
+      ],
+      "end_xy_m": [
+        6.05,
+        6.8
+      ],
+      "width_m": 4.6,
+      "sill_height_m": 0.68,
+      "head_height_m": 3.12,
+      "evidence_ids": [
+        "window",
+        "window_vertical"
+      ],
+      "visibility": "Curtains and lace obscure glazing; endpoint and subdivision uncertain.",
+      "structural_subdivision": "unknown; do not infer mullions from fabric folds",
+      "curtain_drop_z_m": [
+        0.18,
+        3.25
+      ]
+    }
+  ],
+  "fixed_features": [
+    {
+      "id": "chimney_breast",
+      "type": "fireplace_breast",
+      "bounds_xy_m": [
+        0,
+        2.65,
+        0.4,
+        5.05
+      ],
+      "base_z_m": 0,
+      "height_m": 3.65,
+      "evidence_ids": [
+        "fireplace",
+        "fireplace_position",
+        "height"
+      ],
+      "wall_id": "W"
+    },
+    {
+      "id": "mantel",
+      "type": "ornate_fireplace_surround",
+      "bounds_xy_m": [
+        0.4,
+        2.83,
+        0.68,
+        4.88
+      ],
+      "base_z_m": 0,
+      "height_m": 1.42,
+      "evidence_ids": [
+        "fireplace",
+        "fireplace_position"
+      ],
+      "wall_id": "W",
+      "width_along_wall_m": 2.05
+    },
+    {
+      "id": "hearth",
+      "type": "hearth",
+      "bounds_xy_m": [
+        0.4,
+        2.9,
+        0.98,
+        4.81
+      ],
+      "base_z_m": 0,
+      "height_m": 0.06,
+      "evidence_ids": [
+        "fireplace",
+        "fireplace_position"
+      ]
+    },
+    {
+      "id": "firebox",
+      "type": "dark_firebox",
+      "bounds_xy_m": [
+        0.405,
+        3.21,
+        0.43,
+        4.5
+      ],
+      "base_z_m": 0.1,
+      "height_m": 0.99,
+      "evidence_ids": [
+        "fireplace"
+      ],
+      "wall_id": "W"
+    },
+    {
+      "id": "portrait",
+      "type": "framed_portrait",
+      "bounds_xy_m": [
+        0.405,
+        3.2,
+        0.48,
+        4.53
+      ],
+      "base_z_m": 1.76,
+      "height_m": 1.57,
+      "evidence_ids": [
+        "fireplace",
+        "height"
+      ],
+      "wall_id": "W"
+    },
+    {
+      "id": "wall_sconce",
+      "type": "two_light_sconce",
+      "bounds_xy_m": [
+        0,
+        5.72,
+        0.25,
+        6.0
+      ],
+      "base_z_m": 1.83,
+      "height_m": 0.48,
+      "evidence_ids": [
+        "fireplace_position",
+        "height"
+      ],
+      "wall_id": "W"
+    }
+  ],
+  "furniture_zones": [
+    {
+      "id": "sofa",
+      "type": "foreground_sofa",
+      "bounds_xy_m": [
+        0.9,
+        1.25,
+        4.0,
+        2.28
+      ],
+      "base_z_m": 0,
+      "height_m": 0.94,
+      "evidence_ids": [
+        "sofa"
+      ],
+      "facing_xy": [
+        0,
+        1
+      ]
+    },
+    {
+      "id": "foreground_table",
+      "type": "partly_cropped_table",
+      "bounds_xy_m": [
+        0.35,
+        0.35,
+        1.9,
+        1.2
+      ],
+      "base_z_m": 0,
+      "height_m": 0.74,
+      "evidence_ids": [
+        "casework"
+      ]
+    },
+    {
+      "id": "center_armchair",
+      "type": "patterned_armchair",
+      "bounds_xy_m": [
+        1.79,
+        3.55,
+        2.65,
+        4.51
+      ],
+      "base_z_m": 0,
+      "height_m": 1.1,
+      "evidence_ids": [
+        "seating",
+        "reentry_composition"
+      ],
+      "facing_xy": [
+        0,
+        -1
+      ]
+    },
+    {
+      "id": "rocker",
+      "type": "dark_cane_rocking_chair",
+      "bounds_xy_m": [
+        3.3,
+        3.25,
+        4.22,
+        4.53
+      ],
+      "base_z_m": 0,
+      "height_m": 1.08,
+      "evidence_ids": [
+        "seating",
+        "reentry_vertical"
+      ],
+      "facing_xy": [
+        -0.5,
+        -0.866
+      ]
+    },
+    {
+      "id": "rear_red_chair",
+      "type": "red_armchair",
+      "bounds_xy_m": [
+        1.87,
+        4.7,
+        2.73,
+        5.66
+      ],
+      "base_z_m": 0,
+      "height_m": 1.05,
+      "evidence_ids": [
+        "seating",
+        "reentry_composition"
+      ],
+      "facing_xy": [
+        0,
+        -1
+      ]
+    },
+    {
+      "id": "right_armchair",
+      "type": "cropped_orange_armchair",
+      "bounds_xy_m": [
+        3.31,
+        4.78,
+        4.29,
+        5.78
+      ],
+      "base_z_m": 0,
+      "height_m": 1.05,
+      "evidence_ids": [
+        "seating",
+        "reentry_composition"
+      ],
+      "facing_xy": [
+        -0.2,
+        -0.98
+      ]
+    },
+    {
+      "id": "footstool",
+      "type": "footstool",
+      "bounds_xy_m": [
+        3.41,
+        4.4,
+        4.17,
+        4.87
+      ],
+      "base_z_m": 0,
+      "height_m": 0.35,
+      "evidence_ids": [
+        "seating",
+        "reentry_composition",
+        "reentry_vertical"
+      ],
+      "placement_note": "Rear 0.09 m of footprint tucks under the orange chair front; stool top is below the assumed seat height."
+    },
+    {
+      "id": "round_table",
+      "type": "round_pedestal_table",
+      "bounds_xy_m": [
+        2.72,
+        4.02,
+        3.38,
+        4.68
+      ],
+      "base_z_m": 0,
+      "height_m": 0.7,
+      "evidence_ids": [
+        "accessories"
+      ]
+    },
+    {
+      "id": "bookcase",
+      "type": "revolving_bookcase",
+      "bounds_xy_m": [
+        0.35,
+        5.42,
+        1.14,
+        6.17
+      ],
+      "base_z_m": 0,
+      "height_m": 1.18,
+      "evidence_ids": [
+        "casework"
+      ]
+    },
+    {
+      "id": "writing_desk",
+      "type": "partly_occluded_desk",
+      "bounds_xy_m": [
+        0.7,
+        6.2,
+        2.3,
+        6.79
+      ],
+      "base_z_m": 0,
+      "height_m": 0.78,
+      "evidence_ids": [
+        "casework",
+        "reentry_composition"
+      ]
+    },
+    {
+      "id": "window_console",
+      "type": "cloth_covered_console",
+      "bounds_xy_m": [
+        2.3,
+        6.02,
+        3.75,
+        6.61
+      ],
+      "base_z_m": 0,
+      "height_m": 0.8,
+      "evidence_ids": [
+        "casework",
+        "reentry_composition"
+      ]
+    },
+    {
+      "id": "globe",
+      "type": "globe_on_stand",
+      "bounds_xy_m": [
+        0.53,
+        4.96,
+        1.02,
+        5.45
+      ],
+      "base_z_m": 0,
+      "height_m": 1.04,
+      "evidence_ids": [
+        "accessories"
+      ]
+    },
+    {
+      "id": "rug",
+      "type": "large_patterned_rug",
+      "bounds_xy_m": [
+        0.9,
+        1.75,
+        6.05,
+        5.15
+      ],
+      "base_z_m": 0,
+      "height_m": 0.015,
+      "evidence_ids": [
+        "rug"
+      ]
+    }
+  ],
+  "camera": {
+    "position_m": [
+      5.65,
+      0.62,
+      1.08
+    ],
+    "target_m": [
+      1.110599,
+      4.882539,
+      1.373657
+    ],
+    "up": [
+      0,
+      0,
+      1
+    ],
+    "focal_length_mm": 33.0,
+    "sensor_width_mm": 36.0,
+    "image_size_px": [
+      6114,
+      4842
+    ],
+    "horizontal_fov_deg": 57.2209,
+    "projection": "perspective",
+    "evidence_ids": [
+      "camera"
+    ],
+    "calibration_status": "Joint vertical least-squares fit to ceiling corner, mantel top, sill and patterned-chair front floor contact; fixed horizontal camera position, yaw, focal length and architectural scale. Single-image estimate with approximate correspondences, not a full silhouette fit.",
+    "composition_checks": {
+      "convention": "Normalized image coordinates: x right, y down, origin top left. Furniture points are box mid-height centers, not silhouette centroids.",
+      "landmarks": {
+        "rear_corner": {
+          "point_m": [
+            0,
+            6.8,
+            1.8
+          ],
+          "normalized_xy": [
+            0.569793943581665,
+            0.4549519684264246
+          ]
+        },
+        "center_armchair": {
+          "point_m": [
+            2.2199999999999998,
+            4.029999999999999,
+            0.55
+          ],
+          "normalized_xy": [
+            0.5263158281199857,
+            0.6824165694676865
+          ]
+        },
+        "rocker": {
+          "point_m": [
+            3.76,
+            3.89,
+            0.54
+          ],
+          "normalized_xy": [
+            0.7785817970117712,
+            0.7290423203074177
+          ]
+        },
+        "rear_red_chair": {
+          "point_m": [
+            2.3,
+            5.18,
+            0.525
+          ],
+          "normalized_xy": [
+            0.6708667716136948,
+            0.6708546745608251
+          ]
+        },
+        "right_armchair": {
+          "point_m": [
+            3.8,
+            5.28,
+            0.525
+          ],
+          "normalized_xy": [
+            0.9333269232406581,
+            0.6972665648792686
+          ]
+        },
+        "footstool": {
+          "point_m": [
+            3.79,
+            4.635,
+            0.175
+          ],
+          "normalized_xy": [
+            0.8736316019969066,
+            0.8130651921710563
+          ]
+        },
+        "round_table": {
+          "point_m": [
+            3.05,
+            4.35,
+            0.35
+          ],
+          "normalized_xy": [
+            0.6952853820905214,
+            0.7464278182728713
+          ]
+        },
+        "writing_desk": {
+          "point_m": [
+            1.5,
+            6.495,
+            0.39
+          ],
+          "normalized_xy": [
+            0.688658977940612,
+            0.6686990298514569
+          ]
+        },
+        "window_console": {
+          "point_m": [
+            3.025,
+            6.3149999999999995,
+            0.4
+          ],
+          "normalized_xy": [
+            0.8738606354106793,
+            0.6910639896361956
+          ]
+        }
+      },
+      "vertical_calibration": {
+        "method": "Equal-weight least squares of normalized image y; height grid 0.01 m, pitch grid 0.1 degree. Horizontal positions are diagnostic only. Positive pitch looks upward.",
+        "landmarks": [
+          {
+            "id": "ceiling_corner",
+            "point_m": [
+              0,
+              6.8,
+              3.65
+            ],
+            "observed_normalized_y": 0.2,
+            "projected_normalized_xy": [
+              0.5690750730480011,
+              0.20261293688440923
+            ],
+            "residual_y": 0.0026129368844092227,
+            "observation_uncertainty_y": 0.025
+          },
+          {
+            "id": "mantel_top",
+            "point_m": [
+              0.68,
+              3.855,
+              1.42
+            ],
+            "observed_normalized_y": 0.508,
+            "projected_normalized_xy": [
+              0.33635591692273853,
+              0.4872043215822153
+            ],
+            "residual_y": -0.02079567841778468,
+            "observation_uncertainty_y": 0.025
+          },
+          {
+            "id": "window_sill",
+            "point_m": [
+              1.45,
+              6.8,
+              0.68
+            ],
+            "observed_normalized_y": 0.61,
+            "projected_normalized_xy": [
+              0.7056782351471672,
+              0.6183832978145666
+            ],
+            "residual_y": 0.008383297814566593,
+            "observation_uncertainty_y": 0.025
+          },
+          {
+            "id": "patterned_chair_front_floor",
+            "point_m": [
+              2.22,
+              3.55,
+              0
+            ],
+            "observed_normalized_y": 0.824,
+            "projected_normalized_xy": [
+              0.45633360683217333,
+              0.8357994443295
+            ],
+            "residual_y": 0.011799444329500086,
+            "observation_uncertainty_y": 0.025
+          }
+        ],
+        "rms_normalized_y": 0.01273571993205047
+      },
+      "floor_contact_checks": [
+        {
+          "id": "center_armchair",
+          "point_definition": "Footprint center at floor level; contact proxy, not a selected visible leg",
+          "projected_normalized_xy": [
+            0.5264585122286429,
+            0.816484125260958
+          ]
+        },
+        {
+          "id": "rocker",
+          "point_definition": "Footprint center at floor level; contact proxy, not a selected visible leg",
+          "projected_normalized_xy": [
+            0.7805716380666312,
+            0.9059916547614624
+          ]
+        },
+        {
+          "id": "right_armchair",
+          "point_definition": "Footprint center at floor level; contact proxy, not a selected visible leg",
+          "projected_normalized_xy": [
+            0.9357176207104748,
+            0.8337672463380996
+          ]
+        },
+        {
+          "id": "footstool",
+          "point_definition": "Footprint center at floor level; contact proxy, not a selected visible leg",
+          "projected_normalized_xy": [
+            0.8743923297476922,
+            0.8636755528841172
+          ]
+        }
+      ]
+    },
+    "pitch_deg": 2.7
+  },
+  "scale_anchor": {
+    "feature_id": "mantel",
+    "dimension": "width along W wall",
+    "assumed_m": 2.05,
+    "plausible_range_m": [
+      1.8,
+      2.3
+    ],
+    "evidence_id": "fireplace",
+    "absolute_scale_status": "Assumed, not measured; all metric dimensions inherit scale uncertainty."
+  },
+  "dimension_evidence": {
+    "room_width": {
+      "basis": "Window bank, corner pier and seating suggest a generous formal room. East endpoint is outside the photograph; closure is a modeling assumption.",
+      "confidence": "low",
+      "plausible_range_m": [
+        5.5,
+        8.0
+      ]
+    },
+    "room_depth": {
+      "basis": "Fireplace wall, rear bookcase and foreground sofa require several seating depths. South wall is behind the camera and unseen.",
+      "confidence": "low",
+      "plausible_range_m": [
+        5.8,
+        8.5
+      ]
+    },
+    "height": {
+      "basis": "Mantel-to-cornice proportion, tall portrait and full-height drapery imply a high ceiling; no measured scale.",
+      "confidence": "medium-low",
+      "plausible_range_m": [
+        3.3,
+        4.2
+      ]
+    },
+    "fireplace": {
+      "basis": "Visible mantel spans roughly two upholstered chair widths; conventional large historic mantel used as primary scale anchor.",
+      "confidence": "medium-low",
+      "plausible_range_m": [
+        1.8,
+        2.3
+      ]
+    },
+    "fireplace_position": {
+      "basis": "Fireplace occupies projecting left wall breast; paneled wall continues toward rear corner behind bookcase. Perspective determines ordering more reliably than distance.",
+      "confidence": "low"
+    },
+    "window": {
+      "basis": "Lace-covered bright opening on right wall begins after the corner panel. Multiple curtain drops do not establish structural mullions; right end is cropped.",
+      "confidence": "low"
+    },
+    "window_vertical": {
+      "basis": "Low sill behind console and high curtain pelmet beneath cornice; glazing head is obscured.",
+      "confidence": "low"
+    },
+    "seating": {
+      "basis": "Armchairs assumed approximately 0.75\u20130.90 m wide and 0.85\u20131.0 m deep. Positions inferred from visible overlaps and floor contacts.",
+      "confidence": "medium-low"
+    },
+    "sofa": {
+      "basis": "Foreground sofa viewed from behind, partly cropped. Assumed large three-seat footprint; its full length is not measurable.",
+      "confidence": "low"
+    },
+    "rug": {
+      "basis": "Patterned rug covers the central seating group with exposed parquet near window and walls; edges partly occluded or cropped.",
+      "confidence": "low"
+    },
+    "casework": {
+      "basis": "Small revolving bookcase beside fireplace wall, writing desk behind central chair, and covered console below window; standard furniture depths used.",
+      "confidence": "low"
+    },
+    "accessories": {
+      "basis": "Globe and small round pedestal table located by occlusion and floor contacts; standard accessory scale.",
+      "confidence": "low"
+    },
+    "camera": {
+      "basis": "Fixed yaw retains rear-corner x near 0.57. Joint vertical fit gives camera height 1.08 m and upward pitch 2.7 degrees with 33 mm lens on 36 mm sensor. Four approximate architectural/contact correspondences give normalized y RMS 0.0127. Low viewpoint is conditional on the inherited metric geometry; height and pitch are not measured.",
+      "confidence": "low",
+      "height_plausible_range_m": [
+        0.9,
+        1.4
+      ],
+      "pitch_plausible_range_deg": [
+        0,
+        5
+      ]
+    },
+    "finish": {
+      "basis": "Visible baseboards, panel molding and deep cornice. Thicknesses approximated for reconstruction, not directly measurable.",
+      "confidence": "low"
+    },
+    "reentry_composition": {
+      "basis": "Correction and photograph constrain horizontal order and overlap: patterned chair just right of center; red chair behind round table and partly covered by rocker; console and orange chair further west than initial footprints. Footstool follows orange chair. Desk moved northwest to clear the relocated console and preserve its location left of the red chair. These are footprint estimates, not measured dimensions.",
+      "confidence": "medium-low"
+    },
+    "reentry_vertical": {
+      "basis": "After camera calibration, rocker translated 0.45 m toward window wall: footprint center y=3.89 m versus patterned chair y=4.03 m, only 0.14 m ahead. Footstool translated 0.15 m toward window, tucking rear edge 0.09 m under orange chair front. Bounds are approximate zones; chair legs and curved runners need silhouette refinement.",
+      "confidence": "medium-low"
+    }
+  },
+  "limits": [
+    "Single photograph does not determine absolute scale or concealed geometry.",
+    "No door is visible; no speculative door is added.",
+    "Window bank is represented as one opening envelope, not a verified single window.",
+    "East and south room extents, sofa length and off-frame furniture are weakly constrained.",
+    "Furniture zones are bounding footprints; detailed meshes must respect visible silhouettes.",
+    "Camera fit uses approximate vertical landmark correspondences; horizontal architectural residuals and detailed chair floor contacts remain unresolved by a footprint-only model."
+  ],
+  "outputs": {
+    "floorplan_json": "state/floorplan.json",
+    "floorplan_image": "state/floorplan.png",
+    "drawing_script": "state/floorplan_draw.py"
+  }
+}

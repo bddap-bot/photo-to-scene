@@ -1,0 +1,33 @@
+{
+  "input_photo": {
+    "image": "input/reference.jpg"
+  },
+  "source_image": "input/reference.jpg",
+  "reference_image": "input/reference.jpg",
+  "input_scene": "state/best_materials.blend",
+  "image": "state/best_render.png",
+  "resolution": [
+    1920,
+    1521
+  ],
+  "engine": "CYCLES",
+  "samples": 256,
+  "adaptive_threshold": 0.009999999776482582,
+  "denoising": true,
+  "camera": "Integration camera",
+  "view_transform": "AgX",
+  "look": "AgX - Medium High Contrast",
+  "exposure": -0.699999988079071,
+  "gamma": 1.0,
+  "saved_scene_content_preserved": true,
+  "inherited_spatial_validation_errors": 69,
+  "comparison_image": "state/side_by_side.png",
+  "comparison_resolution": [
+    3841,
+    1521
+  ],
+  "reference_on_left": true,
+  "equal_height": true,
+  "canonical_source_fields_verified": true,
+  "device": "CPU (Cycles default; the final builder selected no device)"
+}
