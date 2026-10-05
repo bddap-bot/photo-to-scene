@@ -68,7 +68,7 @@ spatial_validate() {
       return 1
     fi
   fi
-  nix-shell -p python3 --run "$(printf '%q ' python3 "$PIPELINE_DIR/tools/spatial-contract.py" "$STATE/objects.json" ${scene:+--observed "$observed"} --output "$output")"
+  nix-shell -p python3 --run "$(printf '%q ' python3 "$PIPELINE_DIR/tools/spatial-contract.py" "$STATE/objects.json" --floorplan "$STATE/floorplan.json" ${scene:+--observed "$observed"} --output "$output")"
 }
 tree_ticks() {
   local -a queue=("$1") children stat

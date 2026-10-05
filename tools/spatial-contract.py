@@ -220,6 +220,97 @@ def check_contract(entry, entries, tolerance, errors):
             errors.append(f'{ident}: declared {relation["type"]} {other["id"]}: {error}')
 
 
+def dot(a, b):
+    return a[0] * b[0] + a[1] * b[1]
+
+
+def room_walls(polygon):
+    area = sum(a[0] * b[1] - b[0] * a[1] for a, b in segments(polygon))
+    walls = []
+    for a, b in segments(polygon):
+        length = distance(a, b)
+        if length:
+            side = 1 if area > 0 else -1
+            walls.append((a, b, [side * (a[1] - b[1]) / length, side * (b[0] - a[0]) / length], [-math.inf, math.inf], f'floorplan wall {a}->{b}'))
+    return walls
+
+
+def wall_contact(footprint, a, b, normal, tolerance):
+    length = distance(a, b)
+    along = [(b[0] - a[0]) / length, (b[1] - a[1]) / length]
+    total = 0
+    for p, q in segments(footprint):
+        if all(abs(dot([r[0] - a[0], r[1] - a[1]], normal)) <= tolerance for r in (p, q)):
+            s, t = sorted(dot([r[0] - a[0], r[1] - a[1]], along) for r in (p, q))
+            total += max(0, min(t, length) - max(s, 0))
+    return total
+
+
+def front_face(contract):
+    frame = contract['frame']
+    o, x, y, size = frame['origin_xyz'], frame['x_axis_xy'], frame['y_axis_xy'], frame['size_xyz']
+    a = [o[0] + y[0] * size[1], o[1] + y[1] * size[1]]
+    return a, [a[0] + x[0] * size[0], a[1] + x[1] * size[0]]
+
+
+ALONG_WALL, ON_SUPPORT = .99, .5
+
+
+def faces(front, normals, threshold):
+    return any(dot(front, normal) >= threshold for normal in normals)
+
+
+def required_facing(entries, walls, tolerance):
+    required = {}
+    while True:
+        surfaces = list(walls)
+        for ident, (normals, threshold, _) in required.items():
+            front = entries[ident]['spatial_contract']['front_xy']
+            if threshold == ALONG_WALL and faces(front, normals, threshold):
+                box = entries[ident]['bbox']
+                surfaces.append((*front_face(entries[ident]['spatial_contract']), front, [box['min'][2], box['max'][2]], f'front of {ident}'))
+        found = {}
+        for ident, entry in entries.items():
+            if ident in required:
+                continue
+            low, high = entry['bbox']['min'][2], entry['bbox']['max'][2]
+            footprint = entry['spatial_contract']['footprint_xy']
+            contacts = [(length, normal, label) for a, b, normal, (bottom, top), label in surfaces if min(high, top) - max(low, bottom) > tolerance and (length := wall_contact(footprint, a, b, normal, tolerance)) > tolerance]
+            if not contacts:
+                continue
+            best = max(contacts, key=lambda c: c[0])
+            touching = [c for c in contacts if c[0] >= best[0] - tolerance]
+            if any(dot(m[1], n[1]) < -.5 for m in touching for n in contacts):
+                continue
+            found[ident] = ([c[1] for c in touching], ALONG_WALL, f'its footprint lies {best[0]:.3f} m along {best[2]}, whose interior normal is {best[1]}')
+        if not found:
+            for ident, entry in entries.items():
+                support = next((r['with'] for r in entry['spatial_contract']['relationships'] if r['type'] == 'supported_by' and r['with'] in required), None)
+                if ident not in required and support:
+                    found[ident] = (required[support][0], ON_SUPPORT, f'it is supported_by {support}, which faces {required[support][0][0]}, and must face within 60 degrees of it')
+        if not found:
+            return required
+        required.update(found)
+
+
+def check_facing(entries, room, tolerance, errors):
+    for ident, (normals, threshold, reason) in required_facing(entries, room_walls(room), tolerance).items():
+        front = entries[ident]['spatial_contract']['front_xy']
+        if not faces(front, normals, threshold):
+            errors.append(f'{ident}: front_xy {front} does not face into the room: {reason}; set front_xy and frame.y_axis_xy to {normals[0]}, or GOTO floorplan if that wall is wrong')
+
+
+def load_room(path):
+    data, error = load_json(path)
+    if error:
+        return None, error
+    room = data.get('room') if isinstance(data, dict) else None
+    polygon = room.get('polygon_xy_m') if isinstance(room, dict) else None
+    if not is_footprint(polygon) or not any(a[0] * b[1] - b[0] * a[1] for a, b in segments(polygon)):
+        return None, 'floorplan.json: room.polygon_xy_m must be the interior room outline as at least three [x, y] metre points enclosing an area; GOTO floorplan to record it'
+    return polygon, None
+
+
 def observed_shape_error(ident, actual):
     if not isinstance(actual, dict):
         return f'{ident}: observed record must be an object'
@@ -299,6 +390,7 @@ def load_inventory(path):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('objects')
+    parser.add_argument('--floorplan', required=True)
     parser.add_argument('--observed')
     parser.add_argument('--tolerance', type=float, default=.03)
     parser.add_argument('--output')
@@ -307,6 +399,12 @@ def main():
     ids = list(entries)
     for ident in ids:
         check_contract(entries[ident], entries, args.tolerance, errors)
+    if not errors:
+        room, error = load_room(args.floorplan)
+        if error:
+            errors.append(error)
+        else:
+            check_facing(entries, room, args.tolerance, errors)
     if args.observed and not errors:
         observed, error = load_json(args.observed)
         if error or not isinstance(observed, dict):

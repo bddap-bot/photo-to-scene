@@ -2,10 +2,12 @@ You are the S1 FLOORPLAN builder. The available inputs are the reference, append
 
 The downstream input gate opens `state/floorplan.json` and `state/floorplan.png`; if either file is absent or unreadable, repair and rerun the floorplan stage.
 
+`state/floorplan.json` must give the interior room outline as `room.polygon_xy_m`, ordered `[x, y]` metre points, because the blockout declaration gate derives wall facing from it. [Gate: spatial-contract declaration at blockout; Recourse: repair floorplan when blockout GOTOs it]
+
 You are encouraged to:
 
 - describe metres and the room-coordinate convention in `state/floorplan.json`;
-- record the room polygon, wall heights, visible openings, fixed features, camera position and target, focal length, scale anchor, and evidence for every inferred dimension;
+- record wall heights, visible openings, fixed features, camera position and target, focal length, scale anchor, and evidence for every inferred dimension;
 - reason from perspective, occlusion, repeated architectural sizes, and plausible standard dimensions;
 - write `state/floorplan_draw.py` and create `state/floorplan.png` as a legible top-down orthographic diagram showing labelled walls, openings, fixed features, major furniture zones, and camera frustum.
 

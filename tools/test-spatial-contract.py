@@ -12,6 +12,8 @@ spec.loader.exec_module(module)
 polygon_distance = module.polygon_distance
 check_observed = module.check_observed
 check_contract = module.check_contract
+check_facing = module.check_facing
+ROOM = [[0, 0], [4, 0], [4, 4], [0, 4]]
 
 
 class PolygonDistanceTest(unittest.TestCase):
@@ -134,15 +136,16 @@ class SupportDeclarationTest(unittest.TestCase):
         self.assertIn("item: observed supported_by floor", errors[0])
 
 
-def validate(objects, observed=None):
+def validate(objects, observed=None, floorplan={"room": {"polygon_xy_m": ROOM}}):
     with tempfile.TemporaryDirectory() as directory:
         path, output = Path(directory, 'objects.json'), Path(directory, 'validation.json')
         path.write_text(objects if isinstance(objects, str) else json.dumps(objects))
+        Path(directory, 'floorplan.json').write_text(json.dumps(floorplan))
         extra = []
         if observed is not None:
             Path(directory, 'observed.json').write_text(json.dumps(observed))
             extra = ['--observed', str(Path(directory, 'observed.json'))]
-        result = subprocess.run([sys.executable, str(Path(__file__).with_name('spatial-contract.py')), str(path), '--output', str(output), *extra], capture_output=True, text=True)
+        result = subprocess.run([sys.executable, str(Path(__file__).with_name('spatial-contract.py')), str(path), '--floorplan', str(Path(directory, 'floorplan.json')), '--output', str(output), *extra], capture_output=True, text=True)
         return result, json.loads(output.read_text()) if output.exists() else None
 
 
@@ -300,9 +303,10 @@ class FieldShapeTest(unittest.TestCase):
                 with tempfile.TemporaryDirectory() as directory:
                     objects, output, path = Path(directory, 'objects.json'), Path(directory, 'validation.json'), Path(directory, 'observed.json')
                     objects.write_text(json.dumps(entries))
+                    Path(directory, 'floorplan.json').write_text(json.dumps({"room": {"polygon_xy_m": ROOM}}))
                     if observed is not None:
                         path.write_text(observed if isinstance(observed, str) else json.dumps(observed))
-                    result = subprocess.run([sys.executable, str(Path(__file__).with_name('spatial-contract.py')), str(objects), '--observed', str(path), '--output', str(output)], capture_output=True, text=True)
+                    result = subprocess.run([sys.executable, str(Path(__file__).with_name('spatial-contract.py')), str(objects), '--floorplan', str(Path(directory, 'floorplan.json')), '--observed', str(path), '--output', str(output)], capture_output=True, text=True)
                     validation = json.loads(output.read_text()) if output.exists() else None
                 self.assertEqual(result.returncode, 1, result.stderr)
                 self.assertNotIn("Traceback", result.stderr)
@@ -313,6 +317,119 @@ class FieldShapeTest(unittest.TestCase):
         observed = {entry["id"]: entry["spatial_contract"] for entry in entries}
         result, validation = validate(entries, observed=observed)
         self.assertEqual(result.returncode, 0, validation)
+
+
+
+def framed(ident, origin, x_axis, size, relationships=()):
+    y_axis = [-x_axis[1], x_axis[0]]
+    corner = lambda s, t: [origin[0] + x_axis[0] * s * size[0] + y_axis[0] * t * size[1], origin[1] + x_axis[1] * s * size[0] + y_axis[1] * t * size[1]]
+    footprint = [corner(0, 0), corner(1, 0), corner(1, 1), corner(0, 1)]
+    lo = [min(p[0] for p in footprint), min(p[1] for p in footprint), origin[2]]
+    hi = [max(p[0] for p in footprint), max(p[1] for p in footprint), origin[2] + size[2]]
+    contract = {
+        "source_evidence": {"synthetic": True},
+        "frame": {"origin_xyz": list(origin), "x_axis_xy": list(x_axis), "y_axis_xy": y_axis, "size_xyz": list(size)},
+        "footprint_xy": footprint,
+        "front_xy": y_axis,
+        "regions": [{"id": "body", "bbox": {"min": lo, "max": hi}}],
+        "relationships": list(relationships),
+        "ownership": {"children": "external"},
+    }
+    return {"id": ident, "crop_bbox": [0, 0, 10, 10], "bbox": {"min": lo, "max": hi}, "spatial_contract": contract}
+
+
+def room(*entries):
+    return {entry["id"]: entry for entry in (box_entry("floor", [0, 0, -.1], [4, 4, 0]), *entries)}
+
+
+def facing_errors(entries):
+    errors = []
+    for entry in entries.values():
+        check_contract(entry, entries, .03, errors)
+    if not errors:
+        check_facing(entries, ROOM, .03, errors)
+    return errors
+
+
+ON_TOP = {"type": "supported_by", "region": "body", "support_region": "body"}
+
+
+def turned(entry, front):
+    contract = entry["spatial_contract"]
+    contract["front_xy"] = contract["frame"]["y_axis_xy"] = list(front)
+    contract["frame"]["x_axis_xy"] = [front[1], -front[0]]
+    return entry
+
+
+def fireplace(clock_front=(1, 0)):
+    return room(
+        framed("chimney_breast", [0, 3, 0], [0, -1], [2, .4, 3]),
+        framed("mantel", [.4, 2.8, 0], [0, -1], [1.6, .3, 1.4], [dict(ON_TOP, **{"with": "floor"})]),
+        turned(framed("mantel_clock", [.45, 2.2, 1.4], [0, -1], [.3, .2, .25], [dict(ON_TOP, **{"with": "mantel"})]), clock_front),
+    )
+
+
+class FacingTest(unittest.TestCase):
+    def assert_one_facing_error(self, entries, *fragments):
+        errors = facing_errors(entries)
+        self.assertEqual(len(errors), 1, errors)
+        for fragment in fragments:
+            self.assertIn(fragment, errors[0])
+
+    def test_wall_entry_faces_its_interior_normal(self):
+        cases = (
+            ("west_wall", [-.2, 4, 0], [0, -1], [0, 1], "[0, 4]->[0, 0], whose interior normal is [1.0, 0.0]"),
+            ("north_wall", [4, 4.2, 0], [-1, 0], [0, 1], "[4, 4]->[0, 4], whose interior normal is [0.0, -1.0]"),
+            ("east_wall", [4.2, 0, 0], [0, 1], [0, 1], "[4, 0]->[4, 4], whose interior normal is [-1.0, 0.0]"),
+        )
+        for ident, origin, x_axis, wrong, wall in cases:
+            with self.subTest(ident=ident):
+                self.assertEqual(facing_errors(room(framed(ident, origin, x_axis, [4, .2, 3]))), [])
+                self.assert_one_facing_error(room(turned(framed(ident, origin, x_axis, [4, .2, 3]), wrong)), f"{ident}: front_xy {wrong} does not face into the room", wall)
+
+    def test_wall_parallel_entry_declared_along_the_wall_is_rejected(self):
+        cornice = lambda: framed("west_cornice", [0, 4, 2.8], [0, -1], [4, .2, .2])
+        self.assertEqual(facing_errors(room(cornice())), [])
+        self.assert_one_facing_error(room(turned(cornice(), [0, 1])), "west_cornice: front_xy [0, 1] does not face into the room: its footprint lies 4.000 m along floorplan wall", "set front_xy and frame.y_axis_xy to [1.0, 0.0]")
+
+    def test_wall_mounted_fixture_faces_away_from_its_wall(self):
+        sconce = lambda: framed("wall_sconce", [0, 3, 1.8], [0, -1], [.3, .25, .5])
+        self.assertEqual(facing_errors(room(sconce())), [])
+        self.assert_one_facing_error(room(turned(sconce(), [0, 1])), "wall_sconce: front_xy [0, 1]")
+
+    def test_entry_on_a_wall_backed_support_faces_the_room(self):
+        self.assertEqual(facing_errors(fireplace()), [])
+        self.assertEqual(facing_errors(fireplace((.8660254037844386, .5))), [])
+        self.assert_one_facing_error(fireplace((0, 1)), "mantel_clock: front_xy [0, 1] does not face into the room: it is supported_by mantel, which faces [1, 0]")
+
+    def test_front_of_a_wall_backed_entry_counts_as_wall(self):
+        entries = fireplace()
+        turned(entries["mantel"], [0, 1])
+        errors = facing_errors(entries)
+        self.assertEqual(len(errors), 1, errors)
+        self.assertIn("mantel: front_xy [0, 1] does not face into the room: its footprint lies 1.600 m along front of chimney_breast", errors[0])
+
+    def test_free_standing_and_room_spanning_entries_are_unconstrained(self):
+        self.assertEqual(facing_errors(room(framed("rocker", [2, 2, 0], [.6, .8], [.6, .8, .7]))), [])
+        self.assertEqual(facing_errors(room(turned(framed("rug", [0, 4, 0], [0, -1], [4, 4, .01]), [0, 1]))), [])
+
+    def test_corner_entry_may_face_out_of_either_wall(self):
+        for front in ((1, 0), (0, 1)):
+            with self.subTest(front=front):
+                self.assertEqual(facing_errors(room(turned(framed("corner_cabinet", [0, .5, 0], [0, -1], [.5, .5, 1]), front))), [])
+
+    def test_floorplan_without_room_outline_is_rejected(self):
+        for floorplan in ({"room": {"polygon_m": ROOM}}, {"room": {"polygon_xy_m": [[0, 0], [1, 1], [2, 2]]}}, []):
+            with self.subTest(floorplan=floorplan):
+                result, validation = validate(list(resting(0).values()), floorplan=floorplan)
+                self.assertEqual(result.returncode, 1)
+                self.assertNotIn("Traceback", result.stderr)
+                self.assertIn("floorplan.json: room.polygon_xy_m must be the interior room outline", validation["errors"][0])
+
+    def test_gate_reports_wrong_facing(self):
+        result, validation = validate(list(fireplace((0, 1)).values()))
+        self.assertEqual(result.returncode, 1)
+        self.assertTrue(validation["errors"][0].startswith("mantel_clock: front_xy"), validation["errors"])
 
 
 if __name__ == '__main__':
