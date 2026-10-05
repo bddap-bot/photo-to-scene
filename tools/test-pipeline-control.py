@@ -60,6 +60,12 @@ def model_function(seconds: int = 60, idle: int = 2) -> str:
     return f"MODEL_SECONDS={seconds}; MODEL_IDLE_SECONDS={idle}; MODEL_BUSY_CPU_TICKS={BUSY_CPU_TICKS}; MODEL_FAILURE=; SCHEMA=schema.json\n" + function("tree_ticks") + "\n" + function("model")
 
 
+def controlled_demand() -> str:
+    # A stub's idleness must not depend on how often a loaded scheduler samples it runnable; pids and zombies stay real for kills and reaping.
+    return '''eval "real_$(declare -f tree_ticks)"
+tree_ticks() { local pid state; real_tree_ticks "$1" | while read -r pid _ state; do printf '%s 0 %s\\n' "$pid" "${state/R/S}"; done; }'''
+
+
 def idle_failure(seconds):
     return f"model call had no non-whitespace output and no busy child process for {seconds} s"
 
@@ -72,6 +78,7 @@ call busy""" if wall_benchmark else ""
 ROOT={directory}; STATE={directory}
 log() {{ printf '%s\\n' "$*"; }}
 {model_function(60, 3)}
+{"" if wall_benchmark else controlled_demand()}
 call() {{ local start=$SECONDS rc; model - <<< prompt; rc=$?; printf '%s rc=%s seconds=%s failure=%s marker=%s\\n' "$1" "$rc" "$((SECONDS - start))" "$MODEL_FAILURE" "$([ -f "$STATE/model_failed" ] && printf set || printf clear)"; }}
 codex() {{ cat >/dev/null; printf 'model started\\n'; while :; do printf '\\t \\n'; sleep 0.1; done; }}
 call whitespace
@@ -1186,16 +1193,19 @@ kill "$root"
     def test_tree_ticks_detects_demand_with_and_without_contention(self) -> None:
         cpu = str(min(os.sched_getaffinity(0)))
         burn = "while True: pass"
-        sleeper = "import time\nwhile True: time.sleep(0.1)"
-        threaded = "import threading\nthreading.Thread(target=lambda: exec('while True: pass')).start()\nthreading.Event().wait()"
+        sleeper = "import threading\nprint(flush=True)\nthreading.Event().wait()"
+        threaded = "import threading\nthreading.Thread(target=lambda: exec('while True: pass')).start()\nprint(flush=True)\nthreading.Event().wait()"
         for loaded in (False, True):
             competitor = subprocess.Popen(["taskset", "-c", cpu, sys.executable, "-c", burn]) if loaded else None
             try:
-                for name, code in (("busy", burn), ("thread", threaded), ("sleep", sleeper)):
+                for name, code in (("busy", "print(flush=True)\n" + burn), ("thread", threaded), ("sleep", sleeper)):
                     with self.subTest(loaded=loaded, workload=name):
-                        child = subprocess.Popen(["taskset", "-c", cpu, "nice", "-n", "19", sys.executable, "-c", code])
+                        child = subprocess.Popen(["taskset", "-c", cpu, "nice", "-n", "19", sys.executable, "-c", code], stdout=subprocess.PIPE)
                         try:
-                            time.sleep(0.5)
+                            child.stdout.readline()
+                            deadline = time.monotonic() + 120
+                            while name == "sleep" and Path(f"/proc/{child.pid}/stat").read_text().rsplit(") ", 1)[1][0] != "S" and time.monotonic() < deadline:
+                                time.sleep(0.05)
                             samples = []
                             for _ in range(31):
                                 result = subprocess.run(["bash", "-c", function("tree_ticks") + f"\ntree_ticks {child.pid}"], text=True, capture_output=True, check=True)
