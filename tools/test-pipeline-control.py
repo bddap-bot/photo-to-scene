@@ -621,6 +621,48 @@ printf 'attempts=%s scores=%s error=%s\n' "$ATTEMPT_SEQ" "$(cut -f3 "$STATE/reco
         self.assertIn("FAIL integrate spatial contract did not round-trip attempt=3", result.stdout)
         self.assertIn("error=one: footprint did not round-trip", result.stdout)
 
+    def test_integration_attempts_are_scoped_to_their_inputs(self):
+        functions = "\n".join(function(name) for name in ("integrate_inputs_hash", "integrate_attempts", "integrate_best", "run_integrate"))
+        for changed, expected in ((False, "builds=0 scene=stale"), (True, "builds=1 scene=fresh")):
+            with self.subTest(changed=changed), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                state = root / "state"
+                (state / "verdicts").mkdir(parents=True)
+                (root / "assets").mkdir()
+                (root / "textures").mkdir()
+                (root / "assets" / "one.py").write_text("old asset")
+                (state / "objects.json").write_text('[{"id":"one","spatial_contract":{"frame":1}}]')
+                (state / "records.tsv").write_text("")
+                (root / "integrate_critic.md").write_text("criticize")
+                script = f'''set -uo pipefail
+ROOT={root!s}; STATE={state!s}; ASSETS=$ROOT/assets; TEXTURES=$ROOT/textures; PROMPTS=$ROOT; INPUT=input.jpg; ATTEMPT_SEQ=3; MODEL_FAILURE=; REQUEST_STAGE=; REQUEST_REASON=
+builds=0
+next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
+log() {{ printf '%s\n' "$*"; }}
+inbox() {{ :; }}
+restore_selected_details() {{ :; }}
+place_tool() {{ :; }}
+builder() {{ builds=$((builds+1)); printf fresh > "$STATE/integrate.blend"; }}
+spatial_validate() {{ return 0; }}
+critic() {{ printf '%s\n' '{{"score":9,"corrections":[]}}' > "$1"; }}
+score_of() {{ jq -r '.score // 0' "$1"; }}
+record() {{ printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$1" "$2" "$3" "$4" "$5" "$6" "${{7:-}}" "${{8:-}}" >> "$STATE/records.tsv"; }}
+{functions}
+old=$(integrate_inputs_hash)
+for seq in 1 2 3; do
+  mkdir -p "$STATE/attempts/integrate_$seq"; printf stale > "$STATE/attempts/integrate_$seq/integrate.blend"
+  record integrate "$seq" 0 1 "" "$STATE/verdicts/integrate_$seq.json" "$old"
+done
+for name in assemble.py integrate.png integrate_overlay.png spatial_observed.json; do : > "$STATE/$name"; done
+if {"true" if changed else "false"}; then printf 'new asset' > "$ASSETS/one.py"; fi
+run_integrate || exit $?
+printf 'builds=%s scene=%s\n' "$builds" "$(cat "$STATE/integrate.blend")"
+'''
+                result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=10)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(result.stderr, "")
+            self.assertIn(expected, result.stdout)
+
     def test_blockout_declaration_failure_is_fed_back_and_never_kept(self):
         stage_verdict = "\n".join(function(name) for name in ("write_stage_check_verdict", "write_spatial_check_verdict", "run_blockout"))
         for valid, expected in (("2", "rc=0 scores=0,5,0 kept=attempt2"), ("", "rc=1 scores=0,0,0")):
@@ -1759,7 +1801,7 @@ codex() {{ cat >/dev/null; printf 'new' > "$ASSETS/one.py"; }}
 {function("detail_best")}
 {function("restore_detail")}
 {function("run_one_detail")}
-printf 'integrate_best=%s\\n' "$(integrate_best)"
+printf 'integrate_best=%s\\n' "$(integrate_best '')"
 run_one_detail one "" 1
 printf 'asset=%s\\n' "$(cat "$ASSETS/one.py")"
 """
