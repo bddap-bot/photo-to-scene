@@ -71,3 +71,55 @@ intact. No workflow code is added for the experiment.
 
 This is one stochastic comparison, not a per-fix ablation. A different object count
 is an outcome.
+
+## First run: blocked at integration
+
+The first run followed the design above on `af4f3d5`, at reasoning effort `none` for all
+271 recorded model calls. It did not reach materials or a final render. Two newly
+exposed workflow defects stopped it.
+
+- [#51](https://github.com/bddap-bot/photo-to-scene/issues/51): the medium-tier
+  critic routed critic GOTO 1 to `object:horse_plinth`, a small-tier object not yet
+  built. After that single-object reentry, the driver went straight to integration.
+  The other 21 small-tier objects and the small-tier review never ran. After the
+  integration reserve's blockout reentry, the large-tier critic routed critic GOTO 2 to
+  `object:sofa`, and the same skip repeated. Integration received 48 of 69 assets.
+- [#52](https://github.com/bddap-bot/photo-to-scene/issues/52): the observed
+  footprint gate now measures every placed triangle. That came to 2,916,424 triangles
+  and a 177 MB measurement for just 48 assets. The shapely outline step then ran the job
+  out of memory: about 23 GB resident plus 10 GB swap. The OOM killer stopped three
+  consecutive integration entries (sequences 133–135) before any critic ran. Alone
+  under a 12 GB address-space cap, the observer fails with `std::bad_alloc` after
+  107 s. The combined-fixes run peaked at about 4 GB for the whole job.
+
+Every further integration attempt re-runs that gate, so the run was halted there rather
+than resumed again. No prompt, budget or candidate was changed.
+
+| Measure | Combined-fixes run | Post-defects first run (blocked) |
+|---|---|---|
+| Workflow | `034bebf`, effort `none` | `af4f3d5`, effort `none` (271/271 calls) |
+| Furthest stage | Final render after supervised finalization | Integration; observed gate never completed |
+| Final observed spatial gate | Pass; 0 errors, 81 assets | Not reached (#52); 21 of 69 assets never built (#51) |
+| In-run scene critic | Integration 7/10; materials 6/10 | None; tier reviews 8, 8, 7, 7 |
+| Detail objects | 81/81 finalized; mean 6.67; 13 at least 8 | 44 of 66 observed objects finalized, mean 7.05, 15 at least 8; 3 inferred structures built unscored; 21 never built |
+| Builder GOTOs | 2 blockout, 3 ceiling detail, 1 reserved integration | 5 detail-to-blockout contract repairs, 1 reserved integration repair; none from neighbour-ownership claims |
+| Critic GOTOs | 2 tier, 1 materials | 2 tier-to-object routes (#51) |
+| Refused repairs | 61 at caps; 26 invalid-target | 15 builder requests at the cap; 0 invalid targets; 0 critic route rejections |
+| Recorded sequences | 360 scored, 10 unscored | 121 scored, 3 inferred unscored, 6 redirects recorded with time; 5 lost to interruptions |
+| Summed attempt time | 99,501 s scored | 31,478 s scored + 254 s inferred + 3,162 s redirected |
+| Model-call tokens | Not derived | 7,588,322 |
+| Driver-enforced model stops | 1 | 0 |
+| Infrastructure interruptions | 4, plus a final-render wrapper stop | 5: two host restarts and three OOM kills (#52) |
+
+Observed fix effects, from one run: no validator crash (#35, #49); no invalid GOTO
+target or invented critic ID (#39, #46); every builder redirect recorded with its
+seconds (#38); inferred structure built without crops or critics (#40); and no
+detail-sourced GOTO caused by a neighbour-ownership claim (#36, #43). The budget fixes
+(#47, #48) were not reached.
+
+The two host restarts were resumed at `detail`, which repeats the large-tier review.
+The OOM kills were resumed at `integrate`. Each such continuation restarts the
+in-memory stage 5/6 clock.
+
+A complete measurement needs #51 and #52 fixed first. It will be a fresh run from an
+empty directory, with its workflow revision recorded here before it starts.
