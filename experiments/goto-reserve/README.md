@@ -1,5 +1,7 @@
 # Bounded blockout repair reserve
 
+Superseded: the driver now gives each stage its own GOTO allowance (see `docs/STAGES.md`), which subsumes this reserve. The record below describes the removed design.
+
 ## Design and method
 
 The control-flow requirement is that repeated early GOTO requests cannot consume

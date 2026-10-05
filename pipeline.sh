@@ -17,10 +17,7 @@ mkdir -p "$STATE/crops" "$STATE/verdicts" "$STATE/attempts" "$ASSETS" "$TEXTURES
 touch "$ROOT/log.md" "$STATE/records.tsv" "$STATE/redirects.tsv" "$STATE/progress.md"
 STAGE_NAMES=(floorplan blockout identify detail integrate materials)
 GOTO_FORMAT='{"stage": "<target>", "reason": "<why>"}'
-GOTO_LIMIT=5
-LEGACY_GOTOS=$(cat "$STATE/goto_count" 2>/dev/null || printf 0)
-BUILDER_GOTOS=$(cat "$STATE/builder_goto_count" 2>/dev/null || printf '%s' "$LEGACY_GOTOS")
-CRITIC_GOTOS=$(cat "$STATE/critic_goto_count" 2>/dev/null || printf 0)
+GOTO_LIMIT=2
 BEST_S6=$(cat "$STATE/best_s6_score" 2>/dev/null || printf '%s' -1)
 [ -n "$BEST_S6" ] || BEST_S6=-1
 ATTEMPT_SEQ=$(cat "$STATE/attempt_seq" 2>/dev/null || printf 0)
@@ -48,20 +45,9 @@ goto_targets() {
 goto_target_text() { printf 'Valid GOTO targets, each object with its inventory label:\n'; goto_targets "$@" | awk -F '\t' '{print "- " $1 ($2 == "" ? "" : " (" $2 ")")}'; }
 valid_target() { local target; while IFS=$'\t' read -r target _; do [ "$target" != "$1" ] || return 0; done < <(goto_targets "${@:2}"); return 1; }
 goto_shape_error() { jq -rs 'if length != 1 or (.[0] | type) != "object" then "it must hold one JSON object" else .[0] | [(["stage", "reason"] - keys)[] | "missing field `\(.)`"] + [(keys - ["stage", "reason"])[] | "unexpected field `\(.)`"] + [to_entries[] | select((.key == "stage" or .key == "reason") and (.value | type) != "string") | "field `\(.key)` is not a string"] | join("; ") end' "$1" 2>/dev/null || printf 'it is not valid JSON'; }
-goto_available() {
-  local origin=$1 used=$BUILDER_GOTOS
-  GOTO_RESERVE=
-  [ "$origin" != critic ] || used=$CRITIC_GOTOS
-  [ "$used" -lt "$GOTO_LIMIT" ] && return 0
-  [ "$REQUEST_STAGE" = blockout ] || return 1
-  case "${ACTIVE_STAGE:-}" in
-    integrate|materials)
-      GOTO_RESERVE="$STATE/${ACTIVE_STAGE}_blockout_goto_used"
-      [ ! -f "$GOTO_RESERVE" ] && return 0 ;;
-  esac
-  GOTO_RESERVE=
-  return 1
-}
+goto_file() { local stage=${ACTIVE_STAGE:-}; case "$stage" in object:*) stage=detail ;; esac; printf '%s/goto_%s' "$STATE" "${stage//:/_}"; }
+goto_used() { cat "$(goto_file)" 2>/dev/null || printf 0; }
+goto_available() { [ "$(goto_used)" -lt "$GOTO_LIMIT" ]; }
 
 place_command() { printf '%q ' blender -b --factory-startup --python-exit-code 1 --python "$PIPELINE_DIR/tools/place.py" -- "$@"; }
 place_tool() { nix-shell -p blender --run "$(place_command "$@")"; }
@@ -183,10 +169,10 @@ builder() {
         return 0
       fi
       if [ -z "$goto_error" ]; then
-        if goto_available builder; then return 42; fi
+        if goto_available; then return 42; fi
         log "GOTO cap reached origin=builder requested=$REQUEST_STAGE reason=$REQUEST_REASON"
         cap_retry=1
-        feedback="${feedback:+$feedback$'\n'}The builder GOTO cap is reached. Do not write state/goto.json. Complete within the existing spatial contract, retaining a contract-valid artifact when available so this attempt can be recorded."
+        feedback="${feedback:+$feedback$'\n'}This stage's GOTO allowance is spent. Do not write state/goto.json. Complete within the existing spatial contract, retaining a contract-valid artifact when available so this attempt can be recorded."
         continue
       fi
       log "GOTO rejected origin=builder requested=$REQUEST_STAGE reason=$goto_error"
@@ -419,7 +405,7 @@ run_detail() {
     tier_review_due "$tier" || continue
     run_tier_critic "$tier"
     tier_rc=$?
-    if [ "$tier_rc" -eq 43 ] && ! goto_available critic; then
+    if [ "$tier_rc" -eq 43 ] && ! goto_available; then
       log "GOTO cap request ignored within tier=$tier; descending to next footprint tier"
       continue
     fi
@@ -472,11 +458,9 @@ while :; do
   case "$current" in floorplan) run_floorplan "$feedback"; rc=$?; next=blockout ;; blockout) run_blockout "$feedback"; rc=$?; next=identify ;; identify) run_identify "$feedback"; rc=$?; next=detail ;; detail) run_detail "" "$feedback"; rc=$?; next=integrate ;; object:*) run_detail "$current" "$feedback"; rc=$?; next=integrate ;; integrate) run_integrate "$feedback"; rc=$?; next=materials ;; materials) run_materials "$feedback"; rc=$?; next='done' ;; *) log "FAIL invalid current stage=$current"; exit 2 ;; esac
   if [ "$rc" -eq 42 ] || [ "$rc" -eq 43 ]; then
     origin=$([ "$rc" -eq 42 ] && printf builder || printf critic)
-    if ! goto_available "$origin"; then log "GOTO cap reached origin=$origin requested=$REQUEST_STAGE reason=$REQUEST_REASON"; log "GOTO cap request ignored origin=$origin requested=$REQUEST_STAGE reason=$REQUEST_REASON"; current=$next; feedback=; [ "$current" = 'done' ] && break; continue; fi
-    [ -z "$GOTO_RESERVE" ] || printf 'used\n' > "$GOTO_RESERVE" || exit 1
-    if [ "$origin" = builder ]; then BUILDER_GOTOS=$((BUILDER_GOTOS+1)); printf '%s' "$BUILDER_GOTOS" > "$STATE/builder_goto_count"; count=$BUILDER_GOTOS; else CRITIC_GOTOS=$((CRITIC_GOTOS+1)); printf '%s' "$CRITIC_GOTOS" > "$STATE/critic_goto_count"; count=$CRITIC_GOTOS; fi
-    printf '%s' "$((BUILDER_GOTOS+CRITIC_GOTOS))" > "$STATE/goto_count"
-    log "GOTO count=$count origin=$origin stage=$REQUEST_STAGE reason=$REQUEST_REASON"; current=$REQUEST_STAGE; feedback=$REQUEST_REASON; continue
+    if ! goto_available; then log "GOTO cap reached origin=$origin requested=$REQUEST_STAGE reason=$REQUEST_REASON"; log "GOTO cap request ignored origin=$origin requested=$REQUEST_STAGE reason=$REQUEST_REASON"; current=$next; feedback=; [ "$current" = 'done' ] && break; continue; fi
+    count=$(( $(goto_used) + 1 )); printf '%s' "$count" > "$(goto_file)" || exit 1
+    log "GOTO count=$count origin=$origin from=$ACTIVE_STAGE stage=$REQUEST_STAGE reason=$REQUEST_REASON"; current=$REQUEST_STAGE; feedback=$REQUEST_REASON; continue
   fi
   if [ "$rc" -ne 0 ]; then log "FAIL stage=$current rc=$rc"; exit "$rc"; fi
   [ "$next" = 'done' ] && break
