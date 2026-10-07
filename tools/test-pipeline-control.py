@@ -32,6 +32,12 @@ def function(name):
         result = function("restore_selected_details") + "\n" + result
     if name == "run_integrate":
         result = 'ROOT=${ROOT:-$STATE}\nplace_tool() { [ "$1 $2 $3" = "place $ROOT $STATE/placed.blend" ] && printf placed > "$3"; }\n' + result
+    if name == "run_materials":
+        result = 'ASSETS=${ASSETS:-$STATE/assets}\nTEXTURES=${TEXTURES:-$STATE/textures}\n' + function("integrate_inputs_hash") + "\n" + function("integrate_best") + "\n" + result
+    if name in ("run_integrate", "run_materials"):
+        result = function("restore_integration") + "\n" + result
+    if name in ("next_attempt", "goto_available"):
+        result = function("s56_expired") + "\n" + result
     if name.startswith("run_") and name != "run_detail":
         result = function("stage_builder") + "\n" + result
     if name == "run_detail":
@@ -1155,7 +1161,7 @@ feedback=
             self.assertNotIn("GOTO count=", result.stdout)
             self.assertFalse((state / "repairs").exists())
 
-    def test_expired_budget_finalizes_saved_s6_before_redirect(self):
+    def test_expired_budget_finalizes_saved_s6_instead_of_redirect(self):
         run_materials = function("run_materials")
         next_attempt = function("next_attempt")
         loop = main_loop()
@@ -1175,7 +1181,7 @@ log() {{ printf '%s\n' "$*"; }}
 inbox() {{ :; }}
 {next_attempt}
 date() {{ if [ "${{1:-}}" = +%s ]; then printf '%s\n' "$(( $(command date +%s) + (builds > 0 ? 12601 : 0) ))"; else command date "$@"; fi; }}
-finalize() {{ printf 'builds=%s materials_gotos=%s best=%s\n' "$builds" "$(cat "$STATE/goto_materials")" "$([ -f "$STATE/best_materials.blend" ] && printf saved || printf absent)"; exit 0; }}
+finalize() {{ printf 'builds=%s materials_gotos=%s best=%s\n' "$builds" "$(cat "$STATE/goto_materials" 2>/dev/null || printf 0)" "$([ -f "$STATE/best_materials.blend" ] && printf saved || printf absent)"; exit 0; }}
 score_of() {{ jq -r '.score // 0' "$1"; }}
 record() {{ :; }}
 builder() {{ builds=$((builds+1)); touch "$STATE/materials.png" "$STATE/materials.blend"; }}
@@ -1191,10 +1197,10 @@ finalize
 '''
             result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=10)
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("WALLCLOCK cap reached; finalizing best S6", result.stdout)
-        self.assertIn("builds=1 materials_gotos=1 best=saved", result.stdout)
+        self.assertIn("GOTO cap request ignored origin=critic requested=floorplan", result.stdout)
+        self.assertIn("builds=1 materials_gotos=0 best=saved", result.stdout)
 
-    def s56_run(self, root: Path, clock: int, advance: int, score: int) -> subprocess.CompletedProcess[str]:
+    def s56_run(self, root: Path, clock: int, advance: int, score: int, route: str = "$2") -> subprocess.CompletedProcess[str]:
         functions = "\n".join(function(name) for name in ("run_integrate", "run_materials", "integrate_attempts", "integrate_best", "next_attempt"))
         state = root / "state"
         (state / "verdicts").mkdir(parents=True, exist_ok=True)
@@ -1217,7 +1223,7 @@ place_tool() {{ placed=$((placed+1)); }}
 restore_selected_details() {{ :; }}
 builder() {{ builds=$((builds+1)); printf '%s' "$(( $(cat "$STATE/clock") + {advance} ))" > "$STATE/clock"; for name in assemble.py integrate.blend integrate.png integrate_overlay.png spatial_observed.json materials.blend materials.png; do printf '{{}}' > "$STATE/$name"; done; }}
 spatial_validate() {{ return 0; }}
-critic() {{ printf '{{"score":{score},"top_stage":"%s","corrections":["again"]}}\n' "$2" > "$1"; }}
+critic() {{ printf '{{"score":{score},"top_stage":"%s","corrections":["again"]}}\n' "{route}" > "$1"; }}
 run_floorplan() {{ builder; }}
 run_blockout() {{ builder; }}
 run_identify() {{ builder; }}
@@ -1239,6 +1245,49 @@ finalize
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("WALLCLOCK cap reached; finalizing best S6", result.stdout)
         self.assertIn("builds=1 placed=1 best=saved", result.stdout)
+
+    def test_expired_budget_without_saved_scene_runs_one_materials_attempt(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "state").mkdir()
+            result = self.s56_run(root, int(time.time()), 12601, 0)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("WALLCLOCK cap reached before a saved S6 scene; one materials attempt replaces integrate", result.stdout)
+        self.assertEqual(result.stdout.count("ENTER integrate"), 1)
+        self.assertEqual(result.stdout.count("ENTER materials"), 1)
+        self.assertIn("builds=2 placed=1 best=saved", result.stdout)
+
+    def test_expired_budget_refuses_critic_routes_upstream(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "state").mkdir()
+            result = self.s56_run(root, int(time.time()), 12601, 0, "blockout")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertNotIn("GOTO count=", result.stdout)
+        self.assertEqual(result.stdout.count("GOTO cap request ignored origin=critic requested=blockout"), 2)
+        self.assertEqual(result.stdout.count("ENTER materials"), 1)
+        self.assertIn("builds=2 placed=1 best=saved", result.stdout)
+
+    def test_expired_budget_keeps_a_builder_goto_within_its_attempt(self):
+        builder = function("builder")
+        with tempfile.TemporaryDirectory() as directory:
+            state = Path(directory)
+            (state / "builder.md").write_text("build; a GOTO is state/goto.json")
+            script = f'''set -uo pipefail
+ROOT={state!s}; STATE={state!s}; PROMPTS={state!s}; ACTIVE_STAGE=materials; MODEL_FAILURE=
+S56_START=$(( $(date +%s) - 12601 ))
+printf 0 > "$STATE/calls"
+log() {{ printf '%s\n' "$*"; }}
+codex() {{ local calls; cat >/dev/null; calls=$(( $(cat "$STATE/calls") + 1 )); printf '%s' "$calls" > "$STATE/calls"; [ "$calls" -gt 1 ] || printf '%s\n' '{{"stage":"blockout","reason":"rebuild walls"}}' > "$STATE/goto.json"; }}
+{model_function()}
+{builder}
+builder builder.md ""
+printf 'rc=%s calls=%s\n' "$?" "$(cat "$STATE/calls")"
+'''
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=30)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("GOTO cap reached origin=builder requested=blockout reason=rebuild walls", result.stdout)
+        self.assertIn("rc=0 calls=2", result.stdout)
 
     def test_reused_run_root_starts_a_fresh_budget(self):
         with tempfile.TemporaryDirectory() as directory:
