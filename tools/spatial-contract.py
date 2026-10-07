@@ -224,7 +224,7 @@ def room_walls(polygon):
         length = distance(a, b)
         if length:
             side = 1 if area > 0 else -1
-            walls.append((a, b, [side * (a[1] - b[1]) / length, side * (b[0] - a[0]) / length], [-math.inf, math.inf], f'floorplan wall {a}->{b}'))
+            walls.append((a, b, [side * (a[1] - b[1]) / length, side * (b[0] - a[0]) / length], [-math.inf, math.inf], f'floorplan wall {a}->{b}', 'GOTO floorplan if that wall is wrong'))
     return walls
 
 
@@ -257,40 +257,41 @@ def required_facing(entries, walls, tolerance):
     required = {}
     while True:
         surfaces = list(walls)
-        for ident, (normals, threshold, _) in required.items():
-            front = entries[ident]['spatial_contract']['frame']['y_axis_xy']
-            if threshold == ALONG_WALL and faces(front, normals, threshold):
+        for ident, (normals, threshold, _, _) in required.items():
+            contract = entries[ident]['spatial_contract']
+            front = contract['frame']['y_axis_xy']
+            if threshold == ALONG_WALL and faces(front, normals, threshold) and not any(r['type'] == 'supported_by' for r in contract['relationships']):
                 box = entries[ident]['bbox']
-                surfaces.append((*front_face(entries[ident]['spatial_contract']), front, [box['min'][2], box['max'][2]], f'front of {ident}'))
+                surfaces.append((*front_face(contract), front, [box['min'][2], box['max'][2]], f'front of {ident}', f'revise {ident} if its front is wrong'))
         found = {}
         for ident, entry in entries.items():
             if ident in required:
                 continue
             low, high = entry['bbox']['min'][2], entry['bbox']['max'][2]
             footprint = entry['spatial_contract']['footprint_xy']
-            contacts = [(length, normal, label) for a, b, normal, (bottom, top), label in surfaces if min(high, top) - max(low, bottom) > tolerance and (length := wall_contact(footprint, a, b, normal, tolerance)) > tolerance]
+            contacts = [(length, normal, label, recourse) for a, b, normal, (bottom, top), label, recourse in surfaces if min(high, top) - max(low, bottom) > tolerance and (length := wall_contact(footprint, a, b, normal, tolerance)) > tolerance]
             if not contacts:
                 continue
             best = max(contacts, key=lambda c: c[0])
             touching = [c for c in contacts if c[0] >= best[0] - tolerance]
             if any(dot(m[1], n[1]) < -.5 for m in touching for n in contacts):
                 continue
-            found[ident] = ([c[1] for c in touching], ALONG_WALL, f'its footprint lies {best[0]:.3f} m along {best[2]}, whose interior normal is {best[1]}')
+            found[ident] = ([c[1] for c in touching], ALONG_WALL, f'its footprint lies {best[0]:.3f} m along {best[2]}, whose interior normal is {best[1]}', best[3])
         if not found:
             for ident, entry in entries.items():
                 support = next((r['with'] for r in entry['spatial_contract']['relationships'] if r['type'] == 'supported_by' and r['with'] in required), None)
                 if ident not in required and support:
-                    found[ident] = (required[support][0], ON_SUPPORT, f'it is supported_by {support}, which faces {required[support][0][0]}, and must face within 60 degrees of it')
+                    found[ident] = (required[support][0], ON_SUPPORT, f'it is supported_by {support}, which faces {required[support][0][0]}, and must face within 60 degrees of it', f'revise supported_by {support} if it is wrong')
         if not found:
             return required
         required.update(found)
 
 
 def check_facing(entries, room, tolerance, errors):
-    for ident, (normals, threshold, reason) in required_facing(entries, room_walls(room), tolerance).items():
+    for ident, (normals, threshold, reason, recourse) in required_facing(entries, room_walls(room), tolerance).items():
         front = entries[ident]['spatial_contract']['frame']['y_axis_xy']
         if not faces(front, normals, threshold):
-            errors.append(f'{ident}: frame.y_axis_xy {front} does not face into the room: {reason}; set frame.y_axis_xy to {normals[0]} with x_axis_xy perpendicular to it, or GOTO floorplan if that wall is wrong')
+            errors.append(f'{ident}: frame.y_axis_xy {front} does not face into the room: {reason}; set frame.y_axis_xy to {normals[0]} with x_axis_xy perpendicular to it, or {recourse}')
 
 
 def load_room(path):

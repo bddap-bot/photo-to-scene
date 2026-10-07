@@ -437,7 +437,7 @@ class FacingTest(unittest.TestCase):
     def test_wall_parallel_entry_declared_along_the_wall_is_rejected(self):
         cornice = lambda: framed("west_cornice", [0, 4, 2.8], [0, -1], [4, .2, .2])
         self.assertEqual(facing_errors(room(cornice())), [])
-        self.assert_one_facing_error(room(turned(cornice(), [0, 1])), "west_cornice: frame.y_axis_xy [0, 1] does not face into the room: its footprint lies 4.000 m along floorplan wall", "set frame.y_axis_xy to [1.0, 0.0] with x_axis_xy perpendicular to it")
+        self.assert_one_facing_error(room(turned(cornice(), [0, 1])), "west_cornice: frame.y_axis_xy [0, 1] does not face into the room: its footprint lies 4.000 m along floorplan wall", "set frame.y_axis_xy to [1.0, 0.0] with x_axis_xy perpendicular to it, or GOTO floorplan if that wall is wrong")
 
     def test_wall_mounted_fixture_faces_away_from_its_wall(self):
         sconce = lambda: framed("wall_sconce", [0, 3, 1.8], [0, -1], [.3, .25, .5])
@@ -447,7 +447,7 @@ class FacingTest(unittest.TestCase):
     def test_entry_on_a_wall_backed_support_faces_the_room(self):
         self.assertEqual(facing_errors(fireplace()), [])
         self.assertEqual(facing_errors(fireplace((.8660254037844386, .5))), [])
-        self.assert_one_facing_error(fireplace((0, 1)), "mantel_clock: frame.y_axis_xy [0, 1] does not face into the room: it is supported_by mantel, which faces [1, 0]")
+        self.assert_one_facing_error(fireplace((0, 1)), "mantel_clock: frame.y_axis_xy [0, 1] does not face into the room: it is supported_by mantel, which faces [1, 0]", "or revise supported_by mantel if it is wrong")
 
     def test_front_of_a_wall_backed_entry_counts_as_wall(self):
         entries = fireplace()
@@ -455,6 +455,17 @@ class FacingTest(unittest.TestCase):
         errors = facing_errors(entries)
         self.assertEqual(len(errors), 1, errors)
         self.assertIn("mantel: frame.y_axis_xy [0, 1] does not face into the room: its footprint lies 1.600 m along front of chimney_breast", errors[0])
+        self.assertIn("or revise chimney_breast if its front is wrong", errors[0])
+        self.assertNotIn("GOTO floorplan", errors[0])
+
+    def test_front_of_a_free_standing_entry_is_not_a_wall(self):
+        on_floor = [dict(ON_TOP, **{"with": "floor"})]
+        chair = framed("chair", [3, 4, 0], [-1, 0], [.8, .7, 1], on_floor)
+        footstool = turned(framed("footstool", [2.3, 3.3, 0], [-1, 0], [.5, .4, .3], on_floor), [-1, 0])
+        self.assertEqual(facing_errors(room(chair, footstool)), [])
+        hearth = framed("hearth", [.4, 2.8, 0], [0, -1], [1.6, .5, .05], on_floor)
+        sofa = framed("sofa", [.9, .5, 0], [1, 0], [2.15, .9, .9], on_floor)
+        self.assertEqual(facing_errors(room(framed("chimney_breast", [0, 3, 0], [0, -1], [2, .4, 3]), hearth, sofa)), [])
 
     def test_free_standing_and_room_spanning_entries_are_unconstrained(self):
         self.assertEqual(facing_errors(room(framed("rocker", [2, 2, 0], [.6, .8], [.6, .8, .7]))), [])

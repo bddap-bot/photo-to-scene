@@ -2,7 +2,7 @@ You are the S2 BLOCKOUT builder. The available inputs are the reference, `state/
 
 `state/objects.json` must pass the driver's spatial-contract declaration gate before criticism; if source evidence conflicts with the floorplan, revise the blockout contract or write `state/goto.json` targeting `floorplan` with the reason. [Gate: spatial-contract declaration; Recourse: revise blockout or GOTO floorplan]
 
-That gate also derives facing from `room.polygon_xy_m` in `state/floorplan.json`: an entry whose footprint lies along a wall, or along the front of an entry so placed, must face into the room along that wall's interior normal, and an entry `supported_by` such an entry must face within 60 degrees of it; a footprint touching opposite walls, such as the floor, is exempt. [Gate: spatial-contract declaration; Recourse: revise blockout or GOTO floorplan]
+That gate also derives facing from `room.polygon_xy_m` in `state/floorplan.json`: an entry whose footprint lies along a wall, or along the front of an entry so placed that declares no `supported_by` (structure or a wall-mounted fixture, not furniture), must face into the room along that wall's interior normal, and an entry `supported_by` such an entry must face within 60 degrees of it; a footprint touching opposite walls, such as the floor, is exempt. [Gate: spatial-contract declaration; Recourse: revise blockout, or GOTO floorplan when the error names a floorplan wall]
 
 You are encouraged to:
 
