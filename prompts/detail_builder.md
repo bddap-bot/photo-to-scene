@@ -6,7 +6,7 @@ An entry whose `spatial_contract.inferred` is true has no source observation: no
 
 Each listed overlapping entry owns its own components. A label or asset that includes one of them scores 0; leave them out of both.
 
-`assets/<id>.py` must pass the detail asset gate for existence, distinct content, a `build` definition, Blender loading images only by absolute path inside `textures/<id>/` when it imports the asset and calls `build`, and the driver's preview, which places it once by its contract frame exactly as integration does and renders `state/detail_<id>.png` for the critic; repair and rerun this object stage, or write `state/goto.json` targeting `blockout` when pose, size, facing, footprint, regions, relationships, ownership, or other spatial evidence conflicts with the crop. [Gate: detail asset gate; Recourse: repair object stage or GOTO blockout]
+`assets/<id>.py` must pass the detail asset gate for existence, distinct content, a `build` definition, Blender loading images only by absolute path inside `textures/<id>/` when it imports the asset and calls `build`, the observed footprint and region checks integration applies, measured on that asset alone placed by its contract frame exactly as integration places it, and the driver's preview, which renders that placement as `state/detail_<id>.png` for the critic; repair and rerun this object stage, or write `state/goto.json` targeting `blockout` when pose, size, facing, footprint, regions, relationships, ownership, or other spatial evidence conflicts with the crop. [Gate: detail asset gate; Recourse: repair object stage or GOTO blockout]
 
 You are encouraged to:
 

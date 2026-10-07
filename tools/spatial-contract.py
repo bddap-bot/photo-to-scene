@@ -59,7 +59,7 @@ def polygon_error(a, b):
 
 
 def bbox_error(a, b):
-    return max(abs(a[k][i] - b[k][i]) for k in ('min', 'max') for i in range(3))
+    return max(((b[k][i] - a[k][i], k, 'xyz'[i]) for k in ('min', 'max') for i in range(3)), key=lambda e: abs(e[0]))
 
 
 def region_ids(geometry):
@@ -319,8 +319,23 @@ def observed_shape_error(ident, actual):
     return None
 
 
+def check_asset(ident, expected, actual, tolerance):
+    errors = []
+    error = polygon_error(expected['footprint_xy'], actual['footprint_xy'])
+    if error > tolerance:
+        errors.append(f'{ident}: footprint did not round-trip: the placed outline lies up to {error:.3f} m from footprint_xy, tolerance {tolerance:.3f} m')
+    actual_regions = {r['id']: r['bbox'] for r in actual.get('regions', [])}
+    for region in expected['regions']:
+        allowed = tolerance / max(region.get('confidence', 1), .25)
+        if region['id'] not in actual_regions:
+            errors.append(f'{ident}: missing region {region["id"]}')
+        elif abs((error := bbox_error(region['bbox'], actual_regions[region['id']]))[0]) > allowed:
+            errors.append(f'{ident}: region {region["id"]} did not round-trip: its placed {error[1]} {error[2]} is {error[0]:+.3f} m from the contract bbox, tolerance {allowed:.3f} m')
+    return errors
+
+
 def check_observed(entries, observed, ids, tolerance, errors):
-    valid = set()
+    valid, owners = set(), []
     for ident in ids:
         expected = entries[ident]['spatial_contract']
         actual = observed.get(ident)
@@ -330,19 +345,16 @@ def check_observed(entries, observed, ids, tolerance, errors):
         shape = observed_shape_error(ident, actual)
         if shape:
             errors.append(shape)
+            if isinstance(actual, dict) and isinstance(actual.get('error'), str):
+                owners.append(ident)
             continue
         valid.add(ident)
-        if polygon_error(expected['footprint_xy'], actual['footprint_xy']) > tolerance:
-            errors.append(f'{ident}: footprint did not round-trip')
+        asset = check_asset(ident, expected, actual, tolerance)
+        errors += asset
+        owners += [ident] * len(asset)
         dot = sum(a * b for a, b in zip(expected['frame']['y_axis_xy'], actual['front_xy']))
         if dot < .98:
             errors.append(f'{ident}: facing did not round-trip')
-        actual_regions = {r['id']: r['bbox'] for r in actual.get('regions', [])}
-        for region in expected['regions']:
-            if region['id'] not in actual_regions:
-                errors.append(f'{ident}: missing region {region["id"]}')
-            elif bbox_error(region['bbox'], actual_regions[region['id']]) > tolerance / max(region.get('confidence', 1), .25):
-                errors.append(f'{ident}: region {region["id"]} did not round-trip')
         appearance = expected.get('appearance')
         if appearance and actual.get('aperture_luminance', 0) < appearance['minimum_luminance']:
             errors.append(f'{ident}: source-visible aperture is black')
@@ -359,6 +371,7 @@ def check_observed(entries, observed, ids, tolerance, errors):
             error = relationship_error(relation, observed[ident], observed[other_id], tolerance)
             if error:
                 errors.append(f'{ident}: observed {relation["type"]} {other_id}: {error}')
+    return owners
 
 
 def load_json(path):
@@ -385,10 +398,12 @@ def main():
     parser.add_argument('objects')
     parser.add_argument('--floorplan', required=True)
     parser.add_argument('--observed')
+    parser.add_argument('--asset')
     parser.add_argument('--tolerance', type=float, default=.03)
     parser.add_argument('--output')
     args = parser.parse_args()
     entries, errors = load_inventory(args.objects)
+    owners = []
     ids = list(entries)
     for ident in ids:
         check_contract(entries[ident], entries, args.tolerance, errors)
@@ -402,10 +417,15 @@ def main():
         observed, error = load_json(args.observed)
         if error or not isinstance(observed, dict):
             errors.append(error or f'{Path(args.observed).name}: top level must be an object keyed by object id, got {type(observed).__name__}')
+        elif args.asset:
+            actual = observed.get(args.asset) if args.asset in entries else None
+            shape = observed_shape_error(args.asset, actual) if actual else f'{args.asset}: missing observed invariant record or inventory entry'
+            errors += [shape] if shape else check_asset(args.asset, entries[args.asset]['spatial_contract'], actual, args.tolerance)
+            owners = [args.asset] * len(errors)
         else:
-            check_observed(entries, observed, ids, args.tolerance, errors)
+            owners = check_observed(entries, observed, ids, args.tolerance, errors)
     digest = lambda path: hashlib.sha256(Path(path).read_bytes()).hexdigest() if Path(path).is_file() else None
-    result = {'valid': not errors, 'ids': ids, 'errors': errors, 'observed': bool(args.observed), 'objects_sha256': digest(args.objects)}
+    result = {'valid': not errors, 'ids': ids, 'errors': errors, 'observed': bool(args.observed), 'asset_owners': list(dict.fromkeys(owners)) if errors and len(owners) == len(errors) else [], 'objects_sha256': digest(args.objects)}
     if args.observed:
         result['observed_sha256'] = digest(args.observed)
     rendered = json.dumps(result, indent=2)

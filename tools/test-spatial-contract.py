@@ -139,7 +139,7 @@ class SupportDeclarationTest(unittest.TestCase):
         self.assertIn("item: observed supported_by floor", errors[0])
 
 
-def validate(objects, observed=None, floorplan={"room": {"polygon_xy_m": ROOM}}):
+def validate(objects, observed=None, floorplan={"room": {"polygon_xy_m": ROOM}}, asset=None):
     with tempfile.TemporaryDirectory() as directory:
         path, output = Path(directory, 'objects.json'), Path(directory, 'validation.json')
         path.write_text(objects if isinstance(objects, str) else json.dumps(objects))
@@ -148,8 +148,53 @@ def validate(objects, observed=None, floorplan={"room": {"polygon_xy_m": ROOM}})
         if observed is not None:
             Path(directory, 'observed.json').write_text(json.dumps(observed))
             extra = ['--observed', str(Path(directory, 'observed.json'))]
+        if asset is not None:
+            extra += ['--asset', asset]
         result = subprocess.run([sys.executable, str(Path(__file__).with_name('spatial-contract.py')), str(path), '--floorplan', str(Path(directory, 'floorplan.json')), '--output', str(output), *extra], capture_output=True, text=True)
         return result, json.loads(output.read_text()) if output.exists() else None
+
+
+def misbuilt(entries):
+    observed = as_observed(entries["item"]["spatial_contract"])
+    observed["footprint_xy"] = [[x + .061, y] for x, y in observed["footprint_xy"]]
+    body = observed["regions"][0]["bbox"]
+    observed["regions"] = [{"id": "body", "bbox": {"min": [body["min"][0], body["min"][1] + .087, body["min"][2]], "max": body["max"]}}]
+    return observed
+
+
+class AssetGateTest(unittest.TestCase):
+    MISBUILT = ["item: footprint did not round-trip: the placed outline lies up to 0.061 m from footprint_xy, tolerance 0.030 m",
+                "item: region body did not round-trip: its placed min y is +0.087 m from the contract bbox, tolerance 0.030 m"]
+
+    def test_lone_asset_is_measured_against_its_own_contract_only(self):
+        entries = resting(0)
+        result, validation = validate(list(entries.values()), observed={"item": as_observed(entries["item"]["spatial_contract"])}, asset="item")
+        self.assertEqual(result.returncode, 0, validation)
+        result, validation = validate(list(entries.values()), observed={"item": misbuilt(entries)}, asset="item")
+        self.assertEqual(result.returncode, 1)
+        self.assertEqual(validation["errors"], self.MISBUILT)
+        self.assertEqual(validation["asset_owners"], ["item"])
+
+    def test_scene_failure_naming_only_asset_geometry_names_its_owner(self):
+        entries = resting(0)
+        observed = {ident: as_observed(entry["spatial_contract"]) for ident, entry in entries.items()}
+        result, validation = validate(list(entries.values()), observed=dict(observed, item=misbuilt(entries)))
+        self.assertEqual(validation["errors"], self.MISBUILT)
+        self.assertEqual(validation["asset_owners"], ["item"])
+        observed["floor"] = {"error": "placed geometry asset build failed during placement: missing"}
+        result, validation = validate(list(entries.values()), observed=observed)
+        self.assertEqual(validation["asset_owners"], ["floor"])
+
+    def test_scene_failure_beyond_asset_geometry_names_no_owner(self):
+        entries = resting(0)
+        observed = {ident: as_observed(entry["spatial_contract"]) for ident, entry in entries.items()}
+        observed["item"] = dict(misbuilt(entries), front_xy=[1, 0])
+        result, validation = validate(list(entries.values()), observed=observed)
+        self.assertIn("item: facing did not round-trip", validation["errors"])
+        self.assertEqual(validation["asset_owners"], [])
+        result, validation = validate(list(entries.values()), observed={"item": misbuilt(entries)})
+        self.assertIn("item: relationship target floor was not observed", validation["errors"])
+        self.assertEqual(validation["asset_owners"], [])
 
 
 class InventoryShapeTest(unittest.TestCase):

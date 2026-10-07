@@ -187,7 +187,9 @@ class PlacementTest(unittest.TestCase):
         self.assertEqual(self.errors_for('floor'), [])
 
     def test_geometry_filling_the_recess_strip_fails(self):
-        self.assertEqual(self.errors_for('filled'), ['filled: footprint did not round-trip'])
+        errors = self.errors_for('filled')
+        self.assertEqual(len(errors), 1, errors)
+        self.assertTrue(errors[0].startswith('filled: footprint did not round-trip: the placed outline lies up to 0.'), errors)
 
     def test_finely_tessellated_concave_asset_measures_its_outline_not_its_triangles(self):
         self.assertEqual(self.errors_for('drape'), [])
@@ -207,24 +209,22 @@ class PlacementTest(unittest.TestCase):
     def test_anisotropic_frame_is_applied_once_in_integration(self):
         self.assertEqual(self.errors_for('chair'), [])
 
-    def test_preview_places_with_integration_proportions_and_renders(self):
-        measured = self.root / 'state' / 'preview.json'
-        script = self.root / 'measure_preview.py'
-        script.write_text(f'''import bpy, json, sys
-sys.path.insert(0, {str(TOOLS)!r})
-import place
-anchor = place.place_alone({str(self.root)!r}, 'chair')
-open({str(measured)!r}, 'w').write(json.dumps(place.measure(anchor, bpy.context.evaluated_depsgraph_get())))
-''')
-        result = subprocess.run(['blender', '-b', '--factory-startup', '--python-exit-code', '1', '--python', str(script)], capture_output=True, text=True, timeout=300)
-        self.assertEqual(result.returncode, 0, result.stdout[-3000:] + result.stderr[-3000:])
-        preview = json.loads(measured.read_text())
-        self.assertEqual(contract_errors({'chair': self.entries['chair']}, {'chair': observe.observe({'chair': preview}, {})['chair']}), [])
-        self.assertEqual(preview['regions'], self.placed['chair']['regions'])
+    def measured_alone(self, ident):
+        output = self.root / 'state' / f'alone_{ident}.json'
+        blender('measure-alone', self.root, ident, output)
+        return json.loads(output.read_text())
+
+    def test_lone_placement_measures_as_integration_does(self):
+        for ident in ('chair', 'stand', 'filled'):
+            with self.subTest(ident=ident):
+                alone = self.measured_alone(ident)
+                self.assertEqual(list(alone), [ident])
+                self.assertEqual(alone[ident], self.placed[ident])
+
+    def test_preview_renders_the_lone_placement(self):
         render = self.root / 'state' / 'detail_chair.png'
         blender('preview', self.root, 'chair', render)
         self.assertEqual(render.read_bytes()[:8], b'\x89PNG\r\n\x1a\n')
-
 
 if __name__ == '__main__':
     unittest.main()

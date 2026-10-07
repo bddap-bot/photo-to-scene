@@ -161,11 +161,15 @@ def measure(anchor, depsgraph):
     }
 
 
-def measure_scene(blend, output):
-    bpy.ops.wm.open_mainfile(filepath=str(blend))
+def rendered_depsgraph():
     for item in [*bpy.data.objects, *bpy.data.collections]:
         item.hide_viewport = item.hide_render
-    depsgraph = bpy.context.evaluated_depsgraph_get()
+    return bpy.context.evaluated_depsgraph_get()
+
+
+def measure_scene(blend, output):
+    bpy.ops.wm.open_mainfile(filepath=str(blend))
+    depsgraph = rendered_depsgraph()
     measured = {ident: {'error': error} for ident, error in json.loads(bpy.context.scene.get('placement_errors', '{}')).items()}
     for anchor in bpy.context.scene.objects:
         ident = anchor.get('placed_id')
@@ -178,6 +182,11 @@ def measure_scene(blend, output):
 def place_alone(root, ident):
     bpy.ops.wm.read_factory_settings(use_empty=True)
     return place(root, next(entry for entry in json.loads(Path(root, 'state', 'objects.json').read_text()) if entry['id'] == ident))
+
+
+def measure_alone(root, ident, output):
+    anchor = place_alone(root, ident)
+    Path(output).write_text(json.dumps({ident: measure(anchor, rendered_depsgraph())}))
 
 
 def preview(root, ident, output):
@@ -226,8 +235,10 @@ def main():
         bpy.ops.wm.save_as_mainfile(filepath=str(Path(args[1]).resolve()))
     elif mode == 'measure':
         measure_scene(*args)
+    elif mode == 'measure-alone':
+        measure_alone(*args)
     else:
-        raise SystemExit(f'unknown mode {mode}; use preview ROOT ID PNG, place ROOT BLEND, or measure BLEND JSON')
+        raise SystemExit(f'unknown mode {mode}; use preview ROOT ID PNG, place ROOT BLEND, measure BLEND JSON, or measure-alone ROOT ID JSON')
 
 
 if __name__ == '__main__':

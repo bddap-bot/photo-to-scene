@@ -548,11 +548,65 @@ ROOT={shlex.quote(str(root))}; ASSETS=$ROOT/assets; STATE=$ROOT/state; TEXTURES=
 {fake_blender(root / "stub")}
 {function("verify_detail")}
 place_tool() {{ [ "$1 $3" = "preview rug" ] && printf render > "$4"; }}
+spatial_validate() {{ :; }}
 if verify_detail rug; then printf 'PASS\\n'; else printf 'FAIL: %s\\n' "$DETAIL_FAILURE"; fi
 '''
                 result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=30)
                 self.assertEqual(result.returncode, 0, result.stderr)
                 self.assertEqual(result.stdout, expected[case].format(root=root) + "\n")
+
+    def test_detail_gate_rejects_an_asset_whose_lone_placement_misses_its_contract(self):
+        errors = ["rocker: footprint did not round-trip: the placed outline lies up to 0.061 m from footprint_xy, tolerance 0.030 m", "rocker: region open_back did not round-trip: its placed min y is +0.087 m from the contract bbox, tolerance 0.030 m"]
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            for path in ("assets", "state", "textures/rocker"):
+                (root / path).mkdir(parents=True)
+            (root / "assets" / "generic.py").write_text("def build(entry, collection=None): return []\n")
+            (root / "assets" / "rocker.py").write_text("def build(entry, collection=None):\n    return []\n")
+            (root / "state" / "entry_rocker.json").write_text('{"id":"rocker"}')
+            script = f'''set -uo pipefail
+ROOT={shlex.quote(str(root))}; ASSETS=$ROOT/assets; STATE=$ROOT/state; TEXTURES=$ROOT/textures
+{fake_blender(root / "stub")}
+{function("verify_detail")}
+place_tool() {{ printf 'preview ran\\n'; }}
+spatial_validate() {{ printf 'validate %s\\n' "${{*:2}}"; jq -n --argjson errors {shlex.quote(json.dumps(errors))} '{{valid: false, errors: $errors, asset_owners: ["rocker"]}}' > "$1"; return 1; }}
+if verify_detail rocker; then printf 'PASS\\n'; else printf 'FAIL: %s\\n' "$DETAIL_FAILURE"; fi
+'''
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=30)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout, f"FAIL: asset check failed: assets/rocker.py placed by its contract frame does not match its spatial contract: {'; '.join(errors)}\n")
+
+    def test_integration_gate_failure_naming_only_asset_geometry_routes_to_its_object(self):
+        run_integrate = function("run_integrate")
+        stage_verdict = "\n".join(function(name) for name in ("write_stage_check_verdict", "write_spatial_check_verdict"))
+        integrate_helpers = "\n".join(function(name) for name in ("integrate_attempts", "integrate_best"))
+        validation = {"valid": False, "errors": ["rocker: footprint did not round-trip", "fire_tools: footprint did not round-trip", "rocker: region open_back did not round-trip"], "asset_owners": ["rocker", "fire_tools"]}
+        with tempfile.TemporaryDirectory() as directory:
+            state = Path(directory) / "state"
+            (state / "verdicts").mkdir(parents=True)
+            (state / "objects.json").write_text('[{"id":"rocker"},{"id":"fire_tools"}]')
+            for name in ("assemble.py", "integrate.png", "integrate_overlay.png", "spatial_observed.json", "records.tsv"):
+                (state / name).write_text("")
+            script = f'''set -uo pipefail
+STATE={state!s}; INPUT=input.jpg; ATTEMPT_SEQ=0; MODEL_FAILURE=; REQUEST_STAGE=; REQUEST_REASON=
+next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
+log() {{ printf '%s\\n' "$*"; }}
+builder() {{ printf scene > "$STATE/integrate.blend"; }}
+spatial_validate() {{ printf '%s\\n' {shlex.quote(json.dumps(validation))} > "$1"; return 1; }}
+critic() {{ return 99; }}
+score_of() {{ jq -r '.score // 0' "$1"; }}
+record() {{ printf '%s\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\n' "$1" "$2" "$3" "$4" "$5" "$6" "${{7:-}}" >> "$STATE/records.tsv"; }}
+inbox() {{ :; }}
+{stage_verdict}
+{integrate_helpers}
+{run_integrate}
+run_integrate; printf 'rc=%s attempts=%s stage=%s reason=%s\\n' "$?" "$ATTEMPT_SEQ" "$REQUEST_STAGE" "$REQUEST_REASON"
+'''
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=10)
+            corrections = json.loads((state / "verdicts" / "integrate_1.json").read_text())["corrections"]
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("rc=43 attempts=1 stage=object:rocker reason=rocker: footprint did not round-trip; rocker: region open_back did not round-trip\n", result.stdout)
+        self.assertEqual(corrections, ["rocker: footprint did not round-trip; rocker: region open_back did not round-trip", "fire_tools: footprint did not round-trip"])
 
     def test_materials_gate_failure_is_scored_and_saved(self):
         run_materials = function("run_materials")
@@ -571,7 +625,7 @@ STATE={state!s}; INPUT=input.jpg; ATTEMPT_SEQ=0; BEST_S6=-1; REQUEST_STAGE=; REQ
 next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
 log() {{ printf '%s\n' "$*"; }}
 builder() {{ [ -e "$STATE/materials.blend" ] || [ -e "$STATE/aperture_luminance.json" ] || printf scene > "$STATE/materials.blend"; }}
-spatial_validate() {{ printf '%s\n' '{{"valid":false,"errors":["one: material footprint mismatch"]}}' > "$2"; return 1; }}
+spatial_validate() {{ printf '%s\n' '{{"valid":false,"errors":["one: material footprint mismatch"]}}' > "$1"; return 1; }}
 critic() {{ return 99; }}
 score_of() {{ jq -r '.score // 0' "$1"; }}
 record() {{ printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$1" "$2" "$3" "$4" "$5" "$6" "${{7:-}}" >> "$STATE/records.tsv"; }}
@@ -613,7 +667,7 @@ REQUEST_REASON=
 next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
 log() {{ printf '%s\n' "$*"; }}
 builder() {{ [ -f "$STATE/placed.blend" ] && [ ! -e "$STATE/integrate.blend" ] && rm "$STATE/placed.blend" && printf scene > "$STATE/integrate.blend"; }}
-spatial_validate() {{ printf '%s\n' '{{"valid":false,"errors":["one: footprint did not round-trip"]}}' > "$2"; return 1; }}
+spatial_validate() {{ printf '%s\n' '{{"valid":false,"errors":["one: footprint did not round-trip"]}}' > "$1"; return 1; }}
 critic() {{ return 99; }}
 score_of() {{ jq -r '.score // 0' "$1"; }}
 record() {{ printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$1" "$2" "$3" "$4" "$5" "$6" "${{7:-}}" >> "$STATE/records.tsv"; }}
@@ -685,7 +739,7 @@ STATE={state!s}; PROMPTS={state!s}; INPUT=input.jpg; ATTEMPT_SEQ=0; MODEL_FAILUR
 next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
 log() {{ printf '%s\n' "$*"; }}
 builder() {{ printf '%s\n' "$2" > "$STATE/feedback_$ATTEMPT_SEQ"; printf '[{{"id":"attempt%s"}}]\n' "$ATTEMPT_SEQ" > "$STATE/objects.json"; for name in blockout.py blockout.png blockout_overlay.png; do : > "$STATE/$name"; done; }}
-spatial_validate() {{ [ "$ATTEMPT_SEQ" = "{valid}" ] && return 0; printf '%s\n' '{{"valid":false,"errors":["item: declared supported_by floor: raised"]}}' > "$2"; return 1; }}
+spatial_validate() {{ [ "$ATTEMPT_SEQ" = "{valid}" ] && return 0; printf '%s\n' '{{"valid":false,"errors":["item: declared supported_by floor: raised"]}}' > "$1"; return 1; }}
 critic() {{ printf '%s\n' '{{"score":5,"corrections":["sharpen edges"]}}' > "$1"; }}
 score_of() {{ jq -r '.score // 0' "$1"; }}
 record() {{ printf '%s\t%s\t%s\n' "$1" "$2" "$3" >> "$STATE/records.tsv"; }}
@@ -742,7 +796,7 @@ STATE={state!s}; INPUT=input.jpg; ATTEMPT_SEQ=9; REQUEST_STAGE=; REQUEST_REASON=
 next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
 log() {{ :; }}
 builder() {{ return 0; }}
-spatial_validate() {{ printf '%s\n' '{{"valid":false,"errors":["one: resumed mismatch"]}}' > "$2"; return 1; }}
+spatial_validate() {{ printf '%s\n' '{{"valid":false,"errors":["one: resumed mismatch"]}}' > "$1"; return 1; }}
 critic() {{ return 99; }}
 score_of() {{ jq -r '.score // 0' "$1"; }}
 record() {{ printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$1" "$2" "$3" "$4" "$5" "$6" "${{7:-}}" >> "$STATE/records.tsv"; }}
@@ -2027,6 +2081,7 @@ codex() {{
 {function("write_stage_check_verdict")}
 {function("verify_detail")}
 place_tool() {{ [ "$1" = preview ] && printf 'render %s' "$(grep -o '# [0-9]' "$ASSETS/$3.py" | cut -c 3-)" > "$4"; }}
+spatial_validate() {{ :; }}
 {function("detail_attempts")}
 {function("detail_best")}
 {function("restore_detail")}
