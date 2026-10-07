@@ -4,6 +4,8 @@ The [combined-fixes rerun](combined-fixes/report.md) is published separately: 81
 
 The [post-defects rerun](post-defects/report.md) is published separately: all 68 assets built, mean detail score 7.29 over 66 observed objects, and a normal driver exit with no supervised finalization. It failed the observed gate (20 errors at integration, 69 at materials on a stale assembly), so no in-run scene critic ran.
 
+The [third rerun](rerun-3/report.md) is published separately: all 67 assets built, mean detail score 7.46 over 65 observed objects, and a normal driver exit with no supervised finalization after one infrastructure continuation. It failed the observed gate on 3 asset-geometry errors at both integration and materials, so no in-run scene critic ran.
+
 COMPLETE: all 99 detail objects finalized. Final scene gate 0/10: the observed spatial-contract gate rejected integration and materials with the same 68 errors, so no scene-level critic ran. Post-run materials critic on the final render: 7/10.
 
 A gate score of 10 means the applicable driver checks passed; 0 means they rejected the attempt. A dash means no scored machine gate or no visual critic ran. "Call stopped" marks an attempt whose model call the driver stopped at its time bound. Gate success measures contract compliance, not photographic similarity. Final gate and visual scores remain separate.

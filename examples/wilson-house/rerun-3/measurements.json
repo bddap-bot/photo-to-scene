@@ -1,0 +1,168 @@
+{
+  "workflow": "f5ca045184c5dac2fbb98f226362e74a57fea12d",
+  "model": "gpt-6-astra",
+  "reasoning_effort": "none",
+  "model_calls": 769,
+  "model_calls_by_effort": {
+    "none": 769
+  },
+  "model_call_tokens": 22051723,
+  "model_call_tokens_by_stage": {
+    "floorplan": 666932,
+    "blockout": 3043679,
+    "identify": 743276,
+    "object": 16534121,
+    "integrate": 909591,
+    "materials": 154124
+  },
+  "scored_records": 352,
+  "inferred_records": 4,
+  "redirect_records": 10,
+  "known_sequences": 367,
+  "unrecorded_sequences": [
+    239
+  ],
+  "unrecorded_reason": "sequence 239 was in flight when the infrastructure interruption stopped the run",
+  "summed_scored_seconds": 126155,
+  "inferred_seconds": 741,
+  "redirect_seconds": 5095,
+  "stages": {
+    "floorplan": {
+      "records": 9,
+      "seconds": 2207,
+      "redirect_seconds": 0
+    },
+    "blockout": {
+      "records": 29,
+      "seconds": 15795,
+      "redirect_seconds": 513
+    },
+    "identify": {
+      "records": 9,
+      "seconds": 1424,
+      "redirect_seconds": 0
+    },
+    "object": {
+      "records": 283,
+      "seconds": 84944,
+      "redirect_seconds": 93
+    },
+    "tier": {
+      "records": 16,
+      "seconds": 9233,
+      "redirect_seconds": 569
+    },
+    "integrate": {
+      "records": 9,
+      "seconds": 12803,
+      "redirect_seconds": 3165
+    },
+    "materials": {
+      "records": 1,
+      "seconds": 490,
+      "redirect_seconds": 755
+    }
+  },
+  "objects": 67,
+  "inferred_objects": 2,
+  "objects_with_assets": 67,
+  "observed_objects_finalized": 65,
+  "mean_best_detail_score": 7.46,
+  "objects_at_least_8": 34,
+  "gotos_by_stage": {
+    "detail": {
+      "builder": 2
+    },
+    "blockout": {
+      "builder": 2
+    },
+    "tier:large": {
+      "builder": 1,
+      "critic": 1
+    },
+    "tier:medium": {
+      "critic": 2
+    },
+    "tier:small": {
+      "builder": 1,
+      "critic": 1
+    },
+    "integrate": {
+      "builder": 2
+    },
+    "materials": {
+      "builder": 2
+    }
+  },
+  "refused_at_cap": {
+    "builder": 60,
+    "tier_critic_within_tier": 11
+  },
+  "goto_ignored_not_upstream": 1,
+  "invalid_targets": 0,
+  "rejected_critic_routes": 0,
+  "tier_reviews": {
+    "large": [
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7
+    ],
+    "medium": [
+      7,
+      7,
+      7,
+      7
+    ],
+    "small": [
+      8,
+      7,
+      7
+    ]
+  },
+  "integration_gate_errors_per_attempt": [
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3
+  ],
+  "integration_input_hashes": [
+    "20e8da8570acf5ec",
+    "34cbf831cee7b0bb",
+    "1dc8a880d3e609dc"
+  ],
+  "materials_gate_errors": 3,
+  "final_gate_errors": [
+    "rocker: footprint did not round-trip",
+    "rocker: region open_back did not round-trip",
+    "fire_tools: footprint did not round-trip"
+  ],
+  "in_run_scene_critic": null,
+  "driver_enforced_model_stops": 1,
+  "provider_capacity_failures": 0,
+  "infrastructure_interruptions": 1,
+  "interruption": "worker session restart killed the pipeline during detail; resumed at detail on the same tree after under one minute; the stage 5/6 clock restarted",
+  "final_render": {
+    "engine": "CYCLES",
+    "device": "CPU",
+    "samples": 256,
+    "resolution": [
+      1920,
+      1521
+    ],
+    "blender_seconds": 636,
+    "materials_record_to_complete_seconds": 722
+  },
+  "end_to_end_elapsed_seconds": 133078,
+  "finalization": "normal driver COMPLETE, unsupervised"
+}

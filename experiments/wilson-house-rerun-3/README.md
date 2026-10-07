@@ -82,3 +82,38 @@ opening and shelves) that none of these fixes addresses directly.
 
 This is one stochastic comparison, not a per-fix ablation. A different object count
 is an outcome.
+
+## Results
+
+The run started from an empty directory on `f5ca045` and ended with a normal driver `COMPLETE` after 133,078 s, with no supervised finalization. One infrastructure interruption stopped it during detail. It resumed at `detail` on the same tree in under a minute, losing sequence 239, and that continuation restarted the stage 5/6 clock. The [rerun 3 report](../../examples/wilson-house/rerun-3/report.md) holds the full table, per-stage time and tokens, renders and evidence.
+
+| Measure | Rerun 2 | Rerun 3 |
+|---|---|---|
+| Workflow | `4d84583`, effort `none` (587/587 calls) | `f5ca045`, effort `none` (769/769 calls) |
+| Finalization | Normal driver exit | Normal driver exit |
+| Infrastructure interruptions | 0; 3 provider-capacity failures | 1, resumed at `detail`; 0 provider-capacity failures |
+| Final observed spatial gate | Fail; 69 errors at materials on a stale assembly; integration 20 on each attempt | Fail; 3 errors at materials on the current assembly; integration 3 on each of 9 attempts |
+| In-run scene critic | None: gate-rejected | None: gate-rejected |
+| Detail objects | 66/66 observed; mean 7.29; 28 at least 8; 2 inferred | 65/65 observed; mean 7.46; 34 at least 8; 2 inferred |
+| GOTO spend | 7 builder (4 facing, 1 forward hand-off, 2 reserves); 5 critic | 10 builder, at most 2 per stage, none for facing or hand-off; 4 critic |
+| Refused repairs | 52 at caps; 0 invalid targets | 71 at caps (60 builder, 11 critic within tiers); 0 invalid targets |
+| Summed attempt time | 55,890 s | 131,991 s |
+| End-to-end elapsed | 56,613 s | 133,078 s |
+
+Expected effects that held:
+
+- #55: no facing GOTO and no facing refusal.
+- #53: no forward hand-off spent; one was ignored at no cost.
+- #54: fresh integration attempts after every upstream repair, and materials measured the current assembly.
+- #56: per-stage allowances, with integration and materials spending their own.
+
+#50 was not separately measurable. Its observable proxy, no repair citing an out-of-contract field, held.
+
+The final gate now fails on three asset-geometry errors that detail accepted, not on stale or facing errors. Rerun 3 also took 2.4 times as long, mostly in detail, where 60 refused blockout requests each cost an attempt.
+
+Newly exposed defects, each filed separately:
+
+- [#58](https://github.com/bddap-bot/photo-to-scene/issues/58): detail never checks a placed asset against its contract, and the resulting gate failures have no repair path.
+- [#59](https://github.com/bddap-bot/photo-to-scene/issues/59): the facing gate treats contact with a furniture front as wall-mounting.
+- [#60](https://github.com/bddap-bot/photo-to-scene/issues/60): refused contract-repair requests are dropped once detail's allowance is spent.
+- [#61](https://github.com/bddap-bot/photo-to-scene/issues/61): an expired stage 5/6 budget still launches upstream repair until a materials scene is saved.

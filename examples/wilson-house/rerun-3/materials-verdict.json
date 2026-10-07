@@ -1,0 +1,13 @@
+{
+  "scene_change": null,
+  "score": 0,
+  "summary": "materials spatial contract gate failed: 3 validation error(s)",
+  "corrections": [
+    "rocker: footprint did not round-trip",
+    "rocker: region open_back did not round-trip",
+    "fire_tools: footprint did not round-trip"
+  ],
+  "top_stage": "materials",
+  "wrong_labels": [],
+  "missing_objects": []
+}

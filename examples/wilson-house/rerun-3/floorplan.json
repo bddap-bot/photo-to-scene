@@ -1,0 +1,1344 @@
+{
+  "schema_version": "1.1",
+  "stage": "S1_floorplan",
+  "input-photo image": "input/reference.jpg",
+  "source_image": "input/reference.jpg",
+  "reference_image": "input/reference.jpg",
+  "units": "metres; angles in degrees",
+  "coordinate_convention": {
+    "origin": "Interior southwest floor corner, inferred off-frame",
+    "axes": "+x east/right on plan; +y north/up on plan; +z upward",
+    "polygon_winding": "counterclockwise viewed from +z; interior lies to left of each directed edge",
+    "furniture_rotation": "CCW angle of local +x from world +x. Local +y is furniture front, obtained by rotating local +x 90 degrees CCW. Exact frame/footprint take precedence for clipped shapes.",
+    "image_relation": "Image left is west fireplace wall; image right is north window wall; visible corner is [0,6.6]. Cardinal names are arbitrary room labels, not geographic bearings."
+  },
+  "room": {
+    "polygon_xy_m": [
+      [
+        0,
+        0
+      ],
+      [
+        6,
+        0
+      ],
+      [
+        6,
+        6.6
+      ],
+      [
+        0,
+        6.6
+      ]
+    ],
+    "wall_height_m": 3.86,
+    "wall_thickness_m": 0.22,
+    "outline_type": "inferred rectangular enclosing wall planes; chimney projection modeled separately",
+    "dimension_evidence": {
+      "width_6_m": "Window wall includes a narrow corner pier and at least two tall curtain bays; continuation beyond right crop is uncertain. Plausible width 5.2\u20137.0 m.",
+      "depth_6_6_m": "Fireplace wall, rear bookcase, foreground sofa and camera require several metres of separation; south boundary never appears. Plausible depth 5.6\u20138.0 m.",
+      "height_3_86_m": "Mantel at roughly 1.48 m, tall framed portrait, and substantial cornice suggest high historic interior; plausible height 3.3\u20134.1 m. Current accepted S2 wall height is 3.86 m following the cornice-height correction."
+    },
+    "ceiling_profile_note": "Upper rear corner lowered locally by 0.159116 m, tapering to zero at west y=4.56 and north x=3; maximum shell height remains 3.86 m. Current S2: additional projected drop ramps from 0 at north-west corner to 60 review pixels at the far-right image edge; upper plaster, cornices and ceiling deform continuously."
+  },
+  "walls": [
+    {
+      "id": "south",
+      "start_xy_m": [
+        0,
+        0
+      ],
+      "end_xy_m": [
+        6,
+        0
+      ],
+      "height_m": 3.86,
+      "inward_normal_xy": [
+        0,
+        1
+      ],
+      "visibility": "unseen"
+    },
+    {
+      "id": "east",
+      "start_xy_m": [
+        6,
+        0
+      ],
+      "end_xy_m": [
+        6,
+        6.6
+      ],
+      "height_m": 3.86,
+      "inward_normal_xy": [
+        -1,
+        0
+      ],
+      "visibility": "unseen"
+    },
+    {
+      "id": "north",
+      "start_xy_m": [
+        6,
+        6.6
+      ],
+      "end_xy_m": [
+        0,
+        6.6
+      ],
+      "height_m": 3.86,
+      "inward_normal_xy": [
+        0,
+        -1
+      ],
+      "visibility": "visible",
+      "evidence": "Broad curtained window wall on image right."
+    },
+    {
+      "id": "west",
+      "start_xy_m": [
+        0,
+        6.6
+      ],
+      "end_xy_m": [
+        0,
+        0
+      ],
+      "height_m": 3.86,
+      "inward_normal_xy": [
+        1,
+        0
+      ],
+      "visibility": "visible",
+      "evidence": "Paneled wall with fireplace and portrait, receding to visible corner."
+    }
+  ],
+  "openings": [
+    {
+      "id": "W1",
+      "type": "window",
+      "wall_id": "north",
+      "start_xy_m": [
+        0.85,
+        6.6
+      ],
+      "end_xy_m": [
+        2.05,
+        6.6
+      ],
+      "width_m": 1.2,
+      "sill_z_m": 0.73,
+      "head_z_m": 3.05,
+      "confidence": "medium-low",
+      "evidence": "Left lace-filled bay bounded by tied-back rust drapes; glazing obscured. Bay dimensions estimated from chair and sill height. Bay span revised with camera fit to keep the tied middle drape within the image; right jamb remains off-frame and uncertain."
+    },
+    {
+      "id": "W2",
+      "type": "window",
+      "wall_id": "north",
+      "start_xy_m": [
+        2.2,
+        6.6
+      ],
+      "end_xy_m": [
+        4.4,
+        6.6
+      ],
+      "width_m": 2.2,
+      "sill_z_m": 0.73,
+      "head_z_m": 3.05,
+      "confidence": "low",
+      "evidence": "Wider right lace-filled bay reaches image edge; exact right jamb and structural separation not visible. Two bays may share one continuous opening. Bay span revised with camera fit to keep the tied middle drape within the image; right jamb remains off-frame and uncertain."
+    }
+  ],
+  "fixed_features": [
+    {
+      "id": "chimney_breast",
+      "wall_id": "west",
+      "footprint_xy_m": [
+        [
+          0,
+          2.15
+        ],
+        [
+          0.3,
+          2.15
+        ],
+        [
+          0.3,
+          4.4
+        ],
+        [
+          0,
+          4.4
+        ]
+      ],
+      "height_m": 3.86,
+      "evidence": "Broad projecting wall around fireplace and portrait with visible side return. Projection estimated 0.2\u20130.4 m."
+    },
+    {
+      "id": "F1",
+      "type": "fireplace_mantel",
+      "wall_id": "west",
+      "footprint_xy_m": [
+        [
+          0.3,
+          2.28
+        ],
+        [
+          0.58,
+          2.28
+        ],
+        [
+          0.58,
+          4.28
+        ],
+        [
+          0.3,
+          4.28
+        ]
+      ],
+      "height_m": 1.48,
+      "opening_width_m": 1.24,
+      "opening_height_m": 0.94,
+      "evidence": "Ornate pale surround and dark marble opening; 2.0 m surround width inferred against chair width. Fireplace faces +x."
+    },
+    {
+      "id": "hearth",
+      "footprint_xy_m": [
+        [
+          0.3,
+          2.2
+        ],
+        [
+          0.9,
+          2.2
+        ],
+        [
+          0.9,
+          4.36
+        ],
+        [
+          0.3,
+          4.36
+        ]
+      ],
+      "height_m": 0.04,
+      "evidence": "Dark base and fire tools visible ahead of firebox; partially hidden by sofa."
+    },
+    {
+      "id": "portrait",
+      "wall_id": "west",
+      "center_xyz_m": [
+        0.32,
+        3.055579985140079,
+        2.6310454024808063
+      ],
+      "width_along_wall_m": 0.6273652787626629,
+      "height_m": 1.5520908049616127,
+      "evidence": "Reentry: projected width reduced 25 percent while retaining the left edge; top-left raised 30 pixels on the 1777 x 1408 review image; bottom elevation retained. Front faces +x into room.",
+      "bottom_z_m": 1.855,
+      "top_z_m": 3.4070908049616127,
+      "cornice_clearance_m": 0.08
+    },
+    {
+      "id": "cornice",
+      "height_band_z_m": [
+        3.61,
+        3.86
+      ],
+      "depth_m": 0.14,
+      "evidence": "Continuous ornate cornice along both visible wall planes."
+    },
+    {
+      "id": "wall_sconce",
+      "wall_id": "west",
+      "center_xyz_m": [
+        0.16,
+        5.38,
+        1.96
+      ],
+      "evidence": "Double lamp between chimney breast and room corner."
+    }
+  ],
+  "furniture_zones": [
+    {
+      "id": "rug",
+      "label": "Patterned rug",
+      "center_xy_m": [
+        3.2,
+        3.2299999999999995
+      ],
+      "size_xy_m": [
+        4.75,
+        4.65
+      ],
+      "rotation_deg": -180.0,
+      "diagram_color": "#d7b5a2",
+      "evidence": "Large Persian rug beneath central chairs, extends forward below sofa and right beyond frame.",
+      "confidence": "medium-low",
+      "height_m": 0.014,
+      "frame": {
+        "origin_xyz": [
+          5.575,
+          5.555,
+          0
+        ],
+        "x_axis_xy": [
+          -1.0,
+          -0.0
+        ],
+        "y_axis_xy": [
+          0.0,
+          -1.0
+        ],
+        "size_xyz": [
+          4.75,
+          4.65,
+          0.014
+        ]
+      },
+      "footprint_xy_m": [
+        [
+          5.575,
+          5.555
+        ],
+        [
+          0.8250000000000002,
+          5.555
+        ],
+        [
+          0.8250000000000002,
+          0.9049999999999994
+        ],
+        [
+          5.575,
+          0.9049999999999994
+        ]
+      ]
+    },
+    {
+      "id": "sofa",
+      "label": "Foreground sofa",
+      "center_xy_m": [
+        2.14,
+        2.55
+      ],
+      "size_xy_m": [
+        2.15,
+        0.85
+      ],
+      "rotation_deg": 8.62692653001006,
+      "diagram_color": "#bb8c5a",
+      "evidence": "Tall rounded back crosses diagonally downward toward image right; the right rolled arm returns away from the back. Rear silhouette establishes the local x direction; front points toward the room. S1 facing-clearance repair: translate east 0.100 m without rotation. The photograph shows the sofa rear crossing the foreground, with its seating front directed into the central room, not parallel to the fender normal. Increase hearth clearance instead of rotating the sofa toward +x.",
+      "confidence": "medium-low",
+      "height_m": 1.08,
+      "frame": {
+        "origin_xyz": [
+          1.1409125532949906,
+          1.9685584519175938,
+          0
+        ],
+        "x_axis_xy": [
+          0.9886859967393137,
+          0.14999999950530002
+        ],
+        "y_axis_xy": [
+          -0.14999999950530002,
+          0.9886859967393137
+        ],
+        "size_xyz": [
+          2.15,
+          0.85,
+          1.08
+        ]
+      },
+      "footprint_xy_m": [
+        [
+          1.1409125532949906,
+          1.9685584519175938
+        ],
+        [
+          3.266587446284515,
+          2.291058450853989
+        ],
+        [
+          3.13908744670501,
+          3.1314415480824054
+        ],
+        [
+          1.0134125537154857,
+          2.8089415491460104
+        ]
+      ]
+    },
+    {
+      "id": "console",
+      "label": "Console",
+      "center_xy_m": [
+        1.2479999999999998,
+        1.5274
+      ],
+      "size_xy_m": [
+        1.365,
+        2.5
+      ],
+      "rotation_deg": -90.0,
+      "diagram_color": "#ab9075",
+      "evidence": "Substantial foreground desk behind sofa: visible tabletop extends to x=480, y=1250. Cabinet mass fills bottom-left. Back edge is clipped to clear sofa rear; hidden wall end and cabinet depth remain uncertain.",
+      "confidence": "medium-low",
+      "height_m": 0.82,
+      "frame": {
+        "origin_xyz": [
+          0.05,
+          2.165,
+          0
+        ],
+        "x_axis_xy": [
+          0.0,
+          -1.0
+        ],
+        "y_axis_xy": [
+          1.0,
+          0.0
+        ],
+        "size_xyz": [
+          1.365,
+          2.5,
+          0.82
+        ]
+      },
+      "footprint_xy_m": [
+        [
+          0.05,
+          0.8
+        ],
+        [
+          2.55,
+          0.8
+        ],
+        [
+          2.55,
+          2.165
+        ],
+        [
+          1.04,
+          1.936
+        ],
+        [
+          0.05,
+          1.936
+        ]
+      ]
+    },
+    {
+      "id": "bookcase",
+      "label": "Bookcase",
+      "center_xy_m": [
+        0.48,
+        5.407508101840832
+      ],
+      "size_xy_m": [
+        0.5850000000000001,
+        0.41600000000000004
+      ],
+      "rotation_deg": -90.0,
+      "diagram_color": "#af916e",
+      "evidence": "Bookcase narrowed 35 percent in plan; top center moved 45 review pixels right and 45 up. Floor contact retained; contents follow shelf supports. Front remains +x into room.",
+      "confidence": "medium-low",
+      "height_m": 1.2255339260752802,
+      "frame": {
+        "origin_xyz": [
+          0.27199999999999996,
+          5.700008101840832,
+          0.0
+        ],
+        "x_axis_xy": [
+          0.0,
+          -1.0
+        ],
+        "y_axis_xy": [
+          1.0,
+          0.0
+        ],
+        "size_xyz": [
+          0.5850000000000001,
+          0.41600000000000004,
+          1.2255339260752802
+        ]
+      },
+      "footprint_xy_m": [
+        [
+          0.27199999999999996,
+          5.700008101840832
+        ],
+        [
+          0.27199999999999996,
+          5.115008101840831
+        ],
+        [
+          0.6880000000000001,
+          5.115008101840831
+        ],
+        [
+          0.6880000000000001,
+          5.700008101840832
+        ]
+      ]
+    },
+    {
+      "id": "globe",
+      "label": "Globe",
+      "center_xy_m": [
+        0.72,
+        4.128977919447582
+      ],
+      "size_xy_m": [
+        0.4,
+        0.4
+      ],
+      "rotation_deg": -90.0,
+      "diagram_color": "#a6b2a0",
+      "evidence": "Floor globe between fireplace and bookcase. Latest correction: translated toward fireplace along west wall by 0.451 m; source horizontal center target 735 px, restoring spacing from gold chair. Latest correction: translated toward fireplace along west wall by -0.000 m; source horizontal center target 735 px, restoring spacing from gold chair.",
+      "confidence": "medium-low",
+      "height_m": 0.89,
+      "frame": {
+        "origin_xyz": [
+          0.52,
+          4.328977919447582,
+          0
+        ],
+        "x_axis_xy": [
+          0.0,
+          -1.0
+        ],
+        "y_axis_xy": [
+          1.0,
+          0.0
+        ],
+        "size_xyz": [
+          0.4,
+          0.4,
+          0.89
+        ]
+      },
+      "footprint_xy_m": [
+        [
+          0.52,
+          4.328977919447582
+        ],
+        [
+          0.52,
+          3.928977919447582
+        ],
+        [
+          0.92,
+          3.928977919447582
+        ],
+        [
+          0.92,
+          4.328977919447582
+        ]
+      ]
+    },
+    {
+      "id": "armchair",
+      "label": "Gold\narmchair",
+      "center_xy_m": [
+        1.5095836626134993,
+        4.280541782523292
+      ],
+      "size_xy_m": [
+        0.64,
+        0.78
+      ],
+      "rotation_deg": -137.9286909396873,
+      "diagram_color": "#c49b55",
+      "evidence": "Latest correction supersedes the 0.43875 m narrowed frame. Broad nearly symmetric back and paired arms establish a nearly frontal view. Local +y points toward camera; width 0.64 m jointly fitted with orientation and 0.78 m depth to the approximately 215 px outer arm span at the existing camera and center. Height remains 1.08 m; dimensions are inferred, with detailed silhouette refinement deferred to blockout.",
+      "confidence": "medium-low",
+      "image_center_x_fraction_target": 0.532,
+      "height_m": 1.08,
+      "frame": {
+        "origin_xyz": [
+          1.4858018854997077,
+          4.7844608505067425,
+          0
+        ],
+        "x_axis_xy": [
+          -0.7423114649789101,
+          -0.6700549895052378
+        ],
+        "y_axis_xy": [
+          0.6700549895052378,
+          -0.7423114649789101
+        ],
+        "size_xyz": [
+          0.64,
+          0.78,
+          1.08
+        ]
+      },
+      "footprint_xy_m": [
+        [
+          1.4858018854997077,
+          4.7844608505067425
+        ],
+        [
+          1.0107225479132054,
+          4.35562565722339
+        ],
+        [
+          1.533365439727291,
+          3.7766227145398403
+        ],
+        [
+          2.0084447773137932,
+          4.205457907823193
+        ]
+      ]
+    },
+    {
+      "id": "rear_chair",
+      "label": "Red\nchair",
+      "center_xy_m": [
+        1.7618,
+        5.3
+      ],
+      "size_xy_m": [
+        0.8,
+        0.85
+      ],
+      "rotation_deg": -180.0,
+      "diagram_color": "#b77259",
+      "evidence": "Chair behind small round table near window left bay. Reentry refit: approximate photograph horizontal center 0.660 of image width; depth inferred from occlusion and physically separate furniture footprints.",
+      "confidence": "medium-low",
+      "image_center_x_fraction_target": 0.66,
+      "height_m": 1.03,
+      "frame": {
+        "origin_xyz": [
+          2.1618,
+          5.725,
+          0
+        ],
+        "x_axis_xy": [
+          -1.0,
+          -0.0
+        ],
+        "y_axis_xy": [
+          0.0,
+          -1.0
+        ],
+        "size_xyz": [
+          0.8,
+          0.85,
+          1.03
+        ]
+      },
+      "footprint_xy_m": [
+        [
+          2.1618,
+          5.725
+        ],
+        [
+          1.3618,
+          5.725
+        ],
+        [
+          1.3618,
+          4.875
+        ],
+        [
+          2.1618,
+          4.875
+        ]
+      ]
+    },
+    {
+      "id": "side_table",
+      "label": "Round\ntable",
+      "center_xy_m": [
+        1.985,
+        4.797000000000001
+      ],
+      "size_xy_m": [
+        0.435,
+        0.435
+      ],
+      "rotation_deg": -180.0,
+      "diagram_color": "#bb9d7d",
+      "evidence": "Diameter reduced 25 percent; tabletop raised and moved rearward to project near 67 percent of source height.",
+      "confidence": "medium-low",
+      "image_center_x_fraction_target": 0.648,
+      "height_m": 0.83,
+      "frame": {
+        "origin_xyz": [
+          2.2025,
+          5.0145,
+          0
+        ],
+        "x_axis_xy": [
+          -1.0,
+          -0.0
+        ],
+        "y_axis_xy": [
+          0.0,
+          -1.0
+        ],
+        "size_xyz": [
+          0.435,
+          0.435,
+          0.83
+        ]
+      },
+      "footprint_xy_m": [
+        [
+          2.2025,
+          5.0145
+        ],
+        [
+          1.7675,
+          5.0145
+        ],
+        [
+          1.7675,
+          4.5795
+        ],
+        [
+          2.2025,
+          4.5795
+        ]
+      ]
+    },
+    {
+      "id": "rocker",
+      "label": "Rocking\nchair",
+      "center_xy_m": [
+        2.213246413732704,
+        5.243560255480618
+      ],
+      "size_xy_m": [
+        0.6,
+        1.04
+      ],
+      "rotation_deg": 149.99999989158383,
+      "diagram_color": "#a99075",
+      "evidence": "Translate on floor so center moves 65 review pixels left and 25 up. Front remains toward visible seat/runner ends, back toward upper-right cane panel.",
+      "confidence": "medium-low",
+      "image_center_x_fraction_target": 0.72,
+      "height_m": 1.03,
+      "frame": {
+        "origin_xyz": [
+          2.7330540354363317,
+          5.5438934644649365,
+          0
+        ],
+        "x_axis_xy": [
+          -0.866025402838329,
+          0.5000000016387101
+        ],
+        "y_axis_xy": [
+          -0.5000000016387101,
+          -0.866025402838329
+        ],
+        "size_xyz": [
+          0.6,
+          1.04,
+          1.03
+        ]
+      },
+      "footprint_xy_m": [
+        [
+          1.72,
+          4.94
+        ],
+        [
+          1.73,
+          4.98
+        ],
+        [
+          1.834162,
+          5.15464
+        ],
+        [
+          1.84,
+          5.195
+        ],
+        [
+          1.873701,
+          5.223719
+        ],
+        [
+          2.053701,
+          5.533719
+        ],
+        [
+          2.08,
+          5.6
+        ],
+        [
+          2.205,
+          5.815
+        ],
+        [
+          2.225,
+          5.835
+        ],
+        [
+          2.25,
+          5.835
+        ],
+        [
+          2.28464,
+          5.810838
+        ],
+        [
+          2.345,
+          5.795
+        ],
+        [
+          2.4,
+          5.77
+        ],
+        [
+          2.46,
+          5.735
+        ],
+        [
+          2.53285,
+          5.676853
+        ],
+        [
+          2.615,
+          5.635
+        ],
+        [
+          2.715,
+          5.565
+        ],
+        [
+          2.72,
+          5.545
+        ],
+        [
+          2.7,
+          5.5
+        ],
+        [
+          2.575,
+          5.285
+        ],
+        [
+          2.556423,
+          5.270141
+        ],
+        [
+          2.366299,
+          4.941281
+        ],
+        [
+          2.355,
+          4.89
+        ],
+        [
+          2.32686,
+          4.870808
+        ],
+        [
+          2.21,
+          4.665
+        ],
+        [
+          2.195,
+          4.665
+        ],
+        [
+          2.16,
+          4.685
+        ],
+        [
+          2.16,
+          4.705
+        ],
+        [
+          2.258701,
+          4.868719
+        ],
+        [
+          2.261434,
+          4.888457
+        ],
+        [
+          1.887641,
+          5.106979
+        ],
+        [
+          1.876543,
+          5.106434
+        ],
+        [
+          1.861853,
+          5.08715
+        ],
+        [
+          1.765,
+          4.92
+        ]
+      ]
+    },
+    {
+      "id": "window_table",
+      "label": "Draped display table",
+      "center_xy_m": [
+        2.58,
+        6.05
+      ],
+      "size_xy_m": [
+        0.96,
+        0.62
+      ],
+      "rotation_deg": 180,
+      "diagram_color": "#c7bfa3",
+      "evidence": "Source cloth/table span approximately 1325\u20131625 px, partly hidden by rocker and right seating. Shift right and forward under windows, broaden span. Inferred clipped northeast corner preserves floor-stool clearance; hidden rear tabletop shape is uncertain. Top stays 0.91 m. Rectangular frame is an envelope only; exact footprint governs solids and supported items. Cloth hangs to z=0.56 m, inferred from visible hem above stool. Table is open below cloth, with three 0.025 m radius floor supports; do not extrude cloth to floor.",
+      "confidence": "medium-low",
+      "image_center_x_fraction_target": 0.829,
+      "height_m": 0.91,
+      "frame": {
+        "origin_xyz": [
+          3.06,
+          6.36,
+          0
+        ],
+        "x_axis_xy": [
+          -1,
+          0
+        ],
+        "y_axis_xy": [
+          0,
+          -1
+        ],
+        "size_xyz": [
+          0.96,
+          0.62,
+          0.91
+        ]
+      },
+      "footprint_xy_m": [
+        [
+          2.1,
+          5.74
+        ],
+        [
+          3.06,
+          5.74
+        ],
+        [
+          3.06,
+          5.86
+        ],
+        [
+          2.48,
+          6.0
+        ],
+        [
+          2.48,
+          6.36
+        ],
+        [
+          2.1,
+          6.36
+        ]
+      ],
+      "footprint_policy": "Exact clipped footprint overrides rectangular frame envelope. Build tabletop, cloth and base within this polygon; do not fill the clipped northeast corner.",
+      "opaque_lower_z_m": 0.56,
+      "support_posts_xyz_m": [
+        [
+          2.18,
+          5.84,
+          0
+        ],
+        [
+          3.01,
+          5.8,
+          0
+        ],
+        [
+          2.2,
+          6.24,
+          0
+        ]
+      ],
+      "support_post_radius_m": 0.025
+    },
+    {
+      "id": "orange_chair",
+      "label": "Orange\narmchair",
+      "center_xy_m": [
+        3.4263381345203143,
+        6.238
+      ],
+      "size_xy_m": [
+        0.77,
+        0.618
+      ],
+      "rotation_deg": 173.5,
+      "diagram_color": "#d48b59",
+      "evidence": "Refit from the visible front apron, cropped back and footstool occlusion. Front faces mostly south with a small west component; the stool sits toward its front-left corner. The original nearly south-facing 0.98 m depth put the chair across the stool viewing ray. Approximate width 0.77 m, depth 0.618 m, height 1.08 m; exact hidden right edge remains uncertain. This is the orange chair, distinct from the central gold chair. Reentry: moved west with unchanged depth and facing to shift projected center left 100 pixels; visible left arm target approximately x=1520 on 1777-wide review. S1 facing-clearance repair: translate east 0.325 m without rotation. The later westward shift made its footprint overlap the stool. The photograph shows a separate stool and an orange chair cropped at the right edge, so restoring lateral separation takes precedence over the previous 100-pixel leftward preference. Full rectangular plan footprints now have more than 0.05 m clearance; stool source-center fit is retained.",
+      "confidence": "medium-low",
+      "height_m": 1.08,
+      "frame": {
+        "origin_xyz": [
+          3.8438430920100837,
+          6.501430466103422,
+          0
+        ],
+        "x_axis_xy": [
+          -0.9935718556765875,
+          0.11320321376790689
+        ],
+        "y_axis_xy": [
+          -0.11320321376790689,
+          -0.9935718556765875
+        ],
+        "size_xyz": [
+          0.77,
+          0.618,
+          1.08
+        ]
+      },
+      "footprint_xy_m": [
+        [
+          3.8438430920100837,
+          6.501430466103422
+        ],
+        [
+          3.0787927631391114,
+          6.58859694070471
+        ],
+        [
+          3.008833177030545,
+          5.974569533896578
+        ],
+        [
+          3.773883505901517,
+          5.88740305929529
+        ]
+      ]
+    },
+    {
+      "id": "footstool",
+      "label": "Stool",
+      "center_xy_m": [
+        2.7883395433043496,
+        6.245746076078822
+      ],
+      "size_xy_m": [
+        0.58,
+        0.36
+      ],
+      "rotation_deg": 80,
+      "diagram_color": "#b6a28b",
+      "evidence": "Floor-resting center at z=0.155 m back-projected from source (1565,1108) in the 1777x1408 view. Shortened footprint 0.58x0.36 m and aligned with orange chair front; center-to-center front separation leaves a positive physical gap. Height 0.31 m inferred from low upholstered stool. Image fit and clear viewing rays take precedence over the failed inherited 0.69x0.43 m footprint.",
+      "confidence": "medium-low",
+      "image_center_x_fraction_target": 0.899,
+      "height_m": 0.31,
+      "frame": {
+        "origin_xyz": [
+          2.9152469673231374,
+          5.928895155725234,
+          0
+        ],
+        "x_axis_xy": [
+          0.17364817766693041,
+          0.984807753012208
+        ],
+        "y_axis_xy": [
+          -0.984807753012208,
+          0.17364817766693041
+        ],
+        "size_xyz": [
+          0.58,
+          0.36,
+          0.31
+        ]
+      },
+      "footprint_xy_m": [
+        [
+          2.9152469673231374,
+          5.928895155725234
+        ],
+        [
+          3.0159629103699572,
+          6.5000836524723145
+        ],
+        [
+          2.6614321192855623,
+          6.56259699643241
+        ],
+        [
+          2.5607161762387425,
+          5.991408499685329
+        ]
+      ]
+    },
+    {
+      "id": "lamp_table",
+      "label": "Lamp table",
+      "center_xy_m": [
+        0.9626999999999999,
+        5.949999999999999
+      ],
+      "size_xy_m": [
+        0.6,
+        0.52
+      ],
+      "rotation_deg": -180.0,
+      "diagram_color": "#b2a080",
+      "evidence": "Small table with shaded lamp near room corner behind gold chair. Reentry refit: approximate photograph horizontal center 0.615 of image width; depth inferred from occlusion and physically separate furniture footprints.",
+      "confidence": "medium-low",
+      "image_center_x_fraction_target": 0.615,
+      "height_m": 0.83,
+      "frame": {
+        "origin_xyz": [
+          1.2627,
+          6.21,
+          0
+        ],
+        "x_axis_xy": [
+          -1.0,
+          -0.0
+        ],
+        "y_axis_xy": [
+          0.0,
+          -1.0
+        ],
+        "size_xyz": [
+          0.6,
+          0.52,
+          0.83
+        ]
+      },
+      "footprint_xy_m": [
+        [
+          1.2627,
+          6.21
+        ],
+        [
+          0.6627,
+          6.21
+        ],
+        [
+          0.6627,
+          5.6899999999999995
+        ],
+        [
+          1.2627,
+          5.6899999999999995
+        ]
+      ]
+    }
+  ],
+  "camera": {
+    "position_xyz_m": [
+      4.2,
+      1.3,
+      1.6
+    ],
+    "target_xyz_m": [
+      0.727089,
+      4.897067,
+      1.6
+    ],
+    "up_xyz": [
+      0,
+      0,
+      1
+    ],
+    "focal_length_mm": 25.706664,
+    "sensor_width_mm": 36,
+    "horizontal_fov_deg": 70.0,
+    "image_size_px": [
+      1777,
+      1408
+    ],
+    "confidence": "low-medium",
+    "evidence": "Joint position, heading and FOV refit: visible corner at normalized image x=0.570, fireplace near left quarter, orange chair straddling right crop. Level optical axis follows nearly vertical architectural edges. Height remains inferred from visible furniture tops.",
+    "note": "36 mm sensor width; 25.71 mm full-frame equivalent. Horizontal landmark fit, not a recovered unique camera or full 3D render match.",
+    "heading_ccw_from_positive_x_deg": 133.993927,
+    "source_image": "input/reference.jpg"
+  },
+  "scale_anchor": {
+    "object": "central gold upholstered armchair",
+    "assumed_width_m": 0.64,
+    "plausible_width_range_m": [
+      0.6,
+      0.78
+    ],
+    "secondary_anchor": "Mantel height 1.48 m, chair seat height approximately 0.44 m",
+    "evidence": "Current gold-chair width inferred jointly with frontal orientation and calibrated camera; mantel height 1.48 m supplies a secondary scale check. No surveyed dimension exists.",
+    "estimated_global_scale_uncertainty_percent": 20
+  },
+  "uncertainties": [
+    "One image does not determine a unique metric floorplan.",
+    "South and east boundaries are inferred solely for enclosure; do not add visible doors.",
+    "Curtains obscure window structure; two visual bays are modeled as provisional openings.",
+    "Fine furniture positions, rotations, depth ordering and camera parameters require image-match refinement.",
+    "Wall projection and furniture dimensions are estimates, not architectural measurements.",
+    "Three-object refit is verified with conservative solid-prism occluders at S1. Detailed upholstery silhouette and draped cloth require downstream blockout rendering; the S1 proxy is not final render acceptance.",
+    "Display table hidden northeast corner is tapered to resolve source span and stool clearance; downstream cloth should follow exact footprint. Rocker overlap is checked using projected envelopes, not detailed cane geometry."
+  ],
+  "revision": "S1_facing_clearance_repair",
+  "refit_constraints": {
+    "source_image": "input/reference.jpg",
+    "source_measurement_size_px": [
+      1777,
+      1408
+    ],
+    "accepted_camera_locked": true,
+    "preserve_exact_entries": [
+      "drape_0_left",
+      "drape_0_right",
+      "drape_1_left",
+      "drape_1_right"
+    ],
+    "preserved_frames": {
+      "drape_0_left": {
+        "origin_xyz": [
+          1.5899999999999999,
+          6.495,
+          0.69
+        ],
+        "x_axis_xy": [
+          -1.0,
+          -0.0
+        ],
+        "y_axis_xy": [
+          0.0,
+          -1.0
+        ],
+        "size_xyz": [
+          0.82,
+          0.23,
+          2.42
+        ]
+      },
+      "drape_1_left": {
+        "origin_xyz": [
+          2.7199999999999998,
+          6.495,
+          0.69
+        ],
+        "x_axis_xy": [
+          -1.0,
+          -0.0
+        ],
+        "y_axis_xy": [
+          0.0,
+          -1.0
+        ],
+        "size_xyz": [
+          0.6,
+          0.23,
+          2.42
+        ]
+      },
+      "drape_1_right": {
+        "origin_xyz": [
+          4.48,
+          6.495,
+          0.69
+        ],
+        "x_axis_xy": [
+          -1.0,
+          -0.0
+        ],
+        "y_axis_xy": [
+          0.0,
+          -1.0
+        ],
+        "size_xyz": [
+          0.82,
+          0.23,
+          2.42
+        ]
+      }
+    },
+    "tieback_height_m": 1.658,
+    "central_chair_width_m": 0.64,
+    "central_chair_previous_width_m": 0.43875,
+    "instruction": "Retain current measured S2 contracts and apply only the explicit S1 translation deltas in facing_clearance_repair. Never run the historical full sync, which replaces measured outlines and region bounds. Rebuild split andirons and measure all affected geometry independently before neutral rendering.",
+    "supported_display_layout": [
+      {
+        "id": "statue",
+        "center_xy_m": [
+          2.38,
+          6.1
+        ],
+        "base_z_m": 0.91
+      },
+      {
+        "id": "display_photo_0",
+        "center_xy_m": [
+          2.19,
+          5.96
+        ],
+        "base_z_m": 0.91
+      },
+      {
+        "id": "display_photo_1",
+        "center_xy_m": [
+          2.68,
+          5.82
+        ],
+        "base_z_m": 0.91
+      }
+    ],
+    "target_stool_center_px": [
+      1565,
+      1108
+    ],
+    "depth_policy": "Stool remains on z=0 floor, beside the front-left corner of the orange chair, with positive footprint clearance; table and stool footprints must be disjoint. Verify occlusion, not just projected center.",
+    "latest_corrected_entries": [
+      "portrait",
+      "globe",
+      "bookcase",
+      "window_table"
+    ]
+  },
+  "facing_clearance_repair": {
+    "source_image": "input/reference.jpg",
+    "changes": [
+      {
+        "id": "orange_chair",
+        "translation_xyz_m": [
+          0.325,
+          0,
+          0
+        ],
+        "rotation_change_deg": 0,
+        "evidence": "S1 facing-clearance repair: translate east 0.325 m without rotation. The later westward shift made its footprint overlap the stool. The photograph shows a separate stool and an orange chair cropped at the right edge, so restoring lateral separation takes precedence over the previous 100-pixel leftward preference. Full rectangular plan footprints now have more than 0.05 m clearance; stool source-center fit is retained."
+      },
+      {
+        "id": "sofa",
+        "translation_xyz_m": [
+          0.1,
+          0,
+          0
+        ],
+        "rotation_change_deg": 0,
+        "evidence": "S1 facing-clearance repair: translate east 0.100 m without rotation. The photograph shows the sofa rear crossing the foreground, with its seating front directed into the central room, not parallel to the fender normal. Increase hearth clearance instead of rotating the sofa toward +x."
+      }
+    ],
+    "preserve_camera": true,
+    "preserve_all_orientation_axes": true,
+    "candidate_inventory": "state/floorplan_repaired_objects.json",
+    "base_inventory_sha256": "3428616667ceeadf07c37a1df678b490d40bb1eaa2b8f912f7de9b98bc59541b",
+    "next_stage": "blockout",
+    "required_next_actions": [
+      "Apply the candidate translation-only contracts to S2; preserve all other measured footprints, named regions, support relations and inventory entries.",
+      "Rebuild andiron_left and andiron_right as independent assets.",
+      "Independently measure affected objects and run declaration and observed gates.",
+      "Produce a fresh neutral blockout render and inspect it against input/reference.jpg."
+    ],
+    "integration_policy": "Use accepted blockout anchors unchanged during integration."
+  }
+}
