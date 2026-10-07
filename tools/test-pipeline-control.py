@@ -38,6 +38,8 @@ def function(name):
         result = function("tier_review_due") + "\n" + result
     if name in ("builder", "run_detail"):
         result = goto_policy() + "\n" + result
+    if name in ("builder", "run_tier_critic"):
+        result = repairs() + "\n" + result
     if name in ("builder", "critic"):
         result = goto_targets() + "\n" + result
     return result
@@ -52,8 +54,12 @@ def goto_policy():
     return re.search(r"^GOTO_LIMIT=.*$", PIPELINE, re.M).group(0) + "\n" + "\n".join(function(name) for name in ("goto_file", "goto_used", "goto_available"))
 
 
+def repairs():
+    return "\n".join(function(name) for name in ("keep_repair", "repair_lines", "drop_repairs"))
+
+
 def main_loop():
-    return goto_policy() + "\ncurrent=" + PIPELINE.split("\nfeedback=\ncurrent=", 1)[1].split("done\nfinalize\n", 1)[0]
+    return goto_policy() + "\n" + repairs() + "\ncurrent=" + PIPELINE.split("\nfeedback=\ncurrent=", 1)[1].split("done\nfinalize\n", 1)[0]
 
 
 def model_function(seconds: int = 60, idle: int = 2) -> str:
@@ -275,6 +281,73 @@ printf 'attempt_seq=%s calls=%s records=%s integrate=%s\n' "$ATTEMPT_SEQ" "$(cat
         self.assertIn("GOTO cap reached origin=builder requested=blockout reason=fixed-region conflict", result.stdout)
         self.assertIn("GOTO cap request ignored origin=builder requested=blockout reason=fixed-region conflict", result.stdout)
         self.assertIn("GOTO rejected origin=builder requested= reason=cap fallback missing field `stage`; unexpected field `target`", result.stdout)
+
+    def test_refused_detail_repairs_reach_the_tier_review_and_its_blockout_goto(self):
+        run_one_detail = function("restore_detail") + "\n" + function("run_one_detail")
+        detail_helpers = "\n".join(function(name) for name in ("detail_attempts", "detail_best", "write_stage_check_verdict", "score_of"))
+        tier_verdict = json.dumps(dict(score=3, summary="books swapped", corrections=["Swap the book rows between shelf_0 and shelf_2."],
+                                       top_stage="blockout", wrong_labels=[], missing_objects=[],
+                                       scene_change=dict(action="move", subject="books", observed="upper row on shelf_0", desired="upper row on shelf_2")))
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            state = root / "state"
+            prompts = root / "prompts"
+            for path in (state / "attempts", state / "verdicts", state / "crops", prompts, root / "assets"):
+                path.mkdir(parents=True)
+            for prompt in ("detail_builder", "tier_builder", "tier_critic", "blockout_critic"):
+                (prompts / f"{prompt}.md").write_text(prompt)
+            (state / "objects.json").write_text('[{"id":"books_0","crop_bbox":[0,0,1,1],"spatial_contract":{}}]')
+            (state / "records.tsv").write_text("")
+            (state / "progress.md").write_text("")
+            script = f'''set -uo pipefail
+ROOT={root!s}; STATE={state!s}; PROMPTS={prompts!s}; ASSETS={root / "assets"!s}; INPUT=photo.jpg; REQUEST_STAGE=; REQUEST_REASON=; ATTEMPT_SEQ=0; MODEL_FAILURE=
+printf 0 > "$STATE/calls"; printf 2 > "$STATE/goto_detail"
+log() {{ printf '%s\\n' "$*"; }}
+inbox() {{ :; }}
+next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
+record() {{ printf '%s\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\n' "$1" "$2" "$3" "$4" "$5" "$6" "${{7:-}}" >> "$STATE/records.tsv"; }}
+codex() {{
+  local calls; cat >/dev/null
+  case "$ACTIVE_STAGE" in
+    tier:*) printf png > "$STATE/tier_large.png" ;;
+    *) calls=$(( $(cat "$STATE/calls") + 1 )); printf '%s' "$calls" > "$STATE/calls"
+       jq -n --arg reason "$([ "$calls" -le 2 ] && printf 'upper row contracted onto shelf_0' || printf 'books belong on shelf_2')" '{{stage:"blockout",reason:$reason}}' > "$STATE/goto.json" ;;
+  esac
+}}
+{model_function()}
+{function("builder")}
+critic() {{ if [ "$2" = blockout ]; then cat >/dev/null; jq '.score = 4' <<< {shlex.quote(tier_verdict)} > "$1"; else cat > "$STATE/tier_prompt"; printf '%s' {shlex.quote(tier_verdict)} > "$1"; fi; }}
+{detail_helpers}
+verify_detail() {{ DETAIL_FAILURE="asset check failed: no contract-valid asset"; return 1; }}
+{run_one_detail}
+{function("run_tier_critic")}
+write_tiers() {{ printf 'books_0\\tlarge\\n' > "$STATE/object_tiers.tsv"; }}
+{function("run_detail")}
+run_floorplan() {{ :; }}
+run_blockout() {{ printf '%s\\n' "$1" >> "$STATE/blockout_feedback"; }}
+run_identify() {{ :; }}
+run_integrate() {{ :; }}
+run_materials() {{ :; }}
+PHOTO_TO_SCENE_STAGE=detail
+feedback=
+{main_loop()}
+done
+'''
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=60)
+            tier_prompt = (state / "tier_prompt").read_text()
+            blockout_feedback = (state / "blockout_feedback").read_text()
+            pending = json.loads((state / "pending_repairs.json").read_text())
+            allowance = (state / "goto_tier_large").read_text()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        kept = "- object:books_0 requested blockout, refused 4 time(s): upper row contracted onto shelf_0 | books belong on shelf_2"
+        self.assertEqual(result.stdout.count("REPAIR kept requester=object:books_0 target=blockout"), 4, result.stdout)
+        self.assertIn(kept, tier_prompt)
+        self.assertIn("GOTO count=1 origin=critic from=tier:large stage=blockout", result.stdout)
+        self.assertIn("REPAIR carried target=blockout count=1", result.stdout)
+        self.assertEqual(blockout_feedback.splitlines()[0], "Swap the book rows between shelf_0 and shelf_2.")
+        self.assertIn(kept, blockout_feedback)
+        self.assertEqual(pending, [])
+        self.assertEqual(allowance, "1")
 
     def test_valid_builder_goto_survives_invalid_target_correction(self):
         builder = function("builder")
@@ -1013,7 +1086,7 @@ model() {{
 }}
 inbox() {{ :; }}
 run_floorplan() {{ :; }}
-run_blockout() {{ printf '%s\\n' "$1" >> "$STATE/repairs"; }}
+run_blockout() {{ printf '%s\\n' "${{1%%$'\\n'*}}" >> "$STATE/repairs"; }}
 run_identify() {{ :; }}
 run_detail() {{
   ACTIVE_STAGE=object:synthetic

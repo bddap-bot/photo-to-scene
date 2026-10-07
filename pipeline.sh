@@ -48,6 +48,13 @@ goto_shape_error() { jq -rs 'if length != 1 or (.[0] | type) != "object" then "i
 goto_file() { local stage=${ACTIVE_STAGE:-}; case "$stage" in object:*) stage=detail ;; esac; printf '%s/goto_%s' "$STATE" "${stage//:/_}"; }
 goto_used() { cat "$(goto_file)" 2>/dev/null || printf 0; }
 goto_available() { [ "$(goto_used)" -lt "$GOTO_LIMIT" ]; }
+keep_repair() {
+  local file="$STATE/pending_repairs.json"
+  { cat "$file" 2>/dev/null || printf '[]'; } | jq --arg from "$1" --arg stage "$2" --arg reason "$3" 'if any(.[]; .from == $from and .stage == $stage) then map(if .from == $from and .stage == $stage then .refusals += 1 | .reasons |= (if any(.[]; . == $reason) then . else . + [$reason] end) else . end) else . + [{from: $from, stage: $stage, refusals: 1, reasons: [$reason]}] end' > "$file.next" && mv "$file.next" "$file" || exit 1
+  log "REPAIR kept requester=$1 target=$2 refusals=$(jq --arg from "$1" --arg stage "$2" '.[] | select(.from == $from and .stage == $stage) | .refusals' "$file")"
+}
+repair_lines() { [ ! -f "$STATE/pending_repairs.json" ] || jq -r --arg field "$1" --argjson values "$2" '.[] | select($field == "" or (.[$field] as $v | any($values[]; . == $v))) | "- \(.from) requested \(.stage), refused \(.refusals) time(s): \(.reasons | join(" | "))"' "$STATE/pending_repairs.json"; }
+drop_repairs() { [ ! -f "$STATE/pending_repairs.json" ] || { jq --arg stage "$1" 'map(select(.stage != $stage))' "$STATE/pending_repairs.json" > "$STATE/pending_repairs.json.next" && mv "$STATE/pending_repairs.json.next" "$STATE/pending_repairs.json"; }; }
 
 place_command() { printf '%q ' blender -b --factory-startup --python-exit-code 1 --python "$PIPELINE_DIR/tools/place.py" -- "$@"; }
 place_tool() { nix-shell -p blender --run "$(place_command "$@")"; }
@@ -167,14 +174,15 @@ builder() {
       rm -f "$STATE/goto.json"
       if [ -z "$goto_error" ] && ! valid_target "$REQUEST_STAGE" "${ACTIVE_STAGE:-}"; then log "GOTO ignored origin=builder requested=$REQUEST_STAGE reason=not upstream of ${ACTIVE_STAGE:-}; completing the stage so its review runs"; return 0; fi
       if [ "$cap_retry" -eq 1 ]; then
-        if [ -z "$goto_error" ]; then log "GOTO cap request ignored origin=builder requested=$REQUEST_STAGE reason=$REQUEST_REASON"; else log "GOTO rejected origin=builder requested=$REQUEST_STAGE reason=cap fallback $goto_error"; fi
+        if [ -z "$goto_error" ]; then log "GOTO cap request ignored origin=builder requested=$REQUEST_STAGE reason=$REQUEST_REASON"; keep_repair "${ACTIVE_STAGE:-}" "$REQUEST_STAGE" "$REQUEST_REASON"; else log "GOTO rejected origin=builder requested=$REQUEST_STAGE reason=cap fallback $goto_error"; fi
         return 0
       fi
       if [ -z "$goto_error" ]; then
         if goto_available; then return 42; fi
         log "GOTO cap reached origin=builder requested=$REQUEST_STAGE reason=$REQUEST_REASON"
+        keep_repair "${ACTIVE_STAGE:-}" "$REQUEST_STAGE" "$REQUEST_REASON"
         cap_retry=1
-        feedback="${feedback:+$feedback$'\n'}This stage's GOTO allowance is spent. Do not write state/goto.json. Complete within the existing spatial contract, retaining a contract-valid artifact when available so this attempt can be recorded."
+        feedback="${feedback:+$feedback$'\n'}This stage's GOTO allowance is spent; your request is kept for the next review that can still route it. Do not write state/goto.json. Complete within the existing spatial contract, retaining a contract-valid artifact when available so this attempt can be recorded."
         continue
       fi
       log "GOTO rejected origin=builder requested=$REQUEST_STAGE reason=$goto_error"
@@ -255,7 +263,8 @@ run_identify() {
 }
 write_tiers() { jq -r 'map(select(.spatial_contract.inferred | not)) | sort_by(-((.spatial_contract.frame.size_xyz[0] // 0) * (.spatial_contract.frame.size_xyz[1] // 0))) | length as $n | to_entries[] | [.value.id, (if .key < (($n + 2) / 3 | floor) then "large" elif .key < ((2 * $n + 2) / 3 | floor) then "medium" else "small" end)] | @tsv' "$STATE/objects.json" > "$STATE/object_tiers.tsv"; }
 run_tier_critic() {
-  local tier=$1 verdict start score a feedback='' rendered='' calibration='' baseline
+  local tier=$1 verdict start score a feedback='' rendered='' calibration='' baseline repairs
+  repairs=$(repair_lines from "$(awk -F '\t' -v tier="$tier" '$2==tier {print "object:" $1}' "$STATE/object_tiers.tsv" | jq -Rsc 'split("\n")[:-1]')")
   for a in 1 2; do
     next_attempt; start=$(date +%s); verdict="$STATE/verdicts/tier_${tier}_${ATTEMPT_SEQ}.json"
     MODEL_FAILURE=
@@ -263,7 +272,7 @@ run_tier_critic() {
       stage_builder "tier:$tier" "$a" "$start" tier_builder.md "Tier: $tier. Object ids: $(awk -F '\t' -v tier="$tier" '$2==tier {printf "%s ",$1}' "$STATE/object_tiers.tsv")${feedback:+$'\n'$feedback}" -i "$INPUT" || return $?
       [ -n "$MODEL_FAILURE" ] || rendered=1
     fi
-    critic "$verdict" "tier:$tier" -i "$INPUT" "$STATE/tier_${tier}.png" < <(cat "$PROMPTS/tier_critic.md"; printf '\n%s\n' "$feedback")
+    critic "$verdict" "tier:$tier" -i "$INPUT" "$STATE/tier_${tier}.png" < <(cat "$PROMPTS/tier_critic.md"; printf '\n%s\n' "$feedback"; [ -z "$repairs" ] || printf 'Contract-repair requests from this tier'"'"'s object builders, refused at the GOTO cap of their stage:\n%s\nCheck each against the reference. A confirmed contract error is a below-pass defect: route it to its requested stage and batch every confirmed request into corrections[0].\n' "$repairs")
     score=$(score_of "$verdict"); record "tier:$tier" "$a" "$score" "$(( $(date +%s)-start ))" "${feedback:-Integrated footprint tier before descending.}" "$verdict" "" "$tier"; log "SCORE tier:$tier attempt=$a score=$score"
     if [ -n "$MODEL_FAILURE" ]; then feedback=$MODEL_FAILURE; continue; fi
     [ "$score" -lt 8 ] || { inbox; return 0; }
@@ -429,12 +438,12 @@ run_materials() {
   if [ "$score" -lt 8 ]; then REQUEST_STAGE=$(jq -r '.top_stage // "materials"' "$verdict"); REQUEST_REASON=$(jq -r '.corrections[0] // ""' "$verdict"); [ "$REQUEST_STAGE" != materials ] && return 43; fi; inbox
 }
 write_report() {
-  local report="$STATE/scores.md" row stage attempt score seconds changed verdict contract_hash tier binding scored redirected inferred gate
+  local report="$STATE/scores.md" row stage attempt score seconds changed verdict contract_hash tier binding scored redirected inferred gate outstanding
   binding=$(jq -r '.top_stage // "unknown"' "$STATE/best_materials_verdict.json")
   scored=$(awk -F '\t' '$3 != "-" {s += $4} END {print s + 0}' "$STATE/records.tsv")
   inferred=$(awk -F '\t' '$3 == "-" {s += $4} END {print s + 0}' "$STATE/records.tsv")
   redirected=$(awk -F '\t' '{s += $4} END {print s + 0}' "$STATE/redirects.tsv")
-  { printf '# Staged reconstruction report\n\n| Stage | Tier | Attempt | Score | Seconds | What changed |\n|---|---|---:|---:|---:|---|\n'; while IFS= read -r row; do parse_record "$row"; [ "$score" != - ] || continue; tier=${row##*$'\t'}; changed=${changed//$'\n'/ }; changed=${changed//|/\\|}; [ -n "$changed" ] || changed='Initial stage entry or forward rebuild from accepted contracts.'; printf '| %s | %s | %s | %s/10 | %s | %s |\n' "$stage" "${tier:-—}" "$attempt" "$score" "$seconds" "$changed"; done < "$STATE/records.tsv"; printf '\n## Redirected builder attempts\n\n'; if [ -s "$STATE/redirects.tsv" ]; then printf '| Stage | Attempt | Sequence | Seconds | Requested | Reason |\n|---|---:|---:|---:|---|---|\n'; awk -F '\t' '{reason=$6; gsub(/\|/, "\\|", reason); printf "| %s | %s | %s | %s | %s | %s |\n", $1, $2, $3, $4, $5, reason}' "$STATE/redirects.tsv"; else printf 'No builder attempt was redirected.\n'; fi; printf '\n## Unscored inferred structure\n\n'; if awk -F '\t' '$3 == "-" {found=1} END {exit !found}' "$STATE/records.tsv"; then printf 'Built from the contract without a source observation; only the detail asset gate checked these attempts.\n\n| Stage | Attempt | Seconds | Asset gate |\n|---|---:|---:|---|\n'; while IFS= read -r row; do parse_record "$row"; [ "$score" = - ] || continue; gate=$(jq -r '.summary' "$verdict" 2>/dev/null || printf 'gate result absent'); gate=${gate//$'\n'/ }; printf '| %s | %s | %s | %s |\n' "$stage" "$attempt" "$seconds" "${gate//|/\\|}"; done < "$STATE/records.tsv"; else printf 'No inferred structure was built.\n'; fi; printf '\nScored attempts took %s s; inferred structure took %s s; redirected builder attempts took %s s; together %s s.\n' "$scored" "$inferred" "$redirected" "$((scored + inferred + redirected))"; printf '\n## GOTO history\n\n'; grep ' GOTO ' "$ROOT/log.md" 2>/dev/null || printf 'No GOTO was taken.\n'; printf '\n## Scale contract\n\n- Anchor: %s\n- Assumed television width: %s m\n' "$(jq -r '.scale_anchor.description // .scale_anchor // "recorded visual anchor"' "$STATE/floorplan.json")" "$(jq -r '.assumed_tv_width_m // .scale_anchor.width_m // "not used"' "$STATE/floorplan.json")"; printf '\n## Critic verdicts, verbatim\n\n'; while IFS= read -r row; do parse_record "$row"; [ "$score" != - ] || continue; printf '### %s attempt %s\n\n' "$stage" "$attempt"; if [ ! -f "$verdict" ]; then printf "Verdict absent: \`%s\`\n\n" "$verdict"; continue; fi; printf '```json\n'; cat "$verdict"; printf '\n```\n\n'; done < "$STATE/records.tsv"; printf '## Honest assessment\n\nThe final score was %s/10. The binding stage was %s, identified by the best final critic as the source of its highest-priority remaining defect.\n' "$(cat "$STATE/best_s6_score")" "$binding"; } > "$report"
+  { printf '# Staged reconstruction report\n\n| Stage | Tier | Attempt | Score | Seconds | What changed |\n|---|---|---:|---:|---:|---|\n'; while IFS= read -r row; do parse_record "$row"; [ "$score" != - ] || continue; tier=${row##*$'\t'}; changed=${changed//$'\n'/ }; changed=${changed//|/\\|}; [ -n "$changed" ] || changed='Initial stage entry or forward rebuild from accepted contracts.'; printf '| %s | %s | %s | %s/10 | %s | %s |\n' "$stage" "${tier:-—}" "$attempt" "$score" "$seconds" "$changed"; done < "$STATE/records.tsv"; printf '\n## Redirected builder attempts\n\n'; if [ -s "$STATE/redirects.tsv" ]; then printf '| Stage | Attempt | Sequence | Seconds | Requested | Reason |\n|---|---:|---:|---:|---|---|\n'; awk -F '\t' '{reason=$6; gsub(/\|/, "\\|", reason); printf "| %s | %s | %s | %s | %s | %s |\n", $1, $2, $3, $4, $5, reason}' "$STATE/redirects.tsv"; else printf 'No builder attempt was redirected.\n'; fi; printf '\n## Unscored inferred structure\n\n'; if awk -F '\t' '$3 == "-" {found=1} END {exit !found}' "$STATE/records.tsv"; then printf 'Built from the contract without a source observation; only the detail asset gate checked these attempts.\n\n| Stage | Attempt | Seconds | Asset gate |\n|---|---:|---:|---|\n'; while IFS= read -r row; do parse_record "$row"; [ "$score" = - ] || continue; gate=$(jq -r '.summary' "$verdict" 2>/dev/null || printf 'gate result absent'); gate=${gate//$'\n'/ }; printf '| %s | %s | %s | %s |\n' "$stage" "$attempt" "$seconds" "${gate//|/\\|}"; done < "$STATE/records.tsv"; else printf 'No inferred structure was built.\n'; fi; printf '\nScored attempts took %s s; inferred structure took %s s; redirected builder attempts took %s s; together %s s.\n' "$scored" "$inferred" "$redirected" "$((scored + inferred + redirected))"; printf '\n## GOTO history\n\n'; grep ' GOTO ' "$ROOT/log.md" 2>/dev/null || printf 'No GOTO was taken.\n'; printf '\n## Outstanding contract repairs\n\n'; outstanding=$(repair_lines "" '[]'); printf '%s\n' "${outstanding:-No refused contract-repair request is outstanding.}"; printf '\n## Scale contract\n\n- Anchor: %s\n- Assumed television width: %s m\n' "$(jq -r '.scale_anchor.description // .scale_anchor // "recorded visual anchor"' "$STATE/floorplan.json")" "$(jq -r '.assumed_tv_width_m // .scale_anchor.width_m // "not used"' "$STATE/floorplan.json")"; printf '\n## Critic verdicts, verbatim\n\n'; while IFS= read -r row; do parse_record "$row"; [ "$score" != - ] || continue; printf '### %s attempt %s\n\n' "$stage" "$attempt"; if [ ! -f "$verdict" ]; then printf "Verdict absent: \`%s\`\n\n" "$verdict"; continue; fi; printf '```json\n'; cat "$verdict"; printf '\n```\n\n'; done < "$STATE/records.tsv"; printf '## Honest assessment\n\nThe final score was %s/10. The binding stage was %s, identified by the best final critic as the source of its highest-priority remaining defect.\n' "$(cat "$STATE/best_s6_score")" "$binding"; } > "$report"
 }
 finalize() {
   if [ ! -f "$STATE/best_materials.blend" ]; then log 'FAIL no S6 scene exists'; exit 1; fi
@@ -463,7 +472,10 @@ while :; do
     origin=$([ "$rc" -eq 42 ] && printf builder || printf critic)
     if ! goto_available; then log "GOTO cap reached origin=$origin requested=$REQUEST_STAGE reason=$REQUEST_REASON"; log "GOTO cap request ignored origin=$origin requested=$REQUEST_STAGE reason=$REQUEST_REASON"; current=$next; feedback=; [ "$current" = 'done' ] && break; continue; fi
     count=$(( $(goto_used) + 1 )); printf '%s' "$count" > "$(goto_file)" || exit 1
-    log "GOTO count=$count origin=$origin from=$ACTIVE_STAGE stage=$REQUEST_STAGE reason=$REQUEST_REASON"; current=$REQUEST_STAGE; feedback=$REQUEST_REASON; continue
+    log "GOTO count=$count origin=$origin from=$ACTIVE_STAGE stage=$REQUEST_STAGE reason=$REQUEST_REASON"; current=$REQUEST_STAGE; feedback=$REQUEST_REASON
+    carried=$(repair_lines stage "$(jq -nc --arg stage "$REQUEST_STAGE" '[$stage]')")
+    if [ -n "$carried" ]; then drop_repairs "$REQUEST_STAGE" || exit 1; log "REPAIR carried target=$REQUEST_STAGE count=$(grep -c '^- ' <<< "$carried")"; feedback+=$'\n'"Contract-repair requests kept after their stage's GOTO allowance was spent; repair each one the reference confirms:"$'\n'"$carried"; fi
+    continue
   fi
   if [ "$rc" -ne 0 ]; then log "FAIL stage=$current rc=$rc"; exit "$rc"; fi
   [ "$next" = 'done' ] && break
