@@ -1,0 +1,1332 @@
+{
+  "schema_version": "1.0",
+  "stage": "S1_FLOORPLAN",
+  "input_photo": "input/reference.jpg",
+  "source_image": "input/reference.jpg",
+  "reference_image": "input/reference.jpg",
+  "units": "metres",
+  "coordinate_convention": {
+    "origin": "Southwest inside corner of inferred envelope at floor level",
+    "x": "east / right on plan",
+    "y": "north / up on plan",
+    "z": "up",
+    "polygon_winding": "counterclockwise viewed from +Z; room interior is left of each directed edge",
+    "furniture_rotation": "degrees CCW about +Z; unrotated width along X, depth along Y; chair fronts default -Y",
+    "north": "plan convention only; geographic orientation unknown",
+    "image_paths": "relative to run root, never relative to the contract directory"
+  },
+  "room": {
+    "polygon_xy_m": [
+      [
+        0,
+        0
+      ],
+      [
+        6.4,
+        0
+      ],
+      [
+        6.4,
+        7.2
+      ],
+      [
+        0,
+        7.2
+      ],
+      [
+        0,
+        4.52
+      ],
+      [
+        0.38,
+        4.52
+      ],
+      [
+        0.38,
+        1.75
+      ],
+      [
+        0,
+        1.75
+      ]
+    ],
+    "height_m": 4.22,
+    "envelope_size_xy_m": [
+      6.4,
+      7.2
+    ],
+    "evidence_id": "room",
+    "notes": "Interior outline includes the chimney-breast jog. Mantel and hearth project farther into the room as fixed features. Unseen boundaries close a provisional envelope; no door is evidenced."
+  },
+  "walls": [
+    {
+      "id": "S_UNSEEN",
+      "start_xy_m": [
+        0,
+        0
+      ],
+      "end_xy_m": [
+        6.4,
+        0
+      ],
+      "height_m": 4.22,
+      "inward_normal_xy": [
+        0.0,
+        1.0
+      ],
+      "visibility": "unseen",
+      "evidence_id": "room"
+    },
+    {
+      "id": "E_UNSEEN",
+      "start_xy_m": [
+        6.4,
+        0
+      ],
+      "end_xy_m": [
+        6.4,
+        7.2
+      ],
+      "height_m": 4.22,
+      "inward_normal_xy": [
+        -1.0,
+        0.0
+      ],
+      "visibility": "unseen",
+      "evidence_id": "room"
+    },
+    {
+      "id": "N_WINDOWS",
+      "start_xy_m": [
+        6.4,
+        7.2
+      ],
+      "end_xy_m": [
+        0,
+        7.2
+      ],
+      "height_m": 4.22,
+      "inward_normal_xy": [
+        -0.0,
+        -1.0
+      ],
+      "visibility": "visible_or_partially_occluded",
+      "evidence_id": "room"
+    },
+    {
+      "id": "W_REAR",
+      "start_xy_m": [
+        0,
+        7.2
+      ],
+      "end_xy_m": [
+        0,
+        4.52
+      ],
+      "height_m": 4.22,
+      "inward_normal_xy": [
+        1.0,
+        0.0
+      ],
+      "visibility": "visible_or_partially_occluded",
+      "evidence_id": "room"
+    },
+    {
+      "id": "CHIMNEY_N_RETURN",
+      "start_xy_m": [
+        0,
+        4.52
+      ],
+      "end_xy_m": [
+        0.38,
+        4.52
+      ],
+      "height_m": 4.22,
+      "inward_normal_xy": [
+        -0.0,
+        1.0
+      ],
+      "visibility": "visible_or_partially_occluded",
+      "evidence_id": "chimney"
+    },
+    {
+      "id": "W_FIREPLACE",
+      "start_xy_m": [
+        0.38,
+        4.52
+      ],
+      "end_xy_m": [
+        0.38,
+        1.75
+      ],
+      "height_m": 4.22,
+      "inward_normal_xy": [
+        1.0,
+        0.0
+      ],
+      "visibility": "visible_or_partially_occluded",
+      "evidence_id": "chimney"
+    },
+    {
+      "id": "CHIMNEY_S_RETURN",
+      "start_xy_m": [
+        0.38,
+        1.75
+      ],
+      "end_xy_m": [
+        0,
+        1.75
+      ],
+      "height_m": 4.22,
+      "inward_normal_xy": [
+        -0.0,
+        -1.0
+      ],
+      "visibility": "visible_or_partially_occluded",
+      "evidence_id": "chimney"
+    },
+    {
+      "id": "W_FRONT",
+      "start_xy_m": [
+        0,
+        1.75
+      ],
+      "end_xy_m": [
+        0,
+        0
+      ],
+      "height_m": 4.22,
+      "inward_normal_xy": [
+        1.0,
+        0.0
+      ],
+      "visibility": "visible_or_partially_occluded",
+      "evidence_id": "room"
+    }
+  ],
+  "openings": [
+    {
+      "id": "WINDOW_ZONE",
+      "type": "window",
+      "wall_id": "N_WINDOWS",
+      "start_xy_m": [
+        0.95,
+        7.2
+      ],
+      "end_xy_m": [
+        6.12,
+        7.2
+      ],
+      "width_m": 5.17,
+      "sill_z_m": 0.78,
+      "head_z_m": 3.42,
+      "evidence_id": "window",
+      "bay_split_x_m": 3.0,
+      "bay_split_is_provisional": true,
+      "curtain_projection_m": 0.18,
+      "notes": "Continuous lace curtain screen, orange drapes at outer edges and intermediate division. Do not infer an exterior door. Right jamb is outside the photograph."
+    }
+  ],
+  "fixed_features": [
+    {
+      "id": "chimney_breast",
+      "label": "Chimney breast",
+      "center_xy_m": [
+        0.19,
+        3.135
+      ],
+      "size_xyz_m": [
+        0.38,
+        2.77,
+        4.22
+      ],
+      "rotation_z_deg": 0,
+      "evidence_id": "chimney"
+    },
+    {
+      "id": "mantel",
+      "label": "Carved mantel",
+      "center_xy_m": [
+        0.52,
+        3.185
+      ],
+      "size_xyz_m": [
+        0.28,
+        2.1,
+        1.72
+      ],
+      "rotation_z_deg": 0,
+      "evidence_id": "fireplace",
+      "attached_wall": "W_FIREPLACE",
+      "base_z_m": 0,
+      "placement_evidence": "Carried forward drafted S2 correction: shift south 0.44 m; mantel height +0.22 m; portrait base +0.30 m and height +0.12 m, as applicable."
+    },
+    {
+      "id": "hearth",
+      "label": "Hearth",
+      "center_xy_m": [
+        0.78,
+        3.185
+      ],
+      "size_xyz_m": [
+        0.8,
+        1.92,
+        0.06
+      ],
+      "rotation_z_deg": 0,
+      "evidence_id": "fireplace",
+      "base_z_m": 0,
+      "placement_evidence": "Carried forward drafted S2 correction: shift south 0.44 m; mantel height +0.22 m; portrait base +0.30 m and height +0.12 m, as applicable."
+    },
+    {
+      "id": "firebox",
+      "label": "Dark firebox",
+      "center_xy_m": [
+        0.395,
+        3.185
+      ],
+      "size_xyz_m": [
+        0.04,
+        1.24,
+        1.02
+      ],
+      "rotation_z_deg": 0,
+      "evidence_id": "fireplace",
+      "base_z_m": 0.08,
+      "placement_evidence": "Carried forward drafted S2 correction: shift south 0.44 m; mantel height +0.22 m; portrait base +0.30 m and height +0.12 m, as applicable."
+    },
+    {
+      "id": "portrait",
+      "label": "Large framed portrait",
+      "center_xy_m": [
+        0.415,
+        3.185
+      ],
+      "size_xyz_m": [
+        0.07,
+        1.32,
+        1.9
+      ],
+      "rotation_z_deg": 0,
+      "evidence_id": "portrait_correction",
+      "base_z_m": 2.02,
+      "placement_evidence": "Latest reentry supersedes shorter portrait: retain base z=2.02 m and mantel alignment y=3.185 m; increase framed height to 1.90 m. Top z=3.92 m projects near 9.5% image height; bottom remains near 44.5%. Raise inferred ceiling to 4.22 m, retaining 0.23 m cornice drop, to leave 0.07 m above frame. Single-view wall height remains approximate.",
+      "attached_wall": "W_FIREPLACE"
+    },
+    {
+      "id": "sconce",
+      "label": "Two-light wall sconce",
+      "center_xy_m": [
+        0.13,
+        6.02
+      ],
+      "size_xyz_m": [
+        0.24,
+        0.32,
+        0.46
+      ],
+      "rotation_z_deg": 0,
+      "evidence_id": "details",
+      "base_z_m": 1.91
+    },
+    {
+      "id": "radiator",
+      "label": "Radiator below windows",
+      "center_xy_m": [
+        3.73,
+        7.05
+      ],
+      "size_xyz_m": [
+        4.15,
+        0.24,
+        0.55
+      ],
+      "rotation_z_deg": 0,
+      "evidence_id": "window",
+      "base_z_m": 0.12,
+      "inferred": true
+    }
+  ],
+  "furniture": [
+    {
+      "id": "rug",
+      "label": "Persian rug",
+      "center_xy_m": [
+        3.5,
+        3.3
+      ],
+      "size_xyz_m": [
+        4.7,
+        3.65,
+        0.02
+      ],
+      "rotation_z_deg": -180.0,
+      "evidence_id": "furniture",
+      "base_z_m": 0,
+      "placement_evidence": "Adopt saved S2 frame; preserve native geometry, regions and supported children from floorplan_reentry_preserved_objects.json.",
+      "frame_axes_xy": {
+        "x": [
+          -1.0,
+          -0.0
+        ],
+        "y": [
+          0.0,
+          -1.0
+        ]
+      }
+    },
+    {
+      "id": "sofa",
+      "label": "Foreground sofa",
+      "center_xy_m": [
+        2.906,
+        2.0145
+      ],
+      "size_xyz_m": [
+        2.8333,
+        0.94,
+        1.0
+      ],
+      "rotation_z_deg": 7.239345637629462,
+      "evidence_id": "furniture",
+      "placement_evidence": "Adopt saved S2 frame; preserve native geometry, regions and supported children from floorplan_reentry_preserved_objects.json.",
+      "base_z_m": 0,
+      "frame_axes_xy": {
+        "x": [
+          0.9920283996940534,
+          0.12601449996113648
+        ],
+        "y": [
+          -0.12601449996113648,
+          0.9920283996940534
+        ]
+      }
+    },
+    {
+      "id": "console",
+      "label": "Foreground console",
+      "center_xy_m": [
+        3.3,
+        1.28
+      ],
+      "size_xyz_m": [
+        1.75,
+        0.48,
+        1.26
+      ],
+      "rotation_z_deg": 7.239345637629462,
+      "evidence_id": "foreground_reconciliation",
+      "placement_evidence": "Align cabinet parallel to sofa and separate complete footprints by 0.0683 m. Raise actual floor-supported cabinet tabletop from .77 to .95 m; preserve .31 m rack rise. Keep bowl on this real top, on the camera side of sofa.",
+      "base_z_m": 0,
+      "frame_axes_xy": {
+        "x": [
+          0.9920283996940534,
+          0.12601449996113648
+        ],
+        "y": [
+          -0.12601449996113648,
+          0.9920283996940534
+        ]
+      },
+      "support_top_z_m": 0.95,
+      "cabinet_body_height_m": 0.95,
+      "rack_top_z_m": 1.26
+    },
+    {
+      "id": "pattern_chair",
+      "label": "Patterned armchair",
+      "center_xy_m": [
+        1.57,
+        5.05
+      ],
+      "size_xyz_m": [
+        0.78,
+        0.84,
+        1.08
+      ],
+      "rotation_z_deg": -139.46084825851656,
+      "evidence_id": "furniture",
+      "front_direction_xy": [
+        0.6499675024372968,
+        -0.7599620028497625
+      ],
+      "base_z_m": 0,
+      "placement_evidence": "Adopt saved S2 frame; preserve native geometry, regions and supported children from floorplan_reentry_preserved_objects.json.",
+      "frame_axes_xy": {
+        "x": [
+          -0.7599620028497625,
+          -0.6499675024372968
+        ],
+        "y": [
+          0.6499675024372968,
+          -0.7599620028497625
+        ]
+      }
+    },
+    {
+      "id": "rocker",
+      "label": "Cane rocking chair",
+      "center_xy_m": [
+        3.25,
+        4.93
+      ],
+      "size_xyz_m": [
+        0.65,
+        1.05,
+        1.08
+      ],
+      "rotation_z_deg": 140.00000000000003,
+      "evidence_id": "furniture",
+      "front_direction_xy": [
+        -0.6427876096865394,
+        -0.7660444431189781
+      ],
+      "placement_evidence": "Adopt saved S2 frame; preserve native geometry, regions and supported children from floorplan_reentry_preserved_objects.json.",
+      "base_z_m": 0,
+      "frame_axes_xy": {
+        "x": [
+          -0.7660444431189781,
+          0.6427876096865394
+        ],
+        "y": [
+          -0.6427876096865394,
+          -0.7660444431189781
+        ]
+      }
+    },
+    {
+      "id": "red_chair",
+      "label": "Red armchair",
+      "center_xy_m": [
+        1.87,
+        6.02
+      ],
+      "size_xyz_m": [
+        0.83,
+        0.88,
+        1.04
+      ],
+      "rotation_z_deg": -180.0,
+      "evidence_id": "furniture",
+      "placement_evidence": "Adopt saved S2 frame; preserve native geometry, regions and supported children from floorplan_reentry_preserved_objects.json.",
+      "base_z_m": 0,
+      "frame_axes_xy": {
+        "x": [
+          -1.0,
+          -0.0
+        ],
+        "y": [
+          0.0,
+          -1.0
+        ]
+      }
+    },
+    {
+      "id": "round_table",
+      "label": "Round tea table",
+      "center_xy_m": [
+        2.46,
+        5.08
+      ],
+      "size_xyz_m": [
+        0.64,
+        0.64,
+        0.64
+      ],
+      "rotation_z_deg": -180.0,
+      "evidence_id": "furniture",
+      "shape": "ellipse",
+      "placement_evidence": "Adopt saved S2 frame; preserve native geometry, regions and supported children from floorplan_reentry_preserved_objects.json.",
+      "base_z_m": 0,
+      "frame_axes_xy": {
+        "x": [
+          -1.0,
+          -0.0
+        ],
+        "y": [
+          0.0,
+          -1.0
+        ]
+      }
+    },
+    {
+      "id": "window_table",
+      "label": "Draped display table",
+      "center_xy_m": [
+        2.8000000000000003,
+        6.8500000000000005
+      ],
+      "size_xyz_m": [
+        1.4,
+        0.64,
+        0.78
+      ],
+      "rotation_z_deg": -180.0,
+      "evidence_id": "furniture",
+      "placement_evidence": "Adopt saved S2 frame; preserve native geometry, regions and supported children from floorplan_reentry_preserved_objects.json.",
+      "base_z_m": 0,
+      "frame_axes_xy": {
+        "x": [
+          -1.0,
+          -0.0
+        ],
+        "y": [
+          0.0,
+          -1.0
+        ]
+      }
+    },
+    {
+      "id": "orange_chair",
+      "label": "Orange armchair",
+      "center_xy_m": [
+        3.9,
+        6.75
+      ],
+      "size_xyz_m": [
+        1.41,
+        0.68,
+        1.097192294
+      ],
+      "rotation_z_deg": 180.0,
+      "evidence_id": "furniture",
+      "placement_evidence": "Adopt saved S2 frame; preserve native geometry, regions and supported children from floorplan_reentry_preserved_objects.json.",
+      "base_z_m": 0,
+      "frame_axes_xy": {
+        "x": [
+          -1,
+          0
+        ],
+        "y": [
+          0,
+          -1
+        ]
+      }
+    },
+    {
+      "id": "footstool",
+      "label": "Footstool",
+      "center_xy_m": [
+        3.329818413089247,
+        6.758508798156058
+      ],
+      "size_xyz_m": [
+        0.66,
+        0.43,
+        0.27
+      ],
+      "rotation_z_deg": 168.0,
+      "evidence_id": "footstool_correction",
+      "placement_evidence": "Adopt saved S2 frame; preserve native geometry, regions and supported children from floorplan_reentry_preserved_objects.json.",
+      "base_z_m": 0,
+      "frame_axes_xy": {
+        "x": [
+          -0.9781476007338057,
+          0.20791169081775934
+        ],
+        "y": [
+          -0.20791169081775934,
+          -0.9781476007338057
+        ]
+      }
+    },
+    {
+      "id": "bookcase",
+      "label": "Revolving bookcase",
+      "center_xy_m": [
+        0.65,
+        5.4
+      ],
+      "size_xyz_m": [
+        0.66,
+        0.66,
+        1.13
+      ],
+      "rotation_z_deg": -180.0,
+      "evidence_id": "rear_furniture_correction",
+      "placement_evidence": "Adopt saved S2 frame; preserve native geometry, regions and supported children from floorplan_reentry_preserved_objects.json.",
+      "base_z_m": 0,
+      "frame_axes_xy": {
+        "x": [
+          -1.0,
+          -0.0
+        ],
+        "y": [
+          0.0,
+          -1.0
+        ]
+      }
+    },
+    {
+      "id": "lamp_table",
+      "label": "Lamp / writing table",
+      "center_xy_m": [
+        0.85,
+        6.75
+      ],
+      "size_xyz_m": [
+        0.83,
+        0.51,
+        0.77
+      ],
+      "rotation_z_deg": -180.0,
+      "evidence_id": "rear_furniture_correction",
+      "placement_evidence": "Adopt saved S2 frame; preserve native geometry, regions and supported children from floorplan_reentry_preserved_objects.json.",
+      "base_z_m": 0,
+      "frame_axes_xy": {
+        "x": [
+          -1.0,
+          -0.0
+        ],
+        "y": [
+          0.0,
+          -1.0
+        ]
+      }
+    },
+    {
+      "id": "globe",
+      "label": "Globe on stand",
+      "center_xy_m": [
+        0.69,
+        4.45
+      ],
+      "size_xyz_m": [
+        0.42,
+        0.42,
+        0.92
+      ],
+      "rotation_z_deg": -180.0,
+      "evidence_id": "rear_furniture_correction",
+      "shape": "ellipse",
+      "placement_evidence": "Adopt saved S2 frame; preserve native geometry, regions and supported children from floorplan_reentry_preserved_objects.json.",
+      "base_z_m": 0,
+      "frame_axes_xy": {
+        "x": [
+          -1.0,
+          -0.0
+        ],
+        "y": [
+          0.0,
+          -1.0
+        ]
+      }
+    }
+  ],
+  "camera": {
+    "position_xyz_m": [
+      5.75,
+      0.55,
+      1.63
+    ],
+    "target_xyz_m": [
+      0.8,
+      5.3,
+      1.74
+    ],
+    "up_xyz": [
+      0,
+      0,
+      1
+    ],
+    "focal_length_mm": 30,
+    "sensor_width_mm": 36,
+    "image_aspect_ratio": 1.2620738636363635,
+    "horizontal_fov_deg": 61.93,
+    "evidence_id": "camera",
+    "notes": "Full-frame equivalent focal length; use photo for refinement. Camera lies inside assumed envelope behind foreground furniture. Heading refined toward west fireplace wall to place north-west ceiling corner near 58% image width; lens, camera position and elevation retained."
+  },
+  "scale_anchor": {
+    "object_id": "pattern_chair",
+    "dimension": "width",
+    "value_m": 0.78,
+    "plausible_range_m": [
+      0.7,
+      0.9
+    ],
+    "evidence_id": "scale"
+  },
+  "architectural_details": {
+    "cornice_drop_m": 0.23,
+    "baseboard_height_m": 0.24,
+    "panel_trim_depth_m": 0.025,
+    "evidence_id": "details"
+  },
+  "evidence": {
+    "scale": {
+      "basis": "Typical upholstered armchair width 0.78 m (plausible range 0.70\u20130.90 m); cross-check mantel width about 2.1 m and seat height about 0.45 m. No measured scale is available.",
+      "confidence": "low",
+      "global_scale_uncertainty_fraction": 0.2
+    },
+    "room": {
+      "basis": "Two perpendicular wall planes meet behind the bookcase/lamp. Width 6.4 m and depth 7.2 m provide a plausible envelope around the visible furniture; south and east boundaries are outside the image and not recoverable.",
+      "confidence": "low"
+    },
+    "height": {
+      "basis": "Latest portrait correction raises inferred ceiling from 4.05 to 4.22 m to fit top z=3.92 m beneath cornice underside z=3.99 m. Within original plausible 3.6\u20134.5 m range. Camera and visible window dimensions retained; ceiling-corner projection changes slightly and remains an approximate calibration.",
+      "confidence": "low"
+    },
+    "chimney": {
+      "basis": "Visible return to the right of the fireplace establishes a projecting chimney breast. Its width is about 1.25 mantel widths; depth is weakly constrained by the return. Reentry projection correction sets south/north edges to y=1.75/4.52 m, retaining x=0.38 m projection; width becomes 2.77 m and center y=3.135 m. Physical north/south return normals remain +Y/-Y.",
+      "confidence": "medium for existence; low for dimensions"
+    },
+    "fireplace": {
+      "basis": "Mantel estimate is 2.10 m wide and 1.72 m high, with assembly center y=3.185 m. Portrait base 2.02 m leaves 0.30 m above mantel; latest framed height is 1.90 m. Dark firebox is narrower than marble surround; metric dimensions are inferred.",
+      "confidence": "medium for proportions; low for metric size"
+    },
+    "window": {
+      "basis": "Lace curtains cover a broad opening zone, with orange drapes at left, center and right. Sill is near table height, and head lies below cornice. Two bays are a working partition; frame/mullion locations are concealed and right extent is cropped.",
+      "confidence": "medium for visible opening zone; low for exact bay structure and extent"
+    },
+    "furniture": {
+      "basis": "Relative placement follows occlusion: sofa foreground; patterned chair before bookcase; rocker in front of window table; red chair behind small round table; orange chair at far right. Sizes use standard chair, sofa, and table proportions. Hidden footprint extents are inferred.",
+      "confidence": "medium for ordering; low for exact positions, sizes and rotations"
+    },
+    "camera": {
+      "basis": "View includes the west fireplace and north window wall. Nearly vertical image edges suggest a level or perspective-corrected camera. Position and 30 mm full-frame equivalent lens are an approximate composition seed, not a solved calibration.",
+      "confidence": "low"
+    },
+    "details": {
+      "basis": "Portrait above mantel, two candles, clock, wall sconce, globe, books, lamp, framed photos and statue are visible. Their metric sizes are proportional estimates tied to the scale anchor.",
+      "confidence": "medium for presence; low for dimensions"
+    },
+    "portrait_correction": {
+      "basis": "Latest reentry supersedes shorter portrait: retain base z=2.02 m and mantel alignment y=3.185 m; increase framed height to 1.90 m. Top z=3.92 m projects near 9.5% image height; bottom remains near 44.5%. Raise inferred ceiling to 4.22 m, retaining 0.23 m cornice drop, to leave 0.07 m above frame. Single-view wall height remains approximate.",
+      "confidence": "medium for cornice clearance and alignment; low for metric height"
+    },
+    "footstool_correction": {
+      "basis": "Reentry: move from (4.20,5.02) to (3.76,5.65) m, toward the orange armchair and left in camera view. Retain 0.66 x 0.43 x 0.27 m size and -12 degree alignment. Footprint overlaps chair proxy intentionally: stool tucks under the front-left seat edge; downstream must preserve leg clearance. Visible cushion top is the photographed landmark, near (89%,79%); box volume center is lower in projection.",
+      "confidence": "medium for relative placement; low for precise depth",
+      "target_visible_top_uv": [
+        0.89,
+        0.79
+      ],
+      "target_tolerance_uv": [
+        0.025,
+        0.025
+      ]
+    },
+    "rear_furniture_correction": {
+      "basis": "Photographed normalized horizontal centers: bookcase approximately 0.50, globe 0.41, lamp/table 0.61. Retain sizes and camera; solve translations using pinhole projection, west-wall alignment and chair occlusion. Depth remains inferred.",
+      "confidence": "medium for horizontal placement and ordering; low for exact depth"
+    },
+    "foreground_reconciliation": {
+      "basis": "Photograph shows the entire bowl opening on a visible cabinet top in front of the sofa back. Prior S2 bowl extended outside its supporting top and into sofa. Preserve contracted camera and corrected bowl screen center by moving bowl toward camera along its center ray, with physical cabinet top at .95 m. Cabinet and sofa now have parallel, disjoint footprints; cabinet is still lower than 1.00 m sofa crest. Dimensions are a plausible single-view inference, not a measured height.",
+      "confidence": "medium for support and ordering; low for exact metric height",
+      "old_support_z_m": 0.77,
+      "new_support_z_m": 0.95,
+      "camera_preserved": true
+    }
+  },
+  "limitations": [
+    "Single photograph cannot determine absolute scale or hidden boundaries.",
+    "Dimensions are reconstruction estimates, not a measured survey.",
+    "No entry door is visible; none is invented.",
+    "Window divisions and hidden furniture extents require later visual refinement."
+  ],
+  "revision": {
+    "reason": "Reconcile foreground cabinet, bowl support and sofa occlusion while preserving current S2 seating corrections",
+    "source_image": "input/reference.jpg",
+    "chimney_reentry_applied": true,
+    "camera_preserved": true,
+    "portrait_footstool_reentry_applied": true,
+    "console_sofa_reentry_applied": true
+  },
+  "framing_checks": {
+    "method": "Pinhole projection; normalized image coordinates, origin top-left. Geometry proxies only, not a rendered appearance check.",
+    "points": {
+      "ceiling_corner": {
+        "position_xyz_m": [
+          0,
+          7.2,
+          4.22
+        ],
+        "projected_uv": [
+          0.5774,
+          0.2071
+        ]
+      },
+      "rug_center": {
+        "position_xyz_m": [
+          3.5,
+          3.3,
+          0.01
+        ],
+        "projected_uv": [
+          0.6015,
+          1.0036
+        ]
+      },
+      "sofa_center": {
+        "position_xyz_m": [
+          2.906,
+          2.0145,
+          0.5
+        ],
+        "projected_uv": [
+          0.2505,
+          0.9069
+        ]
+      },
+      "sofa_back_midpoint": {
+        "position_xyz_m": [
+          2.93813369749009,
+          1.7615327580780162,
+          1.0
+        ],
+        "projected_uv": [
+          0.1871,
+          0.7488
+        ]
+      },
+      "console_center": {
+        "position_xyz_m": [
+          3.3,
+          1.28,
+          0.63
+        ],
+        "projected_uv": [
+          0.0681,
+          0.9829
+        ]
+      },
+      "console_tabletop_center": {
+        "position_xyz_m": [
+          3.3,
+          1.28,
+          0.95
+        ],
+        "projected_uv": [
+          0.0691,
+          0.8331
+        ]
+      },
+      "console_tabletop_corner_0": {
+        "position_xyz_m": [
+          2.4622186302583757,
+          0.9316504966074328,
+          0.95
+        ],
+        "projected_uv": [
+          -0.1352,
+          0.7893
+        ]
+      },
+      "console_tabletop_corner_1": {
+        "position_xyz_m": [
+          4.1982683297229695,
+          1.1521758715394217,
+          0.95
+        ],
+        "projected_uv": [
+          0.1504,
+          0.9857
+        ]
+      },
+      "console_tabletop_corner_2": {
+        "position_xyz_m": [
+          4.137781369741624,
+          1.6283495033925672,
+          0.95
+        ],
+        "projected_uv": [
+          0.3516,
+          0.8936
+        ]
+      },
+      "console_tabletop_corner_3": {
+        "position_xyz_m": [
+          2.4017316702770306,
+          1.4078241284605784,
+          0.95
+        ],
+        "projected_uv": [
+          0.0277,
+          0.7554
+        ]
+      },
+      "pattern_chair_center": {
+        "position_xyz_m": [
+          1.57,
+          5.05,
+          0.54
+        ],
+        "projected_uv": [
+          0.5481,
+          0.7044
+        ]
+      },
+      "rocker_center": {
+        "position_xyz_m": [
+          3.25,
+          4.93,
+          0.54
+        ],
+        "projected_uv": [
+          0.7472,
+          0.7548
+        ]
+      },
+      "red_chair_center": {
+        "position_xyz_m": [
+          1.87,
+          6.02,
+          0.52
+        ],
+        "projected_uv": [
+          0.6599,
+          0.6946
+        ]
+      },
+      "round_table_center": {
+        "position_xyz_m": [
+          2.46,
+          5.08,
+          0.32
+        ],
+        "projected_uv": [
+          0.6504,
+          0.7679
+        ]
+      },
+      "window_table_center": {
+        "position_xyz_m": [
+          2.8000000000000003,
+          6.8500000000000005,
+          0.39
+        ],
+        "projected_uv": [
+          0.8224,
+          0.7185
+        ]
+      },
+      "orange_chair_center": {
+        "position_xyz_m": [
+          3.9,
+          6.75,
+          0.548596147
+        ],
+        "projected_uv": [
+          0.9743,
+          0.7196
+        ]
+      },
+      "footstool_center": {
+        "position_xyz_m": [
+          3.329818413089247,
+          6.758508798156058,
+          0.135
+        ],
+        "projected_uv": [
+          0.8881,
+          0.7781
+        ]
+      },
+      "footstool_visible_top": {
+        "position_xyz_m": [
+          3.329818413089247,
+          6.758508798156058,
+          0.27
+        ],
+        "projected_uv": [
+          0.888,
+          0.7544
+        ]
+      },
+      "bookcase_center": {
+        "position_xyz_m": [
+          0.65,
+          5.4,
+          0.565
+        ],
+        "projected_uv": [
+          0.4962,
+          0.6764
+        ]
+      },
+      "lamp_table_center": {
+        "position_xyz_m": [
+          0.85,
+          6.75,
+          0.385
+        ],
+        "projected_uv": [
+          0.6154,
+          0.6846
+        ]
+      },
+      "globe_center": {
+        "position_xyz_m": [
+          0.69,
+          4.45,
+          0.46
+        ],
+        "projected_uv": [
+          0.4093,
+          0.7112
+        ]
+      },
+      "bowl_center": {
+        "position_xyz_m": [
+          3.8470435842852626,
+          1.3535858882789926,
+          1.01
+        ],
+        "projected_uv": [
+          0.1797,
+          0.8567
+        ]
+      },
+      "bowl_rim_center": {
+        "position_xyz_m": [
+          3.8470435842852626,
+          1.3535858882789926,
+          1.07
+        ],
+        "projected_uv": [
+          0.1798,
+          0.8236
+        ]
+      },
+      "lamp_table_tabletop_center": {
+        "position_xyz_m": [
+          0.85,
+          6.75,
+          0.77
+        ],
+        "projected_uv": [
+          0.6153,
+          0.6326
+        ]
+      },
+      "portrait_top_center": {
+        "position_xyz_m": [
+          0.415,
+          3.185,
+          3.92
+        ],
+        "projected_uv": [
+          0.2384,
+          0.095
+        ]
+      },
+      "portrait_bottom_center": {
+        "position_xyz_m": [
+          0.415,
+          3.185,
+          2.02
+        ],
+        "projected_uv": [
+          0.237,
+          0.4446
+        ]
+      }
+    },
+    "ceiling_corner_target_u": 0.58
+  },
+  "downstream_corrections": {
+    "source_image": "input/reference.jpg",
+    "draft_contract": "state/objects.json",
+    "geometry_script": "state/blockout.py",
+    "notes": "Use the preserved 78-entry S2 inventory as the baseline; do not rebuild from old S1 furniture defaults. Apply only foreground console/bowl overrides below, remeasure affected assets and revalidate declarations. Keep saved orange_chair, footstool, rocker, display-table group, firebox and fire_screen corrections. Camera, shell and sofa frame remain unchanged.",
+    "gathered_curtains": [
+      {
+        "id": "drape_0",
+        "frame": {
+          "origin_xyz": [
+            1.59,
+            6.99,
+            0.78
+          ],
+          "x_axis_xy": [
+            -1.0,
+            -0.0
+          ],
+          "y_axis_xy": [
+            0.0,
+            -1.0
+          ],
+          "size_xyz": [
+            1.1800000000000002,
+            0.2,
+            2.68
+          ]
+        },
+        "observation": "Gathered velvet: broad upper panel narrows on a curved diagonal to a tieback near preview y=560; narrow lower tail exposes sheer screen."
+      },
+      {
+        "id": "drape_1",
+        "frame": {
+          "origin_xyz": [
+            2.73,
+            6.99,
+            0.78
+          ],
+          "x_axis_xy": [
+            -1.0,
+            -0.0
+          ],
+          "y_axis_xy": [
+            0.0,
+            -1.0
+          ],
+          "size_xyz": [
+            0.7400000000000002,
+            0.2,
+            2.68
+          ]
+        },
+        "observation": "Gathered velvet: broad upper panel narrows on a curved diagonal to a tieback near preview y=560; narrow lower tail exposes sheer screen."
+      },
+      {
+        "id": "drape_2",
+        "frame": {
+          "origin_xyz": [
+            4.725,
+            6.99,
+            0.78
+          ],
+          "x_axis_xy": [
+            -1.0,
+            -0.0
+          ],
+          "y_axis_xy": [
+            0.0,
+            -1.0
+          ],
+          "size_xyz": [
+            0.9500000000000002,
+            0.2,
+            2.68
+          ]
+        },
+        "observation": "Gathered velvet: broad upper panel narrows on a curved diagonal to a tieback near preview y=560; narrow lower tail exposes sheer screen."
+      }
+    ],
+    "preserved_inventory": "state/floorplan_reentry_preserved_objects.json",
+    "foreground": {
+      "console": {
+        "id": "console",
+        "label": "Foreground console",
+        "center_xy_m": [
+          3.3,
+          1.28
+        ],
+        "size_xyz_m": [
+          1.75,
+          0.48,
+          1.26
+        ],
+        "rotation_z_deg": 7.239345637629462,
+        "evidence_id": "foreground_reconciliation",
+        "placement_evidence": "Align cabinet parallel to sofa and separate complete footprints by 0.0683 m. Raise actual floor-supported cabinet tabletop from .77 to .95 m; preserve .31 m rack rise. Keep bowl on this real top, on the camera side of sofa.",
+        "base_z_m": 0,
+        "frame_axes_xy": {
+          "x": [
+            0.9920283996940534,
+            0.12601449996113648
+          ],
+          "y": [
+            -0.12601449996113648,
+            0.9920283996940534
+          ]
+        },
+        "support_top_z_m": 0.95,
+        "cabinet_body_height_m": 0.95,
+        "rack_top_z_m": 1.26
+      },
+      "bowl": {
+        "id": "bowl",
+        "label": "Console bowl",
+        "center_xy_m": [
+          3.8470435842852626,
+          1.3535858882789926
+        ],
+        "size_xyz_m": [
+          0.39,
+          0.33,
+          0.12
+        ],
+        "rotation_z_deg": 0,
+        "base_z_m": 0.95,
+        "supported_by": "console",
+        "support_region": "top",
+        "evidence_id": "foreground_reconciliation",
+        "target_center_xyz_m": [
+          3.8470435842852626,
+          1.3535858882789926,
+          1.01
+        ],
+        "rim_z_m": 1.07
+      },
+      "sofa": {
+        "id": "sofa",
+        "label": "Foreground sofa",
+        "center_xy_m": [
+          2.906,
+          2.0145
+        ],
+        "size_xyz_m": [
+          2.8333,
+          0.94,
+          1.0
+        ],
+        "rotation_z_deg": 7.239345637629462,
+        "evidence_id": "furniture",
+        "placement_evidence": "Adopt saved S2 frame; preserve native geometry, regions and supported children from floorplan_reentry_preserved_objects.json.",
+        "base_z_m": 0,
+        "frame_axes_xy": {
+          "x": [
+            0.9920283996940534,
+            0.12601449996113648
+          ],
+          "y": [
+            -0.12601449996113648,
+            0.9920283996940534
+          ]
+        }
+      },
+      "prop_rule": "Reposition console-supported props onto revised tabletop using their prior local coordinates relative to cabinet; increase their bases by .18 m. Bowl uses the explicit new center instead. Keep rack on the far/west display end, outside bowl footprint and camera-to-rim rays; rack must remain physically attached. Recompute all affected regions/footprints and supported_by contacts. Do not float the bowl or raise it independently.",
+      "validation_required": "Render actual assets from unchanged camera; bowl opening must be visible, cabinet/sofa footprints disjoint and every prop physically supported. S1 analytical check does not replace the S2 render.",
+      "console_assembly_transform": {
+        "old_center_xy_m": [
+          3.18,
+          1.2
+        ],
+        "new_center_xy_m": [
+          3.3,
+          1.28
+        ],
+        "rotation_delta_z_deg": 19.239345637629462,
+        "tabletop_delta_z_m": 0.18,
+        "note": "Use this small rotation for cabinet design and supported prop local positions, avoiding a 180-degree arrangement flip from equivalent footprint axes. Stretch cabinet body from floor to new top; translate rack and props vertically. Bowl explicit placement supersedes group transform."
+      }
+    }
+  },
+  "supported_objects": [
+    {
+      "id": "bowl",
+      "label": "Console bowl",
+      "center_xy_m": [
+        3.8470435842852626,
+        1.3535858882789926
+      ],
+      "size_xyz_m": [
+        0.39,
+        0.33,
+        0.12
+      ],
+      "rotation_z_deg": 0,
+      "base_z_m": 0.95,
+      "supported_by": "console",
+      "support_region": "top",
+      "evidence_id": "foreground_reconciliation",
+      "target_center_xyz_m": [
+        3.8470435842852626,
+        1.3535858882789926,
+        1.01
+      ],
+      "rim_z_m": 1.07
+    }
+  ]
+}

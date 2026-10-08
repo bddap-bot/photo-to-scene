@@ -6,6 +6,8 @@ The [post-defects rerun](post-defects/report.md) is published separately: all 68
 
 The [third rerun](rerun-3/report.md) is published separately: all 67 assets built, mean detail score 7.46 over 65 observed objects, and a normal driver exit with no supervised finalization after one infrastructure continuation. It failed the observed gate on 3 asset-geometry errors at both integration and materials, so no in-run scene critic ran.
 
+The [fourth rerun](rerun-4/report.md) is published separately: the first to pass the observed spatial gate, with 0 errors at integration and materials, so the in-run scene critics ran and materials scored 7/10. All 83 assets were built, with a mean detail score of 7.48 over 77 observed objects, and the driver exited normally with no supervised finalization.
+
 The workflow reconstructed the Library of Congress photograph of the Woodrow Wilson House living room end to end: 99 detailed objects, integration, materials, and a final Cycles render. The final scene failed the observed spatial-contract gate with 68 errors, so no scene-level critic ran inside the run. The workflow's own materials critic, run once on the final render afterwards, scored it 7/10.
 
 ![Reference photograph (left) and final render (right)](renders/side-by-side.jpg)

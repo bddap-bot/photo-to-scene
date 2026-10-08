@@ -1,0 +1,27 @@
+{
+  "source_image": "input/reference.jpg",
+  "reference_image": "input/reference.jpg",
+  "input-photo image": "input/reference.jpg",
+  "input_scene": "state/best_materials.blend",
+  "resolution": [
+    1920,
+    1521
+  ],
+  "reference_resolution": [
+    6114,
+    4842
+  ],
+  "engine": "CYCLES",
+  "device": "CPU",
+  "samples": 256,
+  "adaptive_threshold": 0.009999999776482582,
+  "denoising": "OPENIMAGEDENOISE",
+  "camera": "Camera",
+  "view_transform": "AgX",
+  "look": "AgX - Medium High Contrast",
+  "exposure": -1.100000023841858,
+  "max_bounces": 10,
+  "objects": 86,
+  "render_seconds": 866,
+  "missing_images": []
+}

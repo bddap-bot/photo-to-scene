@@ -1,0 +1,218 @@
+{
+  "workflow": "5acde1f9f6ec5a8cde09e791ff1f499829171bda",
+  "model": "gpt-6-astra",
+  "reasoning_effort": "none",
+  "model_calls": 720,
+  "model_calls_by_effort": {
+    "none": 720
+  },
+  "model_call_tokens": 22008913,
+  "model_call_tokens_by_stage": {
+    "floorplan": 468623,
+    "blockout": 2789781,
+    "identify": 577211,
+    "object": 17719334,
+    "integrate": 286341,
+    "materials": 167623
+  },
+  "scored_records": 336,
+  "inferred_records": 6,
+  "redirect_records": 7,
+  "known_sequences": 349,
+  "unrecorded_sequences": [],
+  "summed_scored_seconds": 96598,
+  "inferred_seconds": 627,
+  "redirect_seconds": 4145,
+  "stages": {
+    "floorplan": {
+      "records": 7,
+      "seconds": 1493,
+      "redirect_seconds": 0
+    },
+    "blockout": {
+      "records": 29,
+      "seconds": 15609,
+      "redirect_seconds": 1126
+    },
+    "identify": {
+      "records": 10,
+      "seconds": 1868,
+      "redirect_seconds": 0
+    },
+    "object": {
+      "records": 278,
+      "seconds": 61884,
+      "redirect_seconds": 251
+    },
+    "tier": {
+      "records": 15,
+      "seconds": 13578,
+      "redirect_seconds": 538
+    },
+    "integrate": {
+      "records": 2,
+      "seconds": 2158,
+      "redirect_seconds": 2230
+    },
+    "materials": {
+      "records": 1,
+      "seconds": 635,
+      "redirect_seconds": 0
+    }
+  },
+  "objects": 83,
+  "inferred_objects": 6,
+  "objects_with_assets": 83,
+  "observed_objects_finalized": 77,
+  "observed_objects": 77,
+  "mean_best_detail_score": 7.48,
+  "objects_at_least_8": 43,
+  "gotos_by_stage": {
+    "blockout": {
+      "builder": 2
+    },
+    "detail": {
+      "builder": 2
+    },
+    "tier:large": {
+      "builder": 1,
+      "critic": 1
+    },
+    "tier:medium": {
+      "builder": 1,
+      "critic": 1
+    },
+    "tier:small": {
+      "critic": 2
+    },
+    "integrate": {
+      "critic": 1,
+      "builder": 1
+    }
+  },
+  "refused_at_cap": {
+    "builder": 59,
+    "tier_critic_within_tier": 8,
+    "integration_critic": 1
+  },
+  "refused_requests_kept": 59,
+  "kept_requests_carried": {
+    "dispatches": 7,
+    "requests": 34
+  },
+  "kept_requests_left": 1,
+  "max_refusals_per_requester": 2,
+  "goto_ignored_not_upstream": 0,
+  "invalid_targets": 0,
+  "rejected_critic_routes": 0,
+  "tier_reviews": {
+    "large": [
+      7,
+      7,
+      7,
+      0,
+      7,
+      7,
+      8
+    ],
+    "medium": [
+      0,
+      7,
+      7,
+      7,
+      7
+    ],
+    "small": [
+      7,
+      7,
+      7
+    ]
+  },
+  "detail_contract_rejections": {
+    "attempts": 27,
+    "footprint_or_region_deviation": 23,
+    "disjoint_parts": 4,
+    "objects": [
+      "N_WINDOWS_panel_trim",
+      "andirons",
+      "bowl",
+      "candle_1",
+      "drape_1",
+      "globe",
+      "horse",
+      "lamp",
+      "mantel_clock",
+      "orange_chair",
+      "pattern_chair",
+      "pelmet_crest",
+      "red_chair",
+      "rocker",
+      "round_table",
+      "sconce",
+      "sofa",
+      "statue",
+      "walking_cane"
+    ]
+  },
+  "gate_routes_to_object_owner": 0,
+  "integration_gate_errors_per_attempt": [
+    0,
+    0
+  ],
+  "integration_input_hashes": [
+    "e5628ae94770eb23",
+    "681e891082cbf28c"
+  ],
+  "materials_gate_errors": 0,
+  "final_gate_errors": [],
+  "in_run_scene_critic": {
+    "integrate": [
+      7,
+      6
+    ],
+    "materials": 7
+  },
+  "wallclock_cap_reached": false,
+  "driver_enforced_model_stops": {
+    "total": 3,
+    "sequences": {
+      "71": "blockout",
+      "225": "tier:medium review, after the 2,440 s GPU wait",
+      "233": "tier:large review"
+    }
+  },
+  "provider_capacity_failures": 2,
+  "infrastructure_interruptions": 0,
+  "infrastructure_stalls": [
+    {
+      "seconds": 2440,
+      "during": "medium tier review (sequence 225): its render waited 2,440 s for the GPU; the reviewer killed it, re-rendered on CPU, and the call reached the 2,100 s bound"
+    },
+    {
+      "seconds": 410,
+      "during": "small tier review render, before its blockout GOTO; the review completed"
+    }
+  ],
+  "west_north_corner": {
+    "rerun_3_gap_m": 0.025,
+    "rerun_4_overlap_m": 0.005,
+    "blue_cast_pixels_in_corner_band": {
+      "rerun_3": 2775,
+      "rerun_4": 0
+    },
+    "band": "x 1040-1179, y 330-899 of the 1920x1521 final render"
+  },
+  "final_render": {
+    "engine": "CYCLES",
+    "device": "CPU",
+    "samples": 256,
+    "resolution": [
+      1920,
+      1521
+    ],
+    "blender_seconds": 867,
+    "materials_record_to_complete_seconds": 1024
+  },
+  "end_to_end_elapsed_seconds": 102688,
+  "finalization": "normal driver COMPLETE, unsupervised"
+}

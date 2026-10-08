@@ -1,0 +1,13 @@
+{
+  "scene_change": null,
+  "score": 7,
+  "summary": "The room, viewpoint, and major furnishings are recognizable, but the render looks cleaner and more rigid than the photograph, with darker window-side lighting and several oversized foreground details.",
+  "corrections": [
+    "GOTO materials: Soften the deep shadows across the window wall and ceiling junction. Restore the photograph’s aged, mottled plaster, muted gilding, worn velvet, and finer, richer red-and-blue rug pattern; the current surfaces look overly smooth and uniformly colored.",
+    "GOTO object:sofa: Reshape the foreground back and right arm into fuller, rounded rolls with soft upholstery transitions. The current back is a broad, flattened slab; match the photograph’s plush amber-brown fabric and irregular fine striping.",
+    "GOTO object:window_lace: Reduce the oversized floral repeat and add fine translucent lace detail, vertical gathers, and variation in transmitted daylight. The current curtains read as flat gray patterned panels rather than softly glowing ivory lace."
+  ],
+  "top_stage": "materials",
+  "wrong_labels": [],
+  "missing_objects": []
+}

@@ -75,7 +75,7 @@ CPU rendering and per-object review also make a complete run expensive. Visual c
 
 ## Example
 
-The [Wilson House worked example](examples/wilson-house/report.md) reconstructs a public-domain Library of Congress photograph end to end: 99 detailed objects, integration, materials, and a final render. The final scene scores 0/10 on the observed spatial-contract gate (68 errors) and 7/10 from the workflow's materials critic, run once on the final render after the gate blocked the in-run critic.
+The [Wilson House worked example](examples/wilson-house/report.md) reconstructs a public-domain Library of Congress photograph end to end: 99 detailed objects, integration, materials, and a final render. The final scene scores 0/10 on the observed spatial-contract gate (68 errors) and 7/10 from the workflow's materials critic, run once on the final render after the gate blocked the in-run critic. A [later rerun](examples/wilson-house/rerun-4/report.md) on the current workflow passes the observed gate with 0 errors, and its in-run materials critic scores 7/10.
 
 ![Wilson House reference photograph (left) and final render (right)](examples/wilson-house/renders/side-by-side.jpg)
 

@@ -86,3 +86,36 @@ presumed.
 
 This is one stochastic comparison, not a per-fix ablation. A different object count
 is an outcome.
+
+## Results
+
+The run started from an empty directory on `5acde1f` and ended with a normal driver `COMPLETE` after 102,688 s. It had no stop, no continuation and no supervised finalization. Two GPU waits stalled tier-review renders for 2,440 s and 410 s; the first of those reviews then reached the 2,100 s model bound. The [rerun 4 report](../../examples/wilson-house/rerun-4/report.md) holds the full table, per-stage time and tokens, renders and evidence.
+
+| Measure | Rerun 3 | Rerun 4 |
+|---|---|---|
+| Workflow | `f5ca045`, effort `none` (769/769 calls) | `5acde1f`, effort `none` (720/720 calls) |
+| Finalization | Normal driver exit | Normal driver exit |
+| Infrastructure interruptions | 1, resumed at `detail`; 0 provider-capacity failures | 0 stops; 2 GPU-wait stalls; 2 provider-capacity failures |
+| Final observed spatial gate | Fail; 3 errors at materials on the current assembly; integration 3 on each of 9 attempts | Pass; 0 errors at materials; integration 0 on each of 2 scored attempts |
+| In-run scene critic | None: gate-rejected | Integration 7, then 6; materials 7 |
+| Detail contract rejections | None | 27 attempts on 19 objects |
+| Detail objects | 65/65 observed; mean 7.46; 34 at least 8; 2 inferred | 77/77 observed; mean 7.48; 43 at least 8; 6 inferred |
+| GOTO spend | 10 builder; 4 critic | 7 builder; 5 critic |
+| Refused repairs | 71 at caps; dropped | 68 at caps; 59 builder requests kept, 34 carried, 1 left |
+| West/north wall seam | Open: 25 mm gap, a blue line in the render | Closed: walls overlap by 5 mm; no blue-cast pixels in the corner band |
+| Summed attempt time | 131,991 s | 101,370 s |
+| End-to-end elapsed | 133,078 s | 102,688 s |
+
+Expected effects that held:
+
+- #58: detail rejected assets that missed their contracts, with the measured deviation, and the final gate carried no asset-geometry error. The wall seam is gone, but this run's wall assets simply meet; the check rejected no wall, and a gap under its 30 mm tolerance would still pass.
+- #59: every facing error named a floorplan wall; none came from a furniture front.
+- #60: refused requests were kept and carried into later blockout entries; no requester was refused more than twice.
+
+#61 was not exercised: the stage 5/6 clock never expired.
+
+The headline change is the first passing spatial gate on this example, and with it the first in-run scene critics.
+
+Newly exposed defect, filed separately:
+
+- [#62](https://github.com/bddap-bot/photo-to-scene/issues/62): a materials verdict below 8 that names `materials` finalizes the run with its corrections unapplied.
