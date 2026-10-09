@@ -29,7 +29,7 @@ Prompts distinguish checked facts and hand-off invariants from encouraged method
 5. **Integrate** starts from `state/placed.blend`, in which the driver has placed every asset, adds the shell and camera, and evaluates placement, intersections, floating geometry, gaps, and camera fit.
 6. **Materials** preserves asset materials while adding shell materials, lighting, colour management, and a final photographic render.
 
-Stages 1, 2, 5, and each final evaluation permit up to three attempts; identification and each object permit up to two. A score of 8/10 passes. When attempts are exhausted, the highest-scoring result remains authoritative.
+Stages 1, 2, 5, and 6 permit up to three attempts; identification and each object permit up to two. A score of 8/10 passes. Below it, a verdict naming its own stage retries that stage with the verdict's corrections. When attempts are exhausted, the highest-scoring result remains authoritative.
 
 ## GOTO and correction rules
 

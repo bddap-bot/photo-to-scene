@@ -175,7 +175,7 @@ class PipelineControlTest(unittest.TestCase):
         self.assertIn("for tier in large medium small", PIPELINE)
         self.assertIn('run_tier_critic "$tier"', PIPELINE)
         self.assertIn('record "tier:$tier"', PIPELINE)
-        self.assertIn('if [ "$score" -lt 8 ]', PIPELINE)
+        self.assertIn('[ "$score" -lt 8 ] || { inbox; return 0; }', PIPELINE)
         self.assertIn('return 43', PIPELINE)
 
     def test_capped_tier_critic_descends_to_next_tier(self):
@@ -712,13 +712,40 @@ inbox() {{ :; }}
 {stage_verdict}
 {run_materials}
 run_materials
-printf 'score=%s best=%s png=%s blend=%s error=%s\n' "$(cut -f3 "$STATE/records.tsv")" "$(cat "$STATE/best_s6_score")" "$(cat "$STATE/best_materials.png")" "$(cat "$STATE/best_materials.blend")" "$(jq -r '.corrections[0]' "$STATE/verdicts/materials_1.json")"
+printf 'score=%s best=%s png=%s blend=%s error=%s\n' "$(cut -f3 "$STATE/records.tsv" | paste -sd, -)" "$(cat "$STATE/best_s6_score")" "$(cat "$STATE/best_materials.png")" "$(cat "$STATE/best_materials.blend")" "$(jq -r '.corrections[0]' "$STATE/verdicts/materials_1.json")"
 '''
             result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=10)
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("score=0 best=0 png=render blend=scene", result.stdout)
+        self.assertIn("score=0,0,0 best=0 png=render blend=scene", result.stdout)
         self.assertIn("FAIL materials invalidated spatial contract", result.stdout)
         self.assertIn("error=one: material footprint mismatch", result.stdout)
+
+    def test_materials_verdict_naming_materials_retries_with_its_corrections(self):
+        run_materials = function("run_materials")
+        with tempfile.TemporaryDirectory() as directory:
+            state = Path(directory, "state")
+            (state / "verdicts").mkdir(parents=True)
+            (state / "records.tsv").write_text("")
+            (state / "materials_critic.md").write_text("critique")
+            script = f'''set -uo pipefail
+STATE={state!s}; PROMPTS={state!s}; INPUT=input.jpg; ATTEMPT_SEQ=0; BEST_S6=-1; REQUEST_STAGE=; REQUEST_REASON=; MODEL_FAILURE=
+next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
+log() {{ printf '%s\n' "$*"; }}
+builder() {{ printf '%s\n' "$2" >> "$STATE/feedback"; printf 'scene %s' "$ATTEMPT_SEQ" > "$STATE/materials.blend"; printf 'render %s' "$ATTEMPT_SEQ" > "$STATE/materials.png"; }}
+spatial_validate() {{ return 0; }}
+critic() {{ if [ "$ATTEMPT_SEQ" -eq 1 ]; then printf '%s\n' '{{"score":7,"top_stage":"materials","corrections":["soften the deep shadows","object:sofa reshape the back"]}}'; else printf '%s\n' '{{"score":8,"top_stage":"materials","corrections":[]}}'; fi > "$1"; }}
+score_of() {{ jq -r '.score // 0' "$1"; }}
+record() {{ printf '%s\t%s\t%s\n' "$1" "$2" "$3" >> "$STATE/records.tsv"; }}
+inbox() {{ :; }}
+{run_materials}
+run_materials
+printf 'rc=%s attempts=%s best=%s blend=%s\n' "$?" "$ATTEMPT_SEQ" "$(cat "$STATE/best_s6_score")" "$(cat "$STATE/best_materials.blend")"
+'''
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=10)
+            feedback = (state / "feedback").read_text().splitlines()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("rc=0 attempts=2 best=8 blend=scene 2", result.stdout)
+        self.assertEqual(feedback, ["", "soften the deep shadows; object:sofa reshape the back"])
 
     def test_integration_gate_failure_is_scored_and_retried(self):
         run_integrate = function("run_integrate")
@@ -1664,7 +1691,7 @@ run_one_detail one
 ROOT={root}; STATE={state}; PROMPTS={prompts}; ASSETS={root}; INPUT=photo.jpg; ATTEMPT_SEQ=0; BEST_S6=-1; REQUEST_STAGE=; REQUEST_REASON=
 log() {{ printf '%s\\n' "$*"; }}
 inbox() {{ :; }}
-next_attempt() {{ ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
+next_attempt() {{ [ "$ATTEMPT_SEQ" -eq 0 ] || {{ printf 'retry request=%s best_s6=%s\\n' "$REQUEST_STAGE" "$BEST_S6"; exit 0; }}; ATTEMPT_SEQ=$((ATTEMPT_SEQ+1)); }}
 score_of() {{ jq -r '.score // 0' "$1"; }}
 record() {{ printf '%s\\t%s\\t%s\\n' "$1" "$2" "$3" >> "$STATE/records.tsv"; [ "$1" = materials ] || exit 0; }}
 spatial_validate() {{ printf 'gate ran\\n'; return 1; }}
@@ -1688,7 +1715,7 @@ printf 'rc=%s request=%s best_s6=%s\\n' "$?" "$REQUEST_STAGE" "$BEST_S6"
                 self.assertEqual(verdict["top_stage"], top_stage)
                 self.assertFalse(best_saved)
                 if stage == "materials":
-                    self.assertIn("rc=0 request=materials best_s6=-1", result.stdout)
+                    self.assertIn("retry request=materials best_s6=-1", result.stdout)
 
     def test_consecutive_model_failures_stop_the_run_without_recording_the_second(self):
         with tempfile.TemporaryDirectory() as directory:
