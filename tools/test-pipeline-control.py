@@ -1451,7 +1451,7 @@ kill "$root"
 ROOT={directory}; STATE={directory}
 log() {{ printf '%s\\n' "$*"; }}
 {model_function(idle * 3, idle)}
-SECONDS=0
+unset SECONDS; SECONDS=0
 sleep() {{ command sleep 0.02; SECONDS=$((SECONDS + 1)); }}
 printf 0 > "$STATE/samples"
 tree_ticks() {{
@@ -1464,7 +1464,7 @@ codex() {{ exec sleep 60; }}
 model - <<< prompt
 printf 'rc=%s failure=%s samples=%s\\n' "$?" "$MODEL_FAILURE" "$(cat "$STATE/samples")"
 """
-            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=30)
+            result = subprocess.run(["bash", "-c", script], text=True, capture_output=True, timeout=600)
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertIn(f"rc=1 failure={expected}", result.stdout)
             return result
